@@ -1,0 +1,238 @@
+/* =========================================================
+    Outline.
+========================================================= */
+
+/* Container
+--------------------------------------------------------- */
+#container {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  min-width: 1000px;
+}
+
+/* Header
+--------------------------------------------------------- */
+#header {
+  height: 60px;
+  padding: 0px;
+  background-image: url(images/header_re.jpg);
+  background-position: left top;
+  background-repeat: repeat-x;
+}
+#header h1 {
+  float: left;
+  width: 400px;
+  background-image: url(images/header.jpg);
+  background-position: left top;
+  background-repeat: no-repeat;
+  line-height: 60px;
+}
+#header h1 a {
+  display: block;
+  width: 400px;
+  height: 60px;
+  background-image: url(images/header_logo.gif);
+  background-repeat: no-repeat;
+  background-position: 10px 0px;
+  text-decoration: none;
+  text-indent: -9999px;
+}
+#header .menu {
+  float: right;
+  padding-top: 25px;
+  text-align: right;
+}
+#header .menu * {
+  margin: 0px 20px 0px 0px;
+  color: #fff;
+  text-decoration: none;
+}
+#header .menu a: hover {
+  color: #FFCC00;
+}
+
+/* Banner
+--------------------------------------------------------- */
+#banner {
+}
+
+/* Navi
+--------------------------------------------------------- */
+#navi table {
+  width: 100%;
+  border-bottom: 1px solid #bbb;
+}
+
+/* Navi/Core
+------------------------------------- */
+#navi td.selector {
+  width: 210px;
+  background-color: #eee;
+  vertical-align: top;
+}
+#navi td.selector .site {
+}
+#navi td.selector .site select {
+  width: 200px;
+  margin: 6px 0px 0px 4px;
+}
+#navi td.selector .concept {
+  width: 200px;
+  margin: 2px 0px 0px 4px;
+}
+
+/* Navi/Menu
+------------------------------------- */
+#navi td.menu {
+  border-left: 1px solid #bbb;
+  background-image: url(images/mainMenu_back.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+  vertical-align: top;
+}
+
+/* Navi/Menu/MainMenu
+------------------------------------- */
+#navi td.menu .mainMenu {
+  height: 32px;
+}
+#navi td.menu .contentMenu {
+  clear: both;
+  background-color: #fff;
+}
+#navi td.menu .mainMenu a {
+  display: inline-block;
+  width: 96px;
+  border-right: 1px solid #999999;
+  border-bottom: 1px solid #8AA8E8;
+  background-color: #E3EFFD;
+  font-size: 12px;
+  font-family: Verdana;
+  text-decoration: none;
+  text-align: center;
+  line-height: 31px;
+}
+#navi td.menu .mainMenu a: hover {
+  background-color: #bdf;
+  color: #008;
+}
+#navi td.menu .mainMenu a.current {
+  background-color: #fff;
+  border-bottom: 1px solid #fff;
+  color: #26d;
+  font-weight: bold;
+}
+
+/* Navi/Menu/ContentMenu
+------------------------------------- */
+#navi td.menu .contentMenu {
+  height: 32px;
+}
+#navi td.menu .contentMenu p {
+  display: inline;
+  padding: 0px 20px;
+  line-height: 32px;
+}
+#navi td.menu .contentMenu a {
+  display: inline;
+  border-right: 1px solid #ccc;
+  padding: 0px 20px;
+  text-decoration: none;
+  line-height: 32px;
+}
+#navi td.menu .contentMenu a.current {
+  color: #CC3300;
+}
+
+/* Main
+--------------------------------------------------------- */
+#main {
+}
+
+/* Wrapper
+--------------------------------------------------------- */
+#wrapper {
+}
+
+/* Content
+--------------------------------------------------------- */
+#content {
+  margin: 0px 12px;
+}
+#contentContainer {
+}
+#contentHeader {
+  margin-bottom: 15px;
+}
+#contentBody {
+}
+#content h2 {
+  margin: 15px 0px 10px 5px;
+  color: #2b6;
+  color: #28f;
+  font-size: 120%;
+  font-weight: bold;
+}
+#content .actionMenu {
+  margin: 10px 0px 15px 0px;
+  vertical-align: bottom;
+}
+#content .actionMenu span {
+  display: inline-block;
+  margin: 0px 4px 0px 8px;
+  padding: 4px 1px;
+}
+#content .actionMenu span.separator {
+  display: inline-block;
+  margin: 0px 4px 0px 2px;
+  border-left: 1px solid #ccc;
+}
+#content .actionMenu a {
+  display: inline-block;
+  margin: 0px 2px;
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-width: 1px 2px 2px 1px;
+  text-decoration: none;
+}
+#content .navi {
+  margin: 10px 0px 10px 0px;
+  padding: 0px 4px;
+  border: 1px solid #ddd;
+  background-color: #f4f4f4;
+  line-height: 2.0;
+}
+#contentHeader .navi a {
+  display: inline-block;
+  padding: 0px 5px;
+  text-decoration: none;
+}
+
+
+/* Menu
+--------------------------------------------------------- */
+#menu {
+  display: none;
+}
+#menuContainer {
+  margin: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Footer
+--------------------------------------------------------- */
+#footer {
+  clear: both;
+}
+#footerContainer {
+  padding: 20px 0px;
+}
+
+/* ErrorExplanation
+--------------------------------------------------------- */
+#contentBody #errorExplanation h2 {
+  color: #fff;
+  margin: 0;
+}
+

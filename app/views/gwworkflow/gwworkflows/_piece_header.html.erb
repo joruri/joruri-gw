@@ -1,0 +1,16 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle">ワークフロー</h2>
+<div class="btsHeaderLeft">
+<% unless defined?(hide_new_action) %>
+  <span class="btNew"><a href=<%= gwworkflow_new_path %>>新規作成</a></span>
+<% end %>
+</div>
+
+<div class="btsHeadeRight">
+<% if @is_admin %>
+  <span class="btSetAdd"><a href=<%#= gwworkflow_settings_path %>>管理者</a></span>
+<% else %>
+  <span class="btSet"><a href=<%= gwworkflow_settings_path %>> 設定</a></span>
+<% end %>
+</div><!--btsHeadeRight-->
+</div><!--pieceHeader-->

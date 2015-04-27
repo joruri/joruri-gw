@@ -1,0 +1,66 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+<%= render 'header_new_botton' %>
+<%= render 'header_navi' %>
+
+<% if @items.size == 0 %>
+<div class="notice">表示対象がありません。</div>
+<% else %>
+<table class="index">
+  <tr>
+  <th class="action"></th>
+  <th class="state">公開</th>
+  <th class="state">状態</th>
+  <th class="level">階層</th>
+  <th class="order">並び順</th>
+  <th class="title">表示名</th>
+  <th class="ext">接続先区分</th>
+  <th class="sso">リンク種別</th>
+  <th class="mode">表示モード</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細', {action: :show, id: item.id, pid: item.parent_id} %></td>
+      <td><span class="<%= 'required' if item.published != 'opened' %>"><%= item.published_label %></span></td>
+      <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
+      <td><%= item.level_no_label %></td>
+      <td><%= item.sort_no %></td>
+      <td><span style="margin-left:0em;"><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=raw item.name %></span></span></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <% item.children.order(sort_no: :asc).each do |blk| %>
+      <tr class="<%= cycle '', 'cycle'  %>">
+        <td><%= link_to '詳細', {action: :show, id: blk.id, pid: blk.parent_id} %></td>
+        <td><span class="<%= 'required' if blk.published != 'opened' %>"><%= blk.published_label %></span></td>
+        <td><span class="<%= 'required' if blk.state != 'enabled' %>"><%= blk.state_label %></span></td>
+        <td><%= blk.level_no_label %></td>
+        <td><%= blk.sort_no %></td>
+        <td><span style="margin-left:2em;"><span class="<%= 'required' if blk.state != 'enabled' || blk.published != 'opened' %>"><%=raw blk.name %></span></span></td>
+        <td><%= blk.class_external_label %></td>
+        <td><%= blk.class_sso_label %></td>
+        <td><%= blk.mode_label %></td>
+      </tr>
+      <% blk.children.order(sort_no: :asc).each do |lnk| %>
+        <tr class="<%= cycle '', 'cycle' %>">
+          <td><%= link_to '詳細', {action: :show, id: lnk.id, pid: lnk.parent_id} %></td>
+          <td><span class="<%= 'required' if lnk.published != 'opened' %>"><%= lnk.published_label %></span></td>
+          <td><span class="<%= 'required' if lnk.state != 'enabled' %>"><%= lnk.state_label %></span></td>
+          <td><%= lnk.level_no_label %></td>
+          <td><%= lnk.sort_no %></td>
+          <td><span style="margin-left:4em;"><span class="<%= 'required' if lnk.state != 'enabled' || lnk.published != 'opened' %>"><%=raw lnk.name %></span></span></td>
+          <td><%= lnk.class_external_label %></td>
+          <td><%= lnk.class_sso_label %></td>
+          <td><%= lnk.mode_label %></td>
+        </tr>
+      <% end %><%# do lnk %>
+    <% end %><%# do blk %>
+  <% end %><%# do item %>
+</table>
+<% end %>
+
+</div>
+</div>

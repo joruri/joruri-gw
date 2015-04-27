@@ -1,0 +1,27 @@
+<%
+if @t01_current == '01'
+  params[:sort] = 'A'
+  @t01_current = '11'
+end
+%>
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'admin_header' %>
+</div>
+<div class="pieceBody">
+<%= render 'search' %>
+
+<%= render 'admin_index11' if @t01_current == '11' %>
+<%= render 'admin_index12' if @t01_current == '12' %>
+<%= render 'admin_index13' if @t01_current == '13' %>
+<%= render 'admin_index14' if @t01_current == '14' %>
+<%= render 'admin_index15' if @t01_current == '15' %>
+<%= render 'admin_index16' if @t01_current == '16' %>
+
+<%= paginate @items %>
+
+</div>
+</div>

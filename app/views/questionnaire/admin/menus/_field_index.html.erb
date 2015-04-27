@@ -1,0 +1,23 @@
+<hr></hr>
+<div class="editingBox">
+<span class="docLink"><%= link_to '設問登録 &gt;&gt;', questionnaire_menu_form_fields_path(@title) %></span>
+</div>
+
+<table class="index">
+<tr>
+<th style="width: 40px; text-align: center;">並び順</th>
+<th style="width: 40px; text-align: center;">状態</th>
+<th style="width: 60px; text-align: center;">設問形式</th>
+<th>設問内容</th>
+</tr>
+<%for item in @fields %>
+<tr class="<%= cycle '', 'cycle' %>">
+<td style="text-align: center;"><%= item.sort_no %></td>
+<td style="text-align: center;"><%= item.state_name%></td>
+<td style="text-align: center;"><%= item.question_type_name %></td>
+<td style="text-align: left;"><%= item.title %></td>
+</tr>
+<%end %>
+</table>
+<%= paginate @fields %>
+

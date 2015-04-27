@@ -1,0 +1,20 @@
+<table class="index">
+  <tr class="headIndex">
+    <th style="width:60px;">状態</th>
+    <th class="group">受信者名</th>
+    <th class="docTitle">返信欄</th>
+    <th style="width:120px;">確認日時</th>
+    <th style="width:120px;">最終更新日時</th>
+  </tr>
+  <% @commissions.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td style="width:60px;"><%= item.status_name %></td>
+      <td class="group"><%= "#{item.target_user_name}(#{item.target_user_code})" %></td>
+      <td class="docTitle"><%= item.already_body %></td>
+      <td class="update"><%= item.display_opendocdate %></td>
+      <td class="update"><%= item.display_editdate %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= paginate @commissions %>

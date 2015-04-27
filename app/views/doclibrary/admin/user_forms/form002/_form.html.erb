@@ -1,0 +1,56 @@
+<%
+@group_level2s = Gwboard::Group.level2_only
+@group_level3s = Gwboard::Group.level3_only(0)
+%>
+<%= f.hidden_field :wiki, :value => 0 %>
+<table class="show">
+  <tr>
+    <th>文書の選択<br />（和暦/年/月/その）</th>
+    <td>
+      <% category_options = @item.category_options_form002 %>
+      <% if category_options.blank? %>
+        <%= required '文書が登録されていません' %>
+      <% else %>
+        <%= f.select :category2_id, category_options, :include_blank => '文書を選択してください' %>
+      <% end %>
+    </td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>号区分,区分</th>
+    <td>
+      <% if (folder_options = @item.folder_options).present? %>
+        <%= f.select :category1_id, folder_options, include_blank: '号区分,区分を選択してください' %>
+      <% else %>
+        <%= required '号区分,区分が登録されていません' %>
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>号数</th>
+    <td>第<%= f.text_field :inpfld_006, :size => "5" %>号</td>
+  </tr>
+  <tr>
+    <th>件名</th>
+    <td><%= f.text_area :title, :cols => "60", :rows => "2" %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>所管部</th>
+    <td>
+      <%= required('所管部が登録されていません') if @group_level2s.blank?%>
+      <%#= f.select(:inpfld_008, @group_level2s, :include_blank => '所管部を選択してください') unless @group_level2s.blank?%>
+      <%= f.select(:inpfld_008, options_for_select(@group_level2s,@item.inpfld_008.to_i), :include_blank => '所管部を選択してください') unless @group_level2s.blank?%>
+    </td>
+  </tr>
+  <tr>
+    <th>所管課</th>
+    <td>
+      <%= required('所管課が登録されていません') if @group_level3s.blank?%>
+      <%#= f.select(:inpfld_010, @group_level3s, :include_blank => '所管課を選択してください') unless @group_level3s.blank?%>
+      <%= f.select(:inpfld_010, options_for_select(@group_level3s,@item.inpfld_010.to_i), :include_blank => '所管課を選択してください') unless @group_level3s.blank?%>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,21 @@
+<%
+t01 = nil
+m01 = nil
+t02 = nil
+m02 = nil
+t03 = nil
+m03 = nil
+_inherit_qs_s = @qs ? "?#{@qs}" : ''
+
+t01 = '編集'
+m01 = url_for(action: :edit) + _inherit_qs_s
+if @u_role
+  t03 = '削除'
+  m03 = url_for(action: :destroy) + _inherit_qs_s
+end
+%>
+<div class="showMenu">
+<%= link_to t01.html_safe, url_for(m01) unless t01.blank? %>
+<%= link_to t02.html_safe, url_for(m02) unless t02.blank? %>
+<%= link_to t03.html_safe, url_for(m03),:confirm=>'削除してよろしいですか？',:method=>:delete unless t03.blank? %>
+</div>

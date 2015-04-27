@@ -1,0 +1,44 @@
+<%
+@sp_mode_extra_pm = @genre
+@hedder2lnk = 3
+@hedder3lnk = 3
+@hedder4lnk = 2 if @s_order == "prop"
+@hedder4lnk = 3 if @s_order == "group"
+%>
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedule_props/bt_box', d: Date.today -%>
+  <%= render '/gw/admin/prop_extras/header' %>
+</div>
+<div class="pieceBodyBody">
+  <% if @items.present? %>
+  <table class="index">
+    <tr>
+      <th class="action"></th>
+      <th>返却日時</th>
+      <th>貸出日時</th>
+      <th>会議室等</th>
+      <th>所属</th>
+      <th>担当者</th>
+    </tr>
+    <% @items.each do |item| %>
+     <tr class="<%= cycle '', 'cycle' %>">
+       <td><%= link_to_show item.id %></td>
+       <td><%=l item.end_at if item.end_at %></td>
+       <td><%=l item.start_at if item.start_at %></td>
+       <td><%= safe{item.meetingroom.name} %></td>
+       <td><span style="<%= 'color:red;' unless item.driver_group %>"><%= item.driver_group_name %></style></td>
+       <td><%= item.driver_user_name %></td>
+     </tr>
+    <% end %>
+  </table>
+  <%= paginate @items %>
+  <% end %>
+</div>
+<div class="pieceBodyFooter"></div>
+</div>
+</div>

@@ -1,0 +1,155 @@
+<%
+notes01 = []#時間
+notes01 = JSON.parse(@title.notes_field01) unless @title.notes_field01.blank?
+notes02 = []#家族or職員の選択
+notes02 = JSON.parse(@title.notes_field02) unless @title.notes_field02.blank?
+notes03 = []#通夜通知するorしないの選択
+notes03 = JSON.parse(@title.notes_field03) unless @title.notes_field03.blank?
+@item.inpfld_022 = '0' if @item.inpfld_022.blank?
+%>
+<%= f.hidden_field :wiki, :value => 0 %>
+<table class="show">
+  <tr>
+    <th>
+      <div>
+        <%= f.radio_buttons :inpfld_024, notes02, {}, {onclick: 'sel_class2()'} do |b| %>
+          <%= b.label(for: nil) { b.radio_button + b.text } %>
+        <% end %>
+      </div>
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <%= f.select :inpfld_023, Gwboard::Group.level3_all.map{|i| [i.name, i.code]}, :include_blank => '所属課を選択してください。' %>
+      [役職]<%= f.text_field :inpfld_012, :size => "10" %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div>
+        <div id="item_proposal_type1" style="display:inline;">
+          <%= f.text_field :inpfld_013, :size => "20" %> さんの　
+          <span title="記入例 父, 母, 義父, 義母, 配偶者, 子">[続柄]</span>
+          <span title="記入例 父, 母, 義父, 義母, 配偶者, 子"><%= f.text_field :inpfld_014, :size=>"10" %></span>
+          <%= f.text_field :inpfld_015, :size => "20" %> 様が
+        </div>
+        <div id="item_proposal_type2" style="display:none;" >
+          <%= f.text_field :inpfld_025, :size => "20"%>さんが
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td><%= f.text_field :inpfld_001, class: 'datepicker', style: 'width:10em;' %> に亡くなられました。</td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>
+      <div><%= f.radio_buttons :inpfld_022, notes03, {}, {onclick: 'sel_class1()'} %></div>
+    </th>
+  </tr>
+</table>
+
+<div id="item_input_type1" style="display:inline;">
+<table class="show bbsText">
+  <tr>
+    <th colspan="2">通夜は、次のとおり執り行われます。</th>
+  </tr>
+  <tr>
+    <th style="width: 120px;">1 日時</th>
+    <td>
+      <%= f.text_field :inpfld_003, class: 'datepicker', style: 'width:10em;' %>
+      <%= f.select :inpfld_018, notes01, :include_blank => '' %>～<%= f.select :inpfld_019, notes01, :include_blank => '' %>
+    </td>
+  </tr>
+  <tr>
+    <th>2 場所</th>
+    <td><%= f.text_area :inpfld_004, :style => 'width:100%; height:100px' %></td>
+  </tr>
+  <tr>
+    <th>　電話</th>
+    <td><%= f.text_field :inpfld_005, :size=>"20" %></td>
+  </tr>
+</table>
+</div>
+
+<table class="show bbsText">
+  <tr><th colspan="2">告別式は、次のとおり執り行われます。</th></tr>
+  <tr>
+    <th style="width: 120px;">1 日時</th>
+    <td>
+       <%= f.text_field :inpfld_006, class: 'datepicker', style: 'width:10em;' %>
+       <%= f.select :inpfld_020, notes01, :include_blank => '' %>～<%= f.select :inpfld_021, notes01, :include_blank => '' %>
+    </td>
+  </tr>
+  <tr>
+    <th>2 場所</th>
+    <td><%= f.text_area :inpfld_007, :style => 'width:100%; height:100px' %></td>
+  </tr>
+  <tr>
+    <th>　電話</th>
+    <td><%= f.text_field :inpfld_008, :size => "20" %></td>
+  </tr>
+  <tr>
+    <th>3 喪主</th>
+    <td><%= f.text_field :inpfld_009, :size => "60" %></td>
+  </tr>
+  <tr>
+    <th>4 宗派・宗教</th>
+    <td><%= f.text_field :inpfld_010, :size => "10" %>　(記入例 仏式, 神式)</td>
+  </tr>
+  <tr>
+    <th style="width: 120px;">5 備考</th>
+    <td><%= f.text_area :inpfld_016, :style => 'width:100%; height:60px' %></td>
+  </tr>
+</table>
+
+<table class="show bbsText">
+  <tr><th>6 地図<%== @title.notes_field10 -%></th></tr>
+  <tr><td><%= f.text_area :inpfld_011, :style => 'width:740px' %></td></tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('input.datepicker').datepicker();
+  });
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+<!--
+  var sel_class1 = function() {
+    idx =  radio_selected('item[inpfld_022]')
+    switch (idx) {
+    case 1:
+      $('item_input_type1').setStyle("display : inline;");
+      break;
+    case 2:
+      $('item_input_type1').setStyle("display : none;");
+    break;
+    }
+  }
+sel_class1();
+-->
+</script>
+<script type="text/javascript">
+<!--
+  var sel_class2 = function() {
+    idx =  radio_selected('item[inpfld_024]')
+    switch (idx) {
+    case 1:
+      $('item_proposal_type1').setStyle("display : inline;");
+      $('item_proposal_type2').setStyle("display : none;");
+      break;
+    case 2:
+      $('item_proposal_type1').setStyle("display : none;");
+      $('item_proposal_type2').setStyle("display : inline;");
+    break;
+    }
+  }
+sel_class2();
+-->
+</script>

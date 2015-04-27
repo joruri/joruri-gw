@@ -1,0 +1,60 @@
+<%
+  strparam = "?title_id=#{params[:title_id]}&cat=#{params[:cat]}"
+%>
+<div class="inner">
+<% unless params[:state] == 'DATE' %>
+  <%= render 'folder_name' unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
+<% end %>
+
+<% if @title.is_writable? %>
+<div class="editingBox">
+  <span class="btNewFile"><%= link_to "新規作成", "#{@title.item_home_path}docs/new#{strparam}" %></span>
+  <%
+  unless params[:state] == 'DATE'
+    params_cat = ''
+    params_cat = "&cat=#{params[:cat]}" unless params[:cat].blank?
+    %>
+    <span class="btNewFolder"><%= link_to "フォルダ新規作成", new_digitallibrary_folder_path(title_id: @title, cat: params[:cat]) %></span>
+    <% if @parent && @parent.folder_editable? %>
+      <span class="btEditFolder"><%= link_to "フォルダ編集", edit_digitallibrary_folder_path(@parent, title_id: @title, cat: params[:cat]) %></span>
+      <% if @parent.deletable? %>
+        <span class="btDestroy"><%= link_to '削除する', digitallibrary_folder_path(@parent, title_id: @title), confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+<% end %>
+</div><!--inner-->
+
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+str_tab1_class += ' current' if params[:state].blank?
+str_tab1_class += ' current' if params[:state] == 'DATE'
+str_tab1_class += ' current' if params[:state] == 'GROUP'
+str_tab1_class += ' current' if params[:state] == 'CATEGORY'
+str_tab2_class += ' current' if params[:state] == 'DRAFT'
+str_tab3_class += ' current' if params[:state] == 'RECOGNIZE'
+str_tab4_class += ' current' if params[:state] == 'PUBLISH'
+%>
+<% if @title.is_writable? %>
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+    <tr>
+      <td class="spaceLeft"></td>
+      <td class="<%= str_tab1_class %>"><%= link_to '公開中', digitallibrary_docs_path(title_id: @title.id) %></td>
+      <td class="spaceCenter"></td>
+      <td class="<%= str_tab2_class %>"><%= link_to '下書き', digitallibrary_docs_path(title_id: @title.id, state: "DRAFT") %></td>
+      <td class="spaceCenter"></td>
+      <td class="<%= str_tab3_class %>"><%= link_to "承認待ち", digitallibrary_docs_path(title_id: @title.id, state: "RECOGNIZE") %></td>
+      <td class="spaceCenter"></td>
+      <td class="<%= str_tab4_class %>"><%= link_to "承認済み", digitallibrary_docs_path(title_id: @title.id, state: "PUBLISH") %></td>
+      <td class="spaceRight"></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<% end %>

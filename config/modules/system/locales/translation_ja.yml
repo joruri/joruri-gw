@@ -1,0 +1,113 @@
+ja:
+  activerecord:
+    models:
+      system/product: プロダクト
+      system/product_synchro: プロダクト同期
+      system/product_synchro_plan: プロダクト同期予定
+    attributes:
+      system/group:
+        state: "状態"
+        created_at: "作成日時"
+        updated_at: "更新日時"
+        parent_id: "上位グループ"
+        level_no: "階層"
+        sort_no: "並び順"
+        code: "グループID"
+        name: "グループ名"
+        name_en: "グループ名（英語表記）"
+        email: "メールアドレス"
+        ldap: "LDAP同期"
+        ldap_version: "LDAP同期バージョン"
+        start_at: "適用開始日"
+        end_at: "適用終了日"
+      system/users_group:
+        created_at: "作成日時"
+        updated_at: "更新日時"
+        user_id: "ユーザー"
+        group_id: "所属グループ"
+        job_order: "本務・兼務"
+        start_at: "配属開始日"
+        end_at: "配属終了日"
+      system/user:
+        id: "コード"
+        password: "パスワード"
+        code: "ユーザーID"
+        name: "名前"
+        name_en: "名前（英）"
+        kana: "かな"
+        email: "Eメール"
+        mobile_password: "携帯用パスワード"
+        remember_token: "トークン"
+        remember_token_expires_at: "トークン有効期限"
+      system/user/user_groups:
+        group_id: "グループ"
+        start_at: "配属開始日"
+        end_at: "配属終了日"
+      system/role:
+        table_name: 機能名
+        role_name_id: 機能名
+        priv_name: 対象権限
+        priv_user_id: 対象権限
+        idx: 優先順位
+        class_id: 種別
+        priv: 許可
+        uid: ユーザー/グループ
+      system/role_name_priv:
+        role_id: 機能名
+        priv_id: 権限名
+      system/role_developer:
+        table_name: 機能名
+        role_name_id: 機能名
+        priv_name: 対象権限
+        priv_user_id: 対象権限
+        idx: 優先順位
+        class_id: 種別
+        priv: 許可
+        uid: ユーザー/グループ
+      system/role_name:
+        display_name: 機能名
+        table_name: 機能コード
+        sort_no: 表示順
+      system/priv_name:
+        state: ステータス
+        display_name: 権限対象名
+        priv_name: 権限コード
+        sort_no: 表示順
+      system/custom_group:
+        state: "状態"
+        name: "名称"
+        name_en: "名称（英語）"
+        sort_no: "並び順"
+      system/group_change_date:
+        start_at: 開始日
+        created_at: 作成日
+        created_user: 作成者
+        created_group: 作成者所属
+        updated_at: 更新日
+        updated_user: 更新者
+        updated_group: 更新者所属
+      system/product:
+        state: 状態
+        product_type: プロダクト種別
+        name: プロダクト名
+        sort_no: 並び順
+        product_synchro: プロダクト同期利用
+        sso: SSO利用
+        sso_url: SSOトークン取得URL
+        sso_url_mobile: SSOトークン取得URL(携帯)
+      system/product_synchro:
+        state: 状態
+        version: バージョン
+        remark_temp: 中間結果
+        remark_back: 保管結果
+        remark_sync: 同期結果
+      system/product_synchro_plan:
+        state: 状態
+        start_at: 同期予定日時
+        product_ids: 同期対象プロダクト
+
+  activemodel:
+    attributes:
+      system/model/file_conf:
+        encode: 文字コード
+        file: ファイル

@@ -1,0 +1,42 @@
+<%
+t01 = %Q(<span>依頼状況</span>)
+t02 = %Q(<span>連絡先照会</span>)
+t03 = %Q(<span>依頼出力</span>)
+t04 = %Q(<span>媒体管理</span>)
+t05 = %Q(<span>ヘルプ</span>)
+t06 = %Q(<span>掲載日設定</span>)
+t07 = %Q(<span>通知先管理者設定</span>)
+case @l1_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">依頼状況</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">連絡先照会</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">依頼出力</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">媒体管理</span>)
+when '05'
+  t05 = %Q(<span class="gwsub_current_menu">ヘルプ</span>)
+when '06'
+  t06 = %Q(<span class="gwsub_current_menu">掲載日設定</span>)
+when '07'
+  t07 = %Q(<span class="gwsub_current_menu">通知先管理者設定</span>)
+else
+end
+level1_path="gwsub/admin/sb05/sb05_function_menu"
+ctrl="sb05_requests"
+ctrl_name="sb05_requests"
+params  ="?h1_menu=#{level1_path}&ctrl=#{ctrl}&ctrl_name=#{ctrl_name}&l1_c=07&u_role=#{@u_role}"
+index_url = "/gwsub/sb00/sb00_conference_managers"
+link_url_07 = index_url + params
+%>
+<div class="menu">
+<!-- <p>広報依頼</p> -->
+<%= link_to t01.html_safe , "/gwsub/sb05/sb05_requests" -%>
+<%= link_to t02.html_safe , "/gwsub/sb05/sb05_users" -%>
+<%= link_to t03.html_safe , "/gwsub/sb05/sb05_requests_put/csvput"  if @u_role==true -%>
+<%= link_to t04.html_safe , "/gwsub/sb05/sb05_media_types"          if @u_role==true -%>
+<%= link_to t05.html_safe , "/gwsub/sb05/sb05_notices"              if @u_role==true -%>
+<%= link_to t06.html_safe , "/gwsub/sb05/sb05_desired_dates"        if @u_role==true -%>
+<%= link_to t07.html_safe , link_url_07        if @u_role==true -%>
+</div>

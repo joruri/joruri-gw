@@ -1,0 +1,60 @@
+<!-- 職員一覧 -->
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04stafflists/display_name' %>
+<%= render 'gwsub/admin/sb04/sb04_index_csv_confirm' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb04/search_check_view' %>
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+<table class="index">
+  <tr>
+    <th></th>
+    <th>年度</th>
+    <th>所属コード</th>
+    <th>所属名</th>
+    <th>職員番号</th>
+    <th>氏名（変換前）</th>
+    <th>氏名（変換後）</th>
+    <th>フリガナ</th>
+    <th>兼務</th>
+    <th>職員録表示</th>
+    <th>事務分掌表示</th>
+  </tr>
+  <% @items.each do |item|  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <%
+    # 所属未設定の表示
+      if item.section_id.to_i==0
+        if item.section_code.blank?
+          section_code = %Q(<div class="sb04_staff_assign_warning">未割当</div>)
+        else
+          section_code = %Q(<div class="sb04_staff_assign_warning">#{item.section_code}</div>)
+        end
+      else
+        section_code = %Q(<div>#{item.section_code}</div>)
+      end
+    -%>
+    <td><%= link_to '詳細' , "#{@csv_base_url}/#{item.id}/show_csv?#{@qs}" %></td>
+    <td><%= item.fyear_markjp %></td>
+    <td><%= raw(section_code) %></td>
+    <td><%= item.section_name %></td>
+    <td><%= item.staff_no %></td>
+    <td><%= item.name_print %></td>
+    <td><%= item.name %></td>
+    <td><%= item.kana %></td>
+    <td><%= Gwsub::Sb04stafflist.multi_section_flg_show(item.multi_section_flg) %></td>
+    <td><%= Gwsub::Sb04stafflist.stafflists_personal_state_show(item.personal_state) %></td>
+    <td><%= Gwsub::Sb04stafflist.stafflists_display_state_show(item.display_state) %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+<%= paginate @items %>
+</div>
+</div>

@@ -1,0 +1,38 @@
+<div class="piece scheduleEventPiece show">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'index_menu' %>
+<div class="titleLine">
+<span class="title"><%= @title_piece %>行事予定</span>
+<span class="linkSpace"></span><!--linkSpace-->
+</div>
+</div>
+<div class="pieceBodyBody">
+
+<div class="editingBox">
+<% if @is_ev_management_edit_auth && @item.event_master_auth? && !@item.opened?(@pattern) %>
+  <% if !@item.approved?(@pattern) %>
+    <div class="btRecognize"><%= link_to '承認する', {action: :approval} %></div>
+  <% else %>
+    <div class="btRevocationRecognize"><%= link_to '承認取消', {action: :approval_cancel} %></div>
+  <% end %>
+<% end %>
+<% if @is_ev_admin && @item.approved?(@pattern) %>
+  <% if !@item.opened?(@pattern) %>
+    <div class="btPublish"><%= link_to '公開する', {action: :open} %></div>
+  <% else %>
+    <div class="btRevocationPublish"><%= link_to '公開取消', {action: :open_cancel} %></div>
+  <% end %>
+<% end %>
+</div>
+
+<%= render 'show_menu' %>
+
+<%= render 'show_table' %>
+
+</div>
+</div>
+</div>

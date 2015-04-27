@@ -1,0 +1,74 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/bbs.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+.bbs {
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/title/title_board.gif);
+}
+
+/* 紺色大枠
+------------------------------------------*/
+.bbs .pieceBody {
+  padding: 10px;
+}
+
+/* table index
+------------------------------------------*/
+table.index th {
+  border: none;
+}
+table.index td.manager {
+  width: 145px;
+}
+table.index td.update {
+  width: 120px;
+}
+table.index td.bbstitle {
+  width: 22%;
+}
+
+/* table show
+-----------------------------------------*/
+table.show {
+  width: 100%;
+}
+
+table.show td.checkBox {
+  width: 75px;
+  text-align: right;
+}
+table.show td.text {
+  width: 100%;
+}
+
+/* タブ周り
+-----------------------------------------*/
+#contentBody td.tab {
+  width: 145px;
+}
+#contentBody .tabBox td.current {
+  border-bottom: 1px solid #E3EFFF;
+}
+
+/* 機能ボタン
+-----------------------------------------*/
+.bbs .editingBox {
+  width: 100%;
+}
+.bbs .contentMenu {
+  margin-bottom: 10px;
+}
+.bbs .docLink, .showoLink {
+  float: right;
+  display: inline-block;
+}
+
+#page-gwbbs-synthesetup-date-edit .titleLine,
+#page-gwbbs-synthesetup-new .titleLine {
+  margin-top: 0;
+}
+

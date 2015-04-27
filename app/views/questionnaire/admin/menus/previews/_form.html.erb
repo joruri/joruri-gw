@@ -1,0 +1,144 @@
+<% if @item.base.enquete_division %>
+<%
+answerer = "#{Core.user_group.name} #{Core.user.name}"
+answerer = "#{Core.user_group.code} #{Core.user_group.name}" if @title.send_to == 1
+%>
+<table class="show bbsText">
+  <tr><td>回答者名 : <%= answerer %></td></tr>
+</table>
+<% end %>
+
+<br />　<%= required_head %>
+<% if @title.remarks.present? && @title.remarks_setting == "upper" %>
+<table class="show bbsText">
+  <tr><td><%=hbr @title.remarks %></td></tr>
+</table>
+<% end %>
+
+<table class="show bbsText">
+<% for item in @field_lists %>
+  <tr>
+  <th>
+    <% unless item['auto_label'] == 0 %>
+    <%= "設問#{item['auto_label']}" %><br />
+    <% end unless item['auto_label'].blank? %>
+    <%=hbr item['title'] %><%= required('※') if item['permit_field'].blank? if item['validate_check'] %>
+  </th>
+  <td>
+  <% case item['question_type'] %>
+  <% when 'group' %>
+    <% field_groups = answer_group_field_table(item['field_id']) %>
+    <table class="show bbsText" border="0" cellspacing="0" cellpadding="0">
+      <%= field_groups[:table_th] %>
+      <%
+        group_values = ''
+        group_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].blank?
+        group_repeat = 0
+        group_repeat = item['group_repeat'] unless item['group_repeat'].blank?
+      %>
+     <% for i in 1 .. group_repeat %>
+      <tr>
+      <% for group in field_groups[:groups] %>
+        <% group_field_name = "#{item['field_name']}_#{group['field_name']}" %>
+        <% if group["field_type"] == "radio" %>
+          <td>
+            <div class="<%= item['field_name'] %>">
+            <%
+              options = option_list_array(group['field_id'])
+              check_values = []
+              check_values = JSON.parse(@item[group['field_name']]) unless @item[group['field_name']].size == 0 unless @item[group['field_name']].blank?
+            %>
+            <% for option in options %>
+              <%
+                checked = false
+                checked = true if check_values.index(option['value'])
+              %>
+              <%= radio_button_tag "#{item['field_name']}_#{i}_#{group['field_name']}[]", option['value'], checked , :onclick => "radio_reset(this);" %><%= option['title'] %>
+            <% end %>
+            </div>
+          </td>
+        <% elsif group["field_type"] == "select" %>
+          <td>
+          <% options = option_list_array(group['field_id']) %>
+          <%= select_tag "#{item['field_name']}_#{i}_#{group['field_name']}[]", options_for_select( options ,"" ) %>
+          </td>
+        <% else %>
+          <%
+            value = ''
+            value = group_values[group_field_name] unless group_values[group_field_name].blank? unless group_values.blank?
+            value = value[i-1]
+          %>
+          <td><%= text_field_tag "#{group_field_name}[]", value, :size => group['field_cols'] %></td>
+        <% end %>
+      <% end %>
+      </tr>
+    <% end if 0 < group_repeat %>
+    </table>
+  <% when 'text' %>
+    <%= f.text_field item['field_name'], :size => item['field_cols'] %>
+  <% when 'textarea' %>
+    <%= f.text_area item['field_name'], :cols => item['field_cols'], :rows => item['field_rows'] %>
+  <% when 'radio' %>
+    <div id="<%= item['field_name'] %>">
+      <%
+        options = option_list_array(item['field_id'])
+        check_values = []
+        check_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].size == 0 unless @item[item['field_name']].blank?
+      %>
+      <% for option in options %>
+        <%
+          checked = false
+          checked = true if check_values.index(option['value'])
+        %>
+        <%= radio_button_tag "item[#{item['field_name']}][]", option['value'], checked, :onclick => "radio_reset(this);" %><%= option['title'] %>
+      <% end %>
+    </div>
+  <% when 'checkbox' %>
+    <%
+      options = option_list_array(item['field_id'])
+      check_values = []
+      check_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].size == 0 unless @item[item['field_name']].blank?
+    %>
+    <% for option in options %>
+      <%
+        checked = false
+        checked = true if check_values.index(option['value'])
+      %>
+      <%= check_box_tag "item[#{item['field_name']}][]", option['value'], checked %><%= option['title'] %>
+    <% end %>
+  <% when 'select' %>
+    <% options = option_list_array(item['field_id']) %>
+    <%= f.select item['field_name'], options %>
+  <% end %>
+  </td>
+  </tr>
+<% end unless @field_lists.blank? %>
+</table>
+
+<% if @title.remarks.present? && @title.remarks_setting == "footer" %>
+<table class="show bbsText">
+  <tr><td><%=hbr @title.remarks %></td></tr>
+</table>
+<% end %>
+
+<script type="text/javascript">
+//<![CDATA[
+function radio_reset(mod){
+  obj = mod.parentNode;
+  var n = 0
+  while( obj.tagName != 'DIV' ){
+    obj = obj.parentNode;
+    n += 1;
+    if( n > 3 ){
+      return false;
+    }
+  }
+  if( obj.flag == mod.value ){
+    mod.checked = false;
+    obj.flag = '';
+  }else{
+    obj.flag = mod.value;
+  }
+}
+//]]>
+</script>

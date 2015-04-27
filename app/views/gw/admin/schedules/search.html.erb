@@ -1,0 +1,36 @@
+<%
+d = @st_date # 初期化処理
+d8_s = Gw.date8_str(d)
+%>
+
+<div class="piece schedulePiece setting">
+  <div class="pieceHeader">
+    <%= render '/gw/admin/schedules/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'form' -%>
+    <div class="pieceBodyBody">
+      <div>
+        <table class="index">
+          <tbody>
+            <% @items.each do |item| %>
+            <tr class="<%= cycle '', 'cycle' %>">
+              <td><%= item[0] %></td>
+              <td>
+                <% if item[2].level_no != 2 %>
+                <%= link_to('日表示', "/gw/schedules/#{d8_s}?gid=#{item[2].id}") %></td>
+                <% end %>
+              <td>
+                <% if item[2].level_no != 2 %>
+                <%= link_to('週表示', "/gw/schedules/?s_date=#{d8_s}&gid=#{item[2].id}") %></td>
+                <% end %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

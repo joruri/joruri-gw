@@ -1,0 +1,17 @@
+<div class="piece memo form">
+<%= render '/gw/admin/memos/piece_header' %>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'tabmenu' %>
+</div>
+
+<div class="pieceBodyBody">
+<%= form_for :item, :url => {action: :update}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters"><%= f.submit '確定する' %></div>
+<% end %>
+</div>
+
+</div>
+</div>

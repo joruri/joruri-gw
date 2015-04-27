@@ -1,0 +1,34 @@
+<%= f.hidden_field :sort_no -%>
+<%= f.hidden_field :state -%>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td><%= f.radio_buttons :published, Gw::MeetingGuideBackground.published_select %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>ファイル名<%= required if @item.new_record? %></th>
+    <td><%= f.file_field :file, :size => 80 %></td>
+  </tr>
+  <tr>
+    <th>背景色</th>
+    <td><%= f.select :background_color, Gw::MeetingGuideBackground.background_color_select, :selected => @item.background_color %></td>
+  </tr>
+  <tr>
+    <th>地域</th>
+    <td><%= f.select :area, Gw::MeetingGuideBackground.background_area_select, :selected => @item.area %></td>
+  </tr>
+  <tr>
+    <th>キャプション<%= required %></th>
+    <td><%= f.text_field :caption, :size => 80 %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+  <%= submit_for f, caption: '保存' %>
+</div>

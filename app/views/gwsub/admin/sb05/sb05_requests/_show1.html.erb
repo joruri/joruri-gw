@@ -1,0 +1,179 @@
+<%
+# 詳細表示オプション
+options1={
+  'table_name'=>'gwsub_sb05_requests'
+}
+#pp ['_show1',@req1]
+case @req1.media_code.to_s
+when '1'
+  options1[:action]='np'
+when '2'
+  options1[:action]='rd'
+when '3'
+  options1[:action]='led'
+when '4'
+  if @req1.categories_code == 1
+    options1[:action]='mm1'
+  else
+    options1[:action]='mm2'
+  end
+  options1['field_td_criteria']={
+      'magazine_url'=>Proc.new{ |item|
+      %Q(<a href="#{item.magazine_url}" ,target="_blank">#{item.magazine_url}</a>)
+      },
+      'magazine_url_mobile'=>Proc.new{ |item|
+      %Q(<a href="#{item.magazine_url_mobile}" ,target="_blank">#{item.magazine_url_mobile}</a>)
+      }
+    }
+else
+end
+#pp ['_show1',options1]
+# 管理者ステータス（メルマガ以外）
+options2={
+  'table_name'=>'gwsub_sb05_requests',
+  :action=>'admin1'
+}
+# 管理者ステータス（メルマガ）
+options3={
+  'table_name'=>'gwsub_sb05_requests',
+  :action=>'admin2'
+}
+# 編集・削除　可否判定
+editable      = Gwsub::Sb05Request.editable_data(@req1,@u_role,Core.user_group.code)
+editable_url  = "#{@index_uri}#{@req1.id}/edit?l2_c=#{@l2_current}&sb05_users_id=#{@req1.sb05_users_id}"
+deletable_url = "#{@index_uri}#{@req1.id}?l2_c=#{@l2_current}&sb05_users_id=#{@req1.sb05_users_id}"
+
+# ヘルプ取得
+n_cond = "media_code=#{@req1.media_code} and categories_code=#{@req1.categories_code}"
+notice = Gwsub::Sb05Notice.where(n_cond).first
+# 添付ファイル取得
+if @req1.media_code==4 && @req1.categories_code == 2
+  if @req1.mm_image_state == '2'
+    item = Gwsub::Sb05File.new
+    item.and :parent_id, @req1.id
+    @items = item.find(:all)
+  end
+end
+-%>
+<br />
+<div class="editingBox">
+<span class="btEdit"><%= link_to '編集' ,url_for(editable_url)  if editable==true %></span>
+<span class="btDestroy"><%= link_to '削除' ,url_for(deletable_url), :confirm=>'削除してよろしいですか？' , :method => :delete if editable==true  %></span>
+</div>
+<%if @u_role == true%>
+<div class="showMenu">
+<%= link_to '確認済にする',url_for("#{@index_uri}#{@req1.id}/check_on" )  if @req1.r_state.to_i == 4 if @req1.m_state.to_i == 1 -%>
+<%= link_to '未確認に戻す',url_for("#{@index_uri}#{@req1.id}/check_off")  if @req1.r_state.to_i == 4 if @req1.m_state.to_i == 2 -%>
+</div>
+<%end%>
+<table class="index">
+<%# 見出し行 -%>
+<tr>
+<th class="categories">媒体・分類</th>
+<th class="title">詳細</th>
+</tr>
+
+<tr>
+<td><%= @req1.media_name%>(<%= @req1.categories_name%>)</td>
+<td>
+  <table class="show">
+    <tr>
+      <th>希望日（開始）</th>
+      <td><%=Gw.date_str(@req1.start_at)%></td>
+    </tr>
+    <%if @req1.media_code.to_i == "2" || @req1.media_code.to_i == "3" %>
+    <tr>
+      <th>希望日（終了）</th>
+      <td><%=Gw.date_str(@req1.end_at)%></td>
+    </tr>
+    <%end%>
+    <tr>
+      <th>タイトル</th>
+      <td><%=@req1.title%></td>
+    </tr>
+    <% if @media_1 && @media_1.media_code.to_i == 4 %>
+      <%if @media_1.categories_code.to_i == 2%>
+      <tr>
+        <th>本文</th>
+        <td><%=hbr @req1.body1%></td>
+      </tr>
+      <tr>
+        <th>ＰＣ版URL</th>
+        <td><%=link_to @req1.magazine_url,@req1.magazine_url%></td>
+      </tr>
+      <%else%>
+      <tr>
+        <th>ＰＣ版URL</th>
+        <td><%=link_to @req1.magazine_url,@req1.magazine_url%></td>
+      </tr>
+      <tr>
+        <th>携帯版URL</th>
+        <td><%=link_to  @req1.magazine_url_mobile,@req1.magazine_url_mobile%></td>
+      </tr>
+      <%end%>
+    <%else%>
+    <tr>
+      <th>本文</th>
+      <td><%=hbr @req1.body1%></td>
+    </tr>
+    <%end%>
+    <tr>
+      <th>編集締切日</th>
+      <td><%=safe{@req1.contract_at.strftime("%Y-%m-%d %H:%M")}%></td>
+    </tr>
+  </table>
+  <%#  添付ファイル表示 -%>
+  <%if @req1.media_code == 4 && @req1.categories_code == 2 && @req1.mm_image_state == '2'%>
+    <% unless @items.blank? %>
+    <br />
+    <table class="show">
+          <tr>
+          <th style="width: 24px; text-align: center;"></th>
+          <th style="text-align: left;">ファイル名</th>
+    <!--      <th style="width: 200px; text-align: left;">備考</th> -->
+          </tr>
+        <% @items.each do |i| %>
+          <tr>
+          <td><%= link_to("","/_admin/gwsub/sb05/receipts/#{i.id}/download_object?parent_id=#{@req1.id}&system=#{@system}",:class => i.icon_type ) %></td>
+          <td><%= link_to(%Q[#{i.filename} (#{i.eng_unit})],"/_admin/gwsub/sb05/receipts/#{i.id}/download_object?parent_id=#{@req1.id}&system=#{@system}") %></td>
+    <!--       <td><%#=i.memo%></td> -->
+          </tr>
+        <%end%>
+    </table>
+    <% end %>
+  <%end%>
+</td>
+</tr>
+  <%# 管理者用ステータス表示 -%>
+  <% if @u_role == true %>
+  <tr>
+  <td>管理者欄</td>
+  <td colspan="2">
+    <table class="show">
+      <tr>
+        <th>編集期限基準日</th>
+        <td><%=Gw.date_str(@req1.base_at)%></td>
+      </tr>
+      <%if @req1.media_code==4 %>
+      <tr>
+        <th>掲載状況</th>
+        <td><%=Gwsub::Sb05Request.magazine_state(@req1.magazine_state)%></td>
+      </tr>
+      <%end%>
+      <tr>
+        <th>確認</th>
+        <td><%=Gwsub::Sb05Request.display_m_state(@req1.m_state)%></td>
+      </tr>
+      <tr>
+        <th>処理</th>
+        <td><%=Gwsub::Sb05Request.display_state(@req1.r_state)%></td>
+      </tr>
+      <tr>
+        <th>管理者メモ</th>
+        <td><%=@req1.admin_remarks%></td>
+      </tr>
+    </table>
+  </td>
+  </tr>
+  <% end %>
+</table>

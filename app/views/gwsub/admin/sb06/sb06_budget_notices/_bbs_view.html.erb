@@ -1,0 +1,12 @@
+<%
+options =  {
+  'table_name'      => 'gwsub_sb06_budget_notices_bbs',
+  'link_to_show'    => nz(link_to_show,0)
+}
+options['field_td_criteria'] = {
+  'title' => Proc.new{|item|
+  %Q(<a href="#{h item.bbs_url}" target="_blank" title="#{@bbs_link_title}" >#{item.title}</a>)}
+}
+%>
+<%= table_to_index2(@items,options).html_safe %>
+<%= paginate @items %>

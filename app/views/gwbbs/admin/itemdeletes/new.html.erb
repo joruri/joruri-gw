@@ -1,0 +1,23 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>掲示板記事削除</h2>
+</div>
+<div class="pieceBody">
+<div class="editingBox">
+  <span class="docLink"><%= link_to '管理者設定 >>', '/gw/config_settings?c1=1&c2=7' %></span>
+</div>
+
+<%= form_for :item, :url => {action: :create}, :html => {method: :post} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters">
+    <%= f.submit "保存" %>
+  </div>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to '処理選択へ戻る', action: :index %>
+</div>
+
+</div>
+</div><!--piece gwbbs-->

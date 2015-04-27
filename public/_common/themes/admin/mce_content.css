@@ -1,0 +1,56 @@
+@charset "UTF-8";
+@import "/_common/themes/tokushima/base.css";
+@import "/_common/themes/tokushima/layout_1cols.css";
+@import "/_common/themes/tokushima/common_classes.css";
+@import "/_common/themes/tokushima/common_pieces.css";
+@import "/_common/modules/pref/theme/contents/doc.css";
+
+
+/* =========================================================
+   Doc
+========================================================= */
+
+/* doc
+----------------------------------------------- */
+body {
+  font-size: 100%;
+}
+
+.relMaps h3 {
+ background-color: #f7f7f7;
+}
+
+.relDocs h3 {
+ background-color: #f7f7f7;
+}
+
+.relTags h3 {
+ background-color: #f7f7f7;
+}
+
+strong,
+b {
+  font-weight: bold;
+}
+
+em,
+i {
+  font-style: oblique;
+}
+
+ul  {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+
+ol  {
+  margin-left: 20px;
+}
+
+*html ol {
+  margin-left: 30px;
+}
+
+*:first-child+html ol {
+  margin-left: 30px;
+}

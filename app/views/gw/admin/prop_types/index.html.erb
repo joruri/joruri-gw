@@ -1,0 +1,34 @@
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render '/gw/admin/prop_others/prop_master_menu' %>
+<%= render 'titleline' %>
+</div>
+<div class="pieceBodyBody">
+
+<% if @items.blank? -%>
+  <%= show_notice -%>
+<% else -%>
+  <table class="index">
+    <tr>
+      <th></th>
+      <th>カテゴリ名</th>
+      <th>並び順</th>
+    </tr>
+    <% @items.each do | item| -%>
+      <tr class="<%= cycle '', 'cycle' -%>">
+        <td><%= link_to '詳細', :action => :show, :id => item.id -%></td>
+        <td><%= item.name -%></td>
+        <td><%= item.sort_no -%></td>
+      </tr>
+    <% end %>
+  </table>
+<% end -%>
+</div>
+<%= paginate(@items) %>
+
+</div>
+</div>

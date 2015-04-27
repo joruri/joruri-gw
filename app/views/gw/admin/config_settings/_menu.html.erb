@@ -1,0 +1,11 @@
+<%# 管理者権限・編集者権限があるときの切替メニュー %>
+
+<div class="menu">
+<% if @u_role==true %>
+<a href="/gw/config_settings?c1=1"><span<%=raw (params[:c1].to_i == 1) ? ' class="current_menu"' : ''%>>管理者設定</span></a>
+<a href="/gw/config_settings/ind_settings?c1=2"><span<%=raw (params[:c1].to_i == 2) ? ' class="current_menu"' : ''%>>個人設定</span></a>
+<% end %>
+<% if @role_hcs && Joruri.config.application['hcs.sso_link'] %>
+<a href="/_admin/gw/link_sso/redirect_to_joruri?to=hcs&path=/hcs/config_settings"><span>福利厚生</span></a>
+<% end %>
+</div>

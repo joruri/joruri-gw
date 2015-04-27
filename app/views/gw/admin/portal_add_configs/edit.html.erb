@@ -1,0 +1,18 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'gw/admin/portal_adds/menu' %>
+
+<%= form_tag url_for(action: :update, id: 0), id: "itemForm", method: :put, multipart: true do %>
+  <%= error_messages_for @pattern_item %>
+  <%= error_messages_for @option_item %>
+  <%= error_messages_for @num_item %>
+  <%= render 'form' %>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to '詳細に戻る', action: :index %>
+</div>
+
+</div>
+</div>

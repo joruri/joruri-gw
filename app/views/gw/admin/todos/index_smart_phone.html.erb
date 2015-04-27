@@ -1,0 +1,73 @@
+<%
+#render '/gw/public/todos/header'
+#render 'search'
+now = Time.now
+%>
+<div class="piece memo index">
+<div class="pieceHeader">
+<%= render '/gw/admin/todos/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render '/gw/admin/todos/search' %>
+<% if @items.length== 0 %>
+  <%= show_notice -%>
+<% else %>
+  <table class="index" id="contentTable">
+    <tr>
+    <th class="is_finished">状態</th>
+    <th class="ed_at">期限</th>
+    <th class="finished"></th>
+    </tr>
+  <% @items.each do |item| %>
+    <%
+    # 場所
+    #schedule = item.schedule
+    if item.is_finished.blank?
+      finish_str = '完了する'
+    else
+      finish_str = '未完了に戻す'
+    end
+    # 完了予定時刻が、現在時刻より前なら赤文字にする。
+    item_ed_at_str = ''
+    unless item.ed_at.blank?
+      ed_at = item.ed_at
+      ed_at_str = ed_at.strftime('%Y-%m-%d %H:%M')
+      if item.is_finished == 0
+        if now > ed_at
+          item_ed_at_str = %Q(<font color="#FF0000">#{ed_at_str}</font>)
+        else
+          item_ed_at_str = %Q(#{ed_at_str})
+        end
+      else
+        item_ed_at_str = %Q(#{ed_at_str})
+      end
+    end
+    state_str = Gw::Todo.finished_show(item.is_finished)
+    if item.is_finished.blank? || item.is_finished == 0
+      state_link = %Q(<font color="#FF0000">#{state_str}</font>)
+    else
+      state_link = state_str
+    end
+
+    show_link = "/gw/todos/#{item.id}?s_finished=#{@s_finished}"
+    finish_link = "/gw/todos/#{item.id}/finish#{@params_set}"
+    %>
+
+    <tr>
+    <td rowspan="2"><%= raw(state_link) -%></td>
+    <td><%= item_ed_at_str -%></td>
+    <td><%= link_to(h(finish_str), finish_link) -%></td>
+    </tr>
+    <tr>
+    <td colspan="2"><%= link_to(h(item.title), show_link) -%></td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+<%= paginate(@items) %>
+</div>
+<div class="pieceBodyBody"></div>
+<div id="loadImg" style="display: none;">Now Loading...</div>
+</div>
+</div>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<link rel="icon" href="/favicon.ico" />
+<title><%= Core.title %> - <%= Site.title -%></title>
+<%#= stylesheet_link_tag '/_common/themes/admin/style', :media => 'all' %>
+<%= stylesheet_link_tag '/_common/themes/admin/gw/style', :media => 'all' %>
+<%= javascript_include_tag '/javascripts/prototype' %>
+</head>
+<body>
+
+<div id="container">
+
+<div id="header">
+<div id="headerContainer">
+  
+  <h1><a href="/_admin/gw">Joruri Gw</a></h1>
+  <div class="menu">
+    <span class="user">
+      <%= safe{Core.user_group.name} %>　<%= safe{Core.user.name_with_account} %></span>
+    <span class="link">
+      <a class="logout" href="/_admin/logout">ログアウト</a></span>
+	<span class="previousLogin">
+    前回ログイン日時　<%= Core.user.previous_login_date ? safe{Core.user.previous_login_date.strftime('%Y-%m-%d %H:%M')} : '---'%>
+	</span>
+  </div>
+
+<!-- /#headerContainer --></div>
+<!-- /#header --></div>
+
+<div id="banner">
+<div id="bannerContainer">
+
+<!-- /#bannerContainer --></div>
+<!-- /#banner --></div>
+
+<div id="navi">
+<div id="naviContainer">
+
+<!-- /#navigationContainer --></div>
+<!-- /#navigation --></div>
+
+<div id="main">
+
+<div id="content">
+<div id="contentContainer">
+
+<%#*<div id="contentHeader">%>
+  <%#= render controller.controller_path + '/header' %>
+<%#*</div>%>
+
+<div id="contentBody">
+<%= render 'layouts/admin/gw/notice' %>
+<%= yield  %>
+</div>
+
+<div id="contentFooter"></div>
+
+<!-- /#contentContainer --></div>
+<!-- /#content --></div>
+
+<div id="menu">
+<div id="menuContainer">
+
+<!-- /#menuContainer --></div>
+<!-- /#menu --></div>
+
+<!-- /#main --></div>
+
+<div id="footer">
+<div id="footerContainer">
+
+<%#= :footer %>
+
+<!-- /#footerContainer --></div>
+<!-- /#footer --></div>
+
+<!-- /#container --></div>
+
+</body>
+</html>

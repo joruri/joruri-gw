@@ -1,0 +1,17 @@
+<%
+link_params = "&gid=#{params[:gid]}&uid=#{Core.user.id}&cgid=#{params[:cgid]}&dis=#{@dis}"
+%>
+<hr class="borderDash"/>
+<p class="mobileSchedule">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
+<%= link_to "新規作成", "/gw/schedules/new?s_date=#{date_format(@link_format, @st_date)}#{link_params}" %>
+</p>
+<%= render '/gw/admin/schedules/mobile_header' %>
+<p class="bgYellow">
+<%=l @st_date, format: :date_wday2_ja if @st_date %>
+</p>
+<%= render '/gw/admin/schedules/show_day_mobile' %>
+<hr />
+<p class="leftPad2">
+<%= link_to "<戻る", "/gw/schedules/?s_date=#{@topdate}#{link_params}" %>
+</p>

@@ -1,0 +1,22 @@
+ja:
+  enum:
+    system/user:
+      ldap:
+        0: 非同期
+        1: 同期
+    system/group:
+      state:
+        enabled: 有効
+        disabled: 無効
+      ldap:
+        0: 非同期
+        1: 同期
+    system/users_group:
+      job_order:
+        0: 本務
+        1: 兼務
+        9: 仮所属
+    system/group_next:
+      state:
+        enabled: 有効
+        disabled: 無効

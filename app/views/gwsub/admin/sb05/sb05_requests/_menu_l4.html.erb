@@ -1,0 +1,16 @@
+<%
+cats = Gwsub::Sb05MediaType.cats(@media_code,nil)
+%>
+<div class="menu">
+<!-- <%#*<p><%= "#{@media.media_name}" %>　分類選択</p>%> -->
+<%#*<p>分類選択</p>%>
+<% cats.each do |c| %>
+<%
+l4_menu = %Q(<span>#{c.categories_name}</span>)
+if @categories_code.to_i  ==  c.categories_code.to_i
+  l4_menu = %Q(<span class="gwsub_current_menu">#{c.categories_name}</span>)
+end
+%>
+<%= link_to l4_menu.html_safe , url_for("#{@index_uri}new?sb05_users_id=#{@user.id}&media_code=#{c.media_code}&cat_code=#{c.categories_code}") %>
+<% end %>
+</div>

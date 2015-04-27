@@ -1,0 +1,133 @@
+<%= required_head %>
+<table class="show">
+  <% if !@is_gw_admin && @item.owner_uid != Core.user.id && @item.persisted? %>
+    <tr>
+      <th>状態<%= required %></th>
+      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first, {}, {disabled: 'disabled'} %></td>
+    </tr>
+    <tr>
+      <th>名称<%= required %></th>
+      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30, disabled: 'disabled' %></td>
+    </tr>
+    <tr>
+      <th>表示順</th>
+      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4, disabled: 'disabled' %></td>
+    </tr>
+  <% elsif @is_gw_admin %>
+    <tr>
+      <th>状態<%= required %></th>
+      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first %></td>
+    </tr>
+    <tr>
+      <th>デフォルト</th>
+      <td><%= f.check_box :is_default %>デフォルトグループに設定する</td>
+    </tr>
+    <tr>
+      <th>種別</th>
+      <td><%= @item.kind_show -%></td>
+    </tr>
+    <tr>
+      <th>名称<%= required %></th>
+      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30 %></td>
+    </tr>
+    <tr>
+      <th>名称（英語）</th>
+      <td><%= f.text_field :name_en, class: 'name_en', size: 30, maxlength: 30 %></td>
+    </tr>
+    <tr>
+      <th>表示順</th>
+      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4 %></td>
+    </tr>
+  <% else %>
+    <tr>
+      <th>状態<%= required %></th>
+      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first %></td>
+    </tr>
+    <tr>
+      <th>名称<%= required %></th>
+      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30 %></td>
+    </tr>
+    <tr>
+      <th>表示順</th>
+      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4 %></td>
+    </tr>
+  <% end %>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>編集所属</th>
+    <td><%= render 'form_admin_group_roles', f: f %></td>
+  </tr>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>編集者</th>
+    <td><%= render 'form_admin_user_roles', f: f %></td>
+  </tr>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>スケジュール登録所属</th>
+    <td><%= render 'form_edit_group_roles', f: f %></td>
+  </tr>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>スケジュール登録者</th>
+    <td><%= render 'form_edit_user_roles', f: f %></td>
+  </tr>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>スケジュール表示所属</th>
+    <td><%= render 'form_read_group_roles', f: f %></td>
+  </tr>
+  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
+    <th>スケジュール表示者</th>
+    <td><%= render 'form_read_user_roles', f: f %></td>
+  </tr>
+  <tr>
+    <th>関連づけるユーザー</th>
+    <td><%= render 'form_user', f: f %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#admin_user_group_id, #edit_user_group_id, #read_user_group_id').on('change', function() {
+      var dest_id = $(this).attr('id').replace(/_group_id/, 's');
+      $.get('<%= url_for(action: :get_users) %>', {group_id: $(this).val()}, function(data) {
+        $('#' + dest_id).html(data);
+      });
+    });
+    $('#admin_groups, #edit_groups, #read_groups, #admin_users, #edit_users, #read_users').on('dblclick', function() {
+      var target = $(this).attr('id');
+      moveSelectedOptions('#' + target, '#selected_' + target, false);
+      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
+    });
+    $('#add_admin_groups, #add_edit_groups, #add_read_groups, #add_admin_users, #add_edit_users, #add_read_users').on('click', function() {
+      var target = $(this).attr('id').replace(/add_/, '');
+      moveSelectedOptions('#' + target, '#selected_' + target, false);
+      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
+    });
+    $('#selected_admin_groups, #selected_edit_groups, #selected_read_groups, #selected_admin_users, #selected_edit_users, #selected_read_users').on('dblclick', function() {
+      var target = $(this).attr('id').replace(/selected_/, '');
+      moveSelectedOptions('#selected_' + target, '#' + target, true);
+      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
+    });
+    $('#del_admin_groups, #del_edit_groups, #del_read_groups, #del_admin_users, #del_edit_users, #del_read_users').on('click', function() {
+      var target = $(this).attr('id').replace(/del_/, '');
+      moveSelectedOptions('#selected_' + target, '#' + target, true);
+      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
+    });
+
+    function moveSelectedOptions(from, to, remove_after) {
+      var from = $(from);
+      var to = $(to);
+      from.find('option:selected').each(function() {
+        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
+          to.append($(this).clone().removeAttr('selected'));
+        }
+        if (remove_after) {
+          $(this).remove();
+        }
+      });
+    }
+    function updateSelectedOptions(from, to) {
+      var clone_options = $(from).find('option').clone().attr('selected', 'selected');
+      $(to).empty().append(clone_options);
+    }
+  });
+})(jQuery);
+</script>

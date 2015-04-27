@@ -1,0 +1,49 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render '/gw/admin/edit_link_pieces/menu' %>
+<div class="editingBox">
+  <div class="btNew">
+    <%= link_to '登録', {action: :new} %>
+  </div>
+</div>
+
+<div class="titleLine">
+  <span class="title">適用CSS</span>
+  <span class="linkSpace">
+  </span>
+</div>
+
+<div class="pieceBodyBody">
+<% if @items.count == 0 %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+<table class="index">
+  <tr>
+    <th class="show"></th>
+    <th class="state">状態</th>
+    <th class="css_name">css表示名</th>
+    <th class="css_sort_no">並び順</th>
+    <th class="css_class">cssクラス</th>
+    <th class="css_type">css種別</th>
+    <th class="created_user">作成者</th>
+    <th class="created_group">作成者所属</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+      <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= Gw::EditLinkPieceCss.state_show(item.state) %></span></td>
+      <td><%= item.css_name %></td>
+      <td><%= item.css_sort_no %></td>
+      <td><%= item.css_class  %></td>
+      <td><%= Gw::EditLinkPieceCss.css_type_show(item.css_type) %></td>
+      <td><%= item.created_user %></td>
+      <td><%= item.created_group %></td>
+    </tr>
+  <% end %>
+</table>
+<% end %>
+</div>
+
+</div>
+</div>

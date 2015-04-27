@@ -1,0 +1,123 @@
+<%
+options =  {'table_name'=>'gwsub_sb06_assigned_conferences', 'link_to_show'    => 0}
+#pp @kind_id
+if @kind_id.to_i==0
+  conf_form_no  = 0
+else
+  conf_kind = Gwsub::Sb06AssignedConfKind.find(@kind_id.to_i)
+  conf_form_no  =conf_kind.conf_form_no
+end
+case conf_form_no.to_i
+when 101,102,103
+  options[:action]='index101'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 104
+  options[:action]='index104'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 105
+  options[:action]='index105'
+  options[:simplize_same_in_column] = ['conf_item_title']
+  options[:same_str=] = '　〃'
+when 201
+  options[:action]='index201'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 202
+  options[:action]='index202'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 301
+  options[:action]='index301'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 302
+  options[:action]='index302'
+  options[:simplize_same_in_column] = ['group_name_display','conf_kind_place']
+  options[:same_str=] = '　〃'
+when 303
+  options[:action]='index303'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 401
+  options[:action]='index401'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 501
+  options[:action]='index501'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 502
+  options[:action]='index502'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 601
+  options[:action]='index601'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+when 602
+  options[:action]='index602'
+  options[:simplize_same_in_column] = ['group_name_display']
+  options[:same_str=] = '　〃'
+else
+  options[:action]='index'
+end
+options['field_td_criteria']={
+  'id'=>Proc.new{|item| %Q(<a href="#{url_for({:action => :index})}/#{item.conference_id}">詳細</a>)},
+  'group_name_display'=>Proc.new{|item|
+    if item.group_code.blank?
+      %Q(<span style="color:red;">#{item.group_name_display}</span>)
+    else
+      %Q(<span>#{item.group_name_display}</span>)
+    end
+  }
+}
+if conf_form_no.to_i==105
+  options['field_td_criteria']= {
+  'id'=>Proc.new{|item| %Q(<a href="#{url_for({:action => :index})}/#{item.conference_id}">詳細</a>)},
+  '_parent_gid' => Proc.new{|item|
+      group = System::GroupHistory.where(:id => item.user_section_id).first
+      if group.blank?
+        nil
+      else
+        parent = System::GroupHistory.where(:id => group.parent_id).first
+        if parent.blank?
+          nil
+        else
+          parent.name
+        end
+      end
+      },
+  '_target_parent_gid' => Proc.new{|item|
+      group = System::GroupHistory.where(:id => item.main_group_id).first
+      if group.blank?
+        nil
+      else
+        parent = System::GroupHistory.where(:id => group.parent_id).first
+        if parent.blank?
+          nil
+        else
+          parent.name
+        end
+      end
+      }
+  }
+end
+-%>
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<h2>担当者名等管理</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l3' unless (@help && @help=='admin') %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l4' unless @help %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/search' %>
+<%= table_to_index2(@items,options).html_safe %>
+<%= paginate @items %>
+</div>
+</div>

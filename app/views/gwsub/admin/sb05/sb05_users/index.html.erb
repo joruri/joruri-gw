@@ -1,0 +1,25 @@
+<%
+options = {
+  'table_name'    =>  'gwsub_sb05_users' ,
+  :action         =>  'index',
+  'link_to_show'  =>  1
+}
+options['field_td_criteria'] = {
+  'telephone' => Proc.new{|item|
+    item.telephone=='未登録' ? %Q(<div style="color:red">#{item.telephone}</div>) :item.telephone },
+  'org_display' => Proc.new{|item|
+    item.org_display=='0' ? %Q(<div style="color:red">#{item.org_display}</div>) :item.org_display }
+}
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_users/menu' %>
+</div>
+<div class="pieceBody">
+
+<%= render 'gwsub/admin/sb05/sb05_users/search_with_id' %>
+<%= table_to_index2(@users,options) %>
+<%= paginate @users %>
+</div>
+</div>

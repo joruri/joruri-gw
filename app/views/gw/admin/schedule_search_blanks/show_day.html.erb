@@ -1,0 +1,67 @@
+<%
+@header_each ||= @schedule_settings[:header_each].to_i
+show_day_header = render '/gw/admin/schedules/show_day_header'
+%>
+<div class="piece schedulePiece dayview">
+<div class="pieceHeader">
+  <%= render '/gw/admin/schedule_search_blanks/piece_header_search_blank', piece_head_title: @piece_head_title -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedule_search_blanks/bt_box', mode: 'day' %>
+<div class="attention">※予定があるユーザーを赤字で表示しています。</div>
+<div class="lineBox">
+  <%= render 'piece_show_header_date', mode: 'day' %>
+</div>
+</div><!--pieceBodyHeader-->
+
+<div class="pieceBodyBody">
+<% if @show_flg %>
+<table summary="スケジュール詳細" class="scheduleTable">
+  <tbody>
+    <% @users.each_with_index do |user, iuser| %>
+      <%
+      schedule_data = @user_schedules["user_#{user.id}"]
+      cg_user = params[:cgid].present? ? user.users_custom_groups.first : nil
+      %>
+      <%= show_day_header if iuser == 0 || @header_each != 0 && iuser % @header_each == 0 -%>
+      <tr class="<%= schedule_data[:trc] -%>">
+        <th rowspan="<%= schedule_data[:row] -%>" class="scheduleUser">
+          <div class="leftHeader <%= "userIcon#{cg_user.icon}" if cg_user -%>">
+            <% if cg_user.present? -%>
+            <div class="title"><%= cg_user.title -%></div>
+            <% end -%>
+            <div class="username">
+              <span style="<%= 'color: red;' if search_blank_class(@sdt, @edt, user.id) %>"><%= user.name_and_code -%></span>
+                <%= show_schedule_edit_icon(@calendar_first_day, uid: user.id) if @edit -%>
+              </span>
+              <span class="linkBox">
+                <a href="/gw/schedules/?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="weekLink">週表示</a>
+                <a href="/gw/schedules/show_month?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="monthLink">月表示</a>
+                <a href="/gw/schedule_lists/?uid=<%= user.id -%>&s_year=<%= @calendar_first_day.year -%>&s_month=<%= @calendar_first_day.month -%>" class="listsLink">一覧</a>
+              </span>
+            </div>
+          </div>
+        </th>
+        <% if schedule_data[:schedule_len] == 0 %>
+          <% (@calendar_end_time - @calendar_first_time + 1).times do %>
+            <td colspan="2" class="scheduleData"><!-- 予定無し --></td>
+          <% end %>
+        <% else %>
+          <%= render '/gw/admin/schedules/show_day_one', schedule_data: schedule_data, display_prop: nil -%>
+        <% end %>
+      </tr>
+    <% end %>
+    <%= show_day_header -%>
+  </tbody>
+</table>
+<% else %>
+  <%= show_notice -%>
+<% end %>
+</div>
+
+<div class="pieceBodyFooter" align="center">
+  <input onclick="window.close();" type="button" value="閉じる" />
+</div>
+</div>
+</div>

@@ -1,0 +1,93 @@
+<%
+finished_str = "選択確認"
+confirm_str = "確認済"
+%>
+
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_requests/menu' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb05/sb05_requests/search_with_id' %>
+
+<%#= table_to_index2 @requests, options %>
+<% if @requests.blank? -%>
+  <div class="notice"><%= '表示する対象がありません' %></div>
+<% else -%>
+  <form id="listForm" method="post" enctype="multipart/form-data" action="/gwsub/sb05//sb05_requests/list">
+<%=hidden_field_tag('authenticity_token', form_authenticity_token)%>
+<%=hidden_field_tag('index_type', 'dates')%>
+<%=hidden_field_tag('media_code', @media_code)%>
+<%=hidden_field_tag('r_status', @r_status)%>
+<%=hidden_field_tag('org_id', @org_id)%>
+<%=hidden_field_tag('m_status', @m_status)%>
+<%=hidden_field_tag('limit', @limit)%>
+<%=hidden_field_tag('s_keyword', params[:s_keyword])%>
+<table  class="batchProcess">
+<tbody>
+<tr>
+<td>
+<%=submit_tag(" #{finished_str} " , :id=>'finished_submit' , :name=>'finished_submit' , :confirm=>"#{confirm_str}にしますか？")%>
+</td>
+<td>
+<%=link_to('全選択', "javascript:List_Form.checkAll('listForm', 'ids', 1);")%>
+<br />
+<%=link_to('全解除', "javascript:List_Form.checkAll('listForm', 'ids', 0);")%>
+</td></tr></tbody></table>
+  <table class="index">
+  <tr>
+    <th class="item">確認</th> <%# check box %>
+    <th class="item"></th> <%# 詳細 %>
+    <th class="update">依頼日</th>
+    <th class="update">希望日（開始）</th>
+    <th class="update">希望日（終了）</th>
+    <th class="state">処理</th>
+    <th class="state">確認</th>
+    <th class="category">媒体</th>
+    <th class="category">分類</th>
+    <th class="docTitle">タイトル</th>
+    <th class="group">所属</th>
+    <th class="user">担当者</th>
+    <th class="item">連絡先</th>
+  </tr>
+  <% @requests.each do |item| -%>
+  <%
+      if item.r_state.to_i==4
+        # 未処理
+        r_state_str = %Q(<span class="notSettled">未処理</span>)
+      else
+        # 処理済
+        r_state_str = %Q(<span class="settled">処理済</span>)
+      end
+      if item.m_state.to_i==1
+        # 未確認
+        m_state_str = %Q(<span class="notSettled">未確認</span>)
+      else
+        # 確認済
+        m_state_str = %Q(<span class="settled">確認済</span>)
+      end
+  %>
+  <tr <%= cycle '' , 'class="cycle"' %> >
+  <td><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+  <td><%= link_to_show item.id -%></td>
+  <td><%= Gw.date_str(item.created_at) unless item.created_at.blank? -%></td>
+  <td><%= Gw.date_str(item.start_at) unless item.start_at.blank? -%></td>
+  <td><%= Gw.date_str(item.end_at) unless item.end_at.blank?  -%></td>
+  <td><%= r_state_str.html_safe %></td>
+  <td><%= m_state_str.html_safe %></td>
+  <td><%= item.media_name  -%></td>
+  <td><%= item.categories_name  -%></td>
+  <td><%= item.title  -%></td>
+  <td><%= item.org_name  -%></td>
+  <td><%= item.user_display  -%></td>
+  <td><%= item.telephone  -%></td>
+  </tr>
+  <% end -%>
+  </table>
+  </form>
+<% end -%>
+<%= paginate @requests %>
+</div>
+</div>
+<%= render 'gwsub/admin/sb05/sb05_index_select_js' %>

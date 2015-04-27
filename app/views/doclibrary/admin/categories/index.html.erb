@@ -1,0 +1,34 @@
+<%= render 'header' %>
+<table class="index">
+
+  <tr>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 60px; text-align: left;">和暦</th>
+    <th style="width: 60px; text-align: left;">年</th>
+    <th style="width: 60px; text-align: left;">月</th>
+    <th style="width: 60px; text-align: left;">その</th>
+    <% if @title.form_name == 'form002' -%>
+      <th style=" text-align: left;">タイトル</th>
+    <% else -%>
+    <th>　</th>
+    <% end -%>
+  </tr>
+
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to '詳細', item.show_path %></td>
+    <td><%= item.wareki %></td>
+    <td><%= item.nen %></td>
+    <td><%= item.gatsu %></td>
+    <td><%= item.sono %></td>
+    <% if @title.form_name == 'form002' -%>
+      <td><%= item.filename%></td>
+    <% else -%>
+    <td>　</td>
+    <% end -%>
+  </tr>
+  <% end %>
+
+</table>
+
+<%= paginate @items %>

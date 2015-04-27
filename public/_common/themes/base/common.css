@@ -1,0 +1,153 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Common Classes.
+========================================================= */
+
+/* blank to clear
+----------------------------------------------- */
+div.clearBlank {
+ clear: both;
+ height: 1px;
+ font-size: 1px;
+ line-height: 1px;
+}
+
+/* icon
+----------------------------------------------- */
+img.fileIcon {
+ position: relative;
+ margin-right: 3px;
+ vertical-align: middle;
+}
+
+/* Notices
+------------------------------------- */
+ul.notices {
+ margin: 0px 0px 15px 0px;
+ padding: 5px 10px;
+ background-color: #def;
+ border: 1px solid #bdf;
+}
+ul.notices li {
+ color: #35f;
+}
+
+/* Errors
+------------------------------------- */
+.formError {
+ margin: 15px 0px;
+ padding: 10px;
+ border: 1px solid #e00;
+ color: #e00;
+}
+.elementError {
+ margin: 3px 0px 0px 0px;
+ color: #e00;
+}
+
+/* Form relation
+------------------------------------- */
+div.submitters {
+ margin: 20px 10px;
+}
+div.submitters input, div.submitters a {
+ margin: 0px 10px;
+}
+div.submitters input {
+ width: 100px;
+}
+
+/* Table for list
+------------------------------------- */
+table.list {
+ width: 100%;
+}
+table.list th {
+ padding: 6px 7px;
+ border: 1px solid #bbb;
+ background-color: #e4e4e4;
+ color: #000;
+ font-weight: lighter;
+ text-align: left;
+}
+table.list td {
+ padding: 6px 7px;
+ border: 1px solid #ccc;
+}
+table.list tr.cycle td {
+ background-color: #f7f7f7;
+}
+
+/* Table for form
+------------------------------------- */
+table.form {
+ width: 100%;
+ margin: 10px 0px 0px 0px;
+}
+table.form th {
+ width: 200px;
+ padding: 6px 7px;
+ border: 1px solid #bbb;
+ background-color: #e4e4e4;
+ color: #000;
+ font-weight: lighter;
+ text-align: left;
+}
+table.form td {
+ padding: 6px 7px;
+ border: 1px solid #ccc;
+}
+
+/* Form relation
+------------------------------------- */
+div.submitters {
+ margin: 20px 10px;
+}
+div.submitters input, div.submitters a {
+ margin: 0px 10px;
+}
+div.submitters input {
+ width: 100px;
+}
+
+/* Pagination.
+----------------------------------------------- */
+.pagination {
+ margin: 20px 0px;
+ text-align: center;
+}
+.pagination a,
+.pagination span.disabled,
+.pagination span.current {
+ padding: 5px 7px;
+ text-decoration: none;
+}
+.pagination a:hover {
+ background-color: #eee;
+}
+.pagination span.current {
+ font-weight: bold;
+}
+.pagination span.disabled {
+ color: #888;
+}
+.pagination span.separator {
+ color: #888;
+}
+
+/* Icons.
+----------------------------------------------- */
+.icon {
+ background-repeat: no-repeat;
+ padding: 3px 0px 3px 18px;
+}
+.defaultIcon {
+ background-image: url(/_common/images/icons/default.gif);
+}
+.jtdIcon {
+ background-image: url(/_common/images/icons/jtd.gif);
+}
+.pdfIcon {
+ background-image: url(/_common/images/icons/pdf.gif);
+}

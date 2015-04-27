@@ -1,0 +1,116 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwfaq_doc_list.css
+========================================================= */
+
+/* ミニアイコン設定
+-------------------------------------------------*/
+#content .gwfaqDocList {
+  background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+}
+
+/* FAQタイトル部分
+-------------------------------------------------*/
+.gwfaqDocList .pieceBanner h3 {
+  clear: both;
+  padding: 10px;
+  font-size: 200%;
+}
+
+/* 新規作成ページ　右カラム上部ライン
+-------------------------------------------------*/
+#page-gwfaq-docs-new .gwfaqDocList .right form {
+  padding-top: 10px;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* table index
+-------------------------------------------------*/
+table.index {
+  width: 98%;
+  margin: 0 auto 10px;
+}
+table.index tr.index td {
+  border: none;
+  background-color: #E3EFFF;
+}
+table.index td.category {
+  width: 100px;
+}
+table.index td.docTitle a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-repeat: no-repeat;
+  background-position: 0 4px;
+}
+#contentBody .gwfaqDocList th,
+#contentBody .gwqaDocList th {
+  border: none;
+}
+table.index th.group {
+  width: 145px;
+}
+table.index th.update {
+  width: 145px;
+}
+
+/* タブ周り
+-------------------------------------------------*/
+.tabBox {
+  margin-bottom: 15px;
+}
+
+/* table questionArea(詳細ページ　質問欄)
+-------------------------------------------------*/
+#contentBody table.questionArea th {
+  padding: 5px;
+  background-color: #5A75C2;
+  background-color: #002B94;
+  text-align: left;
+  font-size: 120%;
+  color: #fff;
+}
+#contentBody table.questionArea td {
+  padding: 10px;
+  background-color: #fff;
+  font-size: 1.3em;
+}
+
+/* table questionArea(詳細ページ　回答欄)
+-------------------------------------------------*/
+.answerBox {
+  padding-left: 10px;
+}
+#contentBody .gwfaqDocList table.answerArea th {
+  padding: 5px;
+  background-color: #FFFFB5;
+  text-align: left;
+  font-size: 120%;
+  color: #184093;
+}
+#contentBody .gwfaqDocList table.answerArea .wiki table {
+  border: 1px solid #ccc;
+}
+#contentBody .gwfaqDocList table.answerArea .wiki th {
+  background-color: #e3efff;
+  border: 1px solid #ccc;
+  color: #000;
+  font-size: 100%;
+  padding: 4px 7px;
+}
+#contentBody .gwfaqDocList table.answerArea td {
+  border: 1px solid #ccc;
+  padding: 4px 7px;
+}
+#contentBody .gwfaqDocList table.answerArea td.answerText {
+  background-color: #fff;
+  border: medium none;
+  padding: 10px;
+}
+
+/* 機能ボタン
+-------------------------------------------------*/
+.editingBox {
+  margin-left: 10px;
+}

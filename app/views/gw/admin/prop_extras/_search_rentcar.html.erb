@@ -1,0 +1,15 @@
+<%= form_tag '', :method => :get, :class => 'search' do %>
+<%= render 'search_hidden' %>
+<table>
+  <tr>
+    <td>号車 <%= select_tag :s_prop_name, options_for_select(@prop_list, params[:s_prop_name]) %></td>
+    <td>利用責任者所属 <%= select_tag :s_owner_gid, options_for_select(@owner_group_list, params[:s_owner_gid]) %></td>
+    <td>設備の状態 <%= select_tag :s_prop_state, options_for_select(@prop_state_list, params[:s_prop_state]) %></td>
+    <td>開始日 <%= select_tag :s_st_at, options_for_select(@st_at_list, params[:s_st_at].presence || 0) %></td>
+    <td class="submitters">
+      <%= submit_tag '検索', :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+  </tr>
+</table>
+<% end %>

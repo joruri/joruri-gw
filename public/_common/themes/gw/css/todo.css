@@ -1,0 +1,74 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/todo.css
+========================================================= */
+
+/* ミニアイコン設定
+--------------------------------------------------*/
+.todo {
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/level_2/title_todo.gif);
+}
+
+/* 検索フォーム
+--------------------------------------------------*/
+.todo .pieceBody form.search {
+  margin: 0px;
+  padding: 5px 0;
+  text-align: center;
+}
+.todo .indication {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/* メインボックス
+--------------------------------------------------*/
+.todo.show .pieceBodyBody,
+.todo.form .pieceBodyBody {
+  margin-top: 0;
+  padding-top: 25px;
+}
+.todo.index .pieceBody table.index {
+  width: 99%;
+  margin: 10px auto 15px;
+}
+.form .pieceBody table.index {
+  margin: 0 auto 5px;
+  border: 2px solid #C6D1E8;
+}  
+.form .pieceBody div.submitters {
+  width: 140px;
+  margin: 10px auto 25px;
+  text-align: center;
+}
+
+/* table index
+--------------------------------------------------*/
+table.index th {
+  border: none;
+}
+
+/* table show
+--------------------------------------------------*/
+.todo.show table.show {
+  margin: 0 auto 5px;
+}
+
+/* noticeメッセージ
+--------------------------------------------------*/
+#page-gw-todos .notice {
+  padding: 10px;
+}
+.show .notice {
+  padding-left: 0;
+}
+
+/* 設定画面
+--------------------------------------------------*/
+.setting .titleLine {
+  margin-top: 0;
+  padding-top: 20px;
+}
+
+

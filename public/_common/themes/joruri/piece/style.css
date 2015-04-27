@@ -1,0 +1,777 @@
+@charset "UTF-8";
+/* =========================================================
+   Pieces
+========================================================= */
+
+/* accessibility-tool
+----------------------------------------------- */
+#commonHeader {
+  height: auto;
+  background-color: #ececec;
+  font-size: 12px;
+}
+#commonHeader .pieceContainer {
+  padding: 4px 10px;
+  text-align: right;
+}
+#headerBody .piece {
+  margin-bottom: 0px;
+}
+.head-tools {
+  width: 100%;
+  margin: 0;
+  padding: 4px 0 3px 0;
+  background-position: left top;
+  text-align: right;
+}
+#furiganaAttention {
+  padding-left: 15px;
+  padding-top: 5px;
+  background-color: #ececec;
+  font-size: 120%;
+  text-align: center;
+}
+.rubyOn #furiganaAttention {
+  display: block;
+}
+#nocssread {
+  display: none;
+  margin-right: -9999px;
+}
+.head-tools a {
+  margin-right: 8px;
+}
+.head-tools img {
+  margin-right: 0px 3px 0px 0px;
+  vertical-align: middle;
+}
+
+/* font-size
+---------------------- */
+img.font {
+  margin-top: 3px;
+}
+a#fontSmall, a#fontMiddle, a#fontLarge {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  vertical-align: middle;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a#fontSmall {
+  background-image: url(./images/bt-s01.gif);
+  background-repeat: no-repeat;
+}
+a#fontSmall:hover {
+  background-image: url(./images/bt-s02.gif);
+}
+a#fontMiddle {
+  background-image: url(./images/bt-m01.gif);
+  background-repeat: no-repeat;
+}
+a#fontMiddle:hover {
+  background-image: url(./images/bt-m02.gif);
+}
+a#fontLarge {
+  background-image: url(./images/bt-l01.gif);
+  background-repeat: no-repeat;
+}
+a#fontLarge:hover {
+  background-image: url(./images/bt-l02.gif);
+}
+
+/* For firefox2 */
+a#fontSmall,x:-moz-any-link,
+a#fontMiddle,y:-moz-any-link,
+a#fontLarge,z:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a#fontSmall, x:-moz-broken,
+a#fontMiddle, y:-moz-broken,
+a#fontLarge, z:-moz-broken {
+  padding-top: 0px;
+}
+*html a#fontSmall, *html a#fontMiddle, *html a#fontLarge {
+  margin-top: 4px;
+}
+
+/* color
+---------------------- */
+a#themeBlack, a#themeBlue, a#themeWhite {
+  display: inline-block;
+  width: 22px;
+  height: 20px;
+  margin-top: 1px;
+  vertical-align: middle;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a#themeBlack {
+  background-image: url(./images/bg-black.gif);
+  background-repeat: no-repeat;
+}
+a#themeBlue {
+  background-image: url(./images/bg-blue.gif);
+  background-repeat: no-repeat;
+}
+a#themeWhite {
+  background-image: url(./images/bg-white.gif);
+  background-repeat: no-repeat;
+}
+/* For firefox2 */
+a#themeBlack,x:-moz-any-link,
+a#themeBlue,y:-moz-any-link,
+a#themeWhite,z:-moz-any-link {
+  display:-moz-inline-box;
+  padding-top: 20px;
+}
+
+a#themeBlack,x:-moz-broken,
+a#themeBlue,y:-moz-broken,
+a#themeWhite,z:-moz-broken {
+  padding-top: 0px;
+}
+
+/* furigana
+---------------------- */
+a#navigationRuby {
+  display: inline-block;
+  width: 121px;
+  height: 20px;
+  background-image: url(./images/bg-furigana01.gif);
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  line-height:2;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+
+/* For firefox2 */
+a#navigationRuby,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a#navigationRuby,x:-moz-broken {
+  padding-top: 0px;
+}
+a#navigationRuby:hover {
+  background-image: url(./images/bg-furigana02.gif)
+}
+a#navigationRuby.rubyOn {
+  background-image: url(./images/bg-furigana-on.gif);
+}
+
+/* yomiage
+---------------------- */
+a#navigationTalk {
+  display: inline-block;
+  width: 82px;
+  height: 20px;
+  background-image: url(./images/bg-yomiage01.gif);
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  line-height:2;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a#navigationTalk:hover {
+  background-image: url(./images/bg-yomiage02.gif)
+}
+a#navigationTalk.talkOn {
+  width: 82px;
+  background-image: url(./images/bg-yomiage-on.gif);
+}
+a:hover#navigationTalk.talkOn {
+  width: 82px;
+  background-image: url(./images/bg-yomiage-on.gif);
+}
+#navigationTalkPlayer {
+  position: absolute;
+}
+#navigationTalkPlayer object {
+  position: relative;
+  top: 25px;
+  left: -190px;
+}
+
+*html #navigationTalkPlayer object {
+  top: 28px;
+}
+
+#navigationTalkPlayer:not(\*|*) {
+  position: absolute;
+}
+#navigationTalkPlayer object:not(\*|*) {
+  position: relative;
+  top: 25px;
+  left: 340px;
+}
+html:first-child #navigationTalkPlayer {
+  position: absolute;
+}
+html:first-child #navigationTalkPlayer object {
+  position: relative;
+  top: 25px;
+  left: 340px;
+}
+
+/* For firefox2 */
+a#navigationTalk,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a#navigationTalk,x:-moz-broken {
+  padding-top: 0px;
+}
+
+
+/* —˜—pˆÄ“à
+---------------------- */
+a.riyou {
+  display: inline-block;
+  width: 82px;
+  height: 20px;
+  background-image:url(./images/bg-annai01.gif);
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  line-height:2;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a.riyou:hover {
+  background-image: url(./images/bg-annai02.gif);
+}
+/* firefox2 */
+a.riyou,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a.riyou,x:-moz-broken {
+  padding-top: 0px;
+}
+
+/* navigationNotice
+---------------------- */
+#navigationNotice {
+  padding: 6px 10px;
+  background-color: #dddddd;
+  font-weight: bold;
+}
+
+/* common banner
+----------------------------------------------- */
+#commonBanner {
+  clear: both;
+  height: 70px; 
+  margin: 0;
+  padding: 0;
+  background-image: url(./images/bg-header.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  font-size: 12px;
+  text-align: right;
+}
+#commonBanner .logo {
+  float: left;
+  width: 30%;
+  height: 70px;
+}
+#commonBanner .logo a {
+  display: block;
+  width: 100%;
+  height: 0px !important;
+  height /**/: 70px; /* gokanmode */
+  padding-top: 70px;
+  overflow: hidden;
+  outline: 0;
+}
+#commonBanner .menu {
+  float: right;
+  width: 70%;
+  height: 70px;
+  margin: 0px;
+  text-align: right;
+}
+#commonBanner .upperMenu {
+  margin: 5px 0px 0px 0px;
+  padding-right: 10px;
+}
+#commonBanner .lowerMenu {
+  margin: 0px 0px 5px 0px;
+  padding-right: 10px;
+}
+#commonBanner .menu form {
+  display: inline;
+}
+input#search-box, a.chiiki img, a.soshiki img, a.toiawase, a.siteMap,
+input.submit {
+  vertical-align: middle;
+}
+input#search-box {
+  width: 130px;
+}
+
+/* otoiawase
+---------------------- */
+a.toiawase {
+  display: inline-block;
+  width: 80px;
+  height: 14px;
+  background-image:url(./images/bg-toiawase.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  line-height: 2;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a.toiawase:hover {
+  background-image: url(./images/bg-toiawase.gif);
+  background-position: left -14px;
+}
+/* firefox2 */
+a.toiawase,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a.toiawase,x:-moz-broken {
+  padding-top: 0px;
+}
+
+/* sitemap
+---------------------- */
+a.siteMap {
+  display: inline-block;
+  width: 80px;
+  height: 14px;
+  background-image:url(./images/bg-sitemap.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  line-height: 2;
+  text-indent: 9999px;
+  overflow: hidden;
+}
+a.siteMap:hover {
+  background-image: url(./images/bg-sitemap.gif);
+  background-position: left -14px;
+}
+/* firefox2 */
+a.siteMap,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 20px;
+}
+a.siteMap,x:-moz-broken {
+  padding-top: 0px;
+}
+
+/* global navi
+----------------------------------------------- */
+#globalNavi {
+  clear: both;
+  width: 100.3%;
+  height: 34px;
+}
+#globalNavi a {
+  display: block;
+  float: left;
+  width: 12.45%;
+  height: 34px;
+  background-image: url(./images/bg-menu02.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+  color: #ffffff;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  line-height: 34px;
+}
+#globalNavi a:hover {
+  background-image: url(./images/bg-menu02.gif);
+  background-position: left -40px;
+  background-repeat: repeat-x;
+  color: #000000;
+}
+#globalNavi a.top {
+  background-image: url(./images/bg-menu01.gif);
+}
+#globalNavi a.bosai {
+  background-image: url(./images/bg-menu03.gif);
+}
+#globalNavi a.bosai:hover {
+  background-image: url(./images/bg-menu03.gif);
+  background-position: left -40px;
+}
+*:first-child+html #globalNavi a {
+  height: auto;
+}
+
+/* Opera9.6after */
+#globalNavi a:not(\*|*) {
+  width: 13%;
+}
+#globalNavi a.bosai:not(\*|*) {
+  width: 12%;
+}
+
+/* Opera9.6before */
+html:first-child #globalNavi a {
+  width: 12.5%;
+  margin-bottom: 7px;
+}
+html:first-child #globalNavi a.bosai {
+  width: 16.5%;
+  margin-bottom: 7px;
+}
+
+/* IE */
+* html #globalNavi {
+  width: 100.1%;
+}
+* html #globalNavi a.bosai {
+  width: 12.3%;
+}
+*:first-child+html #globalNavi {
+  width: 100.3%;
+}
+
+/* global navi active
+----------------------------------------------- */
+.articleCategoryKurashi #globalNavi a.kurashi,
+.articleCategoryFukushi #globalNavi a.fukushi,
+.articleCategoryKyoikubunka #globalNavi a.kyoiku,
+.articleCategoryKanko #globalNavi a.kanko,
+.articleCategorySangyoshigoto #globalNavi a.sangyoshigoto,
+.articleCategoryGyoseimachizukuri #globalNavi a.sangyo {
+  background-image: url(./images/bg-menu02.gif);
+  background-position: left -40px;
+  background-repeat: repeat-x;
+  color: #000000;
+}
+.articleCategoryBosaigai #globalNavi a.bosai {
+  background-image: url(./images/bg-menu03.gif);
+  background-position: left -40px;
+  color: #000000;
+}
+
+/* footer
+----------------------------------------------- */
+/* address
+---------------------- */
+#address {
+  padding:10px 5px;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+}
+/* footer-navi
+---------------------- */
+#footerNavi {
+  width: 100%;
+  background-color: #001c66;
+}
+#footerNavi .pieceBody {
+  padding: 10px 0px;
+  color: #ffffff;
+  text-align: center;
+}
+#footerNavi img {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+#footerNavi a {
+  color: #ffffff;
+}
+#footerNavi a:visited {
+  color: #ffffff;
+}
+#footerNavi a:hover {
+  color: #ffffff;
+}
+
+/* breadCrumbs
+----------------------------------------------- */
+#breadCrumbs {
+  clear: both;
+  margin: 7px 0px 0px 0px;
+  line-height: 1.3;
+}
+#breadCrumbs .direction {
+  margin: 0px;
+}
+#pageTop {
+  text-align: right;
+}
+
+/* calendar
+----------------------------------------------- */
+* html .calender {
+  height: 1%;
+}
+#calendar .pieceContainer {
+  width: 100%;
+}
+#calendar .pieceHeader {
+  height: 8px;
+  margin: 0px;
+  padding: 0px;
+  background-image:url(./images/bg-ring.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  font-size: 0px;
+}
+#calendar .pieceBody {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-image:url(./images/bg-calendar-repeat.gif);
+  background-position: left top;
+  background-repeat: repeat-y;
+
+}
+#calendar .calendar {
+  float: left;
+  width: 162px;
+  padding: 5px 0px 0px 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+#calendar .links {
+  clear: both;
+  padding: 5px 0px 10px 0px;
+  background-image: url(./images/bg-calendar-bottom.gif);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  text-align: center;
+}
+#calendar .calendar .wdays .wday {
+  display: block;
+  float: left;
+  width: 17px;
+  padding: 2px;
+  border-right: solid 1px #aaaaaa;
+  border-top: solid 1px #aaaaaa;
+  border-bottom: solid 1px #aaaaaa;
+  text-align: center;
+}
+#calendar .calendar .days .day {
+  display: block;
+  float: left;
+  width: 17px;
+  padding: 2px;
+  border-right: solid 1px #aaaaaa;
+  border-bottom: solid 1px #aaaaaa;
+  text-align: center;
+}
+#calendar .calendar .wdays .sun,
+#calendar .calendar .days .sun {
+  border-left: solid 1px #aaaaaa;
+}
+#calendar .calendar .days .sat {
+  color: #3366ff;
+}
+#calendar .calendar .days .sun,
+#calendar .calendar .days .holiday {
+  color: #ff0000;
+}
+.january {
+  background-image: url(./images/bg-january.gif);
+}
+.february {
+  background-image: url(./images/bg-february.gif);
+}
+.march {
+  background-image: url(./images/bg-march.gif);
+}
+.april {
+  background-image: url(./images/bg-april.gif);
+}
+.may {
+  background-image: url(./images/bg-may.gif);
+}
+.june {
+  background-image: url(./images/bg-june.gif);
+}
+.july {
+  background-image: url(./images/bg-july.gif);
+}
+.august {
+  background-image: url(./images/bg-august.gif);
+}
+.september {
+  background-image: url(./images/bg-september.gif);
+}
+.october {
+  background-image: url(./images/bg-october.gif);
+}
+.november {
+  background-image: url(./images/bg-november.gif);
+}
+.december {
+  background-image: url(./images/bg-december.gif);
+}
+.january, .february, .march, .april, .may, .june, .july, .august, .september, .october, .november, .december {
+  height: 25px;
+  background-repeat: no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+.calendar .prevMonth, .calendar .nextMonth {
+  color: #ffffff;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+.links a.prevMonth {
+  padding-left: 13px;
+  background-image: url(./images/ic-prevmonth.gif);
+  background-position: 4% center;
+  background-repeat: no-repeat;
+
+}
+.links a.nextMonth {
+  padding-right:13px;
+  background-image: url(./images/ic-nextmonth.gif);
+  background-position: 96% center;
+  background-repeat: no-repeat;
+}
+
+/* piece
+----------------------------------------------- */
+.piece {
+  margin-bottom: 5px;
+}
+#footer .piece {
+  margin-bottom: 0px;
+}
+
+/* ad
+----------------------------------------------- */
+#adBanner .pieceBody {
+  padding: 0px;
+}
+#adBanner a {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* footer-ad
+----------------------------------------------- */
+#footerAdBanner {
+  background-color: #eeeeee;
+  text-align: center;
+}
+#footerAdBanner .pieceBody {
+  padding: 10px 0px 5px 0px;
+}
+#footerAdBanner a {
+  margin: 0px 10px;
+}
+
+/* page-title
+----------------------------------------------- */
+*html #pageTitle {
+  height: 0px;
+}
+#pageTitle .pieceContainer {
+  margin: 0px;
+  padding: 0px;
+  background-color:#d0e6f3;
+  background-image: url(./images/tl-pegetitle-repeat.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+}
+#pageTitle .pieceBody {
+  background-image: url(./images/tl-pagetitle.gif);
+  background-repeat: no-repeat;
+  border: 1px solid #233f9b;
+}
+#pageTitle h1 {
+  padding: 7px 0px 4px 20px;
+  font-size: 200%;
+  font-weight: bold;
+}
+h1 {
+  color: #000000;
+}
+
+/* side-list
+----------------------------------------------- */
+#links ul,
+#menu ul {
+  padding: 5px 5px 0px 5px;
+  background-color: #f5f5f5;
+}
+#links li,
+#menu li {
+  padding: 0px 0px 5px 8px;
+  background-image: url(./images/ic-list.gif);
+  background-position: left 5px;
+  background-repeat: no-repeat;
+
+}
+#attractInformation .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-chuumoku.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow: hidden;
+}
+#relationLink .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-kanren.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#about .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-joruricity.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#basicInformation .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-kihon.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#usefulInformation .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-oyakudachi.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#mayor .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-shicyou.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#areaInformation .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-chiikij.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}
+#relationInformation .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-kanrenj.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  text-indent:-9999px;
+  overflow:hidden;
+}

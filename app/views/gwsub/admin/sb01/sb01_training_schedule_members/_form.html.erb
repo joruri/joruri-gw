@@ -1,0 +1,80 @@
+<%
+groups = System::Group.where("state='enabled' and level_no = 3").order([:level_no,:code].join(','))
+users  = System::User.get_user_select(Core.user_group.id,nil)
+#prop_sta = @ts.schedule.st_at.split(' ')
+#prop_end = @ts.schedule.ed_at.split(' ')
+%>
+<%= hidden_field_tag 'limit', @limits %>
+<%= hidden_field_tag 't_menu', @top_menu %>
+<%= hidden_field_tag 't_id', @t_id %>
+<%= hidden_field_tag 'p_id', @p_id %>
+<%= f.hidden_field :training_schedule_id  , :value=>@item.training_schedule_id %>
+<%#= f.hidden_field :training_group_id     , :value=>@item.training_group_id %>
+<%#= f.hidden_field :entry_user_id         , :value=>@item.entry_user_id %>
+<%#= f.hidden_field :entry_group_id        , :value=>@item.entry_group_id %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <!--<tr><th>開催日時</th><td><%#= h Gwsub.fyear_to_namejp2(prop_sta[0])+' '+prop_sta[1] %>　から　<%#= h Gwsub.fyear_to_namejp2(prop_end[0])+' '+prop_end[1] %>　まで</td></tr>-->
+  <tr>
+    <th>受講者所属</th>
+    <td><%= select_tag "item[training_group_id]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, Core.user_group.id), onchange: "get_user();" %></td>
+  </tr>
+  <tr>
+    <th>受講者<%= required %></th>
+    <td><%= f.select :training_user_id, options_for_select(users, @item.training_user_id.to_i) %></td>
+  </tr>
+  <tr>
+    <th>受講者連絡先<%= required %></th>
+    <td><%= f.text_field :training_user_tel, :size => 30 %></td>
+  </tr>
+  <tr>
+    <th>申込者所属</th>
+    <td><%= select_tag "item[entry_group_id]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, Core.user_group.id), onchange: "get_user2();" %></td>
+  </tr>
+  <tr>
+    <th>申込者<%= required %></th>
+    <td><%= f.select :entry_user_id, options_for_select(users, @item.training_user_id.to_i) %></td>
+  </tr>
+  <tr>
+    <th>申込者連絡先</th>
+    <td><%= f.text_field :entry_user_tel, :size => 30 %></td>
+  </tr>
+</table>
+<br />
+<div class="preserve">
+<%= f.submit '登録' %>
+</div>
+<br />
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  var ed_str = '';
+  function get_user() {
+    g_id = $("item_training_group_id").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("<%= @public_uri + '/' %>/user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+      $('item_training_user_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+  function get_user2() {
+    g_id = $("item_entry_group_id").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("<%= @public_uri + '/' %>/user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+      $('item_entry_user_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+  //]]>
+</script>

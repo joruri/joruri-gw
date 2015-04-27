@@ -1,0 +1,22 @@
+<%
+  maps_uri = gwboard_maps_path(item.id) + "?system=#{item.system_name}&title_id=#{item.title_id}&field_id=#{field_id}"
+  label = '地図貼付'
+  label = map_label unless map_label.blank?
+  table_id = 'map_form'
+  table_id = "#{field_id}_form" unless field_id.blank?
+
+%>
+<table class="bbsImage">
+  <tr>
+    <th><%=label%></th>
+    <td><a href="#" onclick="chageDisp(this,'<%=table_id%>');return false;">開く▼</a></td>
+  </tr>
+</table>
+
+<table id="<%=table_id%>" border="0" class="show" style="display: none;">
+  <tr>
+    <td style="padding: 0px 0px;">
+      <iframe src="<%= maps_uri %>" style="width: 100%; height: 200px;" frameborder="0"></iframe>
+    </td>
+  </tr>
+</table>

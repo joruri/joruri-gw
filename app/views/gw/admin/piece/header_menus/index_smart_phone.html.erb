@@ -1,0 +1,23 @@
+<ul>
+  <li class="menu_portal">
+    <span class="menuIcon"><%= link_to "ポータル", "/" -%></span>
+  </li>
+  <li class="menu_mailer">
+    <span class="menuIcon"><%= link_to "メール", "/_admin/gw/link_sso/redirect_to_joruri?to=mail" -%></span>
+    <% if mail_tag != 0 %>
+      <span class="noRead"><%= link_to mail_tag.to_s, "/_admin/gw/link_sso/redirect_to_joruri?to=mail" -%></span>
+    <% end %>
+  </li>
+  <li class="menu_schedules">
+    <span class="menuIcon"><%= link_to "スケジュール", "/gw/schedules/" -%></span>
+  </li>
+  <li class="menu_todo">
+    <span class="menuIcon"><%= link_to "ToDo", "/gw/schedule_todos/" -%></span>
+  </li>
+  <li class="menu_memo">
+    <span class="menuIcon"><%= link_to "連絡メモ", "/gw/memos/" -%></span>
+    <% if (count = latest_memo_count) != 0 %>
+      <span class="noRead"><%= link_to "#{count}", "/gw/memos/" -%></span>
+    <% end %>
+  </li>
+</ul>

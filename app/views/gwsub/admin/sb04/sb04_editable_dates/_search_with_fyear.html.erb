@@ -1,0 +1,30 @@
+<%
+fyear_order = "published_at DESC"
+fyear = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears = [['すべて',0]]+fyear
+limits = Gw.limit_select
+-%>
+<!-- start form -->
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch' ) do %>
+<table>
+<tr>
+<td>年度選択</td>
+<td><%= select_tag( 'fyed_id',options_for_select( fyears ,@fyed_id.to_i ) ) %></td>
+
+<td>表示行数</td>
+<td><%= select_tag( 'limit',options_for_select( limits , @limits.to_i ) ) %></td>
+
+<td>検索</td><td><%= text_field_tag 's_keyword', params[:s_keyword] ,:size=>50 %></td>
+<td class="submitters">
+<%= submit_tag '検索',     :name => :search %>
+<%= submit_tag 'リセット', :name => :reset  %>
+</td>
+</tr>
+</table>
+<%end%>
+<!-- end form -->
+<% if @menu_header3 == 'sb0404menu' %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>
+<% end %>

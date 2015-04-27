@@ -1,0 +1,22 @@
+<%= hidden_field_tag 'limit', @limits %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>編集開始日<%= required %></th>
+    <td><%= f.datepicker :start_at %></td>
+  </tr>
+  <tr>
+    <th>編集終了日<%= required %></th>
+    <td><%= f.datepicker :end_at %></td>
+  </tr>
+  <tr>
+    <th>主管課承認期限日<%= required %></th>
+    <td><%= f.datepicker :recognize_at %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+

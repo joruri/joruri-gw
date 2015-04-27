@@ -1,0 +1,71 @@
+<%
+genre = @genre
+a_genres = Gw::ScheduleProp.get_genres
+raise Gw::ApplicationError, "指定がおかしいです(genre=#{genre})" if !genre.blank? && a_genres.assoc(genre).nil?
+prop_classes = Gw::ScheduleProp.get_extra_classes(genre)
+prop_classes_ignore_role = Gw::ScheduleProp.get_extra_classes(genre, :ignore_role=>1)
+cls = @cls
+raise Gw::ApplicationError, "指定がおかしいです(cls=#{cls})" if cls.blank? || (cls != 'other' && prop_classes_ignore_role[cls].nil?)
+title = genre.blank? ? '施設' : a_genres.assoc(genre)[1]
+
+link_s = %Q(<span class="current_menu">)
+link_s_end = %Q(</span>)
+lnks2 = (@hedder2lnk == 2 ? "#{link_s}#{title}マスタ#{link_s_end}" : "<span>#{title}マスタ</span>")
+lnks10 = (@hedder2lnk == 10 ? "#{link_s}#{title}所属別実績一覧#{link_s_end}" : "<span>#{title}所属別実績一覧</span>")
+lnks3 = (@hedder2lnk == 3 ? "#{link_s}#{title}管理#{link_s_end}" : "<span>#{title}管理</span>")
+if genre == 'rentcar'
+  lnks6 = (@hedder2lnk == 6 ? "#{link_s}#{title}車庫用画面#{link_s_end}" : "<span>#{title}車庫用画面</span>")
+else
+  lnks6 = (@hedder2lnk == 6 ? "#{link_s}#{title}衛視用画面#{link_s_end}" : "<span>#{title}衛視用画面</span>")
+end
+
+if genre == 'other'
+  lnks1 = (@hedder2lnk == 1 ? "#{link_s}一般施設（自所属）#{link_s_end}" : "<span>一般施設（自所属）</span>")
+  lnks7 = (@hedder2lnk == 7 ? "#{link_s}一般施設（他所属）#{link_s_end}" : "<span>一般施設（他所属）</span>")
+  lnks8 = (@hedder2lnk == 8 ? "#{link_s}一般施設（自所属）管理#{link_s_end}" : "<span>一般施設（自所属）管理</span>")
+  lnks9 = (@hedder2lnk == 9 ? "#{link_s}一般施設マスター件数制限#{link_s_end}" : "<span>一般施設マスター件数制限</span>")
+end
+
+%>
+<div class="menu">
+<%=link_to lnks2.html_safe, "/gw/prop_#{genre}s?cls=#{cls}" unless genre.blank?%>
+<%=link_to lnks10.html_safe, "/gw/prop_extra_group_#{genre}s/" if genre == 'rentcar'%>
+<% prop_classes.each {|k,v|%>
+  <%=link_to(lnks3.html_safe, "/gw/prop_extras?s_genre=#{genre}&cls=#{k}") if k == cls%>
+  <%=link_to(lnks6.html_safe, "/gw/schedule_props/show_guard?s_genre=#{genre}&cls=#{k}") if k == cls%>
+<%}%>
+<% prop_remarks(@genre).each do |r| %><%= link_to "<span>#{r.title}</span>".html_safe, r.url, target: "_blank" %><% end if genre != 'other' %>
+</div>
+<%
+
+link_s = %Q(<span class="current_menu">)
+link_s_end = %Q(</span>)
+
+lnks1 = (@hedder3lnk == 1 ? "#{link_s}実績一覧#{link_s_end}" : "<span>実績一覧</span>")
+lnks2 = (@hedder3lnk == 2 ? "#{link_s}月別一覧#{link_s_end}" : "<span>月別一覧</span>")
+
+%>
+<div class="menu">
+<!-- <p>実績管理</p> -->
+<%= link_to lnks1.html_safe, "/gw/prop_extra_group_#{@genre}s/" %>
+<%= link_to lnks2.html_safe, "/gw/prop_extra_group_#{@genre}s/#{@gid}/show_group" %>
+
+</div>
+<% if  @hedder3lnk == 2 %>
+<%
+if params[:year] == 'last'
+  lnks2_1 = "<span>今年度</span>"
+  lnks2_2 = "#{link_s}昨年度以前#{link_s_end}"
+else
+  lnks2_1 = "#{link_s}今年度#{link_s_end}"
+  lnks2_2 = "<span>昨年度以前</span>"
+end
+%>
+<div class="menu">
+  <%= link_to lnks2_1.html_safe, "/gw/prop_extra_group_#{@genre}s/#{@gid}/show_group" %>
+  <%= link_to lnks2_2.html_safe, "/gw/prop_extra_group_#{@genre}s/#{@gid}/show_group?year=last"%>
+</div>
+<% end %>
+<%if @title_line%>
+<div class="titleLine"><span class="title"><%=@title_line%></span></div>
+<%end%>

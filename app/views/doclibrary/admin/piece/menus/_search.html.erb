@@ -1,0 +1,11 @@
+<div class="search">
+<%= form_tag doclibrary_docs_path({:title_id=>@title.id}), :method => :get do %>
+ <%= render 'hidden_form' %>
+ <h4 class="iconSideKey">キーワード</h4>
+ <%= text_field_tag 'kwd', params[:kwd], :size => '16' %>
+ <div class="submitters">
+   <%= submit_tag '検索', :name => :search, :class => 'btSarch' %>
+   <%= submit_tag 'リセット', :name => :reset, :class => 'btSarch' %>
+ </div>
+<% end %>
+</div>

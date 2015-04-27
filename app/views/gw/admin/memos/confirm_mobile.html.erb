@@ -1,0 +1,17 @@
+<hr class="borderDash"/>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">削除</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+削除してよろしいですか？<br />
+<%= link_to "[はい]" , {action: :delete, id: @item.id} %>　
+<%= link_to "[いいえ]", {action: :show, id: @item.id} %><br />
+</p>
+</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%= link_to "戻る", {action: :show, id: @item.id} %>
+</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%= link_to "連絡メモ一覧へ", {action: :index} %>
+</p>

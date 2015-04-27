@@ -1,0 +1,33 @@
+<%
+params[:st] = '2' if params[:st].blank?
+s_params = "?st=#{params[:st]}"
+%>
+<div class="bbsDocList">
+<div class="pieceHeader">
+<h2>背景画像一覧</h2>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+<h3><%=@sub_title%>編集</h3>
+<div class="helpBox">
+</div>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<%= form_for :item, :url => "#{gwboard_file_path(@item)}#{s_params}", :html => {:multipart => true, :method => :put} do |f| %>
+<%= f.error_messages %>
+
+<table class="show bbsText">
+<tr><th>画像種別</th><td><%= @item.show_share_states -%><%= f.hidden_field :share -%></td></tr>
+<tr><th>画像説明</th>
+<td><%= f.text_field :memo, :size=>'60'%></td></tr>
+<tr><th>画像ファイル</th>
+<td><%= f.file_field :_upload%></td></tr>
+</table>
+
+<%#= hidden_field_tag(:_upload, @item._upload)%>
+<div class="submitters"><%= submit_tag '登録する' %></div>
+<% end %>
+
+</div>
+</div><!--piece gwbbs-->

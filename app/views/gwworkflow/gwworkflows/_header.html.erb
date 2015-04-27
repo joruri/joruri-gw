@@ -1,0 +1,29 @@
+<%
+this_uri = "/gwworkflow/"
+
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+
+str_tab1_class += ' current' if params[:cond].blank?
+str_tab1_class += ' current' if params[:cond] == 'committed'
+str_tab2_class += ' current' if params[:cond] == 'processing'
+str_tab3_class += ' current' if params[:cond] == 'accepted'
+%>
+
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=raw(str_tab1_class)%>"><%=link_to "申請一覧", "#{this_uri}?cond=committed" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=raw(str_tab2_class)%>"><%=link_to "承認待ち一覧", "#{this_uri}?cond=processing" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=raw(str_tab3_class)%>"><%=link_to "承認済み一覧", "#{this_uri}?cond=accepted" %></td>
+
+<td class="spaceRight">
+</td></tr>
+</tbody>
+</table>
+</div>

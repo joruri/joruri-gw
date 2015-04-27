@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<%= render 'layouts/admin/gw/header_tag' %>
+<link rel="stylesheet" type="text/css" href="/layout/memo/smartphone.css" />
+</head>
+
+<body id="page-gw-memos">
+<div id="smartPhoneContainer">
+<div id="header">
+<div id="headerBody">
+<%= render 'layouts/admin/gw/piece_header' %>
+</div>
+</div>
+<div id="banner">
+<div id="bannerBody">
+<%= render_component :controller => 'gw/admin/piece/header_menus', :action => 'index', :piece_param => '61' %>
+</div>
+</div>
+
+<div id="navi">
+<div id="naviBody">
+<%= render 'layouts/admin/gw/notice' %>
+</div>
+</div>
+
+<div id="navi2">
+<div id="navi2Body">
+
+</div>
+</div>
+
+<div id="main">
+<div id="wrapper">
+<div id="content">
+<div id="contentContainer">
+<div id="contentBody">
+<%= yield %>
+</div>
+</div>
+</div>
+
+
+
+<div id="footer">
+<div id="footerContainer">
+
+<div id="footerHeader">
+</div>
+<div id="footerBody">
+<%= render 'layouts/admin/gw/piece_footer' %>
+
+</div>
+<div id="footerFooter"></div>
+</div>
+</div>
+</div>
+</body>
+</html>

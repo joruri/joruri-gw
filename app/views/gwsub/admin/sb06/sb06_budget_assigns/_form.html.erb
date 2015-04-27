@@ -1,0 +1,107 @@
+<%
+if @item.group_id.to_i==0
+  grped_id = Core.user_group.id
+else
+  grped_id = @item.group_id
+end
+
+options1   = {:role1=>false,:role2=>false}
+options2   = {:role1=>true,:role2=>false}
+
+if @budget_admin || @budget_main
+  groups = Gwsub.grouplist4(nil, nil,true,nil)
+else
+  groups = Gwsub::Sb06BudgetAssign.grouplist(options1)
+end
+
+groups2    = Gwsub::Sb06BudgetAssign.grouplist(options2)
+users = System::User.get_user_select(grped_id)
+if @item.user_id.to_i==0
+  u_id = users[0][1]
+else
+  u_id = @item.user_id
+end
+budget_roles = Gwsub::Sb06BudgetRole.sb06_budget_roles_id_select
+-%>
+<%= hidden_field_tag 'limit', @limits %>
+<%= hidden_field_tag 'fyed_id', @fyed_id %>
+<%= hidden_field_tag 'grped_id', @grped_id %>
+<% if @u_role!=true -%>
+  <%= f.hidden_field :main_state %>
+  <%= f.hidden_field :admin_state %>
+<% end -%>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <% if groups.size==1 -%>
+  <tr>
+    <th>所属</th>
+    <td><%= groups[0][0] %><%= f.hidden_field :group_id, :value => groups[0][1] %></td>
+  </tr>
+  <% else -%>
+  <tr>
+    <th>所属<%= required %></th>
+    <td><%= f.select :group_id, options_for_select(groups, grped_id.to_i), {}, {onchange: "get_users();"} %></td>
+  </tr>
+  <% end -%>
+  <tr>
+    <th>氏名<%= required %></th>
+    <td><%= f.select :user_id, options_for_select(users, u_id.to_i) %></td>
+  </tr>
+  <tr>
+    <th>処理権限<%= required %></th>
+    <% if @item.budget_role_id %>
+    <td><%= f.select :budget_role_id, options_for_select(budget_roles, @item.budget_role_id.to_i) %></td>
+    <% else %>
+    <td><%= f.select :budget_role_id, options_for_select(budget_roles, 6) %></td>
+    <% end %>
+  </tr>
+  <tr>
+    <th>兼務所属</th>
+    <td><%= f.select :multi_group_id, options_for_select(groups2, @item.multi_group_id.to_i), {include_blank: true} %></td>
+  </tr>
+  <tr>
+    <th>兼務順</th>
+    <td><%= f.text_field :multi_sequence, class: 'name' %>　※半角英小文字１文字</td>
+  </tr>
+  <% if @budget_admin==true -%>
+  <tr>
+    <th>主管課承認</th>
+    <td><%= radio f, :main_state, Gwsub::Sb06BudgetAssignMain.main_state, class: 'state' %></td>
+  </tr>
+  <tr>
+    <th>管理者承認</th>
+    <td><%= radio f, :admin_state, Gwsub::Sb06BudgetAssignAdmin.admin_state, class: 'state' %></td>
+  </tr>
+  <% else -%>
+  <% if @budget_main==true -%>
+  <tr>
+    <th>主管課承認</th>
+    <td><%= radio f, :main_state, Gwsub::Sb06BudgetAssignMain.main_state, class: 'state' %></td>
+  </tr>
+  <% end -%>
+  <% end -%>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  function get_users() {
+    group_id = $("item_group_id").value
+    if (end_cnt == -1) {
+      document.body.style.cursor = 'wait';
+      end_cnt = 0;
+    }
+    new Ajax.Request("<%= url_for({:action => :index})%>/user_fields?g_id=" + group_id, {method:'get', onComplete: function(x){
+      $('item_user_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+//]]>
+</script>

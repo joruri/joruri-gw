@@ -1,0 +1,74 @@
+@charset "UTF-8";
+@import "../base/init.css";
+@import "../base/style.css";
+@import "../piece/style.css";
+
+/* =========================================================
+   calender
+========================================================= */
+
+/* event-banner
+----------------------------------------------- */
+#eventBanner {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* event-calender
+----------------------------------------------- */
+.contentArticleEventDocs h2 {
+  margin: 0px 0 10px 0;
+  padding: 5px 0 5px 10px;
+  background-color: #e3f0fa;
+  font-weight: bold;
+}
+.contentArticleEventDocs table {
+  width: 100%;
+  border-top: 1px solid #666666;
+}
+.contentArticleEventDocs td {
+  padding: 10px;
+  border-bottom: 1px solid #666666;
+}
+.contentArticleEventDocs td.day {
+  width: 15%;
+}
+.contentArticleEventDocs td.title {
+  width: 60%;
+}
+
+td.attribute span {
+  display: block;
+  width: 90%;
+  padding: 3px 0px;
+  border: 1px solid #666;
+  text-align: center;
+}
+.attributeNyusatsu span {
+  background-color: #95C837;
+  text-align: center;
+}
+.attributeSaiyo span {
+  background-color: #b1e6f1;
+  text-align: center;
+}
+.attributeShikakushiken span {
+  background-color: #ffcccc;
+  text-align: center;
+}
+.attributeBosyu span {
+  background-color: #66ff99;
+  text-align: center;
+}
+.attributeEvent span {
+  background-color: #ffcc00;
+  text-align: center;
+}
+.attributeKyoka span {
+  text-align: center;
+  background-color: #dbe4ff;
+}
+.pagination {
+  margin-top: 10px;
+  text-align: center;
+}

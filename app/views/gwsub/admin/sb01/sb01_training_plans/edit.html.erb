@@ -1,0 +1,20 @@
+<%
+@edit_path = "#{@public_uri}/#{@item.id}"
+@action = "edit"
+-%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => @edit_path ,:action=>:update, :method => :put, :html => {:multipart => true, :class=>"leftSide"} do |f| %>
+<%= render 'form', f: f %>
+<% end %>
+<div class="btReturn">
+  <%= link_to '詳細に戻る' , url_for(@edit_path) -%>
+</div>
+</div>
+</div>

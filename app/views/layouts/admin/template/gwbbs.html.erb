@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<%= render 'layouts/admin/gw/header_tag' %>
+<link rel="stylesheet" type="text/css" href="/layout/gwbbs/style.css" />
+</head>
+<body <%= Page.body_id %>>
+<div id="container">
+<%= render 'layouts/admin/gw/piece_header' %>
+<!--ここからバナー-->
+<div id="banner">
+<div id="bannerBody">
+<%= render_component :controller => 'gw/admin/piece/header_menus', :action => 'index', :piece_param => '61' %>
+</div>
+</div>
+<!--ここまでバナー-->
+<!--ここからナビ-->
+<div id="navi">
+<div id="naviBody">
+</div>
+</div>
+<!--ここまでナビ-->
+<!--ここからナビ2-->
+<div id="navi2">
+<div id="navi2Body">
+<%= render 'layouts/admin/gw/notice' %>
+</div>
+</div>
+<!--ここまでナビ2-->
+<!--ここからメインコンテンツ-->
+<div id="main">
+<div id="wrapper">
+<!--ここからコンテンツ-->
+<div id="content">
+<div id="contentContainer">
+<div id="contentHeader"></div>
+<div id="contentBody">
+<!--掲示板バナーモード（使用しない-->
+
+<!--ここから修正中-->
+<!--掲示板ヘッダー-->
+<div class="bbsDocList">
+<div class="pieceHeader">
+<h2>掲示板</h2>
+</div><!--pieceHeader-->
+
+<!--掲示板タイトルモード-->
+<%= render_component :controller => 'gwbbs/admin/piece/banners', :action => 'index', :params => params, :piece_param => "TitleDisplayMode" %>
+
+<!--カラム用タグ-->
+<div class="pieceBody">
+
+<%= render_component :controller => 'gwbbs/admin/piece/menus', :action => 'index', :params => params %>
+
+<div class="outer">
+<div class="right">
+
+<%= yield %>
+</div><!--right-->
+</div><!--outer-->
+
+</div><!--pieceBody-->
+</div><!--bbsDocList-->
+
+<!--修正終わり-->
+</div>
+<div id="contentFooter"></div>
+</div>
+</div>
+<!--ここまでコンテンツ-->
+<!--ここから左サイド-->
+<div id="menu">
+<div id="menuContainer">
+<div id="menuHeader"></div>
+<div id="menuBody">
+</div>
+<div id="menuFooter"></div>
+</div>
+</div>
+<!--ここまで左サイド-->
+</div>
+<!--ここから右サイド-->
+<div id="links">
+<div id="linksContainer">
+<div id="linksHeader"></div>
+<div id="linksBody">右サイド</div>
+<div id="linksFooter"></div>
+</div>
+</div>
+<!--ここまで右サイド-->
+</div>
+<!--ここまでメインコンテンツ-->
+<%= render 'layouts/admin/gw/piece_footer' %>
+</div>
+</body>
+</html>

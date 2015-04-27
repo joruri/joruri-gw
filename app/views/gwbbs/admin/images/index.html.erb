@@ -1,0 +1,65 @@
+<%= render 'form' %>
+
+<% _path = '/gwbbs/docs/'%>
+<% _form_id = 'item_body'%>
+<%= form_for(:image, :url => "#{Core.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
+  <p>
+    <label>アップロードする画像ファイル</label>
+    <%= f.file_field :uploaded_data %><%= submit_tag 'アップロード' %>
+  </p>
+<% end %>
+<!-- エラーメッセージ表示部分 -->
+<%= error_messages_for(:filename) %>
+
+<script type="text/javascript">
+//<![CDATA[
+  function mceInsertContent(value) {
+    parent.tinyMCE.execInstanceCommand('<%= _form_id %>','mceInsertContent',true, value);
+  }
+
+  function selectAction() {
+    var filesForm = document.filesForm;
+    var selectFile;
+      for(i=0; i < filesForm.elements.s_item.length; i++) {
+        if(filesForm.elements.s_item[i].checked == true){
+          var element = document.getElementById("link_attach" + filesForm.elements.s_item[i].value);
+          alert(element.getAttribute("onclick"));
+        }
+      }
+  }
+//]]>
+</script>
+
+<table class="list" style="margin-rigth:18px; margin-bottom:0px;">
+  <tr>
+    <th style="width: 100px; text-align: center;">画像</th>
+    <th>画像ファイル名</th>
+    <th style="width: 120px; text-align: center;">サイズ（幅x高さ）</th>
+    <th style="width: 80px; text-align: center;">画像貼付</th>
+    <th style="width: 40px;  text-align: center;">削除</th>
+  </tr>
+
+  <% for item in @images %>
+  <tr>
+    <td style="text-align: center;">
+        <img src="<%=_path + item.image_file_path%>" style="<%= item.reduced_size(:width => 80, :height => 40, :output => :css) %>" alt= ''/>
+    </td>
+    <td style="text-align: left;"><%=item.filename%></td>
+    <td style="text-align: center;"><%= item.eng_unit %>
+      <%= '<br />（' + item.width.to_s + ' x ' + item.height.to_s + '）' %></td>
+    <td style="text-align: center;">
+      <% if item.image? %>
+        <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%=_path + item.image_file_path%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+      <% end %>
+    </td>
+    <td style="text-align: center;">
+      <%=link_to '削除', item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+
+<input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
+<input type="hidden" name="p_id" value='<%="#{params[:p_id]}"%>' />
+<input type="hidden" name="limit" value='<%="#{params[:limit]}"%>' />
+<input type="hidden" name="cat1" value='<%="#{params[:cat1]}"%>' />

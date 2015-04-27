@@ -1,0 +1,22 @@
+<div class="piece AdminMessage">
+<div class="pieceHeader">
+<h2 class="pieceTitle">部課長在庁表示管理</h2>
+</div><!--pieceHeader-->
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+
+<div class="titleLine">
+<span class="title">抽出条件設定</span>
+</div>
+
+<%= form_tag url_for(action: :temp_pickup_run, conf_id: @item.id), {method: :put, multipart: true} do %>
+  <%= render 'temp_pickup_form' %>
+  <div class="preserve">
+    <div class="submitters">
+      <%= submit_tag '抽出実行' %>
+    </div>
+  </div>
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--piece-->

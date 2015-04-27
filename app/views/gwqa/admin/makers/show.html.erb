@@ -1,0 +1,38 @@
+<div class="piece gwfaq">
+<div class="pieceHeader">
+  <h2>質問管理</h2>
+</div>
+<div class="pieceBody">
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', edit_gwqa_maker_path(@item, state: params[:state]) %></span>
+  <span class="btDestroy"><%= link_to '削除', gwqa_maker_path(@item, state: params[:state]), confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+  <span class="docLink"><%= link_to '公開画面へ >>', gwqa_docs_path(title_id: @item.id) %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= @item.states[@item.state] %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>QAタイトル</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>一覧表示行数</th>
+    <td><%= @item.default_limit %></td>
+  </tr>
+</table>
+
+<%= render '/gwboard/admin/adms/show' %>
+
+<div class="btReturn">
+  <%= link_to '管理一覧へ戻る', "/gwfaq/controls?state=#{params[:state]}" %>
+</div>
+
+</div>
+</div><!--piece gwfaq-->

@@ -1,0 +1,15 @@
+<div class="piece bbs index">
+<div class="pieceHeader">
+<h2><%= @title.title unless @title.blank? %></h2>
+</div><!--pieceHeader-->
+<div class="pieceBody">
+<div class="pieceBodyBody">
+<%= render 'show_doc' %>
+<!--戻るボタン-->
+
+<p class="leftPad2">
+  <%= link_to '記事一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>
+</p>
+</div><!--pieceBodyBody-->
+</div><!--pieceBody-->
+</div><!--piece-->

@@ -1,0 +1,27 @@
+<%= hidden_field_tag 'n_from',@n_from if @action=='create' %>
+<%= f.hidden_field :user_id %>
+<%= f.hidden_field :user_code %>
+<%= f.hidden_field :user_name %>
+<%= f.hidden_field :org_id %>
+<%= f.hidden_field :org_code %>
+<%= f.hidden_field :org_name %>
+<%= f.hidden_field :notes_imported , :value=>nil %>
+<%= f.error_messages %>
+<table class="show">
+  <tr>
+    <th>担当者</th>
+    <td><%= @user.user_name %></td>
+  </tr>
+  <tr>
+    <th>所属</th>
+    <td>(<%= @user.org_code %>)<%= @user.org_name %></td>
+  </tr>
+  <tr>
+    <th>連絡先<%= required %></th>
+    <td><%= f.text_field :telephone ,:class=>'name' %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+<%= set_focus_to_id 'user_telephone' %>

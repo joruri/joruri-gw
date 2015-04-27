@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<%= render 'layouts/admin/gw/header_tag' %>
+<title><%= Page.title || @page_title %> - <%= Site.title -%></title>
+<link rel="stylesheet" type="text/css" href="/_common/themes/gw/css/print_schedule.css" media="print"/>
+<link rel="stylesheet" type="text/css" href="/layout/schedule/smartphone.css" />
+</head>
+
+<body id="page-gw-schedules-<%= params[:action] -%>">
+<div id="smartPhoneContainer">
+<div id="header">
+<div id="headerBody">
+<%= render 'layouts/admin/gw/piece_header' %>
+</div>
+</div>
+<!--ここからバナー-->
+<div id="banner">
+<div id="bannerBody">
+<div class="piece headerMenu">
+<div class="pieceBody">
+<%= render_component :controller => 'gw/admin/piece/header_menus', :action => 'index', :piece_param => '61' %>
+</div>
+</div>
+</div>
+</div>
+<!--ここまでバナー-->
+
+<div id="navi">
+<div id="naviBody">
+<%= render 'layouts/admin/gw/notice' %>
+</div>
+</div>
+
+<!--ここからナビ2-->
+<div id="navi2">
+<div id="navi2Body">
+</div>
+</div>
+<!--ここまでナビ-->
+<!--ここからメインコンテンツ-->
+<div id="main">
+<div id="wrapper">
+<!--ここからコンテンツ-->
+<div id="content">
+<div id="contentContainer">
+<div id="contentHeader"></div>
+<div id="contentBody">
+<%= yield %>
+</div>
+<div id="contentFooter"></div>
+</div>
+</div>
+<!--ここまでコンテンツ-->
+<!--ここから左サイド-->
+<div id="menu">
+<div id="menuContainer">
+<div id="menuHeader"></div>
+<div id="menuBody">
+</div>
+<div id="menuFooter"></div>
+</div>
+</div>
+<!--ここまで左サイド-->
+</div>
+<!--ここから右サイド-->
+<div id="links">
+<div id="linksContainer">
+<div id="linksHeader"></div>
+<div id="linksBody"></div>
+<div id="linksFooter"></div>
+</div>
+</div>
+<!--ここまで右サイド-->
+</div>
+<!--ここまでメインコンテンツ-->
+<div id="footer">
+<div id="footerContainer">
+
+<div id="footerHeader">
+</div>
+<div id="footerBody">
+<%= render 'layouts/admin/gw/piece_footer' %>
+
+</div>
+<div id="footerFooter"></div>
+</div>
+</div>
+</div>
+</body>
+</html>

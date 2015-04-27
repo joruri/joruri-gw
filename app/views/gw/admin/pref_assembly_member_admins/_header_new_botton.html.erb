@@ -1,0 +1,14 @@
+<div class="menu">
+<%= link_to action: :index do %>
+  <span class="<%= 'current_menu' if action_name == 'index' %>">一覧</span>
+<% end %>
+<%= link_to action: :new do %>
+  <span class="<%= 'current_menu' if action_name.in? %w(new create) %>">登録</span>
+<% end %>
+<%= link_to csvput_gw_pref_assembly_member_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvput' %>">CSV出力</span>
+<% end %>
+<%= link_to csvup_gw_pref_assembly_member_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvup' %>">CSV登録</span>
+<% end %>
+</div>

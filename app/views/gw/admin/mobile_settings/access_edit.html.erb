@@ -1,0 +1,16 @@
+<div class="piece mobile setting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<div class="btReturn">
+  <%=link_to '個人設定へ戻る', "/gw/config_settings/ind_settings?#{@qs}" %>
+</div>
+
+<%= form_for :user, url: {action: :access_updates}, html: {method: :put, multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <%= render "access_form", f: f %>
+  <%= submit_for f, caption: '保存' %>
+<% end %>
+
+</div>
+</div>

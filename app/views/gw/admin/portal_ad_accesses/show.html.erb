@@ -1,0 +1,32 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'gw/admin/portal_adds/menu' %>
+
+<table class="show">
+  <tr>
+    <th>タイトル</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>画像</th>
+    <td><img src="<%= @item.file_path -%>?<%= @item.updated_at.to_i -%>"/></td>
+  </tr>
+  <tr>
+    <th>掲載期間</th>
+    <td><%= @item.publish_start_at.strftime('%Y年%m月%d日') %> ～ <%= @item.publish_end_at.strftime('%Y年%m月%d日') %></td>
+  </tr>
+  <tr>
+    <th>総クリック数</th>
+    <td><%= @item.click_count %></td>
+  </tr>
+</table>
+
+<%= render 'show_log' %>
+
+<div class="btReturn">
+  <%= link_to '一覧', url_for(action: :index) -%>
+</div>
+
+</div>
+</div>

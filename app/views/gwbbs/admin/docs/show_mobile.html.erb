@@ -1,0 +1,7 @@
+<hr class="borderDash"/>
+<%= @title.title %><br />
+<%= render 'show_doc' %>
+<!--戻るボタン-->
+<p class="leftPad2">
+  <%= link_to '記事一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>
+</p>

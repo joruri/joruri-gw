@@ -1,0 +1,24 @@
+<%
+  name_jp = nil
+  fyear = Gw::YearFiscalJp.find(@item.fyear_id)
+  name_jp = fyear.namejp unless fyear.blank?
+  if name_jp.blank?
+    header_str = nil
+  else
+    header_str = "#{name_jp}年度　電子職員録詳細"
+  end
+-%>
+
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+</div>
+<div class="pieceBody">
+<div><h4><%= header_str %></h4></div>
+<%= render 'gwsub/admin/sb04/sb04divideduties/show', base_url: "#{@csv_base_url}" %>
+  <div class="btReturn">
+<%= link_to '一覧に戻る',"#{@csv_base_url}?#{@qs}" %>
+</div>
+</div>
+</div>

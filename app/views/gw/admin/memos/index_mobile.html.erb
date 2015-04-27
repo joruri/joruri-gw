@@ -1,0 +1,53 @@
+<hr class="borderDash"/>
+<p class="mobileMemo">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
+<%= link_to "新規作成", "/gw/memos/new"%>
+</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<% if params[:s_send_cls] =='1' %>
+受信 |
+<%= link_to "送信", {action: :index, s_send_cls: 2} %>
+<% else %>
+<%= link_to "受信", {action: :index, s_send_cls: 1} %> |
+送信
+<% end %>
+</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<% case params[:s_finished] %>
+<% when '1' %>
+未読 |
+<%= link_to "既読", {action: :index, s_finished: 2} %> |
+<%= link_to "両方", {action: :index, s_finished: 3} %>
+<% when '2' %>
+<%= link_to "未読", {action: :index, s_finished: 1} %> |
+既読 |
+<%= link_to "両方", {action: :index, s_finished: 3} %>
+<% else %>
+<%= link_to "未読", {action: :index, s_finished: 1} %> |
+<%= link_to "既読", {action: :index, s_finished: 2} %> |
+両方
+<% end %>
+</p>
+<hr class="borderDash"/>
+<% if @items.blank? %>
+<div class="notice">表示対象がありません</div>
+<% else %>
+<% @items.each do |item| -%>
+<p class="mobileMemo">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
+<%- unless item.is_finished? -%>
+<span class="textRed"><%= item.is_finished_label %></span>
+<%- else -%>
+<%= item.is_finished_label %>
+<%- end -%>
+<%= link_to item.title, {action: :show, id: item.id} %>
+</p>
+相手　<%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%><br />
+<%= Gw.date_common(item.ed_at) -%><br />
+<br />
+<% end -%>
+<% end -%>
+<%= paginate @items %>
+

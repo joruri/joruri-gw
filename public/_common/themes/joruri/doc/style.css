@@ -1,0 +1,232 @@
+@charset "UTF-8";
+@import "../base/style.css";
+@import "../base/init.css";
+@import "../piece/style.css";
+
+/* =========================================================
+   Doc
+========================================================= */
+
+/* docs
+----------------------------------------------- */
+.contentArticleDoc .header {
+  margin-bottom: 30px;
+  padding: 10px;
+  border-top: 1px solid #232f92;
+  border-bottom: 1px solid #232f92;
+  background-color: #e3f0fa;
+}
+.contentArticleDoc .header h1 {
+  font-size: 150%;
+  font-weight: bold;
+  text-align: center;
+}
+.contentArticleDoc .header .publishedAt {
+  text-align: right;
+}
+.contentArticleDoc .body,
+.contentArticleDoc .maps,
+.contentArticleDoc .rels,
+.contentArticleDoc .tags {
+  margin-bottom: 50px;
+  padding: 0px 20px;
+}
+.contentArticleDoc .maps h2,
+.contentArticleDoc .rels h2,
+.contentArticleDoc .tags h2 {
+  margin-bottom: 5px;
+  padding: 3px 0px 3px 8px;
+  border-left: 2px solid #232f92;
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+.contentArticleDoc .rels li {
+  margin: 0px;
+  padding-left: 8px;
+  background-image: url(./images/ic-list-shinchaku.gif);
+  background-position: left 7px;
+  background-repeat: no-repeat;
+}
+.contentArticleDoc .tags div a {
+  padding-right: 8px;
+}
+.contentArticleDoc .back {
+  text-align: center;
+}
+.contentArticleDoc .back a {
+  display:block;
+  width:95px;
+  margin: 0px auto;
+  padding: 3px 0px;
+  border: 1px solid #999999;
+  background-color: #ececec;
+}
+
+/* address
+----------------------------------------------- */
+.contentArticleDoc .body ul {
+  list-style-type: disc
+}
+.inquiry {
+  clear: both;
+  margin: 0px 0px 20px 0px;
+  padding: 5px 10px;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  color: #333333;
+}
+.inquiry h2 {
+  margin-bottom: 5px;
+  background-image: none;
+  font-size: 110%;
+  font-weight: bold;
+}
+.tel, .fax, .email {
+  display: inline;
+}
+.department, .section {
+  font-weight: bold;
+}
+.top,.middle {
+  margin-bottom: 0px;
+}
+.department,.section,.tel,.fax {
+  margin-right: 10px;
+}
+
+/* =========================================================
+    recent Docs
+========================================================= */
+.contentArticleRecentDocs .docs {
+  margin-left: 10px;
+}
+.contentArticleRecentDocs .docs h2 {
+  margin: 0px 0px 5px 0px;
+  padding: 5px 0 5px 10px;
+  background-color: #e3f0fa;
+  font-weight: bold;
+}
+.contentArticleRecentDocs .docs ul {
+  margin: 0px 0px 25px 7px;
+}
+.contentArticleRecentDocs .docs li {
+  margin: 0px;
+  padding: 0px 0px 5px 10px;
+  background-image: url(./images/ic-list-shinchaku.gif);
+  background-position: 0px 7px;
+  background-repeat: no-repeat;
+}
+
+/* recent Docs Title
+----------------------------------------------- */
+#recentDocsTitle .pieceHeader {
+  background-image: url(./images/bg-shinchaku-repeat.gif);
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+#recentDocsTitle h2 {
+  height: 30px;
+  background-image: url(./images/tl-shinchaku.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+  font-size: 120%;
+  text-indent: -9999px;
+}
+/* RSS Atom
+----------------------------------------------- */
+.feed {
+  float: right;
+  position: relative;
+  top: -27px;
+  right: 10px;
+  height: 13px;
+  background-color: transparent;
+}
+.feed a.feedRss {
+  display: inline-block;
+  width: 40px;
+  height: 13px;
+  background-image: url(./images/bt-rss.gif);
+  background-repeat: no-repeat;
+  text-indent: 50px;
+  overflow: hidden;
+}
+.feed a.feedAtom {
+  display: inline-block;
+  width: 40px;
+  height: 13px;
+  background-image:url(./images/bt-atom.gif);
+  background-repeat:no-repeat;
+  text-indent: 50px;
+  overflow: hidden;
+}
+
+/* For firefox2 */
+.feed a.feedAtom,y:-moz-any-link,
+.feed a.feedRss,x:-moz-any-link {
+  display: -moz-inline-box;
+  padding-top: 13px;
+}
+.links {
+  text-align: right;
+}
+
+/* SideMenu
+----------------------------------------------- */
+#menu #attributeList .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-zokusei.gif);
+  background-repeat: no-repeat;
+}
+#menu #categoryList .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-bunya00.gif);
+  background-repeat: no-repeat;
+}
+#menu #areaList .pieceHeader {
+  height: 25px;
+  background-image: url(./images/tl-chiiki00.gif);
+  background-repeat: no-repeat;
+}
+#menu .pieceBody li {
+  margin: 0px;
+}
+
+/* =========================================================
+    tag search
+========================================================= */
+.contentArticleTags .search {
+  background-color: #e3f0fa;
+  border: 1px solid #dddddd;
+  margin: 10px 0px;
+  padding: 10px;
+}
+.contentArticleTags .search td {
+  padding: 0px 15px 0px 5px;
+}
+.contentArticleTags .search td input {
+  width: 140px;
+}
+.contentArticleTags .search td.submitters input {
+  width: 70px;
+  font-size: 100%;
+}
+.contentArticleTags .hit {
+  padding: 5px 0px 5px 10px;
+  background-image: url(./images/bg-shinchaku-repeat.gif);
+  background-position: left top;
+  background-repeat: repeat-x;
+  font-size: 110%;
+  font-weight: bold;
+  color: #ffffff;
+}
+.contentArticleTags li {
+  margin: 0px;
+  padding: 0px 0px 5px 10px;
+  background-image: url(./images/ic-list-shinchaku.gif);
+  background-repeat: no-repeat;
+  background-position: left 5px;
+}
+.contentArticleTags ul {
+  padding: 10px 5px 5px 5px;
+}

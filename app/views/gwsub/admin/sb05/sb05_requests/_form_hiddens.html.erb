@@ -1,0 +1,24 @@
+<% unless @u_role== true %>
+<%# 管理者のみ入力可能な項目%>
+<%= f.hidden_field :contract_at     ,:value=> @req1.contract_at %>
+<%= f.hidden_field :m_state         ,:value=> @req1.m_state %>
+<%= f.hidden_field :admin_remarks   ,:value=> @req1.admin_remarks %>
+<%= f.hidden_field :magazine_state  ,:value=> @req1.magazine_state %>
+<% end %>
+<% if @req1.media_code=='4' and @req1.categories_code=='2' %>
+<% else %>
+  <%# メルマガ　イベント情報　以外は持ち回り %>
+  <%= f.hidden_field :attaches_file   ,:value=> @req1.attaches_file %>
+<% end %>
+<%= f.hidden_field :sb05_users_id   ,:value=> @user.id %>
+<%= f.hidden_field :user_code       ,:value=> @user.user_code %>
+<%= f.hidden_field :user_name       ,:value=> @user.user_name %>
+<%= f.hidden_field :org_code        ,:value=> @user.org_code %>
+<%= f.hidden_field :org_name        ,:value=> @user.org_name %>
+<%= f.hidden_field :telephone       ,:value=> @user.telephone %>
+<%= f.hidden_field :r_state         ,:value=> @req1.r_state %>
+<%= f.hidden_field :media_id        ,:value=> @req1.media_id %>
+<%= f.hidden_field :media_code      ,:value=> @req1.media_code %>
+<%= f.hidden_field :media_name      ,:value=> @req1.media_name %>
+<%= f.hidden_field :categories_code ,:value=> @req1.categories_code %>
+<%= f.hidden_field :categories_name ,:value=> @req1.categories_name %>

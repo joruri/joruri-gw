@@ -1,0 +1,8 @@
+<%# 農林土木工事文書掲示板-%>
+<%= render "gwbbs/admin/user_forms/form006/index_charge" if params[:state].to_s == 'GROUP' %>
+<%= render "gwbbs/admin/user_forms/form006/index_category" if params[:state].to_s == 'CATEGORY' %>
+<%= render "gwbbs/admin/user_forms/form006/index_date" if params[:state].to_s == 'DATE' %>
+<%= render "gwbbs/admin/user_forms/form006/index_draft" if params[:state].to_s == 'DRAFT' %>
+<%= render "gwbbs/admin/user_forms/form006/index_draft" if params[:state].to_s == 'NEVER' %>
+<%= render "gwbbs/admin/user_forms/form006/index_draft" if params[:state].to_s == 'VOID' %>
+<%= render "gwbbs/admin/user_forms/form006/index_date" if params[:state].blank? %>

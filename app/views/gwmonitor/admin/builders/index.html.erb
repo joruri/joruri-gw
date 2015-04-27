@@ -1,0 +1,32 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<table class="index">
+  <tr>
+    <th style ="width: 60px;">状態</th>
+    <th>タイトル</th>
+    <th style ="width: 60px;text-align: center;">回答状況</th>
+    <th style ="width: 95px;text-align: center;" colspan = "2">回答確認</th>
+    <th style ="width: 70px;">CSVファイル</th>
+    <th style ="width: 70px;">添付ファイル</th>
+    <th style ="width: 120px;">回答期限日</th>
+  </tr>
+  <% @items.each do |item| %>
+   <tr class="<%= cycle 'article', 'article cycle' %>">
+     <td style="width:60px;"><%=raw item.status_name %></td>
+     <td><%= link_to item.title, item.show_path %></td>
+     <td><%= item.commission_info %></td>
+     <td style="text-align: center; width: 30px;"><%= link_to '一覧', item.result_path %></td>
+     <td style="text-align: center; width: 40px;"><%= link_to '未回答', "#{item.result_path}?cond=unanswered" %></td>
+     <td style="text-align: center;"><%= link_to '出力', item.csv_export_path %></td>
+     <td style="text-align: center;"><%= link_to '出力', item.file_export_path %></td>
+     <td><%=l item.expiry_date if item.expiry_date %></td>
+   </tr>
+  <% end %>
+</table>
+
+</div><!--pieceBody-->
+</div><!--piece-->

@@ -1,0 +1,8 @@
+<table class="show">
+<tr><th>期限</th></tr>
+<tr><td><%= f.date_select :ed_at, :use_month_numbers => true, :class => 'datetime' %><br /></td></tr>
+<tr><th>内容<span class="textRed">※</span></th></tr>
+<tr><td><%= f.text_area  :title, :cols=>25 ,:rows=>3  %></td></tr>
+<tr><th>備考</th></tr>
+<tr><td><%= f.text_area  :body, :cols=>25 ,:rows=>4  %></td></tr>
+</table>

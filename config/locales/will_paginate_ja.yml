@@ -1,0 +1,14 @@
+ja:
+  will_paginate:
+    page_gap: …
+    page_entries_info:
+      single_page:
+        zero: "表示するデータが見つかりませんでした"
+        one: "1件"
+        other: "%{count}件"
+      single_page_html:
+        zero: '<div class="notice">表示するデータが見つかりませんでした</div>'
+        one: '<span class="count">1</span>件を表示'
+        other: '<span class="count">%{count}</span>件を表示'
+      multi_page: '%{count}件中、%{from}件から %{to}件を表示'
+      multi_page_html: '<div class="pageEntryInfo"><span class="count">%{count}</span>件中、<span class="from">%{from}</span>件から<span class="to">%{to}</span>件を表示</div>'

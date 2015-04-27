@@ -1,0 +1,40 @@
+<%
+mode = ''
+mode = 'date' unless @title.categoey_view
+mode = 'date' if @title.category == 0
+%>
+<table class="index">
+  <tr class="headIndex">
+    <th class="docTitle">記事タイトル</th>
+    <th class="item">回答数</th>
+    <th class="item">状況</th>
+    <% if mode.blank? %>
+    <th class="category"><%= @title.category1_name %></th>
+    <% end %>
+    <th class="update">回答最終更新日時</th>
+  </tr>
+  <% brk_key = nil %>
+  <% @items.each do |item| %>
+    <% if brk_key != item.section_code %>
+    <tr class="subIndex">
+      <th class="docTitle"><%= item.section_name %></th>
+      <th class="item"></th>
+      <th class="item"></th>
+      <% if mode.blank? %>
+      <th class="category"></th>
+      <% end %>
+      <th class="update"></th>
+    </tr>
+    <% end %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="doctitle"><%= link_to hbr(item.title), gwqa_doc_path(item, title_id: item.title_id) %></td>
+      <td class="qaAnswer"><%=raw "<span>#{item.answer_count}</span>" if item.answer_count.to_i > 0 %></td>
+      <td class="qaSettled"><%=raw "<span>解決済</span>" if item.content_state == "resolved" %></td>
+      <% if mode.blank? %>
+      <td class="category"><%= gwbd_category_name(@d_categories, item.category1_id) %></td>
+      <% end %>
+      <td class="update"><%=l item.latest_answer if item.latest_answer %></td>
+    </tr>
+    <% brk_key = item.section_code %>
+  <% end %>
+</table>

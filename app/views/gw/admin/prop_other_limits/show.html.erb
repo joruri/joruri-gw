@@ -1,0 +1,43 @@
+<% count = current_count_group_props_each(@item.gid, @prop_types) %>
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader"></div>
+<%= render '/gw/admin/prop_others/prop_master_menu' %>
+<%= render 'titleline' %>
+
+<div class="pieceBodyBody">
+<div class="editingBox">
+  <span class="btEdit"><%= link_to_edit @item.id %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th class="group">所属</th>
+    <td><%= @item.group.name %></td>
+  </tr>
+  <tr>
+    <th class="item">制限数</th>
+    <td><%= @item.limit %></td>
+  </tr>
+  <tr>
+    <th class="item">合計</th>
+    <td><%= count[@prop_types.size] %></td>
+  </tr>
+  <% @prop_types.each_with_index do |type, i| %>
+  <tr>
+    <th class="item"><%= type.name %></th>
+    <td><%= count[i] %></td>
+  </tr>
+  <% end %>
+</table>
+
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', '/gw/prop_other_limits' %>
+</div>
+
+</div>
+</div>
+</div>

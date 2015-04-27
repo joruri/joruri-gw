@@ -1,0 +1,20 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<% if @items %>
+  <div class="editingBox">
+    <span class="btNew"><%= link_to '新規作成', system_ldap_temporaries_path + '?do=create', :confirm => '中間データを作成します' %></span>
+  </div>
+  <%= render 'list' %>
+<% end %>
+
+<% if params[:do] == 'preview' %>
+  <p>通信テスト</p>
+  <%= render 'preview' %>
+<% end %>
+
+</div>
+</div>

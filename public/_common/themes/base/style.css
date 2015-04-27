@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Initializes.
+========================================================= */
+
+/* Elements
+----------------------------------------------- */
+* {
+ margin:0px;
+ padding:0px;
+ font-size:1.0em;
+ font-style:normal;
+}
+html {
+ height: 100%;
+}
+body {
+ height: 100%;
+ background-color:#fff;
+ font-size:80%;
+}
+body, td, th, select, option {
+ font-family:"MS PGothic", "ＭＳ Ｐゴシック", Arial, Verdana, Osaka, sans-serif;
+ font-weight:lighter;
+}
+input, textarea {
+ padding: 1px;
+ font-size:110%;
+ _font-size:100%;
+ font-family:"MS PGothic", Arial, sans-serif;
+}
+textarea {
+ font-family:"MS Gothic", Arial, sans-serif;
+}
+blockquote {
+ margin:10px 20px 10px 20px;
+}
+h1, h2, h3, h4, h5 {
+ font-size:120%;
+ font-family:verdana;
+}
+img {
+ border-style:none;
+}
+pre {
+ font-family:SimHei, "ＭＳ ゴシック", monospace;
+}
+table {
+ border-collapse:collapse;
+ border-spacing:0px;
+ empty-cells:show;
+}
+ul {
+ list-style-type:none;
+ list-style-position:outside;
+}

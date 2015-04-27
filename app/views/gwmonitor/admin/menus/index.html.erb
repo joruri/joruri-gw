@@ -1,0 +1,29 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<table class="index">
+  <tr>
+    <th style="width:70px;">状態</th>
+    <th style ="width: 60px;text-align: center;">回答状況</th>
+    <th style="width:120px;">回答期限</th>
+    <th style="width:auto;">タイトル</th>
+    <th style="width:220px;">作成者</th>
+    <th style="width:120px;">最終更新日時</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:70px;"><%= link_to raw(item.status_name), item.show_path %></td>
+    <td><%= item.control.commission_info %></td>
+    <td><span style="<%= 'color:red;' if item.expired? %>"><%=l item.expiry_date if item.expiry_date %></span></td>
+    <td><%= link_to item.control.title, item.show_path %></td>
+    <td><%= item.control.section_name %></td>
+    <td><%=l item.latest_updated_at if item.latest_updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+
+</div><!--pieceBody-->
+</div><!--piece-->

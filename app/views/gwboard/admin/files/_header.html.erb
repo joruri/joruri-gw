@@ -1,0 +1,35 @@
+<%
+params[:st] = '2' if params[:st].blank?
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+str_tab1_class += ' current' if params[:st].to_s == '0' #所属(画像)
+str_tab2_class += ' current' if params[:st].to_s == '1' #所属(アイコン)
+str_tab3_class += ' current' if params[:st].to_s == '2' #全庁(画像)
+str_tab4_class += ' current' if params[:st].to_s == '3' #全庁(アイコン)
+%>
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+    <tr>
+      <td class="spaceLeft"></td>
+      <% if false %>
+      <td class="<%= str_tab1_class %>"><%= link_to "所属(画像)", "#{gwboard_files_path()}?st=0" %></td>
+      <td class="spaceCenter"></td>
+      <% end %>
+      <% if Gwbbs::Control.is_sysadm? %>
+      <td class="<%= str_tab2_class %>"><%= link_to "所属(アイコン)", "#{gwboard_files_path()}?st=1" %></td>
+      <td class="spaceCenter"></td>
+      <td class="<%= str_tab3_class %>"><%= link_to "背景画像", "#{gwboard_files_path()}?st=2" %></td>
+      <td class="spaceCenter"></td>
+      <td class="<%= str_tab4_class %>"><%= link_to "アイコン", "#{gwboard_files_path()}?st=3" %></td>
+      <td class="spaceRight"></td>
+      <% else %>
+      <td class="<%= str_tab2_class %>"><%= link_to "所属(アイコン)", "#{gwboard_files_path()}?st=1" %></td>
+      <td class="spaceRight"></td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
+</div><!--tabBox-->

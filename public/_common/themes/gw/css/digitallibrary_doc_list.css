@@ -1,0 +1,227 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/digitallibrary_doc_list.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+#content .DLDocList {
+  background-image: url(/_common/themes/gw/files/title/title_electronic-book.gif);
+}
+
+/* 図書名
+------------------------------------------*/
+#content .pieceBanner h3{
+  clear: both;
+  font-size: 150%;
+  padding-left: 20px;
+  background-color: #C9DCFF;
+}
+
+/* 右カラム　大枠
+------------------------------------------*/
+.DLDocList .outer {
+  margin-left: 22%;
+  width: 78%;
+}
+*html .DLDocList .outer {
+  width: 77%;
+}
+#page-digitallibrary-docs .DLDocList .outer {
+  width: auto;
+}
+#page-digitallibrary-folders-new .DLDocList .outer {
+  width: 77%;
+}
+.DLDocList .inner {
+  overflow: hidden;
+  width: 98%;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+/* table
+------------------------------------------*/
+table {
+  width: 100%;
+}
+*html #contentBody table.tabtable {
+  width: 99.7%;
+}
+table.show {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* ヘルプボックス
+------------------------------------------*/
+.helpBox {
+  margin-top: -40px;
+}
+
+/* 表示切替ボタン
+------------------------------------------*/
+.btBox {
+  float: left;
+  width: auto;
+  margin: 8px 0 0 20px;
+}
+*html .btBox {
+  margin-left: 10px;
+}
+.btBox span {
+  display: inline-block;
+  width: 90px;
+  height: 25px;
+  background-image: url(/_common/themes/gw/files/switch/switch02-t4_onoff.gif);
+  text-align: center;
+}
+.btBox span.current {
+  background-position: 0 -25px;
+}
+.btBox span a {
+  line-height: 2;
+}
+
+/* 検索ボックス
+------------------------------------------*/
+.search table.bbsSearch {
+  width: auto;
+}
+
+/* 検索ボックスライン
+------------------------------------------*/
+.pieceBodyHeader {
+  background-color: #EDEDED;
+}
+
+/* サイドメニュー　幅設定
+------------------------------------------*/
+#contentBody .pieceBody .sideMenu {
+  width: 22%;
+}
+
+/* サイドメニュー　階層全開・全閉ボタン
+------------------------------------------*/
+#contentBody .sideMenu .all span,
+#contentBody .sideMenu .close span {
+  display: inline-block;
+  margin-top: 5px;
+  margin-left: 15px;
+  margin-bottom: 5px;
+}
+
+/* table docformTitle(一覧テーブル)
+------------------------------------------*/
+.DLDocList table.docformTitle {
+  width: 100%;
+  margin: 0 0 10px 0;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+.DLDocList table.docformTitle th {
+  background-color: #E3EFFF;
+}
+.DLDocList table.docFolder th {
+  background-color: #E3EFFF;
+  padding: 4px 7px;
+}
+.DLDocList table.docFolder td {
+  padding: 4px 7px;
+  border: 1px solid #cccccc;
+}
+.DLDocList .right form#itemForm {
+  margin-left: 10px;
+}
+
+/* table docformBody(詳細テーブル)
+------------------------------------------*/
+table.docformBody th {
+  background-color: #E3EFFF;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+------------------------------------------*/
+.DLDocList table.bbsImage {
+  margin-top: -10px;
+}
+
+/* 機能ボタン周り
+------------------------------------------*/
+.editingBox {
+  width: auto;
+  margin: 0;
+  clear: both;
+  padding-bottom: 20px;
+}
+
+/* フォルダ詳細ページ　注意書き
+------------------------------------------*/
+.editingBox span.required {
+  display: block;
+  margin-left: 80px;
+}
+
+/* 詳細ページ下部記事情報
+------------------------------------------*/
+.DLDocList .docInf {
+  margin-top: 20px;
+  padding-top: 5px;
+  padding-left: 7px;
+  border-top: 1px solid #777;
+}
+.DLDocList .right .navi {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 10px;
+}
+.inner .navi {
+  margin-left: -10px;
+}
+
+.docsInnerBox {
+  margin: 7px;
+}
+
+/* 新規作成ボタン
+------------------------------------------*/
+.editingBox a {
+  margin-left: 0;
+}
+
+/* mceEditor
+-------------------------------------------*/
+#contentBody .DLDocList span.mceEditor {
+  padding: 10px 6px 6px;
+}
+
+/* 一覧へ戻る
+-------------------------------------------*/
+.DLDocList .right {
+  margin-bottom: 30px;
+}
+
+.DLDocList .right .btReturn {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+}
+
+#page-digitallibrary-docs .DLDocList .outer,
+#page-digitallibrary-docs-index .DLDocList .outer {
+  width: auto;
+}
+
+/* docListFunctions
+------------------------------------------*/
+.right .docListFunctions {
+  margin-top: 5px;
+  padding-right: 5px;
+  text-align: right;
+}
+.right .docListFunctions div {
+  display: inline;
+  margin-left: 10px;
+  margin-right: 0;
+}

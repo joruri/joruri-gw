@@ -1,0 +1,88 @@
+/* =========================================================
+   Icon File.
+========================================================= */
+
+/* Icon.
+----------------------------------------------- */
+.iconFile, .iconDefault {
+  display: inline-block;
+  padding: 0px 15px 0px 30px;
+  background-repeat: no-repeat;
+  background-image: url(/_common/images/icons/default.png);
+  line-height: 1.9;
+}
+.iconBmp {
+  background-image: url(/_common/images/icons/bmp.png); 
+}
+.iconCsv {
+  background-image: url(/_common/images/icons/csv.png); 
+}
+.iconDoc, .iconDocx, .iconDocm, 
+.iconDotx, .iconDotm { 
+  background-image: url(/_common/images/icons/doc.png); 
+}
+.iconGif {
+  background-image: url(/_common/images/icons/gif.png); 
+}
+.iconJpg { 
+  background-image: url(/_common/images/icons/jpg.png);
+}
+.iconJpe { 
+  background-image: url(/_common/images/icons/jpg.png); 
+}
+.iconJpeg { 
+  background-image: url(/_common/images/icons/jpg.png);
+}
+.iconJtd { 
+  background-image: url(/_common/images/icons/jtd.png);
+}
+.iconLzh { 
+  background-image: url(/_common/images/icons/lzh.png);
+}
+.iconPdf { 
+  background-image: url(/_common/images/icons/pdf.png);
+}
+.iconPng { 
+  background-image: url(/_common/images/icons/png.png); 
+}
+.iconPpt, .iconPptx, .iconPptm, 
+.iconPotx, .iconPotm, .iconPpam, 
+.iconPpsx, .iconPpsm { 
+  background-image: url(/_common/images/icons/ppt.png); 
+}
+.iconTxt { 
+  background-image: url(/_common/images/icons/txt.png); 
+}
+.iconXls, .iconXlsx, .iconXlsm,
+.iconXltx, .iconXltm, .iconXlam {
+  background-image: url(/_common/images/icons/xls.png); 
+}
+.iconZip {
+  background-image: url(/_common/images/icons/zip.png); 
+}
+.iconVbs { 
+  background-image: url(/_common/images/icons/vbs.png); 
+}
+.iconExe { 
+  background-image: url(/_common/images/icons/exe.png);
+}
+.iconOdb { 
+  background-image: url(/_common/images/icons/odb.gif);
+}
+.iconOdf { 
+  background-image: url(/_common/images/icons/odf.gif);
+}
+.iconOdg { 
+  background-image: url(/_common/images/icons/odg.gif);
+}
+.iconOdp { 
+  background-image: url(/_common/images/icons/odp.gif); 
+}
+.iconOds { 
+  background-image: url(/_common/images/icons/ods.gif);
+}
+.iconOdt { 
+  background-image: url(/_common/images/icons/odt.gif);
+}
+
+

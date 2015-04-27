@@ -1,0 +1,31 @@
+<div class="editingBox">
+  <% if @items.blank? %>
+    <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
+  <% else %>
+    <span class="btEdit"><%= link_to '編集', {action: :edit, id: @items[0].id} %></span>
+  <% end %>
+</div>
+
+<%= form_tag url_for(action: :sort_update), {method: :put} do %>
+<%= unique_error_messages_for @items %>
+<table class="index">
+  <tr>
+    <th style="width: 80px;">並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+    <th>職名</th>
+    <th>氏名</th>
+    <th>Gwに表示</th>
+    <th>状態</th>
+  </tr>
+  <% @items.each do |item| -%>
+    <%= fields_for 'item[]', item do |f| %>
+      <tr class="<%= cycle '', 'cycle' %>">
+      	<td><%= f.text_field :u_order, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+        <td><%= item.title %></td>
+        <td><%= item.u_name %></td>
+  	    <td><%= '表示' if item.is_governor_view == 1 %></td>
+      	<td><%= item.state_label %></td>
+      </tr>
+    <% end -%>
+  <% end -%>
+</table>
+<% end %>

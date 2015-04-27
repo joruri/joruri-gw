@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Print Top
+========================================================= */
+/* layout
+----------------------------------------------- */
+body {
+  background-color: #fff;
+  zoom: 90%; 
+}
+#header, #banner, #navi, #main, #footer {
+  width: 740px;
+}
+
+/* IE */
+*html #header, *html #banner, *html #navi, *html #main, *html #footer { 
+  width: 720px;
+}
+
+/* Opera9.6before */
+#header:not(\*|*), #banner:not(\*|*), #navi:not(\*|*), #main:not(\*|*), #footer:not(\*|*) {
+  width: 680px;
+}
+
+/* Opera9.6before */
+html:first-child #header, html:first-child #banner, html:first-child #navi, html:first-child #main, html:first-child #footer {
+  width: 680px;
+}
+
+/* Header Banner
+----------------------------------------------- */
+.menu,
+#commonHeader,
+#adBanner,
+#footerAdBanner {
+  display: none;
+}
+
+/* attribute
+----------------------------------------------- */
+.attribute {
+  float: left;
+  width: 100%;
+}
+.attributeSaiyojoho,
+.attributeBosyu,
+.attributeKyoka {
+  margin-left: 0px;
+}
+
+/* page-title piece
+----------------------------------------------- */
+#pageTitle {
+  width: 740px;
+}
+*html #pageTitle {
+  width: 720px;
+}
+

@@ -1,0 +1,8 @@
+<div class="piece">
+<h1><%= link_to "Joruri Gw", '/' %></h1>
+</div>
+
+<% if Core.user %>
+<%= %Q(<span class="department">#{Core.user_group.name}</span>) unless Core.user_group.nil? %>
+<span class="name"><%= Core.user.display_name %></span>
+<% end %>

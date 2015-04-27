@@ -1,0 +1,38 @@
+<%
+t01 = %Q(<span>電子職員録</span>)
+t02 = %Q(<span>電子事務分掌表</span>)
+t03 = %Q(<span>事務分掌表・座席表掲示板</span>)
+t03_1 = %Q(<span>ネットワーク電話</span>)
+t04 = %Q(<span>ヘルプ</span>)
+t05 = %Q(<span>コード管理</span>)
+t06 = %Q(<span>主管課マスタ</span>)
+t07 = %Q(<span>管理者設定</span>)
+case @l1_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">電子職員録</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">電子事務分掌表</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">事務分掌表・座席表掲示板</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">ヘルプ</span>)
+when '05'
+  t05 = %Q(<span class="gwsub_current_menu">コード管理</span>)
+when '06'
+  t06 = %Q(<span class="gwsub_current_menu">主管課マスタ</span>)
+when '07'
+  t07 = %Q(<span class="gwsub_current_menu">管理者設定</span>)
+else
+end
+network_telephone_url = Gwsub::Sb04Setting.get_network_telephone_url
+%>
+<div class="menu">
+<%= link_to t01.html_safe , url_for('/gwsub/sb04/01/sb04stafflistview')       %>
+<%= link_to t02.html_safe , url_for('/gwsub/sb04/02/sb04divideduties')        %>
+<%= link_to t03.html_safe , url_for('/gwsub/sb04/06/sb04_seating_lists?v=2')  %>
+<%= link_to t03_1.html_safe,url_for(network_telephone_url), {:target => "_blank"} if network_telephone_url.present? -%>
+<%= link_to t04.html_safe , url_for('/gwsub/sb04/05/sb04helps')     %>
+<%= link_to t05.html_safe , url_for('/gwsub/sb04/04/sb0404menu')                 if @u_role==true || @role_sb04_dev == true %>
+<%= link_to t06.html_safe , url_for('/gwsub/sb04/01/sb04stafflistview_masters')  if @u_role==true %>
+<%= link_to t07.html_safe , url_for('/gwsub/sb04/09/sb04_limit_settings')        if @u_role==true %>
+</div>

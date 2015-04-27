@@ -1,0 +1,78 @@
+@charset "UTF-8";
+
+/* =========================================================
+   会議室案内プレビュー
+   _common/themes/gw/css/meeting_preview.css
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1.3;
+  background-repeat: no-repeat;
+}
+body, td, th, select, option {
+  font-family: "MS PGothic","ＭＳ Ｐゴシック",Arial,Verdana,Osaka,sans-serif;
+  font-weight: lighter;
+}
+body {
+  min-width: 1111px;
+  width: 100%;
+}
+*html body {
+  width: expression(document.body.clientWidth < 1111? "1111px" : "auto");
+}
+#main {
+  padding-top: 24px;
+  padding-bottom: 1px;
+  background-image: url(/_common/themes/gw/files/bg-joruri-pattern.gif);
+  background-repeat: repeat;
+}
+*html #main {
+  padding-bottom: 24px;
+}
+*:first-child+html #main {
+  padding-bottom: 24px;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  empty-cells: show;
+}
+table {
+  width: 1134px;
+  width: 1110px;
+  height: 96px;
+  margin: 0 auto 24px;
+}
+table td {
+  background-color: #FFF;
+  border: solid 1px #000;
+  font-size: 1.6em;
+}
+table td.title {
+  width: 580px;
+  width: 545px;
+  padding-right: 13px;
+  padding-left: 13px;
+}
+.start {
+  margin-left: 36px;
+}
+.separate,
+.end {
+  font-size: 0.7em;
+}
+table td.place {
+  width: 270px;
+  padding-left: 20px;
+  padding-right: 19px;
+}
+
+.pagination {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+

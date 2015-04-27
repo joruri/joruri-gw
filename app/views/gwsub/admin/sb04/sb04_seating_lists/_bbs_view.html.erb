@@ -1,0 +1,24 @@
+<%
+path_index  = "/gwsub/sb04/04/sb04_seating_lists"
+-%>
+<table class="index">
+  <colgroup class="fyear_markjp"></colgroup>
+  <colgroup class="title"></colgroup>
+  <tbody>
+    <tr>
+      <th>
+        <%= sort_link '年度', @sort_keys, path_index, :fyear_markjp, @qs -%>
+      </th>
+      <th>
+        <%= sort_link 'タイトル', @sort_keys, path_index, :title, @qs -%>
+      </th>
+    </tr>
+    <% @items.each do |item| -%>
+    <tr>
+      <td><%= item.fyear_markjp -%></td>
+      <td><%= link_to item.title , "#{item.bbs_url}" ,:target=>'_blank' , :title=>"#{@bbs_link_title}" %></td>
+    </tr>
+    <% end -%>
+  </tbody>
+</table>
+<%= paginate @items %>

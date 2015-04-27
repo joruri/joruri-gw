@@ -1,0 +1,40 @@
+<table class="show">
+  <tr>
+    <th style="width: 80px; text-align: center;">通知日</th>
+    <td style="width: 200px; text-align: left;"><%= Gwboard.fyear_to_namejp_ymd(@item.inpfld_006d) %></td>
+    <th style="width: 80px; text-align: center;">文書番号</th>
+    <td style="text-align: left;"><%= @item.inpfld_001 %></td>
+    <th style="width: 80px; text-align: center;">区分</th>
+    <td style="text-align: center;"><%= @item.inpfld_002 %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th style="width: 80px; text-align: center;">文書名</th>
+    <td style="text-align: left;"><%= @item.title %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th style="width: 80px; text-align: center;">摘要</th>
+    <td style="width: 200px; text-align: center;"><%= @item.inpfld_003 %></td>
+    <th style="width: 80px; text-align: center;">備考</th>
+    <td style="text-align: center;"><%= @item.inpfld_004 %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th style="width: 80px; text-align: center;">本文</th>
+    <% if @item.wiki_enabled? -%>
+      <td class="wiki"><%== wiki_show @item.body -%></td>
+    <% else -%>
+      <td><%== @item.body -%></td>
+    <% end -%>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th style="width: 80px; text-align: center;">参考</th>
+    <td style="text-align: left;"><%= @item.inpfld_005 %></td>
+  </tr>
+</table>

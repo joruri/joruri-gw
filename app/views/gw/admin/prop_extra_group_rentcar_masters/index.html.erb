@@ -1,0 +1,55 @@
+<% public_uri = %Q(#{url_for({:action=>:index})}/) %>
+<div class="piece schedulePiece index">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+ <%= render '/gw/admin/schedule_props/bt_box', d: Date.today -%>
+ <%= render '/gw/admin/prop_extras/header' %>
+</div>
+<div class="pieceBodyBody">
+<%= render 'search' -%>
+
+<% if @items.blank? -%>
+  <%= show_notice -%>
+<% else -%>
+<table class="index">
+  <tr>
+    <th></th>
+    <th><%= sort_link '主管課担当者 所属部', @sort_keys, public_uri, "management_parent_gid", @qs %></th>
+    <th><%= sort_link '主管課担当者 所属課', @sort_keys, public_uri, "management_gid", @qs %></th>
+    <th>主管課担当者</th>
+    <th>範囲</th>
+    <th><%= sort_link '部局', @sort_keys, public_uri, "division_parent_gid", @qs %></th>
+    <th><%= sort_link '所属', @sort_keys, public_uri, "division_gid", @qs %></th>
+    <th>作成日</th>
+    <th>更新日</th>
+  </tr>
+  <% @items.each do | item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to('詳細', "#{public_uri}#{item.id}#{@params_set}") %></td>
+      <td><%= item.r_dept1.try(:name) -%></td>
+      <td><%= item.r_sect1.try(:name) -%></td>
+      <td><%= item.r_user.try(:name) -%></td>
+      <td><%= item.range_class_id == 1 ? '部局' : "所属" -%></td>
+      <td><%= item.r_dept2.try(:name) -%></td>
+      <td><%= item.r_sect2.try(:name) if item.division_gid.present? -%></td>
+      <td><%= item.created_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+    </tr>
+  <% end %>
+</table>
+<% end -%>
+</div>
+<%= paginate @items %>
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var search_submit = function () {
+  document.forms['search'].submit();
+}
+//]]>
+</script>

@@ -1,0 +1,41 @@
+<%
+titles = {
+  'gwbbs' => '掲示板',
+  'gwfaq' => 'ＦＡＱ',
+  'gwqa' => 'Ｑ＆Ａ',
+  'doclibrary' => '書庫',
+  'digitallibrary' => '電子図書'
+}
+%>
+<div class="bbsDocList">
+<div class="pieceHeader">
+<h2>更新一覧</h2>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+<h3><%= titles[params[:system]] %>更新一覧</h3>
+<div class="helpBox">
+</div>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index">
+  <tr>
+    <th style="width:220px; text-align: left;"></th>
+    <th>記事タイトル</th>
+    <th style="width:160px; text-align: left;">記事管理所属</th>
+    <th style="width:120px; text-align: left;">最終更新日時</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: left;"><%= item.control.title %></td>
+    <td style="text-align: left;"><%= link_to item.title, item.portal_show_path %></td>
+    <td style="text-align: left;"><%= item.section_name %></td>
+    <td style="text-align: left;"><%=l item.latest_updated_at if item.latest_updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<div class="btReturn"><%= link_to 'ポータルへ戻る', '/' %></div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

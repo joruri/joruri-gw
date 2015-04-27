@@ -1,0 +1,64 @@
+<%
+#groups    = Gwsub::grouplist4(nil,nil,@u_role)
+fyears = Gw::YearFiscalJp.select_dd_markjp_id( nil , 5)
+conf_kind_options = {:c_group_id=>@c_group_id, :fyear_id=>@item.fyear_id}
+conf_kinds = Gwsub::Sb06AssignedConfKind.sb06_assign_conf_kind_id_select(conf_kind_options)
+select_state  = Gwsub::Sb06AssignedConfItem.select_list_status
+%>
+<%= hidden_field_tag 'limit', @limit %>
+<%= hidden_field_tag 'fyed_id', @fy_id %>
+<%= hidden_field_tag 'pre_fyear', @fy_id %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>年度<%= required %></th>
+    <td><%= f.select :fyear_id, options_for_select(fyears, @item.fyear_id), {}, {onchange: "get_list();"} %></td>
+  </tr>
+  <tr>
+    <th>申請書種別<%= required %></th>
+    <td><%= f.select :conf_kind_id, options_for_select(conf_kinds, @item.conf_kind_id) %></td>
+  </tr>
+  <tr>
+    <th>項目表示順</th>
+    <td><%= f.text_field :item_sort_no, :class => 'num' %></td>
+  </tr>
+  <tr>
+    <th>項目見出し<%= required %></th>
+    <td><%= f.text_field :item_title, :size => 80 %></td>
+  </tr>
+  <tr>
+    <th>項目最大数<%= required %></th>
+    <td><%= f.text_field :item_max_count, :size => 10 %></td>
+  </tr>
+  <tr>
+    <th>選択肢表示</th>
+    <td><%= radio f, :select_list, select_state, :class => 'state' %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+<%#= render 'gwsub/admin/sb04/sb04_common_info_form', f: f %>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  var ed_str = '';
+//ユーザー
+  function get_list() {
+    g_id = <%=@c_group_id%>;
+    fy_id = $("item_fyear_id").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("<%= url_for({:action => :index})%>/conf_kinds_select?g_id=" + g_id + "&fyid=" + fy_id, {method:'get', onComplete: function(x){
+      $('item_conf_kind_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+  //]]>
+</script>

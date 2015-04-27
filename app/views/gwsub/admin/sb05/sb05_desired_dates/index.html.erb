@@ -1,0 +1,54 @@
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_desired_dates/menu' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb05/sb05_desired_dates/search_with_id' %>
+<%if @items.blank?%>
+<%=show_notice%>
+<%else%>
+<table class="index">
+  <tr>
+    <th></th>
+      <th>
+      <%=link_to "▲" , url_for({:action => :index, :sort_keys => "media_id asc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <%=link_to "▼" , url_for({:action => :index, :sort_keys => "media_id desc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <br>媒体
+    </th>
+    <th>
+      <%=link_to "▲" , url_for({:action => :index, :sort_keys => "desired_at asc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <%=link_to "▼" , url_for({:action => :index, :sort_keys => "desired_at desc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <br>掲載日
+    </th>
+    <th>
+      <%=link_to "▲" , url_for({:action => :index, :sort_keys => "weekday asc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <%=link_to "▼" , url_for({:action => :index, :sort_keys => "weekday desc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <br>曜日
+    </th>
+    <th>
+      <%=link_to "▲" , url_for({:action => :index, :sort_keys => "monthly asc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <%=link_to "▼" , url_for({:action => :index, :sort_keys => "monthly desc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <br>週
+    </th>
+    <th>
+      <%=link_to "▲" , url_for({:action => :index, :sort_keys => "edit_limit_at asc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <%=link_to "▼" , url_for({:action => :index, :sort_keys => "edit_limit_at desc", :limit => 30, :m_id => 0, :m_cd => 0})%>
+      <br>編集期限
+    </th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td><%=link_to_show item%></td>
+    <td><%= safe{item.m_rel.media_name}%></td>
+    <td><%=safe{Gw.date_str(item.desired_at)}%></td>
+    <td><%=item.select_weekday_show%></td>
+    <td><%=item.select_monthly_show%></td>
+    <td><%=Gw.datetime_str(item.edit_limit_at)%></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+<%= paginate @items %>
+</div>
+</div>

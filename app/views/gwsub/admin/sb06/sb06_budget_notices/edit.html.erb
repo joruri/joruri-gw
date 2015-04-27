@@ -1,0 +1,20 @@
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<h2>予算担当登録</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb06_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb0605menu/sb06_budget_admin_submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_submenu' if @v=='2' %>
+<%= render 'gwsub/admin/sb06/sb06_level3menu_header' unless @v=='2' %>
+</div>
+<div class="pieceBody">
+<div class="showMenu">
+<%= link_to_show @item.id %>
+</div>
+<% @action = "edit" %>
+<%= form_for :item, :url => url_for({:action => :show, :id => @item.id}) ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

@@ -1,0 +1,73 @@
+<div class="piece gwfaq">
+<div class="pieceHeader">
+<h2>質問管理</h2>
+</div>
+<div class="pieceBody">
+<%= render 'gwqa/admin/makers/faq_header' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: right;">管理番号</th>
+    <th>タイトル</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 85px; text-align: center;">更新日</th>
+    <th style="width: 55px; text-align: center;">並び順</th>
+    <th style="width: 75px; text-align: center;">ステータス</th>
+    <th style="width: 95px; text-align: center;">　</th>
+  </tr>
+  <% for item in @faq_items %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to '詳細確認', "/gwfaq/makers/#{item.id}?state=#{params[:state]}" %></td>
+    <% if item.category == 1 %>
+    <td style="text-align: center;"><%= link_to '分類編集', item.categorys_path %></td>
+    <% else %>
+    <td></td>
+    <% end %>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d').to_s %></td>
+    <td style="text-align: center;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_show %></td>
+    <td style="text-align: center;"><%= link_to '公開画面 >> ', item.docs_path %></td>
+  </tr>
+  <% end %>
+</table>
+<br />
+<%= paginate @faq_items %>
+
+<%= render 'gwqa/admin/makers/qa_header' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: right;">管理番号</th>
+    <th>タイトル</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 85px; text-align: center;">更新日</th>
+    <th style="width: 55px; text-align: center;">並び順</th>
+    <th style="width: 75px; text-align: center;">ステータス</th>
+    <th style="width: 95px; text-align: center;">　</th>
+  </tr>
+  <% for item in @qa_items %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to '詳細確認', "/gwqa/makers/#{item.id}?state=#{params[:state]}" %></td>
+    <% if item.category == 1 %>
+    <td style="text-align: center;"><%= link_to '分類編集', item.categorys_path %></td>
+    <% else %>
+    <td></td>
+    <% end %>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d').to_s %></td>
+    <td style="text-align: center;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_show %></td>
+    <td style="text-align: center;"><%= link_to '公開画面 >> ', item.docs_path %></td>
+  </tr>
+  <% end %>
+</table>
+<br />
+<%= paginate @qa_items %>
+</div>
+</div><!--piece gwfaq-->
+

@@ -1,0 +1,44 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>掲示板記事削除</h2>
+</div>
+<div class="pieceBody">
+<div class="editingBox">
+<span class="docLink"><%= link_to '管理者設定 >>', '/gw/config_settings?c1=1&c2=7' %></span>
+</div>
+
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: right;">管理番号</th>
+    <th style="width: 40px; text-align: right;">並び順</th>
+    <th>タイトル</th>
+    <th style="width: 80px; text-align: center;">ステータス</th>
+    <th style="width: 60px; text-align: center;">一覧表示</th>
+    <th style="width: 60px; text-align: right;">公開記事</th>
+    <th style="width: 60px; text-align: right;">期限切れ</th>
+    <th style="width: 60px; text-align: center;">自動削除</th>
+    <th style="width: 40px; text-align: center;">削除</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= item.state == 'public' ? '公開中' : '非公開' %></td>
+    <td style="text-align: center;"><%= item.view_hide ? 'する' : 'しない' %></td>
+    <td style="text-align: right;"><%= item.public_docs_count %></td>
+    <td style="text-align: right;"><%= item.expired_docs_count %></td>
+    <td style="text-align: center;"><%= item.limit_date == 'use' ? 'する' : 'しない' %></td>
+    <td style="text-align: center;"><%= link_to '削除', {action: :destroy, id: item.id}, confirm: '削除をすると元に戻せません。削除してよろしいですか？', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= paginate @items %>
+
+<div class="btReturn">
+  <%= link_to '処理選択へ戻る', gwbbs_itemdeletes_path %>
+</div>
+
+</div>
+</div><!--piece gwbbs-->

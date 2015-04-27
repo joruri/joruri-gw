@@ -1,0 +1,24 @@
+<%
+options1 =  {  'table_name'      => 'gwsub_sb01_trainings' , :action=>'bbs',  'link_to_show'    => 0}
+options1['field_td_criteria'] = {
+  'title' => Proc.new{|item|
+    %Q(#{item.title})
+    }
+}
+options =  {
+  'table_name'      => 'gwsub_sb01_training_props' , :action=>'index',
+  'link_to_show'    => 1
+}
+options['field__td_criteria']={
+  'id'=>Proc.new{|item|
+    %Q(<a href="#{Site.current_node.public_uri}#{item.id}?t_id=#{@item1.id}&t_menu=#{@t_menu}&v=#{@v}" >詳細</a>)
+  }
+}
+%>
+<%= render 'gwsub/admin/sb01/sb01_training_schedule_props/menu' %>
+<br />
+<%= raw(table_to_show2(@item1,options1)) %>
+<%= raw(table_to_index2(@items,options)) %>
+<br/>
+<%= paginate @items %>
+<br/>

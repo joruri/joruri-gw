@@ -1,0 +1,74 @@
+<%
+  if @item.unid
+    mce_base_url = cms_files_path(@item.unid) + "/"
+  else
+    mce_base_url = cms_tmp_files_path(@item.tmp_id) + "/"
+  end
+%>
+<%= tool_tiny_mce mce_base_url, {:view_mode=>true} %>
+
+<h5>
+  <%= @item.control.title unless @item.control.blank? %>
+</h5>
+
+<div class="showMenu">
+  <% if @permit_user %>
+    <%=link_to '編集', @item.edit_path %>
+    <%=link_to '削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+  <% end %>
+</div>
+
+<table class="show">
+  <tr>
+    <th>記事番号</th>
+    <td><%= @item.id %></td>
+  </tr>
+  <tr>
+    <th>大分類</th>
+    <td><%= @item.category1.name unless @item.category1.blank? %></td>
+  </tr>
+  <%if 2 <= @title.category %>
+  <tr>
+    <th>中分類</th>
+    <td><%= @item.category2.name unless @item.category2.blank? %></td>
+  </tr>
+  <%end%>
+  <%if 3 == @title.category %>
+  <tr>
+    <th>小分類</th>
+    <td><%= @item.category3.name unless @item.category3.blank? %></td>
+  </tr>
+  <%end%>
+</table>
+<table class="show">
+  <tr>
+    <th>質問</th></tr><tr>
+    <td class="mceEditor"><%= text_area_tag 'viewBody', @item.body, :class => 'mceEditor', :style => 'width:100%' %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>登録日</th>
+    <td><%= @item.createdate %></td>
+  </tr>
+  <tr>
+    <th>登録者所属</th>
+    <td><%= @item.createrdivision %></td>
+  </tr>
+  <tr>
+    <th>登録者名</th>
+    <td><%= @item.creater %></td>
+  </tr>
+  <tr>
+    <th>更新日</th>
+    <td><%= @item.editdate %></td>
+  </tr>
+  <tr>
+    <th>編集者所属</th>
+    <td><%= @item.editordivision %></td>
+  </tr>
+  <tr>
+    <th>編集者名</th>
+    <td><%= @item.editor %></td>
+  </tr>
+</table>

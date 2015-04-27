@@ -1,0 +1,29 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+  <%= render 'gwsub/admin/sb04/sb04officialtitles/display_name' %>
+</div>
+<div class="pieceBody">
+  <table class="show">
+    <tbody>
+     <tr>
+       <th>年度</th><td><%= @item.fyear_markjp -%></td>
+     </tr>
+     <tr>
+       <th>職名コード</th><td><%= @item.code -%></td>
+     </tr>
+     <tr>
+       <th>職名</th><td><%= @item.name -%></td>
+     </tr>
+     <tr>
+       <th>備考</th><td><%= @item.remarks -%></td>
+     </tr>
+    </tbody>
+  </table>
+  <div class="btReturn">
+  <%= link_to '一覧に戻る',"#{@csv_base_url}/index_csv?#{@qs}" %>
+  </div>
+</div>
+</div>

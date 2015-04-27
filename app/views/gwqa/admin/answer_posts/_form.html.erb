@@ -1,0 +1,41 @@
+<!-- 回答　新規・編集:共通フォーム（本文のみ入力） -->
+<%
+  if @item.unid
+    mce_base_url = cms_files_path(@item.unid) + "/"
+  else
+    mce_base_url = cms_tmp_files_path(@item.tmp_id) + "/"
+  end
+%>
+<%= tool_tiny_mce mce_base_url%>
+
+<script src="/javascripts/prototype.js" type="text/javascript"></script>
+<table class="show">
+  <tr>
+      <th>回答</th>
+      <td class="mceEditor"><%= f.text_area :body, :class => 'mediumtext body mceEditor', :style => '100%' %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>
+<%= doc_file_form f, @item %>
+
+<div class="submitters">
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognized';" type="submit" value="公開待ち" />
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
+  <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+</div>
+
+<input type="hidden" name="parent_id" value='<%="#{params[:parent_id]}"%>' />
+<input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />

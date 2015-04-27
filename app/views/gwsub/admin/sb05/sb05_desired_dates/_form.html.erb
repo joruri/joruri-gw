@@ -1,0 +1,36 @@
+<%
+medias1 = Gwsub::Sb05MediaType.select_dd_media_group(nil,'code')
+medias = []
+medias1.each do |value,key|
+  #if key.to_s == '2' || key.to_s == '3'
+    #next
+  #end
+  medias << [value,key]
+end
+%>
+<%= f.hidden_field :media_id    ,:value=>@item.media_id     if @action=='edit' %>
+<%= f.hidden_field :media_code  ,:value=>@item.media_code   if @action=='edit' %>
+<%= f.hidden_field :weekday     ,:value=>@item.weekday      if @action=='edit' %>
+<%= f.hidden_field :monthly     ,:value=>@item.monthly      if @action=='edit' %>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>媒体<%= required unless @action=='edit' %></th>
+    <td>
+      <%= f.select :media_code ,options_for_select(medias,@item.media_code) unless @action=='edit' %>
+      <%= @item.m_rel.media_name if @action=='edit' %>
+    </td>
+  </tr>
+  <tr>
+    <th>掲載日<%= required %></th>
+    <td><%= f.datepicker :desired_at, {}, {yearRange: "c:c+3"} %></td>
+  </tr>
+  <tr>
+    <th>編集期限<%= required %></th>
+    <td><%= f.datetimepicker :edit_limit_at, {}, {yearRange: "c:c+3"} %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>

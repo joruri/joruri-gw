@@ -1,0 +1,31 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'title_info' %>
+
+<% unless @item.base.state == 'closed' %>
+<div style="text-align: center;"><%= required('※まだページを閉じないでください。　詳細表示下部の「この回答を登録する」ボタンを押すと完了です。') %></div>
+<% end %>
+<%= render 'show' %>
+
+<% unless @item.base.state == 'closed' %>
+<br />
+<div align="center">
+<table>
+  <tr>
+    <td>
+      <input type="button" value="内容を修正する" onclick="location='<%= url_for(:action => :edit) %>'"></input>
+    </td>
+    <td>　　</td>
+    <td>
+      <input type="button" value="この回答を登録する" onclick="if (confirm('<%= @title.answer_confirm_message %>')){location='<%= url_for(:action => :public_seal) %>';return true;}else{return false;};"></input>
+    </td>
+  </tr>
+</table>
+</div>
+<% end %>
+
+</div>
+</div>

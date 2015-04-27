@@ -1,0 +1,78 @@
+<%
+fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+
+fyear_id_sb04 = nz(@item.fyear_id_sb04, @fyed_id).to_i
+groups = Gwsub::Sb04section.sb04_group_select(fyear_id_sb04, 1)
+
+section_item = Gwsub::Sb04section.where("id = ?", nz(@item.management_gid_sb04, @section_id).to_i).first
+staffs = []
+staffs =  section_item.staffs.collect{|x| ['('+x.staff_no+')'+x.name, x.id]} unless section_item.blank?
+-%>
+
+<%=  Gw.required_head %>
+<div class="title centerText">主管課担当者</div>
+<table class="show">
+<tr>
+  <th>年度 <%= required %></th>
+  <td>
+    <%= f.select(:fyear_id_sb04 , options_for_select(fyears ,  fyear_id_sb04) , {}, {:onchange=>'update_fyed_id_sb04();'}) %>
+  </td>
+</tr>
+<tr>
+  <th>主管課担当者 所属 <%= required %></th>
+  <td>
+    <%= f.select(:management_gid_sb04 , options_for_select(groups , nz(@item.management_gid_sb04, @section_id).to_i ) , {}, {:onchange=>'update_management_gid_sb04();'}) %>
+  </td>
+</tr>
+<tr>
+  <th>主管課担当者 <%= required %></th>
+  <td>
+    <%= f.select(:management_uid_sb04 , options_for_select(staffs , nz(@item.management_uid_sb04).to_i ) , {:include_blank=>false}) %>
+  </td>
+</tr>
+</table>
+
+<div class="title centerText">主管課担当範囲</div>
+<table class="show">
+<tr>
+  <th>所属</th>
+  <td>
+    <%= f.select(:division_gid_sb04 , options_for_select(groups , nz(@item.division_gid_sb04, @section_id ).to_i ) , {:include_blank=>false}) %>
+  </td>
+</tr>
+</table>
+<%= f.hidden_field :state, :value => nz(@item.state, 'enabled') %>
+
+<script language = "JavaScript" type="text/javascript">
+<!--
+  var end_cnt = -1;
+  var ed_str = '';
+  function update_fyed_id_sb04() {
+    fyear_id = $("item_fyear_id_sb04").value
+    end_cnt = 0;
+    url = "/gwsub/sb04/04/sb04stafflists/section_fields?fyed_id=" + fyear_id;
+    new Ajax.Request(url, {method:'get', onComplete: function(x){
+      $('item_management_gid_sb04').update(x.responseText);
+      $('item_division_gid_sb04').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      ed_str = ed_str + 'section:';
+      if (end_cnt == 4) {
+      }
+      update_management_gid_sb04(1);
+    }})
+  }
+  function update_management_gid_sb04() {
+    section_id = $("item_management_gid_sb04").value
+    url = "/gwsub/sb04/04/sb04stafflists/master_sections_fields?section_id=" + section_id;
+    new Ajax.Request(url, {method:'get', onComplete: function(x){
+      $('item_management_uid_sb04').update(x.responseText);
+      ed_str = ed_str + 'management_uid_sb04';
+      end_cnt = end_cnt + 1;
+    }})
+  }
+  var my_load = function() {
+    <%= "update_fyed_id_sb04();" if (params[:action] == 'new' || staffs.empty?) && params[:action] != 'create' && params[:action] != 'update'  %>
+  }
+  window.onload = my_load;
+-->
+</script>

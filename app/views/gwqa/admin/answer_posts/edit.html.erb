@@ -1,0 +1,14 @@
+<h3 class="qa_post_title">
+  <%= @item.control.title unless @item.control.blank? %>
+</h3>
+
+<%= form_for :item, :url => gwqa_answer_post_path(@item,{:title=>params[:title],:parent_id=>params[:parent_id]}), :html => {:method => :put} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+
+<% end %>
+
+

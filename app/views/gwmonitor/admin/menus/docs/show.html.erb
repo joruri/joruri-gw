@@ -1,0 +1,10 @@
+<% 
+case @title.spec_config
+when 0 #回答者のみ
+  concat render @title.gwmonitor_form_name + 'show'
+when 3 #他の回答者名
+  concat render @title.gwmonitor_form_name + 'show03'
+when 5 #他の回答者名と内容
+  concat render @title.gwmonitor_form_name + 'show05'
+end
+%>

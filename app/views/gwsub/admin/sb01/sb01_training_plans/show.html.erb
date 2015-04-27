@@ -1,0 +1,65 @@
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+</div>
+<div class="pieceBody">
+  <br/>
+<div class="titleLine"><p class="date_title">研修内容</p></div>
+
+<% if @docs_editor==true -%>
+<%if @expiry == true%>
+  <span class="required">最終開催日が過ぎています。研修を締切にしてください。</span><br /><br />
+<%end%>
+<div class="editingBox leftSide">
+<%if @item.state == '3'%>
+<span class="btReturnReceipt"><%= link_to '締切解除'    , url_for(:action => :closed)   ,:confirm=>"この研修を受付中に戻します。よろしいですか？"    if @docs_editor and @item.state=='3' -%></span>
+<%else%>
+<span class="btEdit"><%= link_to_edit @item.id if @docs_editor==true -%></span>
+<span class="btDestroy"><%= link_to_destroy @item.id if @docs_editor==true and @item.state == '1'-%></span>
+<span class="btStartReceipt"><%= link_to '受付開始'    , url_for(:action => :prepared) ,:confirm=>"この研修の受付を開始します。よろしいですか？"    if @docs_editor and @item.state=='1' -%></span>
+<span class="btPrepare"><%= link_to '準備中に戻す' , url_for(:action => :prepared) ,:confirm=>"この研修を準備中に戻します。よろしいですか？"    if @docs_editor and  @item.state=='2' and @expiry == false and @preparable==true-%></span>
+<span class="btClosed"><%= link_to '締切'        , url_for(:action => :closed)   ,:confirm=>"この研修の受付を締め切ります。よろしいですか？"  if @docs_editor and @item.state=='2' -%></span>
+<%#= link_to '終了'        , url_for(expired_path)   ,:confirm=>"この研修を終了します。よろしいですか？"  if @docs_editor and @item.state=='3' -%>
+<%end%>
+</div>
+<% end -%>
+<%= render 'gwsub/admin/sb01/sb01_training_plans/training_show' %>
+<br />
+<div class="titleLine"><p class="date_title">研修枠作成条件</p></div>
+<div class="editingBox leftSide"></span>
+<span class="btAddPlan"><%= link_to '開催日程追加' , url_for(:controller=>"/gwsub/admin/sb01/sb01_training_schedule_conditions", :action=>:new, :t_id=>@item.id) unless @item.state == '3'-%></span>
+</div>
+<%unless @tcs.blank?%>
+<table class="index">
+<tr>
+  <th>詳細</th>
+  <th>開催日</th>
+  <th>開始時刻</th>
+  <th>終了時刻</th>
+  <th>場所</th>
+  <th>定員 </th>
+  <th>企画所属 </th>
+</tr>
+<%for item in @tcs%>
+<tr class="<%= cycle '', 'cycle' %>">
+  <td><%=link_to "詳細", url_for(:controller=>"gwsub/admin/sb01/sb01_training_schedule_conditions", :action=>:show, :id=>item.id )%></td>
+  <td><%=safe{item.from_at.strftime("%Y-%m-%d")}%>（<%=safe{Gw.weekday(item.from_at.wday)}%>）</td>
+  <td><%=item.from_start%>:<%=item.from_start_min%></td>
+  <td><%=item.from_end%>:<%=item.from_end_min%></td>
+  <td><%=item.prop_name%></td>
+  <td><%=item.members_max%></td>
+  <td><%=safe{item.group_rel.name}%></td>
+</tr>
+<%end%>
+</table>
+<%end%>
+<br />
+<%unless @ts.blank?%>
+<div class="titleLine"><p class="date_title">開催日程一覧</p></div>
+<%= render 'gwsub/admin/sb01/sb01_training_plans/training_schedules' %>
+<%end%>
+</div>
+</div>

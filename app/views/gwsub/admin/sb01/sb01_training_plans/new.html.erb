@@ -1,0 +1,17 @@
+<%
+@action = "create"
+@create_path = "/gwsub/sb01/sb01_training_plans/"
+-%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true, :class=>"leftSide"} do |f| %>
+<%= render 'form_new', f: f %>
+<% end %>
+</div>
+</div>

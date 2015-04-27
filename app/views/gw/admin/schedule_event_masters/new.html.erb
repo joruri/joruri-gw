@@ -1,0 +1,20 @@
+<div class="piece schedulePiece index">
+<div class="pieceHeader">
+<%= render '/gw/admin/schedule_event_masters/piece_header'%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'menu' -%>
+</div>
+
+<div class="pieceBodyBody">
+
+<%= form_for :item, :url => "#{url_for(action: :create)}#{@params_set}", :html => {:multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for_create f, :caption => '保存' %>
+<% end %>
+
+</div>
+</div>
+</div>

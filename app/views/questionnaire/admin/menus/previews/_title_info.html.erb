@@ -1,0 +1,36 @@
+<div class="editingBox">
+<span class="docLink"></span>
+</div>
+
+<div class="docsInnerBox">
+
+<table class="bbsExpirydate">
+  <tr>
+    <td>　回答期限日時 : </td>
+    <td class="space"></td>
+    <td><%= @title.expiry_date.strftime('%Y-%m-%d %H:%M') if @title.expiry_date %></td>
+  </tr>
+</table>
+
+<span style="font-size :larger;font-weight: bold;"><span class="notice">※ <%= @title.enquete_division_state_name %>形式のアンケートです。</span></span>
+
+<div class="bbsCreatorInf">
+<table>
+  <tr>
+    <td>作成 : &nbsp;</td>
+    <td><%= @title.createrdivision %></td>
+    <td class="space"></td>
+    <td><%= @title.creater %></td>
+    <td class="space"></td>
+    <td><%= @title.createdate %></td>
+  </tr>
+</table>
+</div>
+
+<div class="bbsUserform">
+  <table class="bbsUserformBody">
+    <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
+  </table>
+</div>
+
+</div>

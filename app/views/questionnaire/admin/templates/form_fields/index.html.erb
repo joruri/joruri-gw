@@ -1,0 +1,69 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'title_info' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 40px; text-align: center;"></th>
+    <th style="width: 40px; text-align: center;">状態</th>
+    <th style="width: 50px; text-align: center;">並び順</th>
+    <th style="width: 100px; text-align: center;">グループ名称</th>
+    <th style="width: 100px; text-align: center;">グループ内並び順</th>
+    <th style="width: 120px; text-align: left;">設問形式</th>
+    <th>設問内容</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td style="text-align: center;"><%= link_to '詳細', questionnaire_template_form_field_path(@title, item) %></td>
+      <td style="text-align: center;"><%= item.state_name%></td>
+      <td style="text-align: center;"><%= item.sort_no %></td>
+      <td style="text-align: center;"><%= item.group_name %></td>
+      <td></td>
+      <td style="text-align: left;"><%= item.question_type_name %></td>
+      <td style="text-align: left;"><%= item.title %></td>
+    </tr>
+    <% if item.question_type == "group" %>
+      <% item.children.each do |child| %>
+        <tr class="<%= cycle '', 'cycle' %>">
+        <td style="text-align: center;"><%= link_to '詳細', url_for(:action => :show, :id => child.id) %></td>
+        <td style="text-align: center;"><%= child.state_name %></td>
+        <td style="text-align: center;"><%#= child.sort_no %></td>
+        <td style="text-align: center;"><%#= child.group_name %></td>
+        <td style="text-align: center;"><%= child.sort_no %></td>
+        <td style="text-align: left;"><%= child.question_type_name %></td>
+        <td style="text-align: left;"><%= child.title %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  <% end %>
+</table>
+
+<%= paginate @items %>
+
+<%#if @title.answer_count.blank?%>
+<br />
+<table>
+  <tr>
+    <td style="width: 60px; text-align: center;">&nbsp;</td>
+    <td>
+      <%= button_to "設問追加", new_questionnaire_template_form_field_path(@title), {:method => :get} if @item_edit_flg %>
+    </td>
+  </tr>
+</table>
+<%#end%>
+
+<div align="center">
+<table>
+  <tr>
+    <td><div class="btReturn"><%= link_to '設問詳細へ戻る', questionnaire_template_path(@title) %></div></td>
+    <td>&nbsp;&nbsp;</td>
+    <td><div class="btReturn"><%= link_to 'プレビューへ進む >>', new_questionnaire_template_preview_path(@title) %></div></td>
+  </tr>
+</table>
+</div>
+
+</div>
+</div>

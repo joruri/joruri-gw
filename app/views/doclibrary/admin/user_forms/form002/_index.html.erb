@@ -1,0 +1,27 @@
+<%= render 'header' %>
+<% unless @items.blank? %>
+  <table class="docformTitle">
+    <tr>
+      <th style="width: 30px; text-align: center;"></th>
+      <th style="width: 100px; text-align: left;">開会年月</th>
+      <th style="width: 40px; text-align: left;">その</th>
+      <th style="width: 80px; text-align: left;">号数</th>
+      <th style="text-align: left;">件名</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr>
+      <td style="width: 30px; text-align: center;"><%= link_to '詳細', "#{item.show_path}#{doclib_params_set}" %></td>
+      <td style="text-align: left;"><%= link_to item.inpfld_001.to_s + item.inpfld_002.to_s + '年' + item.inpfld_003.to_s + '月', item.note %></td>
+      <td><%= link_to item.inpfld_007, item.note %></td>
+      <% item.inpfld_006 = '0' if item.inpfld_006.blank? %>
+      <td><%= link_to item.inpfld_006, item.note %></td>
+      <td><%= link_to item.title, item.note %></td>
+    </tr>
+    <% end %>
+</table>
+
+<%= render "#{@title.doclib_form_name}limit_change" %>
+
+<%= paginate @items %>
+
+<% end %>

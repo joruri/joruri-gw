@@ -1,0 +1,31 @@
+<%
+params[:title] = '電子図書'
+params[:separator_str1] = '.'
+params[:separator_str2] = '.'
+%>
+<%= form_tag('/digitallibrary/builders/create') do %>
+<table class="show">
+  <tr>
+    <th style="width: 50px; text-align: left;">作成者</th>
+    <td style="width: 150px; text-align: left;"><%= Core.user_group.name %></td>
+    <td style="text-align: left;"><%= Core.user.name %></td>
+  </tr>
+</table>
+<table class="show">
+ <tr>
+  <th>タイトル<%= required('※') %></th>
+  <td><%= text_field_tag :title, params[:title], :size=>60%></td>
+ </tr>
+ <tr>
+  <th>見出し区切り文字<%= required('※') %></th>
+  <td><%= text_field_tag :separator_str1, params[:separator_str1] ,:size=>3%></td>
+ </tr>
+ <tr>
+  <th>見出しと記事の区切り文字<%= required('※') %></th>
+  <td><%= text_field_tag :separator_str2, params[:separator_str2] , :size=>3%></td>
+ </tr>
+</table>
+<%= submit_tag "電子図書を作成します",:onclick => "return #{confirm_javascript_function("電子図書が自動作成されます。よろしいですか？")}" %>
+<% end %>
+
+

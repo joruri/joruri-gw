@@ -1,0 +1,49 @@
+<%
+if !params[:uid].nil?
+  u = System::User.find(params[:uid])
+  ucls = 1
+  uid = u.id
+  uname = u.display_name
+elsif !params[:gid].nil?
+  u = System::Group.find(params[:gid])
+  ucls = 2
+  uid = u.id
+  uname = u.name
+else
+  ucls = 1
+  uid = Core.user.id
+  uname = Core.user.display_name
+end
+
+user_selects = @prop_type.schedule_get_user_select({:st_at=>@d_load_st,:ed_at=>@d_load_ed})
+%>
+<%=hidden_users_json_s = hidden_field_tag('init[schedule_users_json]',
+  (params[:item] && params[:item][:schedule_users_json] ? params[:item][:schedule_users_json] : nz(@users_json) )).html_safe%>
+<!--<%=@users_json%>-->
+<%= hidden_field_tag 'init[ucls]', ucls %>
+<%= hidden_field_tag 'init[uid]', uid %>
+<%= hidden_field_tag 'init[uname]', uname %>
+<table class="show">
+  <%= f.fields_for :schedule_users do |schedule_user| %>
+  <tr>
+    <th><span id="participant_title"><%= @prop_type.user_str %></span><%= required "※<br/>最低1#{@prop_type.user_str}" %></th>
+    <td>
+      <table border="0"><tr>
+        <td class="userChange">
+          <%= select_tag 'item[schedule_users][uid]', Gw.options_for_select(user_selects, Core.user.id, :title=>1), 
+            :size=>10, :style => 'width:300px;', :ondblclick => 'add_participant()', :multiple => true %>
+        </td>
+        <td>
+          <%= button_tag '追加 →', :onclick =>'add_participant(); return false;' %><br /><br />
+          <%= button_tag '← 削除', :onclick =>'del_participant(); return false;' %>
+        </td>
+        <td>
+          <%= select_tag 'item[schedule_users_add_buf]', [], :size=>10, :style => 'width:300px;', :ondblclick => 'del_participant()', :multiple => true %>
+          <%= hidden_field_tag 'item[schedule_users_json]', '' %>
+        </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <% end %>
+</table>

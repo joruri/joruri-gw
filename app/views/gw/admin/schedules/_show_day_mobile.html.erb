@@ -1,0 +1,41 @@
+<%
+@view = "day"
+@dis = nz(params[:dis],'week')
+link_params = "?gid=#{params[:gid]}&uid=#{Core.user.id}&cgid=#{params[:cgid]}&dis=#{@dis}"
+%>
+<p class="leftPad2">
+<%= link_to "前日", "/gw/schedules/#{date_format(@link_format, @st_date - 1)}#{link_params}" -%> |
+<%= link_to "翌日", "/gw/schedules/#{date_format(@link_format, @st_date + 1)}#{link_params}" -%>
+</p>
+
+<% @users.each do |user| %>
+  <%
+  user_schedules = @schedules.select{|s| s.schedule_users.any?{|su| su.uid == user.id } }
+  %>
+  <% if (params[:gid].blank? && params[:cgid].blank?) && user_schedules.size == 0 -%>
+    <%= no_schedule_show  %>
+  <% else -%>
+    <% if user_schedules.size > 0 -%>
+      <%= user.display_name -%><br />
+    <% end -%>
+    <% user_schedules.each do |schedule| -%>
+<div class="scheduleCategory <%= schedule.display_category_class -%>">
+  <p class="leftPad1">
+    <%= schedule.display_time_for_mobile(@st_date) -%><br />
+  </p>
+  <p class="leftPad1">
+    <% if schedule.is_public_auth?(@is_gw_admin) -%>
+    &nbsp;&nbsp;<%= link_to schedule.title, "/gw/schedules/#{schedule.id}/show_one#{link_params}&topdate=#{@topdate}" -%>
+    <% else %>
+    &nbsp;&nbsp;<span style="color: #999999;">[非公開予定]</span>
+    <% end %>
+  </p>
+</div>
+    <% end -%>
+  <% end -%>
+<% end -%>
+
+<p class="leftPad2">
+<%= link_to "前日", "/gw/schedules/#{date_format(@link_format, @st_date - 1)}#{link_params}" -%> |
+<%= link_to "翌日", "/gw/schedules/#{date_format(@link_format, @st_date + 1)}#{link_params}" -%>
+</p>

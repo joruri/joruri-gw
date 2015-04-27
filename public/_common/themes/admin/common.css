@@ -1,0 +1,147 @@
+/* =========================================================
+   Common Classes.
+========================================================= */
+
+/* Notice.
+----------------------------------------------- */
+.notice {
+ margin: 10px 10px;
+ color: #080;
+}
+
+/* Error.
+----------------------------------------------- */
+.fieldWithErrors {
+ padding: 1px;
+ border: 1px solid #f00;
+ display: inline-block;
+ //display: inline;
+}
+#errorExplanation {
+ width: 500px;
+ border: 2px solid #f00;
+ margin: 15px 0px;
+}
+#errorExplanation h2 {
+ padding: 5px 10px;
+ background-color: #c00;
+ color: #fff;
+ font-size: 100%;
+}
+#errorExplanation p {
+ padding: 5px 10px;
+ color: #333;
+ font-weight: bold;
+}
+#errorExplanation ul {
+ padding: 0px 0px 10px 0px;
+ list-style-type: square;
+}
+#errorExplanation ul li {
+ margin-left: 30px;
+ padding-left: 0px;
+ font-size: 12px;
+}
+
+/* Pagination.
+----------------------------------------------- */
+.pagination {
+ margin: 20px 0px;
+ text-align: center;
+}
+.pagination a,
+.pagination span.disabled,
+.pagination span.current {
+ padding: 3px 5px;
+ border: 1px solid #ddd;
+}
+
+/* Search.
+----------------------------------------------- */
+form.search {
+ margin: 10px 0px;
+ padding: 10px 10px;
+ background-color: #eee;
+ border: 1px solid #ddd;
+}
+form.search th {
+ padding: 0px 5px 0px 0px;
+}
+form.search td {
+ padding: 0px 15px 0px 0px;
+}
+form.search td.submitters input {
+ width: 60px;
+ font-size: 80%;
+}
+
+/* Detail.
+----------------------------------------------- */
+.detailMenu {
+ margin: 0px 0px 0px 0px;
+}
+.detailMenu .separator {
+ width: 10px;
+ text-indent: -9999px;
+}
+.detailMenu a {
+ margin: 0px 5px;
+ padding: 5px 10px;
+ border: 1px solid #ccc;
+ border-right: 2px solid #ccc;
+ border-bottom: 2px solid #ccc;
+ background-color: #eee;
+ color: #800;
+ text-decoration: none;
+ text-align: center;
+ line-height: 25px;
+}
+
+/* avoid output navigation on printing
+----------------------------------------------- */
+@media print {
+  #header, #headerBody, #banner, #bannerBody, #navigationContainer, #navi,
+  #naviBody, #menu, #menuContainer, #links, #linksContainer,
+  #footer, #footerContainer, #footerBody,
+  .menu, .showMenu, .noprint {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  #content, #contentContainer {
+    margin: 0;
+  }
+  table.show th {
+    white-space: nowrap;
+  }
+  table.show.print.governorOpinion td.title,
+  table.show.print.governorOpinion td.body {
+    font-size: 120%;
+  }
+  table.show.print.governorOpinion caption {
+    font-size: 200%;
+  }
+}
+@media screen {
+  table.show.print.governorOpinion caption {
+    display: none;
+  }
+}
+
+/* gw additional common
+----------------------------------------------- */
+table.show .inquiry td {
+  border: none;
+}
+
+/* mocks
+----------------------------------------------- */
+.mock,
+a.mock,
+a.mock:hover,
+a.mock:visited {
+  color: red;
+}
+.mockblock {
+  border-color: red;
+}

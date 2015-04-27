@@ -1,0 +1,19 @@
+<%# 環境マネジメントシステム（事務担当）-%>
+<table class="index">
+  <tr class="headIndex">
+    <th class="group">所属名</th>
+    <th class="employment">職</th>
+    <th class="name">氏名</th>
+    <th class="tell">電話番号</th>
+    <th class="mailAddress">メールアドレス</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td class="group"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="employment"><%= link_to item.inpfld_001, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="name"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="tell"><%= link_to item.body, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="mailAddress""><%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %></td>
+  </tr>
+  <% end %>
+</table>

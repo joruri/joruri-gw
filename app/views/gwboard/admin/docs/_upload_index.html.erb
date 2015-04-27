@@ -1,0 +1,47 @@
+<% if files.present? %>
+<div class="docsInnerBox2">
+<table class="gwboardAttachlist">
+  <tr>
+    <th colspan="2">添付ファイル名</th>
+    <% if false %>
+    <th class="remark">備考</th>
+    <% end %>
+  </tr>
+  <% files.each do |file|
+    #全ての処理に同じ対応が済むまで(掲示板のみ)
+    case file.system_name.to_s
+    when "gwbbs", "gwfaq"
+      case @title.upload_system
+      when 1..4
+        download_url = "#{file.file_uri(file.system_name)}"
+      else
+        download_url = "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
+      end
+    else
+      download_url = "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
+    end
+  %>
+  <tr>
+    <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
+    <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
+    <% if false %>
+    <td class="remark">
+      <%# 書庫・電子図書で編集権があれば、添付ファイルの備考欄編集を表示 %>
+      <% if file.doc.is_editable? %>
+        <% case file.system_name %>
+        <% when 'gwbbs' %>
+          <%= link_to '編集', "#{file.edit_memo_path(@title, file)}#{gwbbs_params_set}" %>
+        <% when 'doclibrary' %>
+          <%= link_to '編集', "#{file.edit_memo_path(@title, file)}#{doclib_params_set}" %>
+        <% when 'digitallibrary' %>
+          <%= link_to '編集', "#{file.edit_memo_path(@title, file)}#{doclib_params_set}" if file.doc.doc_alias == 0 %>
+        <% end %>
+      <% end %>
+      <%= file.memo %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>
+</div>
+<% end %>

@@ -1,0 +1,54 @@
+<%
+#検索キーワードの引き継ぎ用
+str_params = ''
+str_params += "&limit=#{params[:limit]}" unless params[:limit].blank?
+str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
+%>
+<%= render 'header' %>
+<div class="inner">
+
+<% if @folders.present? %>
+ <h4 class="docFolderTitle">見出し一覧</h4>
+ <table class="docFolder">
+  <tr>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 40px; text-align: center;">索引</th>
+    <th >見出し</th>
+    <th style="width: 30px; text-align: center;">　</th>
+    <th style="width: 30px; text-align: center;">　</th>
+  </tr>
+  <% @folders.each do |folder| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= folder.status_name[folder.state] %></td>
+    <td style="text-align: left;"><%= folder.seq_name %></td>
+    <td><%= folder.title %></td>
+    <td style="text-align: center;"><%= link_to_list_gwboard_category folder %></td>
+    <td style="text-align: center;"><%= link_to '詳細', folder.show_folder_path %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @folders %>
+<% end %>
+
+<% if @items.present? %>
+<h4 class="docFileTitle">記事一覧</h4>
+<table class="docformTitle">
+  <tr>
+    <th style="width: 60px; text-align: center;"> </th>
+     <th style="width: 40px; text-align: left;">索引</th>
+    <th style="text-align: left;">タイトル</th>
+    <th style="width:100px; text-align: center;">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td style="text-align: center;"><%= item.ststus_name %></td>
+    <td style="text-align: left;"><%= item.seq_name %></td>
+    <td><%= link_to item.title, digitallibrary_doc_path(item, title_id: @title.id)+ "&state=DRAFT#{cat_params(item)}" %></td>
+    <td><%= item.latest_updated_at.strftime('%y-%m-%d %H:%M') if item.latest_updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+<%= render 'limit_change' %>
+<%= paginate @items %>
+<% end %>
+</div><!--inner-->

@@ -1,0 +1,11 @@
+<div class="contentMenu">
+  <%= link_to 'ファイル一覧', "#{@title.docs_path}&state=#{params[:state]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}" %>
+</div>
+
+<%if @parent%>
+  <div class="navi">
+  <% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+    <%=link_to c.name, url_for(c.link_list_path)%> /
+  <% end %>
+  </div>
+<% end %>

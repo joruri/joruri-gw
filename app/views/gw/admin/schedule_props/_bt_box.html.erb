@@ -1,0 +1,55 @@
+<div class="btBox">
+  <%
+  master_url = ""
+  prop_type_title = ""
+  prop_links.each do |prop|
+    prop_type_title
+    master_url = url_for({:controller=> prop[:controller], :action => :index, :cls => prop[:cls]})
+    prop_type_title = prop[:type_title]
+  %>
+    <%if @genre == prop[:genre]%>
+    <div class="btEtc btHead currentHead"><%=prop[:type_title]%></div>
+    <div class="btDayLink btIndex<%= (params[:action] == "show" && @genre ==  prop[:genre])  ?' current' : '' -%>">
+      <%= link_to '日表示', {:controller=> :schedule_props, :action => :show, :id => d.strftime("%Y%m%d"),
+        :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+    </div>
+      <div class="btWeekLink btIndex<%=( params[:action] == "show_week" && @genre == prop[:genre] )   ? ' current' : '' -%>">
+        <%= link_to '週表示', {:controller=> :schedule_props, :action => :show_week, :s_data => d.strftime("%Y%m%d"),
+          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+      </div>
+     <%else%>
+      <div class="btHead<%= (params[:action] == "show" && @genre ==  prop[:genre])  ?' current' : '' -%>">
+        <%= link_to prop[:type_title], {:controller=> :schedule_props, :action => :show_week, :s_data => d.strftime("%Y%m%d"),
+          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+      </div>
+    <%end%>
+  <%end%>
+  <%if @genre == "other"%>
+  <div class="btEtc btHead btRight">
+    <%= link_to "#{prop_type_title}マスタ", master_url if master_url-%>
+  </div>
+  <%end%>
+</div>
+
+<% if @show_message_header %>
+<% if @type_id && @genre == "other" %>
+  <% if @is_gw_admin %>
+    <div class="settingLink"><%= link_to "メッセージ編集", {controller: "gw/admin/prop_types/messages", prop_type_id: @type_id} %></div>
+  <% end %>
+  <div id="message"><%= prop_messages_show(@type_id) %></div>
+<% elsif @genre == "rentcar" || @genre == "meetingroom" %>
+  <% if @is_pm_admin %>
+    <div class="settingLink">
+      <%= link_to "メッセージ編集", {controller: "gw/admin/prop_extra_pm_messages"} %>
+      <%= link_to "ヘルプリンク編集", {controller: "gw/admin/prop_extra_pm_remarks"} %>
+    </div>
+  <% end %>
+  <%= render "gw/admin/prop_genre_common/menu", title: @item_name %>
+  <% if @title_line %>
+  <div class="titleLine"><span class="title"><%= @title_line %></span></div>
+  <% end %>
+  <% if action_name != 'show_guard' %>
+  <div id="message"><%= prop_pm_messages_show(@genre) %></div>
+  <% end %>
+<% end %>
+<% end %>

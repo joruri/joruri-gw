@@ -1,0 +1,97 @@
+<%
+fyear_order = "published_at DESC"
+fyears = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+groups = Gwsub::Sb04section.sb04_group_select(fyears[0][1].to_i , nil)
+location = "#{@csv_base_url}/csvput"
+-%>
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<div class="titleLine">
+ <p class="title">項目指定 CSV 出力</p>
+</div>
+</div>
+<div class="pieceBody">
+<div>
+<span class="explanation">
+職員一覧から指定項目のデータを、指定の文字コードで出力します。
+<br />保存先は、ダウンロード時に指定できます。（ブラウザの設定に依存します）
+</span>
+</div>
+<br />
+
+<%= form_tag location, {:method=>:get , :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','put') %>
+<table class="show">
+  <tr>
+    <th></th>
+    <td>出力条件を選択して実行してください</td>
+  </tr>
+  <tr>
+    <th>年度</th>
+    <td><%= select_tag 'item[fyed_id]', options_for_select(fyears, @fyed_id.to_i), onchange: "get_selects();" %></td>
+  </tr>
+  <tr>
+    <th>所属</th>
+    <td><%= select_tag 'item[grped_id]', options_for_select(groups, @grped_id.to_i) %></td>
+  </tr>
+  <tr>
+    <th>出力項目</th>
+    <td>
+      <div>
+      <%= radio_button_tags 'item[select]', [['全項目','all'],['指定項目','sel']], 'all', onclick: 'set_cols();' %>
+      </div>
+      <div id="select_cols">
+      <br />
+      <!-- ※所属コード、所属名、担当名、担当電話、職員番号、職名、区分、氏名（変換後）は必須で出力されます。<br /> -->
+      ※所属コード、所属名、担当名、担当電話、職員番号、職名、氏名（変換後）は必須で出力されます。<br />
+      <%= check_box_tags 'item[chks]', Gw.yaml_to_array_for_select('gwsub_sb04_stafflists_checkboxes', :sort_by => nil) %>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <th>文字コード</th>
+    <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= submit_tag '項目指定出力' %>
+</div>
+<% end %>
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  function get_selects() {
+    // start_at
+    fyed_id    = $("item_fyed_id").value
+    if (end_cnt == -1) {
+      document.body.style.cursor = 'wait';
+      end_cnt = 0;
+    }
+    new Ajax.Request("<%= @csv_base_url %>/section_fields?fyed_id=" + fyed_id, {method:'get', onComplete: function(x){
+      $('item_grped_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+// 使用者　設定欄
+  var set_cols = function() {
+    idx =  radio_selected('item[select]')
+    switch (idx) {
+    case 0:
+      $('select_cols').setStyle("display : none;");
+      break;
+    case 1:
+      $('select_cols').setStyle("display : inline;");
+      break;
+    }
+  }
+  set_cols();
+//]]>
+</script>

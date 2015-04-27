@@ -1,0 +1,19 @@
+<table class="index">
+<% brk_code = '' %>
+<% @items.each do |item| %>
+  <% unless brk_code == item.inpfld_006.to_s %>
+    <% brk_code = item.inpfld_006.to_s %>
+    <tr class="subIndex">
+      <th><%= item.inpfld_006 %></th>
+      <th>区分</th>
+    </tr>
+  <% end %>
+  <tr class="article">
+    <td class="leftLine docTitle"><%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td><%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %></td>
+  </tr>
+  <tr class="article">
+    <td colspan="2" class="leftLine group"><span><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></span></td>
+  </tr>
+ <% end %>
+</table>

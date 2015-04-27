@@ -1,0 +1,74 @@
+<div class="piece memo show">
+<%= render '/gw/admin/memos/piece_header' %>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'tabmenu' %>
+</div>
+
+<div class="pieceBodyBody">
+  
+<div class="editingBox">
+  <div class="btEdit"><%= link_to "編集する", action: :edit unless @item.is_finished? %></div>
+  <div class="btQuote"><%= link_to "引用作成", action: :quote %></div>
+  <% if @item.is_finished? %>
+    <div class="btUnread"><%= link_to '未読に戻す', action: :finish %></div>
+  <% else %>  
+    <div class="btRead"><%= link_to '既読にする', action: :finish %></div>
+  <% end %>
+  <div class="btDestroy"><%= link_to "削除する", {action: :destroy}, :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></div>
+</div>
+  
+<table class="show">
+  <tr>
+    <th>時刻</th>
+    <td><%=l @item.ed_at if @item.ed_at %></td>
+  </tr>
+  <tr>
+    <th>所属/担当/社名</th>
+    <td><%=hbr @item.fr_group %></td>
+  </tr>
+  <tr>
+    <th>担当者</th>
+    <td><%=hbr @item.fr_user %></td>
+  </tr>
+  <tr>
+    <th>伝言</th>
+    <td><%=hbr @item.title %></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%=br @item.body %></td>
+  </tr>
+  <tr>
+    <th>作成者所属</th>
+    <td><%= @item.sender.group_name %></td>
+  </tr>
+  <tr>
+    <th>作成者</th>
+    <td><%= "#{@item.uname}(#{@item.ucode})" %></td>
+  </tr>
+  <tr>
+    <th>登録日</th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th>更新日</th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th colspan="2">送り先</th>
+  </tr>
+  <% @item.memo_users.each do |mu| %>
+    <tr>
+      <th><%= mu.class_id_label %></th>
+      <td><%=raw mu.display_name_with_mobile_class %></td>
+    </tr>
+  <% end %>
+</table>
+
+</div>
+</div>
+</div>

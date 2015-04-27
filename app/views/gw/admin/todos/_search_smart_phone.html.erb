@@ -1,0 +1,29 @@
+<%
+s_finished_cls = [['未完了',1],['完了',2],['両方',3]]
+%>
+<%= form_tag('', :method => :get, :class => 'search', :name => 'frmSelect') do %>
+<div class="indication">
+<div class="state">状態<%= select_tag('s_finished',options_for_select(s_finished_cls,params[:s_finished].to_i),
+  :onchange => 'loadImg_display();') %></div>
+</div>
+<% end %>
+<script language = "JavaScript" type="text/javascript">
+<!--
+  i=1;
+
+  function loadImg_display(){
+    document.getElementById('loadImg').setStyle("display: inline;")
+    document.getElementById('contentTable').setStyle("display: none;")
+    var tid=setTimeout("formChange()",1000);
+  }
+  function formChange(){
+    i++;
+    if (i==2){
+      form_submit();
+    }
+  }
+  function form_submit(){
+    document.frmSelect.submit();
+  }
+-->
+</script>

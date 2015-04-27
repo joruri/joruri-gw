@@ -1,0 +1,30 @@
+<div class="bbsDocList circular">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'header_tab' %>
+<%= render 'title_info' %>
+
+<%= form_for :item, :url => {:action => :create} ,:html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for f, :caption => '回答する' %>
+<% end %>
+
+<%
+if @title.state == "public"
+  state_link = :close
+  lnk_str    = "テンプレートを作成中に戻す"
+else
+  state_link = :open
+  lnk_str    = "テンプレートを公開する"
+end
+%>
+<div class="btReturn">
+  <%= link_to 'テンプレート管理一覧へ戻る', "#{@system_path}" %>
+  <% if @title.admin_setting== 1 %>
+  <%= link_to lnk_str, "/questionnaire/templates/#{@title.id}/#{state_link}" if @is_sysadm  %>
+  <% else%>
+  <%= link_to lnk_str, "/questionnaire/templates/#{@title.id}/#{state_link}" %>
+  <% end %>
+</div>

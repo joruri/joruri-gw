@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title><%= Core.title %></title>
+<link rel="icon" href="/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="/_common/themes/admin/login.css" media="screen" />
+</head>
+<body id="page-login">
+
+<div id="login"></div>
+<div class="login_box">
+<%= form_tag do %>
+<%= hidden_field_tag :uri, h(@uri) %>
+<div class="box">
+  <p>v<%= Joruri.version %></p>
+  <h1>Joruri</h1>
+  <div class="notice"><%= flash[:notice] %></div>
+  <div class="fields">
+    <span class="head">ユーザID</span><%= text_field_tag 'account', '' %>
+    <br />
+    <br style="line-height: 0.8;" />
+    <span class="head">パスワード</span><%= password_field_tag 'password', '' %>
+    <br />
+  </div>
+  <%
+    footer = Joruri.config.application['sys.login_footer']
+    if footer == ""
+      submitter_style = "margin-top:14px"
+    end
+  %>
+  <div class="submitters">
+    <input class="login" type="image" src="/_common/images/blank.gif" alt="ログイン" name="commit" style="<%= submitter_style %>" />
+    <%=raw footer %>
+  </div>
+</div>
+<% end %>
+</div>
+<div class="copyright">Powered by Joruri</div>
+
+</body>
+</html>

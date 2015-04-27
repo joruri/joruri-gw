@@ -1,0 +1,111 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwboard/iconfile.css
+========================================================= */
+
+/* Icons
+----------------------------------------------- */
+.iconFile {
+  display: inline-block;
+  height: 24px;
+  line-height: 1.8;
+  margin-top: 5px;
+  margin-right: 10px;
+  padding: 18px 0px 0px 0px;
+  background-image: url(/_common/images/icons/icon24/default.png);
+  background-position: center 0;
+  background-repeat: no-repeat;
+}
+td.attachIcon .iconFile {
+  padding-top: 0;
+}
+table.list .iconFile {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.iconBmp { 
+  background-image: url(/_common/images/icons/icon24/bmp.png); 
+}
+.iconCsv {
+  background-image: url(/_common/images/icons/icon24/csv.png); 
+}
+.iconDoc, .iconDocx, .iconDocm, 
+.iconDotx, .iconDotm {
+  background-image: url(/_common/images/icons/icon24/doc.png); 
+}
+.iconGif { 
+  background-image: url(/_common/images/icons/icon24/gif.png); 
+}
+.iconJpg { 
+  background-image: url(/_common/images/icons/icon24/jpg.png); 
+}
+.iconJpe {
+  background-image: url(/_common/images/icons/icon24/jpg.png); 
+}
+.iconJpeg { 
+  background-image: url(/_common/images/icons/icon24/jpg.png);
+}
+.iconJtd {
+  background-image: url(/_common/images/icons/icon24/jtd.png); 
+}
+.iconLzh { 
+  background-image: url(/_common/images/icons/icon24/lzh.png);
+}
+.iconPdf { 
+  background-image: url(/_common/images/icons/icon24/pdf.png); 
+}
+.iconPng {
+  background-image: url(/_common/images/icons/icon24/png.png);
+}
+.iconPpt, .iconPptx, .iconPptm, 
+.iconPotx, .iconPotm, .iconPpam, 
+.iconPpsx, .iconPpsm { 
+  background-image: url(/_common/images/icons/icon24/ppt.png);
+}
+.iconTxt {
+  background-image: url(/_common/images/icons/icon24/txt.png); 
+}
+.iconXls, .iconXlsx, .iconXlsm,
+.iconXltx, .iconXltm, .iconXlam {
+  background-image: url(/_common/images/icons/icon24/xls.png); 
+}
+.iconZip {
+  background-image: url(/_common/images/icons/icon24/zip.png); 
+}
+.iconVbs {
+  background-image: url(/_common/images/icons/icon24/vbs.png); 
+}
+.iconExe { 
+  background-image: url(/_common/images/icons/icon24/exe.png);
+}
+.iconOdb { 
+  background-image: url(/_common/images/icons/icon24/odb.gif); 
+}
+.iconOdf { 
+  background-image: url(/_common/images/icons/icon24/odf.gif); 
+}
+.iconOdg, .iconOtg { 
+  background-image: url(/_common/images/icons/icon24/odg.gif); 
+}
+.iconOdp, .iconOtp { 
+  background-image: url(/_common/images/icons/icon24/odp.gif); 
+}
+.iconOds, .iconOts { 
+  background-image: url(/_common/images/icons/icon24/ods.gif); 
+}
+.iconOdt, .iconOtt { 
+  background-image: url(/_common/images/icons/icon24/odt.gif); 
+}
+.iconMap { 
+  background-image: url(/_common/images/icons/icon24/map.png); 
+}
+.iconPptx, .pptx {
+  background-image: url(/_common/images/icons/icon24/pptx.png);
+}
+.iconXlsx, .xlsx {
+  background-image: url(/_common/images/icons/icon24/xlsx.png);
+}
+.iconDocx, .docx {
+  background-image: url(/_common/images/icons/icon24/docx.png);
+}

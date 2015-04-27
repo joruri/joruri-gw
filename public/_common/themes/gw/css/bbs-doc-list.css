@@ -1,0 +1,342 @@
+@charset "UTF-8";
+/* =========================================================
+@import "/_common/themes/gw/css/doc-2column.css";
+   _common/themes/gw/css/doc-2column.css
+========================================================= */
+
+/* ミニアイコン設定
+-------------------------------------------------*/
+#content .bbsDocList {
+  background-image: url(/_common/themes/gw/files/title/title_board.gif);
+}
+
+/* ヘルプボックス
+-------------------------------------------------*/
+.helpBox {
+  margin-top: -58px;
+}
+#page-gwboard-images-new .helpBox {
+  margin-top: -32px;
+}
+
+/* 詳細ページ　青背景メイン部分
+-------------------------------------------------*/
+.docsInnerBox {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  clear: both;
+}
+*html #contentBody .right {
+  overflow: hidden;
+}
+#contentBody .bbsDocList .pieceBody {
+  zoom: 100%;
+  border-right: none;
+}
+
+/* table index
+-------------------------------------------------*/
+.bbsDocList table.index {
+  width: 98%;
+  margin: 0 auto 10px;
+}
+.bbsDocList table.index th {
+  border: none;
+}
+.bbsDocList td.bbsImportant span,
+.bbsDocList td.bbsAttach span,
+.bbsDocList td.bbsBalloon span {
+  display: inline-block;
+}
+.bbsDocList td.bbsAttach,
+.bbsDocList td.bbsBalloon {
+  width: 16px;
+}
+.bbsDocList td.bbsImportant span {
+  overflow: hidden;
+  width: 4px;
+  height: 0px;
+  padding-top: 14px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_important.gif);
+}
+.bbsDocList td.bbsAttach span {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_attach.gif);
+}
+.bbsDocList td.bbsBalloon span {
+  padding-left: 20px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_comment.gif);
+}
+.bbsDocList td.exhibition {
+  width: 100px;
+}
+.bbsDocList td.position {
+  width: 100px;
+}
+.bbsDocList td.category {
+  width: 100px;
+}
+.bbsDocList .update {
+  width: 110px;
+}
+.bbsDocList .group {
+  width: 170px;
+}
+.bbsDocList .category {
+  width: 170px;
+}
+.bbsDocList .item {
+  width: 10px;
+}
+.bbsDocList table.index td.docTitle {
+  border-left: none;
+  word-break: break-all;
+}
+.bbsDocList table.index td.docTitle a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-repeat: no-repeat;
+  background-position: 0 4px;
+}
+#content .pieceBody .outer .right h4 {
+  margin-left: 10px;
+}
+#content .pieceBody .outer .right h4.docSearchTitle {
+  background-image: none;
+}
+
+/* table show
+-------------------------------------------------*/
+.bbsDocList table.show {
+  width: 98%;
+  margin: 10px auto;
+}
+.bbsDocList .show th {
+  width: 110px;
+}
+
+/* タブ周り
+-------------------------------------------------*/
+#contentBody .bbsDocList .tabBox {
+  margin-bottom: 10px;
+  background-color: #FFFCF0;
+}
+#page-gwbbs-docs-new #contentBody .bbsDocList td.current {
+  background-color: #F1F0F5;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+/* 機能ボタン
+-------------------------------------------------*/
+.bbsDocList .editingBox {
+  width: 99%;
+  margin-left: 10px;
+}
+
+/* 詳細ページ　コメント欄
+-------------------------------------------------*/
+.bbsCommentlist th .btComment a {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  top: 4px;
+  width: 15px;
+  background-image: url("/_common/themes/gw/files/schedule/ic_add.gif");
+  text-indent: -9999px;
+}
+* html .bbsCommentlist th .btComment a {
+  top: 2px;
+}
+*:first-child+html .bbsCommentlist th .btComment a {
+  top: 2px;
+}
+.bbsCommentlist .order {
+  width: 30px;
+  text-align: center;
+}
+.bbsCommentlist .group {
+  width: 200px;
+}
+.bbsCommentlist .daytime {
+  width: 120px;
+}
+.bbsCommentlist .delete {
+  width: 35px;
+  text-align: center;
+}
+
+/* table bbsText(入力ページ　件名・本文欄)
+-------------------------------------------------*/
+.bbsDocList table.bbsText {
+  margin-bottom: 0;
+}
+.bbsDocList table.bbsText th {
+  width: auto;
+}
+
+/* 新規作成ページタイトル
+-------------------------------------------------*/
+.formTitle {
+  margin-left: 10px;
+}
+
+/* 詳細ページ　作成者欄
+-------------------------------------------------*/
+.bbsCreatorInf {
+  float: right;
+  margin-bottom: 10px;
+}
+.bbsCreatorInf table {
+  width: auto;
+}
+.bbsCreatorInf td.space {
+  width: 20px;
+}
+
+/* table bbsUserformBody(詳細ページ　記事タイトル・本文欄)
+-------------------------------------------------*/
+table.bbsUserformBody td {
+  padding: 8px;
+}
+table.bbsUserformBody td.docTitle {
+  background-color: #FFFFE9;
+  border: 1px solid #AAB1E6;
+  word-break: break-all;
+}
+table.bbsUserformBody td.docTitle span {
+  display: block;
+  font-size: 130%;
+  font-weight: bold;
+}
+table.bbsUserformBody td.spaceBottom {
+  height: 15px;
+  padding: 0;
+  background-color: #E3EFFF;
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+}
+*html table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+*:first-child+html table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+table.bbsUserformBody td.border,
+table.bbsUserformBody table.border  {
+  border: 1px solid #000000;
+}
+
+.docsInnerBox table.show {
+  clear: none;
+  border: 1px solid #D3DCED;
+}
+.bbsDocList .docsInnerBox table.show th,
+.bbsDocList .docsInnerBox table.show td {
+    background-color: #fff;
+    border: 1px solid #d3dced;
+}
+
+/* table bbsExpirydate(詳細ページ　公開終了欄)
+-------------------------------------------------*/
+.bbsDocList .bbsExpirydate {
+  float: right;
+  width: auto;
+}
+.bbsDocList .bbsExpirydate td.space {
+  width: 10px;
+}
+
+/* docListFunctions(詳細ページ　機能リンク)
+-------------------------------------------------*/
+.right .docListFunctions {
+    padding-right: 10px;
+    text-align: right;
+}
+.right .docListFunctions div {
+    display: inline;
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+/* table bbsFile(入力ページ　添付ファイル欄)
+-------------------------------------------------*/
+.bbsDocList table.bbsFile {
+  border-bottom: none;
+}
+.bbsDocList table#attach_form,
+.bbsDocList table#attach_form td {
+  border-bottom: none;
+}
+
+/* table bbsComment(入力ページ　1行コメント欄)
+-------------------------------------------------*/
+.right table.bbsComment {
+  margin: 0px auto 10px;
+  border-top: 1px solid #C6D1E8;
+}
+
+/* 一覧ページ　凡例
+-------------------------------------------------*/
+.explainIcon {
+  margin-bottom: 10px;
+  margin-right: 20px;
+  text-align: right;
+}
+.explainIcon span {
+  display: inline-block;
+  margin-left: 10px;
+  background-position: 0 center;
+}
+.explainIcon span.important {
+  padding-left: 10px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_important.gif");
+}
+.explainIcon span.attach {
+  padding-left: 15px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_attach.gif");
+}
+.explainIcon span.balloon {
+  padding-left: 20px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_comment.gif");
+}
+
+/* おくやみ　「－告別式のお知らせ－」
+-------------------------------------------------*/
+.docsInnerBox table.kokubetsuTitle td.center {
+  width: 120px;
+  text-align: center;
+}
+.docsInnerBox table.kokubetsuTitle td.left {
+  text-align: right;
+}
+.docsInnerBox table.kokubetsuTitle td.right {
+  width: auto;
+  padding: 0;
+  text-align: left;
+}
+.docsInnerBox table.kokubetsuTitle td hr {
+  display: inline-block;
+  width: 50px;
+  height: 3px;
+  background-color: #999;
+}
+
+/* 背景画像アップローダー
+-----------------------------------------*/
+#content .pieceBanner {
+  border-left: 1px solid #1E3B8C;
+  clear: both;
+  background-color: #FFFCF0;
+}
+#content .pieceBanner h3 {
+  font-size: 200%;
+  padding: 10px;
+}
+#content .btNew a {
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+

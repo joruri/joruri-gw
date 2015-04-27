@@ -1,0 +1,40 @@
+<table class="show">
+  <tr>
+    <th>予約</th>
+    <td><%= @item.reserved_state_show %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>区分</th>
+    <td><%= @item.type_id_show %></td>
+  </tr>
+  <tr>
+    <th>会議室等名称</th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th>場所</th>
+    <td><%= @item.position %></td>
+  </tr>
+  <tr>
+    <th>内線番号</th>
+    <td><%= @item.tel %></td>
+  </tr>
+  <tr>
+    <th>収容可能人数</th>
+    <td><%= @item.max_person %></td>
+  </tr>
+  <tr>
+    <th>椅子の数</th>
+    <td><%= @item.max_chairs %></td>
+  </tr>
+  <% if @is_gw_admin %>
+  <tr>
+    <th>削除</th>
+    <td><%= @item.delete_state_show %></td>
+  </tr>
+  <% end %>
+</table>

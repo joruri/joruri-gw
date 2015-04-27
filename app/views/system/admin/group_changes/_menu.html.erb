@@ -1,0 +1,17 @@
+<div class="editingBox">
+<%case params[:action]%>
+<%when "index"%>
+    <span class="btNew"><%= link_to '新規作成', new_system_group_change_path %></span>
+    <span class="btTitle"><%= link_to 'CSV登録',  csvup_system_group_changes_path %></span>
+    <span class="btTitle"><%= link_to '実行',  reflect_system_group_changes_path , :confirm => '実行すると元に戻せません。実行しますか'%></span>
+    <span class="btDocLink"><%= link_to 'カスタムグループ同期', "/system/custom_groups/synchro_all_group" , :confirm => '実行すると元に戻せません。実行しますか'%></span>
+    <span class="btDocLink"><%=link_to "無効所属のカスタムグループ削除", "/system/custom_groups/all_groups_disabled_delete", :confirm => '実行すると元に戻せません。実行しますか' %></span>
+
+<%when "show"%>
+
+    <span class="btEdit"><%= link_to '編集', edit_system_group_change_path(@item) if @item %></span>
+    <span class="btDestroy"><%= link_to '削除', system_group_change_path(@item), :method => :delete, :confirm => '削除します。よろしいですか？' if @item %></span>
+<%when "csvup"%>
+    <span class="btTitle"><%= link_to '戻る', system_group_changes_path %></span>
+<%end%>
+</div>

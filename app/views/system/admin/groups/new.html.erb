@@ -1,0 +1,16 @@
+<div class="piece AdminSetting AdminGroups">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render '/system/admin/users/header_menu' %>
+<%= render 'navi' %>
+<%= render 'switching' %>
+
+<%= form_for :item, :url => {:action => :create} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for_update f %>
+<% end %>
+
+</div>
+</div>

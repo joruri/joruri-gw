@@ -1,0 +1,70 @@
+<%
+editables_options = {
+  :role=>@u_role,
+  :group_id => Core.user_group.id
+}
+editables = Gwsub::Sb06AssignedConference.editable_data(@item,editables_options)
+managers  = Gwsub::Sb06AssignedConference.managers?(@item,editables_options)
+form_no = @item.c_kind.conf_form_no
+#render_show_str = "/gwsub/admin/sb06/sb06_assigned_conferences/show#{form_no}"
+render_show_str = "/gwsub/admin/sb06/sb06_assigned_conferences/form#{form_no}/show#{form_no}"
+
+case form_no
+when "301" ,"302","303","401","602"
+  mode = 1
+  @edit_path = "#{url_for({:action => :index})}/#{@item.id}/udpate_docno?mode=1"
+else
+  mode = 2
+  @edit_path = "#{url_for({:action => :index})}/#{@item.id}/udpate_docno?mode=2"
+end
+
+%>
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<h2>担当者名等管理</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l3' unless (@help && @help=='admin') %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l4' unless @help %>
+</div>
+<div class="pieceBody">
+
+<div class="noprint">
+<table class="show">
+<tr><th>状況</th><td><%= Gwsub::Sb06AssignedConference.conference_state_show(@item.state) %></td></tr>
+</table>
+</div>
+
+<%#= render 'gwsub/admin/sb06/sb06_assigned_conferences/input_form' unless mode == 1%>
+
+<%= form_for :item, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+<%= f.error_messages %>
+  <table class ="index">
+  <%if mode == 1%>
+  <tr>
+    <td>文書番号を入力してください。</td><td><%= f.submit '提出' %></td>
+    <td>
+    <div class="sb06_assigned_conference_markNo">
+    <%= f.text_field :conf_mark , :class=>"sb06_assigned_conference_markNo_input", :value=>@item.conf_mark %>
+    第　<%= f.text_field :conf_no, :class=>"sb06_assigned_conference_markNo_input", :value=>@item.conf_no %>号
+    </div>
+    </td>
+  </tr>
+  <%end%>
+  <%if mode == 2%>
+  <td>提出を完了してください。</td><td><%= f.submit '提出' %></td>
+  <%end%>
+  </table>
+<% end %>
+
+<%= render render_show_str %>
+
+<div class="noprint">
+<%# 承認状況表示 -%>
+<% options = {  'table_name'=>'gwsub_sb06_recognizers',  :link_to_show=>0 } -%>
+<%= table_to_index2(@item.recognize_all, options).html_safe  unless @item.recognize_all.blank? -%>
+</div>
+</div>
+</div>

@@ -1,0 +1,40 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'header_menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', "/system/roles/new?#{@qs}" %></span>
+</div>
+
+<%= render 'search' %>
+
+<table class="index">
+  <tbody>
+    <tr>
+      <th style="width: 60px;"></th>
+      <th>機能名</th>
+      <th style="width: 150px; text-align: center;">対象権限  </th>
+      <th style="width: 60px; text-align: center;">優先順位</th>
+      <th style="width: 60px; text-align: center;">種別</th>
+      <th>ユーザ/グループ</th>
+      <th style="width: 60px; text-align: center;">許可</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td style="text-align: center;"><%= link_to '詳細', "/system/roles/#{item.id}?#{@qs}" %></td>
+      <td><%= item.role_name.display_name %></td>
+      <td style="text-align: center;"><%= safe{item.priv_user.display_name} %></td>
+      <td style="text-align: center;"><%= item.idx %></td>
+      <td style="text-align: center;"><%= item.class_id_label %></td>
+      <td><%= item.uid_label %></td>
+      <td style="text-align: center;"><%= item.priv_label %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @items %>
+
+</div>
+</div>

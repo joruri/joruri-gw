@@ -1,0 +1,58 @@
+<% 
+text_style = 'width:30em;'
+%>
+
+<%= Gw.required_head %>
+<table class="show">
+  <tr>
+    <th>予約</th>
+    <td><%= f.radio_buttons :reserved_state, @item.reserved_state_select %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= f.text_field :sort_no, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>区分 <%= required %></th>
+    <td><%= f.select :type_id, I18n.a("enum.gw/prop_meetingroom.type_id"), :selected => @item.type_id %></td>
+  </tr>
+  <tr>
+    <th>会議室等名称 <%= required %></th>
+    <td><%= f.text_field :name, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>場所</th>
+    <td><%= f.text_field :position, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>内線番号</th>
+    <td><%= f.text_field :tel, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>収容可能人数</th>
+    <td><%= f.text_field :max_person, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>机の数</th>
+    <td><%= f.text_field :max_tables, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>椅子の数</th>
+    <td><%= f.text_field :max_chairs, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%= f.text_field :note, :style => text_style %></td>
+  </tr>
+  <% if @is_gw_admin %>
+  <tr>
+    <th>削除</th>
+    <td><%= f.radio_buttons :delete_state, I18n.a("enum.gw/prop_meetingroom.delete_state") %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= f.hidden_field :delete_state unless @is_gw_admin %>
+<%= f.hidden_field :extra_flag %>
+<%= f.hidden_field :gid %>
+

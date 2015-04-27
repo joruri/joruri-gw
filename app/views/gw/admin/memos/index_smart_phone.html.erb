@@ -1,0 +1,43 @@
+<div class="piece memo index">
+<div class="pieceHeader">
+<%= render '/gw/admin/memos/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'search' %>
+<%= render 'tabmenu' %>
+<div id="contentTable">
+<% if @items.blank? %>
+<div class="notice">表示対象がありません</div>
+<% else %>
+<table class="index" id="contentTable">
+  <tr>
+    <th class="state">状態</th>
+    <th>相手</th>
+    <th>時刻</th>
+  </tr>
+  <% @items.each do |item| -%>
+  <tr>
+    <td rowspan="2">
+      <% if item.is_finished? %>
+        <%= item.is_finished_label %>
+      <% else %>
+        <span class="textRed"><%= item.is_finished_label %></span>
+      <% end %>
+    </td>
+    <td><%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%></td>
+    <td><%= Gw.date_common(item.ed_at) -%></td>
+  </tr>
+  <tr>
+    <td colspan="2"><%= link_to item.title, {action: :show, id: item.id} %></td>
+  </tr>
+<% end -%>
+</table>
+<%= paginate @items %>
+<% end -%>
+</div>
+</div>
+<div class="pieceBodyBody"></div>
+<div id="loadImg" style="display: none;">Now Loading...</div>
+</div>
+</div>

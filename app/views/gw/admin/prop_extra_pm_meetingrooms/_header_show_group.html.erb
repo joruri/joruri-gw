@@ -1,0 +1,12 @@
+<%
+link_s = %Q(<span class="current_menu">)
+link_s_end = %Q(</span>)
+lnks1 = (@hedder5lnk == 1 ? "#{link_s}明細（今年度）#{link_s_end}" : "<span>明細（今年度）</span>")
+lnks2 = (@hedder5lnk == 2 ? "#{link_s}明細（昨年度以前）#{link_s_end}" : "<span>明細（昨年度以前）</span>")
+%>
+
+<div class="menu">
+<!-- <p>明細</p> -->
+<%=link_to lnks1.html_safe, "#{@uri_base}/#{params[:id]}/show_group?mode=#{@s_order}"%>
+<%=link_to lnks2.html_safe, "#{@uri_base}/#{params[:id]}/show_group?mode=#{@s_order}&year=last"%>
+</div>

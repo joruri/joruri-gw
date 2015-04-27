@@ -1,0 +1,35 @@
+<div class="bbsDocList">
+<div class="pieceHeader">
+  <h2>画像アップローダー</h2>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+  <h3><%= @sub_title %>詳細</h3>
+  <%
+  if @item.blank?
+    params[:st] = '2' if params[:st].blank?
+  else
+    params[:st] = @item.share.to_s
+  end
+  s_params = "?st=#{params[:st]}"
+  new_f = false
+  new_f = true if @share_mode.to_s < '2'   #所属は無条件新規OK
+  new_f = true if Gwbbs::Control.is_sysadm? #管理者は新規OK
+  %>
+  <% if new_f %>
+    <%= link_to '', "/gwboard/images/new?st=#{@item.share}", class: 'btNew' %>
+  <% end %>
+  <div class="helpBox"></div>
+</div>
+<div class="pieceBody">
+
+<%= render 'header' %>
+<%= render 'show_doc' %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', "/gwboard/images?st=#{@item.share}" %>
+</div>
+
+</div>
+</div><!--piece gwbbs-->

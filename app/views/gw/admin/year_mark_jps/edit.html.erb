@@ -1,0 +1,15 @@
+<div class="piece YearMarkJp">
+<%= render 'header' %>
+<div class="pieceBody">
+
+<%= form_for :item, :url => {action: :update}, :html => {method: :put, multipart: true} do |f| %>
+  <%= render 'form', f: f %>
+  <%= submit_for f, caption: '保存' %>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to '戻る', {action: :show} %>
+</div>
+
+</div>
+</div>

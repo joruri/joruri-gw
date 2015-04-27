@@ -1,0 +1,97 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/base.css";
+/* =========================================================
+   _common/themes/gw/css/portal_1column.css
+========================================================= */
+
+/* 個別業務一覧ページ
+----------------------------------------------- */
+#content #basic .pieceContainer {
+  padding: 20px 0 0;
+}
+#content #basic .pieceBody {
+  margin: 0 20px 60px;
+}
+#content #basic #pref {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 12px;
+  border: 1px solid #CFD4E7;
+}
+#content #basic #pref:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html #content #basic #pref             { zoom: 1; }
+*:first-child+html #content #basic #pref { zoom: 1; }
+#pref .box {
+  float: left;
+  width: 375px;
+  padding: 0px 12px;
+}
+#content #basic li {
+  height: 1%;
+  padding: 3px 0px 5px 10px;
+  border-bottom: 1px solid #CCCCCC;
+}
+#pref .box h3 {
+  padding: 3px 3px 3px 10px;
+  background-color: #E3EFFF;
+}
+#pref .box .menu {
+  position: relative;
+  width: 360px;
+  margin: 12px auto;
+}
+#pref .box .menu li a {
+  border: none;
+  padding-right: 15px;
+  padding-left: 0px;
+}
+#pref .box .menu li a.ext {
+  padding-left: 15px;
+}
+#pref .clearfix {
+  clear: both;
+  height: 1px;
+  font-size: 1px;
+  line-height: 1px;
+}
+.prefSoumumsg {
+  margin-bottom: 5px;
+  padding-right: 15px;
+  text-align: right;
+}
+.prefSso {
+  position: relative;
+  height: 30px;
+}
+.prefSso .btSet a {
+  left: 12px;
+  background-image:url(/_common/themes/gw/files/ic_act_set_border.gif);
+}
+
+/* 
+---------------------------------------*/
+#contentBody .bbsDocList {
+  border-right: 1px solid #1E3B8C;
+}
+#contentBody .bbsDocList .pieceBody {
+  border-right: none;
+}
+
+/* フォームボタン
+--------------------------------------*/
+form .submitters {
+  text-align: center;
+}
+
+.sb04 .notice {
+  margin-left: 20px;
+}

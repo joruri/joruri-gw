@@ -1,0 +1,100 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwsub_common.css
+========================================================= */
+/* gwsub tempolary style for tables */
+
+/*
+table.gwsub_index{
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+    border-right-color: black;
+    border-collapse: collapse;
+    width: 90%;
+    table-layout:auto;
+    empty-cells:show;
+}
+table.gwsub_detail{
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+    border-right-color: black;
+    border-collapse: collapse;
+    width: 90%;
+    table-layout:auto;
+    empty-cells:show;
+}
+table.gwsub_sb09_top{
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+    border-right-color: black;
+    border-collapse: collapse;
+    width: 60%;
+    align: center;
+    table-layout:auto;
+    empty-cells:show;
+    position: relative;
+}
+table.gwsub_sb09_detail{
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+    border-right-color: black;
+    border-collapse: collapse;
+    table-layout:auto;
+    empty-cells:show;
+}
+div.gwsub_sb09_top{
+    width: 90%;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+    border-right-color: black;
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 5%;
+}
+*/

@@ -1,0 +1,32 @@
+<%
+users = System::User.all.order("ldap ASC , id ASC").collect {|u| ["#{u.name}(#{u.code})", u.id]}
+%>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <% case params[:action] %>
+    <% when 'edit', 'update' %>
+      <th>ユーザー</th>
+      <td><%= safe{@item.user.name} %><%= f.hidden_field :user_id, :value => @item.user_id %></td>
+    <% else %>
+      <th>ユーザー<%= Gw.required %></th>
+      <td><%= f.select(:user_id, options_for_select(users ,@item.user_id), :include_blank => true) %></td>
+    <% end %>
+  </tr>
+  <tr>
+    <th>所属グループ<%= Gw.required %></th>
+    <td><%= f.select(:group_id, options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @item.group_id), :include_blank => true) %></td>
+  </tr>
+  <tr>
+    <th>本務・兼務<%= Gw.required %></th>
+    <td><%= f.radio_buttons :job_order, @item.class.job_order_options %></td>
+  </tr>
+  <tr>
+    <th>配属開始日<%= Gw.required %></th>
+    <td><%= f.datepicker :start_at %></td>
+  </tr>
+  <tr>
+    <th>配属終了日</th>
+    <td><%= f.datepicker :end_at %></td>
+  </tr>
+</table>

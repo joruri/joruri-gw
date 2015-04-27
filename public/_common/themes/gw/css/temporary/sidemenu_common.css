@@ -1,0 +1,120 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/base.css";
+
+/* =========================================================
+   _common/themes/gw/css/temporary/sidemenu_common.css
+========================================================= */
+
+/* content(中央カラム)
+----------------------------------------------- */
+
+#content {
+  float: right;
+  width: 100%;
+  margin: 0 0 0px -165px;
+  overflow: visible;
+}
+
+
+#contentBody {
+  margin: 0px 0px 0px 165px;
+}
+
+/* バナー位置
+----------------------------------------------- */
+.contentBanner {
+  margin: 0px 0px 0px 165px;
+}
+.contentBannerRight {
+  margin: 0px 0px 0px 165px;
+  text-align: right;
+}
+.contentBannerCenter {
+  margin: 0px 0px 0px 165px;
+  text-align: center;
+}
+
+/* menu(左カラム)
+----------------------------------------------- */
+#menu {
+  float: left;
+  width: 160px;
+  margin-left: 0px;
+}
+
+/* menu中の一覧テーブル
+----------------------------------------------- */
+
+.sideList {
+  margin: 00px 0px;
+}
+.sideList table.index .title {
+  background-image:url(/_common/themes/gw/files/icon_triangle.gif);
+  background-position:3px 13px;
+}
+
+.sideList table.index td {
+  border:1px solid #CCCCCC;
+  padding:10px 15px;
+}
+
+.sideList table.index .titleSelect {
+  border:2px solid #DC143C;
+  padding:10px 3px;
+}
+
+.sideList table.index .show {
+  border:1px solid #CCCCCC;
+  padding:10px 15px;
+}
+
+
+/*---------------------------
+ ページボディー
+---------------------------*/
+
+table {
+  width: 100%;
+}
+
+
+/*-------------------header--------------------------*/
+
+#breadCrumbs {
+  margin: 0 5px 7px;
+}
+
+#banner {
+  margin-bottom: 7px;
+}
+/*--------------------main---------------------------*/
+
+#main {
+  margin-top: 0px;
+}
+
+table.list th {
+  background-color: #E4E4E4;
+}
+
+.separetor {
+  display: none;
+}
+
+.header h2 {
+  padding: 6px 7px;
+  background-color: #E4E4E4;
+}
+
+.back {
+  width: 80px;
+  margin: 0 auto;
+  border: double #BBBBBB;
+  background-color: #E4E4E4;
+  text-align: center;
+}
+
+.back a {
+  display: block;
+  text-decoration: none;
+}

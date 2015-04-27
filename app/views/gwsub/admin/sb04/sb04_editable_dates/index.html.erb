@@ -1,0 +1,30 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04_editable_dates/display_name' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb04/sb04_editable_dates/search_with_fyear' %>
+  <table class="index">
+    <tr>
+      <th></th>
+      <th>年度</th>
+      <th>編集開始日</th>
+      <th>編集終了日</th>
+      <th>見出し日付</th>
+    </tr>
+    <% @items.each do |item|  %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細' , "/gwsub/sb04/04/sb04_editable_dates/#{item.id}?#{@qs}" %></td>
+      <td><%= item.fyear_markjp %></td>
+      <td><%= Gw.datetime_str(item.start_at) %></td>
+      <td><%= Gw.datetime_str(item.end_at) %></td>
+      <td><%= Gw.date_str(item.headline_at) %></td>
+    </tr>
+    <% end %>
+  </table>
+<%= paginate @items %>
+</div>
+</div>

@@ -1,0 +1,63 @@
+<%
+#r_states  = Gwsub::Sb05Request.m_status_requests
+#namagers_r_states  = Gwsub::Sb05Request.manager_r_status_requests
+@action = "create"
+@create_path = @index_uri
+#form_str = "form#{@media_code}#{@categories_code}"
+form_str = "form#{@media_code}"
+if @req.blank?
+  show_url = nil
+else
+  show_url  = "#{@index_uri}#{@req.id}?l2_c=02&sb05_users_id=#{@req.sb05_users_id}"
+end
+@item = @req1
+%>
+
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_requests/menu' %>
+<%= render 'gwsub/admin/sb05/sb05_requests/menu_l3'  %>
+<%= render 'gwsub/admin/sb05/sb05_requests/menu_l4' unless @media_code.to_i==0 %>
+</div>
+<div class="pieceBody">
+<% if @media_code.to_i == 0 %>
+  <div><span class="explanation">メニューから、媒体を選択してください</span><br /></div>
+<% end %>
+<% if @media_code.to_i != 0 and @categories_code.to_i == 0 %>
+<div><span class="explanation">メニューから、分類を選択してください</span><br /></div>
+<% end %>
+<%= render 'gwsub/admin/sb05/sb05_requests_user' %>
+<% if @media_code.to_i != 0 and @categories_code.to_i != 0 %>
+<div class="frame">
+  <%= form_for :req1, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render form_str, f: f %>
+  <div class="preserve">
+  <%= f.submit '保存' %>
+  </div>
+  <% end %> <%# form_for %>
+</div> <!-- frame -->
+<% end %>
+</div>
+</div>
+
+<script language = "JavaScript" type="text/javascript">
+//<![CDATA[
+// 承認者 設定欄
+  var sel_class = function() {
+    idx =  radio_selected('req1[r_state]')
+    switch (idx) {
+    case 0:
+      $('recognizer_list').setStyle("display : none;");
+      break;
+    case 1:
+      $('recognizer_list').setStyle("display : inline;");
+      break;
+    }
+  }
+var my_load = function() {
+  sel_class();
+}
+window.onload = my_load;
+  //]]>
+</script>

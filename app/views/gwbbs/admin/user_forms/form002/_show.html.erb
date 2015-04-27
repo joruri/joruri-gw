@@ -1,0 +1,45 @@
+<table class="show">
+  <tr>
+    <th>研修名</th>
+  </tr>
+  <tr>
+    <td><div class="show"><%=hbr @item.title %></div></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>研修開始日</th>
+    <td><div class="show"><%= @item.inpfld_001 %></div></td>
+  </tr>
+  <tr>
+    <th>単位数</th>
+    <td><div class="show"><%= @item.inpfld_004 %></div></td>
+  </tr>
+  <tr>
+    <th>申込締切日</th>
+    <td><div class="show"><%= @item.inpfld_002 %></div></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>本文</th>
+  </tr>
+  <tr>
+  <% if @item.wiki_enabled? -%>
+    <td class="wiki"><%== wiki_show @item.body -%></td>
+  <% else -%>
+    <td><div class="show"><%== @item.body -%></div></td>
+  <% end -%>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>摘要</th>
+  </tr>
+  <tr>
+    <td><div class="show"><%= @item.inpfld_003 %></div></td>
+  </tr>
+</table>

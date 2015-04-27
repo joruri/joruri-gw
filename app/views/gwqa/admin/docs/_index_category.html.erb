@@ -1,0 +1,29 @@
+<table class="index">
+  <tr class="headIndex">
+    <th class="docTitle">記事タイトル</th>
+    <th class="item">回答数</th>
+    <th class="item">状況</th>
+    <th class="update">質問登録日時</th>
+    <th class="group">回答最終更新日時</th>
+  </tr>
+  <% brk_key = nil %>
+  <% @items.each do |item| %>
+    <% if brk_key != item.category1_id %>
+    <tr class="subIndex">
+      <th class="docTitle">■ <%= gwbd_category_name(@d_categories, item.category1_id) %></th>
+      <th class="item"></th>
+      <th class="item"></th>
+      <th class="update"></th>
+      <th class="group"></th>
+    </tr>
+    <% end %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="docTitle"><%= link_to hbr(item.title), gwqa_doc_path(item, title_id: item.title_id) + gwqa_params_set %></td>
+      <td class="qaAnswer"><%=raw "<span>#{item.answer_count}</span>" if item.answer_count.to_i > 0 %></td>
+      <td class="qaSettled"><%=raw "<span>解決済</span>" if item.content_state == "resolved" %></td>
+      <td class="update"><%=l item.latest_updated_at if item.latest_updated_at %></td>
+      <td class="group"><%=l item.latest_answer if item.latest_answer %></td>
+    </tr>
+    <% brk_key = item.category1_id %>
+  <% end %>
+</table>

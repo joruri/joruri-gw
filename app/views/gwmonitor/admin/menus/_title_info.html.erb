@@ -1,0 +1,44 @@
+<div class="docsInnerBox">
+
+<% unless defined? skip_action_menu %>
+<div class="editingBox">
+  <div class="docLink"><%= button_to "転送する", @item.clone_path, {method: :get, confirm: 'この照会記事を他所属に転送しますか？', style: "background:cornflowerblue;color:white;"} %></div>
+</div>
+<% end %>
+
+<table class="bbsExpirydate">
+  <tr>
+    <td>　回答期限日時 : </td>
+    <td class="space"></td>
+    <td><%=l @title.expiry_date if @title.expiry_date %></td>
+  </tr>
+</table>
+
+<div class="bbsCreatorInf">
+<table>
+  <tr>
+    <td>作成 : &nbsp;</td>
+    <td><%= @title.createrdivision %></td>
+    <td class="space"></td>
+    <td><%= @title.creater %></td>
+    <td class="space"></td>
+    <td><%= @title.createdate %></td>
+  </tr>
+</table>
+</div>
+
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
+  <tr><td class="spaceBottom"></td></tr>
+  <tr>
+    <% if @title.wiki_enabled? -%>
+      <td class="wiki"><%=raw wiki_show(@title.caption) -%></td>
+    <% else -%>
+      <td><%=raw @title.caption -%></td>
+    <% end -%>
+  </tr>
+</table>
+</div>
+
+</div>

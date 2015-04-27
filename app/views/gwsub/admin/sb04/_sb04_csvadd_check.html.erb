@@ -1,0 +1,49 @@
+<%
+fyears = Gwsub::Sb04EditableDate.all.order("fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+location = "#{@csv_base_url}/csvadd_check_run"
+
+case @menu_header4
+  when 'sb04officialtitles'
+    # 10 職名一覧
+  when 'sb04sections'
+    # 20 所属一覧
+  when 'sb04assignedjobs'
+    # 30 担当一覧
+  when 'sb04stafflists'
+    # 40 職員一覧
+  else
+end
+-%>
+
+<h4 style="margin-left:2em;">CSV追加登録</h4>
+<div style="margin-left:3em; margin-bottom:2em; ">
+登録対象CSVファイルを指定して実行してください
+<br />
+登録済データに、追加登録となります。<br />
+登録済年度を指定した場合は、指定年度分のデータを削除してから新規追加となります。<br /><br />
+<span style="color:red">
+なお、CSVファイルのデータに不備があった場合、エラー箇所を追記したCSVファイルがダウンロードされます。<br />
+エラーがあった場合、エラーを修正して'error'の列を削除した上で、再度CSVファイルを送信してください。<br /><br />
+</span>
+</div>
+
+<%= form_tag location , {:method=>:post , :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','add') %>
+<table class="show">
+<tr>
+  <th>年度</th>
+  <td><%= select_tag( 'item[fyed_id]',options_for_select( fyears ,@fyed_id.to_i ) ) %></td>
+</tr>
+<tr>
+  <th>文字コード</th>
+  <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %> </td>
+</tr>
+<tr>
+  <th>対象ファイル</th>
+  <td><%= file_field_tag('item[file]' , :size=>80 , :accept=>'text/csv') %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= submit_tag 'CSV追加' %>
+</div>
+<% end %>

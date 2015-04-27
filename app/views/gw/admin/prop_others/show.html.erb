@@ -1,0 +1,89 @@
+<div class="piece prop show">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'prop_master_menu' %>
+<%= render 'titleline' %>
+</div>
+<div class="pieceBodyBody">
+
+<% if @is_admin %>
+<div class="editingBox">
+  <span class="btEdit">
+    <%= link_to '編集', {action: :edit} -%>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' -%>
+  </span>
+  <span class="btAttach">
+    <%= link_to '添付', {action: :upload} -%>
+  </span>
+</div>
+<% end %>
+
+<div class="imgBox <%= "noImage" if @item.images.length == 0 %>">
+  <% @item.images.each do |img| %>
+    <img src="<%= img.path %>" alt="<%= img.note %>" />
+  <% end %>
+</div>
+<div class="tableBox">
+  <table class="show rentDetails">
+    <tr>
+      <th>予約</th>
+      <td><%= @item.reserved_state_label -%></td>
+    </tr>
+    <tr>
+      <th>表示順</th>
+      <td><%= @item.sort_no -%></td>
+    </tr>
+    <tr>
+      <th>名称</th>
+      <td><%= @item.name -%></td>
+    </tr>
+    <tr>
+      <th>種別</th>
+      <td><%= safe{@item.prop_type.name} -%></td>
+    </tr>
+    <tr>
+      <th>備考</th>
+      <td><%=br @item.comment -%></td>
+    </tr>
+    <tr>
+      <th>作成日</th>
+      <td><%=l @item.created_at if @item.created_at -%></td>
+    </tr>
+    <tr>
+      <th>更新日</th>
+      <td><%=l @item.updated_at if @item.updated_at -%></td>
+    </tr>
+    <tr>
+      <th>管理区分</th>
+      <td>一般</td>
+    </tr>
+    <tr>
+      <th>施設管理所属</th>
+      <td><%=raw @item.admin_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+    <tr>
+      <th>予約可能所属</th>
+      <td><%=raw @item.edit_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+    <tr>
+      <th>照会可能所属</th>
+      <td><%=raw @item.read_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+  </table>
+</div>
+<div class="imgBox2">
+</div>
+<br class="clear" />
+
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', {action: :index} -%>
+</div>
+
+</div>
+</div>
+</div>

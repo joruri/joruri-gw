@@ -1,0 +1,54 @@
+<!--FAQ -->
+<div class="piece gwfaq">
+<div class="pieceHeader">
+  <h2>質問管理</h2>
+  <% if Gwfaq::Control.is_admin? || Gwqa::Control.is_admin? %>
+  <div class="btsHeadeRight">
+    <span class="btManager"><%= link_to "管理者", "/gwfaq/controls" %></span>
+  </div>
+  <% end %>
+</div>
+<div class="pieceBody">
+<%= render 'header'%>
+
+<table class="index">
+  <tr class="items">
+    <td class="gwffaqTitle">FAQ形式</td>
+    <td class="explanation">説明</td>
+    <td class="manager">管理</td>
+    <td class="update">更新日時</td>
+  </tr>
+  <% @faq_items.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="gwfaqTitle"><%= link_to item.title, gwfaq_docs_path(title_id: item.id) %></td>
+      <td class="explanation"><%=raw item.caption %></td>
+      <td class="manager"><%= item.display_first_admin_name %></td>
+      <td class="update"><%= item.docslast_updated_at.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @faq_items %>
+
+<!-- QA -->
+<%= render 'header'%>
+<table class="index">
+  <tr class="items">
+    <td class="gwqaTitle">Q&amp;A形式</td>
+    <td class="explanation">説明</td>
+    <td class="manager">管理</td>
+    <td class="update" style="width: 80px;">更新日時</td>
+  </tr>
+  <% @qa_items.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="gwqaTitle"><%= link_to item.title, gwqa_docs_path(title_id: item.id)  %></td>
+      <td class="explanation"><%=raw item.caption %></td>
+      <td class="manager"><%= item.display_first_admin_name %></td>
+      <td class="update"><%= item.docslast_updated_at.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @qa_items %>
+
+</div>
+</div>
+

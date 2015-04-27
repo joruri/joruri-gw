@@ -1,0 +1,76 @@
+<%
+genre = @genre
+a_genres = Gw::ScheduleProp.get_genres
+raise Gw::ApplicationError, "指定がおかしいです(genre=#{genre})" if !genre.blank? && a_genres.assoc(genre).nil?
+prop_classes = Gw::ScheduleProp.get_extra_classes(genre)
+prop_classes_ignore_role = Gw::ScheduleProp.get_extra_classes(genre, :ignore_role=>1)
+cls = @cls
+raise Gw::ApplicationError, "指定がおかしいです(cls=#{cls})" if cls.blank? || (cls != 'other' && prop_classes_ignore_role[cls].nil?)
+title = genre.blank? ? '施設' : a_genres.assoc(genre)[1]
+
+link_s = %Q(<span class="current_menu">)
+link_s_end = %Q(</span>)
+lnks2 = (@hedder2lnk == 2 ? "#{link_s}#{title}マスタ#{link_s_end}" : "<span>#{title}マスタ</span>")
+lnks10 = (@hedder2lnk == 10 ? "#{link_s}#{title}所属別実績一覧#{link_s_end}" : "<span>#{title}所属別実績一覧</span>")
+lnks3 = (@hedder2lnk == 3 ? "#{link_s}#{title}管理#{link_s_end}" : "<span>#{title}管理</span>")
+if genre == 'rentcar'
+  lnks6 = (@hedder2lnk == 6 ? "#{link_s}#{title}車庫用画面#{link_s_end}" : "<span>#{title}車庫用画面</span>")
+else
+  lnks6 = (@hedder2lnk == 6 ? "#{link_s}#{title}衛視用画面#{link_s_end}" : "<span>#{title}衛視用画面</span>")
+end
+
+if genre == 'other'
+  lnks1 = (@hedder2lnk == 1 ? "#{link_s}一般施設（自所属）#{link_s_end}" : "<span>一般施設（自所属）</span>")
+  lnks7 = (@hedder2lnk == 7 ? "#{link_s}一般施設（他所属）#{link_s_end}" : "<span>一般施設（他所属）</span>")
+  lnks8 = (@hedder2lnk == 8 ? "#{link_s}一般施設（自所属）管理#{link_s_end}" : "<span>一般施設（自所属）管理</span>")
+  lnks9 = (@hedder2lnk == 9 ? "#{link_s}一般施設マスター件数制限#{link_s_end}" : "<span>一般施設マスター件数制限</span>")
+end
+
+%>
+<div class="menu">
+<%=link_to lnks2.html_safe, "/gw/prop_#{genre}s?cls=#{cls}" unless genre.blank?%>
+<%=link_to lnks10.html_safe, "/gw/prop_extra_group_#{genre}s/" if genre == 'rentcar'%>
+<% prop_classes.each {|k,v|%>
+  <%=link_to(lnks3.html_safe, "/gw/prop_extras?s_genre=#{genre}&cls=#{k}") if k == cls%>
+  <%=link_to(lnks6.html_safe, "/gw/schedule_props/show_guard?s_genre=#{genre}&cls=#{k}") if k == cls%>
+<%}%>
+<% prop_remarks(@genre).each do |r| %><%= link_to "<span>#{r.title}</span>".html_safe, r.url, target: "_blank" %><% end if genre != 'other' %>
+</div>
+
+<%
+lnks1 = (@hedder3lnk == 1 ? "#{link_s}予約一覧#{link_s_end}" : "<span>予約一覧</span>")
+lnks2 = (@hedder3lnk == 2 ? "#{link_s}所属別一覧#{link_s_end}" : "<span>所属別一覧</span>")
+lnks3 = (@hedder3lnk == 3 ? "#{link_s}実績管理#{link_s_end}" : "<span>実績管理</span>")
+lnks4 = (@hedder3lnk == 4 ? "#{link_s}当日貸出準備#{link_s_end}" : "<span>当日貸出準備</span>")
+lnks5 = (@hedder3lnk == 5 ? "#{link_s}主管課マスタ#{link_s_end}" : "<span>主管課マスタ</span>")
+%>
+
+<div class="menu">
+<!-- <p>#{@extra_name_s}</p>-->
+<%=link_to(lnks1.html_safe, "#{@uri_base_prop_extras}?s_genre=#{@genre}&cls=#{@cls}")%>
+<%
+if @cls == 'pm'
+  case @genre
+  when 'rentcar'%>
+    <%=link_to(lnks2.html_safe, "#{@uri_base_prop_extras}?s_genre=#{@genre}&cls=#{@cls}&order=group&history=#{@history}")%>
+  <%when 'meetingroom'%>
+    <% if controller_name == 'prop_extras' && action_name == 'index' %>
+      <a onclick="return confirm('現在表示している全ての予約を承認します。よろしいですか？');" href="<%="#{@uri_base_prop_extras}/confirm_all#{@prop_params}"%>">
+        <span>一括承認</span>
+      </a>
+    <% else %>
+      <a href="#"><span>一括承認</span></a>
+    <% end %>
+    <%=link_to(lnks4.html_safe, "#{@uri_base_prop_extras}?s_genre=#{@genre}&cls=#{@cls}&results=make")%>
+  <%end%>
+  <%=link_to(lnks3.html_safe, "/gw/prop_extra_pm_#{@genre}s")%>
+  <%=link_to(lnks5.html_safe, "/gw/prop_extra_group_rentcar_masters/") if @genre == "rentcar"%>
+<%end%>
+</div>
+<%= render "/gw/admin/prop_extra_pm_#{@sp_mode_extra_pm}s/header" if !@sp_mode_extra_pm.blank? %>
+<%= render "/gw/admin/prop_extra_pm_#{@sp_mode_extra_pm}s/header_year" if !@sp_mode_extra_pm.blank? && params[:order].blank? && !@sp_mode_extra_pm_year.blank? %>
+<%= render "/gw/admin/prop_extra_pm_#{@sp_mode_extra_pm}s/header_show_group" if !@sp_mode_extra_pm.blank? && !@sp_mode_extra_pm_group.blank? %>
+<%= render "/gw/admin/prop_extra_pm_#{@sp_mode_extra_pm}s/header_show_month" if params[:controller] == 'gw/public/prop_extra_pm_rentcars' && params[:action] == 'show_month' %>
+<% if @title_line %>
+<div class="titleLine"><span class="title"><%= @title_line %></span></div>
+<% end %>

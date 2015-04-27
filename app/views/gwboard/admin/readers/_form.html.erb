@@ -1,0 +1,99 @@
+<%
+  concat hidden_field_tag('init[title]', params[:id])   # 上記空の場合にロードされる初期値
+  groups = Gwboard::Group.level2
+%>
+<table class="show">
+<tr><th>閲覧権限設定</th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[readers][gid]', options_for_select(groups, 0), :onchange=>'update_reader_cand();' ) %><br />
+<%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(0)), :size=>5, :style => 'width:200px;', :ondblclick => 'add_reader()', :multiple => true) %>
+</td>
+<td>
+<%= button_tag '追加 →', :onclick =>'add_reader(); return false;' %><br /><br />
+<%= button_tag '← 削除', :onclick => 'del_reader(); return false;' %>
+</td>
+<td>
+<%= select_tag 'item[readers_add_buf]', [], :size=>6, :style => 'width:200px;', :ondblclick => 'del_reader()', :multiple => true %>
+<%= hidden_field_tag 'item[readers_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  var add_reader = function() {
+    add_reader_list('item_readers_uid', 'item_readers_add_buf')
+  }
+  var del_reader = function() {
+    del_reader_list('item_readers_add_buf')
+  }
+  var add_reader_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_reader_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  var my_reader_load = function() {
+    var u = $('init_readers_json');
+    var to = $('item_readers_add_buf');
+    if ( u != undefined && u.value != '') {
+      var readers = eval(u.value);
+      for (var i = 0; i < readers.length; i++) {
+        select_options_push(to, readers[i][1], readers[i][2], readers[i][0]);
+      }
+    }
+    if (to.options.length == 0)
+      select_options_push(to, $('init_uid').value, $('init_uname').value, $('init_ucls').value);
+  }
+  var my_reader_submit = function() {
+    var fr = $('item_readers_add_buf');
+    if (fr.options.length == 0) {
+      alert('管理者2が選択されていません。');
+//      return false;
+    }
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_readers_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    $('itemForm').submit();
+  }
+  var load_reader_cand = function () {
+    url = '<%="/_admin/gwboard/ajaxgroups/getajax.json?s_genre=load_readers&system=GWBBS&title_id=#{params[:id]}"%>';
+    var to = $('item_readers_add_buf');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  var update_reader_cand = function () {
+    var fr = $('item_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  window.onload = load_reader_cand;
+//]]>
+</script>

@@ -1,0 +1,28 @@
+<div class="piece schedulePiece setting">
+<div class="pieceHeader">
+  <h2 class="pieceTitle"><%= Page.title %></h2>
+  <div class="btsHeaderLeft">
+    <span class="btNew"></span>
+  </div>
+  <div class="btsHeadeRight">
+    <span class="btSet"></span>
+  </div>
+</div><!--pieceHeader-->
+
+<div class="pieceBody">
+<div class="pieceBodyBody">
+
+<%= form_for :item, :url => {:action => :update, :id => 0}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters"><%= f.submit "保存" %></div>
+<% end %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to "管理設定へ戻る", "/gw/schedules/setting" %>
+</div>
+
+</div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

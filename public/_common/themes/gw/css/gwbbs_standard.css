@@ -1,0 +1,61 @@
+@charset "UTF-8";
+@import "./bbs-doc-list.css";
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwboard/gwbbs_standard.css
+========================================================= */
+
+/* table index
+----------------------------------------------- */
+table.index td.bbsImportant {
+  padding-top: 7px;
+  padding-right: 0;
+  border-right: none;
+  vertical-align: top;
+}
+
+/* table bbsUserformTitle (詳細ページ　記事タイトル)
+----------------------------------------------- */
+table.bbsUserformTitle {
+  margin: 10px 0px;
+  text-align: left;
+  vertical-align: top;
+}
+table.bbsUserformTitle th {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #6182DA;
+  color: #FFFFFF;
+}
+table.bbsUserformTitle td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  font-size: 12pt;
+}
+
+/* 記事詳細ページ　タイトル･本文欄
+----------------------------------------------- */
+.docsInnerBox .bbsUserform {
+  clear: both;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+/* 1行コメントリスト 
+----------------------------------------------- */
+table.bbsCommentlist {
+  background-color: #FFFFFF;
+  text-align: left;
+}
+table.bbsCommentlist th {
+  padding: 4px 7px;
+  background-color: #E3EFFD;
+  text-align: left;
+}
+table.bbsCommentlist td {
+  padding: 4px 7px;
+  border: 1px solid #D3DCED;
+}
+
+

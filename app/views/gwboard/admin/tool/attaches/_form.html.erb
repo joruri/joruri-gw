@@ -1,0 +1,19 @@
+<%
+  files_uri = gwboard_attaches_path(item.id) + "?system=#{item.system_name}&title_id=#{item.title_id}"
+%>
+<table class="bbsFile">
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <a href="#" onclick="chageDisp(this,'attach_form');return false;">開く▼</a>
+    </td>
+  </tr>
+</table>
+
+<table id="attach_form" border="0" class="show" style="display: none;">
+  <tr>
+    <td style="padding: 0px 0px;">
+      <iframe src="<%= files_uri %>" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+    </td>
+  </tr>
+</table>

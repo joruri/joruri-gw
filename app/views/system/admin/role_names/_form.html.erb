@@ -1,0 +1,15 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>機能名<%= required %></th>
+    <td><%= f.text_field :display_name, :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>機能コード<%= required %></th>
+    <td><%= f.text_field :table_name, :style => 'width: 200px;', :class => "IMEoff" %></td>
+  </tr>
+  <tr>
+    <th>表示順<%= required %></th>
+    <td><%= f.text_field :sort_no, :style => 'width: 200px;', :class => "IMEoff" %></td>
+  </tr>
+</table>

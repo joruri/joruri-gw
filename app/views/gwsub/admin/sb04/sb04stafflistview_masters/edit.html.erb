@@ -1,0 +1,18 @@
+<div class="gwsub sb04">
+<div class="pieceHeader">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+</div>
+<div class="pieceBanner">
+  <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+  <%= render 'menu' %>
+  <%= render 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
+</div>
+<div class="pieceBody">
+<% @action = "update" %>
+<%= form_for :item, :url => "#{@public_uri}/#{@item.id}#{@params_set}" ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+<%= submit_for_update f, :caption => '保存' %>
+<% end %>
+</div>
+</div>

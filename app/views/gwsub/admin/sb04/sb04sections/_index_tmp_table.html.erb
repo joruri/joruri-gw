@@ -1,0 +1,22 @@
+<table class="index">
+  <tr>
+    <th></th>
+    <th>年度</th>
+    <th>所属コード</th>
+    <th>所属名</th>
+    <th>備考</th>
+    <th>所属コード(システム)</th>
+    <th>所属名(システム)</th>
+  </tr>
+  <% @items.each do |item|  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細' , "#{@csv_base_url}/#{item.id}/show_csv?#{@qs}" %></td>
+    <td><%= item.fyear_markjp %></td>
+    <td><%= item.code %></td>
+    <td><%= item.name %></td>
+    <td><%= item.remarks %></td>
+    <td><%= item.ldap_code %></td>
+    <td><%= item.ldap_name %></td>
+  </tr>
+  <% end %>
+</table>

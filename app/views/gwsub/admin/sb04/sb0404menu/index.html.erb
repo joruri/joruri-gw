@@ -1,0 +1,27 @@
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' -%>
+  <div class="pieceBanner">
+    <%= render 'gwsub/admin/sb04/sb04_submenu' -%>
+  </div>
+  <div class="pieceBody">
+    <table class ="index">
+      <tr>
+        <th>表示</th>
+        <th>選択データ名</th>
+        <th>項目名</th>
+      </tr>
+      <% @items.each do |item| %>
+      <% if (@u_role==true) || (@role_sb04_dev==true && (item[1] == 'sb04stafflists' || item[1] == 'sb04assignedjobs') ) -%>
+      <% _columns = Gwsub.get_columns("gwsub_#{item[1]}") -%>
+      <tr class="<%= cycle '', 'cycle' -%>">
+        <td>
+          <%= link_to '一覧' , url_for("/gwsub/sb04/04/#{item[1]}") -%>
+        </td>
+        <td><%= item[0] -%></td>
+        <td><%= _columns -%></td>
+        <% end -%>
+      </tr>
+      <% end unless @items.blank? -%>
+    </table>
+</div>
+</div>

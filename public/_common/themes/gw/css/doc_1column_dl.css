@@ -1,0 +1,72 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doc_1column_dl.css
+========================================================= */
+
+/* 紺色外枠
+------------------------------------------*/
+#content {
+  border-right: 1px solid #1E3B8C;
+}
+
+/* 図書名欄
+------------------------------------------*/
+#contentBody .pieceBanner {
+  background-color: #FFFCF0;
+  border-left: 1px solid #1E3B8C;
+}
+.pieceBanner h3 {
+  padding: 10px;
+}
+
+/* 右カラム　大枠
+------------------------------------------*/
+.DLDocList .pieceBody .outer {
+  margin-left: 0;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+   table bbsFile(入力ページ　添付ファイル欄)
+-----------------------------------------------------------*/
+table.bbsImage,
+table.bbsFile {
+  width: 100%;
+  margin: 0 auto;
+  border: 2px solid #C5D1E7;
+}
+table.bbsImage th,
+table.bbsFile th {
+  width: 110px;
+  padding: 6px 7px;
+  background-color: #E3EFFF;
+}
+table.bbsImage td,
+table.bbsFile td {
+  padding: 6px 7px;
+  border-left: 1px solid #CCCCCC;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+-----------------------------------------------------------*/
+table.bbsImage {
+  border-top: none;
+}
+table#image_form { /*開いた状態*/
+  margin-top: -2px;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* table bbsFile(入力ページ　添付ファイル欄)
+-----------------------------------------------------------*/
+table.bbsFile {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+table#attach_form { /*開いた状態*/
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+

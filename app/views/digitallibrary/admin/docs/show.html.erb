@@ -1,0 +1,11 @@
+<%= render 'show_doc' %>
+<div class="btReturn">
+<%
+str_params = ''
+str_params += "&cat=#{@item.parent_id}" unless @item.parent_id == 0 unless @item.parent_id.blank?
+str_params += "&state=DATE" if params[:state].to_s == 'DATE'
+str_params += "&state=RECOGNIZE" if params[:state].to_s == 'RECOGNIZE'
+str_params += "&state=PUBLISH" if params[:state].to_s == 'PUBLISH'
+%>
+<%= link_to '一覧へ戻る', "#{@title.docs_path}#{str_params}" %>
+</div>

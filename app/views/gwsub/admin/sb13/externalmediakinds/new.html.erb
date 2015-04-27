@@ -1,0 +1,15 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>その他の外部記録媒体登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= render 'display_name' %>
+
+<%= form_for :item, :url => {:action => :create}, :html => {:method => :post, :multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

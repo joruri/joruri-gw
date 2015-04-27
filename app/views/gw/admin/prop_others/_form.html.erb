@@ -1,0 +1,283 @@
+<%
+text_style = 'width:30em;'
+box_width = 'width:300px;'
+
+admin_groups = Gwboard::Group.level2_top_blank
+groups = Gwboard::Group.level2
+parent_id = Core.user_group.parent_id
+%>
+<!--#<%= @admin_json -%>-->
+<%= hidden_field_tag('init[admin_json]',
+  (params[:item] && params[:item][:admin_json] ? params[:item][:admin_json] : nz(@admin_json) )) -%>
+
+<!--#<%= @editors_json -%>-->
+<%= hidden_field_tag('init[editors_json]',
+  (params[:item] && params[:item][:editors_json] ? params[:item][:editors_json] : nz(@editors_json) )) -%>
+
+<!--#<%= @readers_json -%>-->
+<%= hidden_field_tag('init[readers_json]',
+  (params[:item] && params[:item][:readers_json] ? params[:item][:readers_json] : nz(@readers_json) )) -%>
+
+<%= raw(Gw.required_head) %>
+
+<table class="show">
+  <tr>
+    <th>予約</th>
+    <td><%= f.radio_buttons :reserved_state, @item.reserved_state_options %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= f.text_field :sort_no, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>名称 <%= required %></th>
+    <td><%= f.text_field :name, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>種別 <%= required %></th>
+    <td><%= f.select :type_id, options_from_collection_for_select(@prop_types, :id, :name, @item.type_id) %></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%= form_text_area(f, "comment") %></td>
+  </tr>
+  <% if false %>
+  <tr>
+    <th>公開</th>
+    <td><%= f.radio_buttons :state, I18n.a('enum.gw/prop_other.state'), {}, {onclick: 'state_radio_onclick();'} %></td>
+  </tr>
+  <tr>
+    <th>他所属からの予約</th>
+    <td><%= f.radio_buttons :edit_state, I18n.a('enum.gw/prop_other.edit_state') %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>施設管理所属 <%= required %></th>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="userChange">
+            <%= select_tag('item[admin][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_admin_cand();' ) %><br />
+            <%= select_tag('item[admin][uid]', options_for_select(Gwsub.grouplist4(nil, nil , true , nil, parent_id, {:return_pattern => 4})), :size=>5, :style => box_width, :ondblclick => 'add_admin()', :multiple => true) %>
+          </td>
+          <td>
+            <%= button_tag '追加 →', :onclick => 'add_admin(); return false;' %><br /><br />
+            <%= button_tag '← 削除', :onclick => 'del_admin(); return false;' %>
+          </td>
+          <td>
+            <%= select_tag 'item[admin_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_admin()', :multiple => true %>
+            <%= hidden_field_tag 'item[admin_json]', '' %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th>予約可能所属 <%= required %></th>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="userChange">
+            <%= select_tag('item[editors][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_editor_cand();' ) %><br />
+            <%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_editor()', :multiple => true) %>
+          </td>
+          <td>
+            <%= button_tag '追加 →', :onclick =>'add_editor(); return false;' %><br /><br />
+            <%= button_tag '← 削除', :onclick => 'del_editor(); return false;' %>
+          </td>
+          <td>
+            <%= select_tag 'item[editors_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_editor()', :multiple => true %>
+            <%= hidden_field_tag 'item[editors_json]', '' %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th>照会可能所属</th>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="userChange">
+            <%= select_tag('item[readers][gid]', options_for_select(groups, parent_id), :onchange=>'update_reader_cand();' ) %><br />
+            <%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
+          </td>
+          <td>
+            <%= button_tag '追加 →', :onclick => 'add_reader(); return false;' %><br /><br />
+            <%= button_tag '← 削除', :onclick => 'del_reader(); return false;' %>
+          </td>
+          <td>
+            <%= select_tag 'item[readers_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_reader()', :multiple => true %>
+            <%= hidden_field_tag 'item[readers_json]', '' %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<%= hidden_field_tag "item[sub][extra_flag]", @cls %>
+<%= hidden_field_tag "item[sub][gid]", Core.user.groups[0].id %>
+<%= hidden_field_tag "item[sub][uid]", Core.user.id %>
+
+<script type="text/javascript">
+<!--
+//admin
+var add_admin = function() {
+  add_list('item_admin_uid', 'item_admin_add_buf')
+}
+var del_admin = function() {
+  del_list('item_admin_add_buf')
+}
+//editor
+var add_editor = function() {
+  add_list('item_editors_uid', 'item_editors_add_buf')
+}
+var del_editor = function() {
+  del_list('item_editors_add_buf')
+}
+//reader
+var add_reader = function() {
+  add_list('item_readers_uid', 'item_readers_add_buf')
+}
+var del_reader = function() {
+  del_list('item_readers_add_buf')
+}
+
+//セレクトボックス切り替え処理
+//admin
+var update_admin_cand = function () {
+  var fr = $('item_admin_gid');
+  var genre = fr.options[fr.selectedIndex].value;
+  url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre + "&pattern=1";
+  var to = $('item_admin_uid');
+  ajax_request(url, function(r){
+    to.options.length = 0;
+    for (var i=0; i<xha.length; i++) {
+      xh = xha[i];
+      to.options[i] = new Option(xh[2], xh[1]);
+      to.options[i].title = xh[0];
+    }
+  });
+}
+//editors
+var update_editor_cand = function () {
+  var fr = $('item_editors_gid');
+  var genre = fr.options[fr.selectedIndex].value;
+  url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+  var to = $('item_editors_uid');
+  ajax_request(url, function(r){
+    to.options.length = 0;
+    for (var i=0; i<xha.length; i++) {
+      xh = xha[i];
+      to.options[i] = new Option(xh[2], xh[1]);
+      to.options[i].title = xh[0];
+    }
+  });
+}
+//readers
+var update_reader_cand = function () {
+  var fr = $('item_readers_gid');
+  var genre = fr.options[fr.selectedIndex].value;
+  url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+  var to = $('item_readers_uid');
+  ajax_request(url, function(r){
+    to.options.length = 0;
+    for (var i=0; i<xha.length; i++) {
+      xh = xha[i];
+      to.options[i] = new Option(xh[2], xh[1]);
+      to.options[i].title = xh[0];
+    }
+  });
+}
+
+
+var add_list = function(fr_id, to_id) {
+  var fr = $(fr_id);
+  var idxs = select_options_selected_indexes(fr);
+  var to = $(to_id);
+  for (var i = 0; i < idxs.length; i++)
+    select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+}
+var del_list = function(fr_id) {
+  var fr = $(fr_id);
+  var vals = select_options_selected_values(fr);
+  for (var i = 0; i < vals.length; i++)
+    select_options_delete(fr, vals[i]);
+}
+
+// 登録ボタン
+var my_submit = function() {
+  //admin
+  var fr = $('item_admin_add_buf');
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_admin_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+  //editors
+  var fr = $('item_editors_add_buf');
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_editors_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+  //readers
+  var fr = $('item_readers_add_buf');
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_readers_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+
+  $('itemForm').submit();
+}
+
+var load_cand = function () {
+  var u = $('init_admin_json');
+  var to = $('item_admin_add_buf');
+  if ( u != undefined && u.value != '') {
+    var users = eval(u.value);
+    for (var i = 0; i < users.length; i++) {
+      select_options_push(to, users[i][1], users[i][2], users[i][0]);
+    }
+  }
+  var u = $('init_editors_json');
+  var to = $('item_editors_add_buf');
+  if ( u != undefined && u.value != '') {
+    var users = eval(u.value);
+    for (var i = 0; i < users.length; i++) {
+      select_options_push(to, users[i][1], users[i][2], users[i][0]);
+    }
+  }
+  var u = $('init_readers_json');
+  var to = $('item_readers_add_buf');
+  if ( u != undefined && u.value != '') {
+    var users = eval(u.value);
+    for (var i = 0; i < users.length; i++) {
+      select_options_push(to, users[i][1], users[i][2], users[i][0]);
+    }
+  }
+}
+
+var state_radio_onclick = function () {
+  idx = radio_selected('item[state]');
+  if (idx == 1) {
+    $('item_edit_state_0').checked = true;
+    $('item_edit_state_0').disabled = true;
+    $('item_edit_state_1').disabled = true;
+  } else if (idx == 2) {
+    $('item_edit_state_0').disabled = false;
+    $('item_edit_state_1').disabled = false;
+  }
+}
+var my_load = function() {
+  state_radio_onclick();
+  load_cand();
+}
+window.onload = my_load;
+-->
+</script>

@@ -1,0 +1,9 @@
+<% if @item.is_commissioned? %>
+  <% if @title.state == 'closed' %>
+    <%= render 'show_result' %>
+  <% else %>
+    <%= render 'edit' %>
+  <% end %>
+<% else %>
+  <%= render 'show_result' if @title.spec_config == 5 %>
+<% end %>

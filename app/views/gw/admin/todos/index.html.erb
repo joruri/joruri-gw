@@ -1,0 +1,82 @@
+<%= render '/gw/admin/todos/header' %>
+<div class="piece todo index">
+<%= render '/gw/admin/todos/piece_header' %>
+<div class="pieceBody"><div class="pieceBodyBody">
+<%= render '/gw/admin/todos/search' %>
+
+<% if @items.blank? %>
+<%= show_notice %>
+<% else %>
+<table class="index">
+  <tr>
+  <th>
+    <%=link_to "▲", gw_todos_path({:sort_keys=>"is_finished asc",:s_finished=>@s_finished})%>
+    <%=link_to "▼", gw_todos_path({:sort_keys=>"is_finished desc",:s_finished=>@s_finished})%><br />完了
+  </th>
+    <th>
+      <%=link_to "▲", gw_todos_path({:sort_keys=>"ed_at asc",:s_finished=>@s_finished})%>
+      <%=link_to "▼", gw_todos_path({:sort_keys=>"ed_at desc",:s_finished=>@s_finished})%><br />期限
+    </th>
+    <th>
+      <%=link_to "▲", gw_todos_path({:sort_keys=>"title asc",:s_finished=>@s_finished})%>
+      <%=link_to "▼", gw_todos_path({:sort_keys=>"title desc",:s_finished=>@s_finished})%><br />内容
+    </th>
+    <th>
+      <%=link_to "▲", gw_todos_path({:sort_keys=>"updated_at asc",:s_finished=>@s_finished})%>
+      <%=link_to "▼", gw_todos_path({:sort_keys=>"updated_at desc",:s_finished=>@s_finished})%>
+    <br />更新/完了日時</th>    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <%
+    now = Time.now
+    @items.each do |item|%>
+    <%
+    # 場所
+    #schedule = item.schedule
+    if item.is_finished.blank?
+      finish_str = '完了する'
+    else
+      finish_str = '未完了に戻す'
+    end
+    # 完了予定時刻が、現在時刻より前なら赤文字にする。
+    item_ed_at_str = ''
+    unless item.ed_at.blank?
+      ed_at = item.ed_at
+      ed_at_str = ed_at.strftime('%Y-%m-%d')
+      if item.is_finished == 0 || item.is_finished.blank?
+        if now > ed_at
+          item_ed_at_str = %Q(<font color="#FF0000">#{ed_at_str}</font>)
+        else
+          item_ed_at_str = %Q(#{ed_at_str})
+        end
+      else
+        item_ed_at_str = %Q(#{ed_at_str})
+      end
+    end
+    state_str = Gw::Todo.finished_show(item.is_finished)
+    if item.is_finished.blank? || item.is_finished == 0
+      state_link = link_to("完了する","#{finish_gw_todo_path(item)}?#{@qs}")
+    else
+      state_link = link_to("未完了に戻す","#{finish_gw_todo_path(item)}?#{@qs}")
+    end
+
+    show_link = gw_todo_path(item,{:s_finished=>@s_finished})
+    finish_link = "#{finish_gw_todo_path(item)}?#{@qs}"
+    %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= Gw::Todo.finished_show(item.is_finished) %></td>
+      <td><%= raw(item_ed_at_str) -%></td>
+      <td><%= item.title %></td>
+      <td><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
+      <td><%= link_to "詳細", show_link %></td>
+      <td><%= link_to "編集", edit_gw_todo_path(item) %></td>
+      <td><%= raw(state_link) -%></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<% end %>
+</div>
+</div>
+</div>

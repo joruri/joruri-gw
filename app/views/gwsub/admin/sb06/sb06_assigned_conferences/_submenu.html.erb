@@ -1,0 +1,19 @@
+<%
+l2_menus  =  Gwsub::Sb06AssignedConfCategory.sb06_assign_conf_cat_get
+%>
+<%#= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<div class="menu">
+<!-- <p>担当者名申請</p> -->
+<% l2_menus.each do |menu| -%>
+  <%-
+    param = "?pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{menu.id}&c_cat_id=#{menu.id}"
+#    if menu.id==@c_cat_id.to_i
+    if menu.id==@l2_current.to_i
+      display_name = %Q(<span class="gwsub_current_menu">#{menu.cat_name}</span>)
+    else
+      display_name = menu.cat_name
+    end
+  -%>
+  <%= link_to display_name.html_safe , url_for("/gwsub/sb06/sb06_assigned_conferences"+param ) -%>
+<% end -%>
+</div>

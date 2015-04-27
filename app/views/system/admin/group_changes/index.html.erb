@@ -1,0 +1,28 @@
+<div class="piece AdminSetting AdminGroups">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'navi' %>
+
+<% if @items.blank? %>
+<div class="notice">表示対象がありません</div>
+<% else %>
+<table class="index">
+  <tr>
+    <th style="width: 30px;"></th>
+    <th>組織変更開始日</th>
+    <th>新所属</th>
+    <th>引継元</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td><%= link_to :show, url_for(:action => :show, :id => item) %></td>
+    <td><%= safe{item.start_date.strftime("%Y-%m-%d")} %></td>
+    <td><%= item.incoming_group_code %><%= item.incoming_group_name %></td>
+    <td><%= item.present_group_code %><%= item.present_group_name %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+
+</div>
+</div>

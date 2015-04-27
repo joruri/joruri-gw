@@ -1,0 +1,50 @@
+<div class="piece schedulePiece index">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'month' %>
+</div>
+<div class="pieceBodyBody">
+<%= render 'search' %>
+<% if @items.blank? %>
+  <%= show_notice -%>
+<% else %>
+<table class="index">
+  <tr>
+    <th class="is_finished">
+      <%= link_to '▲', {action: :index, sort_keys: 'is_finished asc'} %>
+      <%= link_to '▼', {action: :index, sort_keys: 'is_finished desc'} %> 完了
+    </th>
+    <th class="ed_at">
+      <%= link_to '▲', {action: :index, sort_keys: 'ed_at asc'} %>
+      <%= link_to '▼', {action: :index, sort_keys: 'ed_at desc'} %> 期限
+    </th>
+    <th class="title">
+      <%= link_to '▲', {action: :index, sort_keys: 'title asc'} %>
+      <%= link_to '▼', {action: :index, sort_keys: 'title desc'} %> 内容
+    </th>
+    <th class="updated_at">
+      <%= link_to '▲', {action: :index, sort_keys: 'updated_at asc'} %>
+      <%= link_to '▼', {action: :index, sort_keys: 'updated_at desc'} %> 更新/完了日時
+    </th>
+    <th class="show"></th>
+    <th class="finished"></th>
+  </tr>
+  <% @items.each do |item| -%>
+  <tr>
+    <td><%= item.is_finished_label %></td>
+    <td><span style="<%= 'color:red;' if item.over_deadline? %>"><%= item.todo_ed_at_label %></span></td>
+    <td><%= item.schedule.title %></td>
+    <td><%=l item.updated_at %></td>
+    <td><%= link_to '詳細', "/gw/schedules/#{item.schedule_id}/show_one" %></td>
+    <td><%= link_to item.is_finished? ? '未完了に戻す' : '完了する', {action: :finish, id: item.id} %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+</div>
+<%= paginate(@items) %>
+</div>
+</div>

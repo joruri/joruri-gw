@@ -1,0 +1,13 @@
+<div class="docsInnerBox">
+<table class="gwboardAttachlist">
+  <tr>
+    <th colspan="2">添付ファイル名</th>
+    <th class="remark">備考</th>
+  </tr>
+    <tr>
+      <td style="width:30px;" class="attachIcon"><%= link_to '', '#', :class => @file.icon_type %></td>
+      <td><%= "#{@file.filename} (#{@file.eng_unit})" %></td>
+      <td class="remark"><%= f.text_field :memo, :size => 30 %></td>
+    </tr>
+</table>
+</div>

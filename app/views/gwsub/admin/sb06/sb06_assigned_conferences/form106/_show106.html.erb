@@ -1,0 +1,29 @@
+<div class="sb06_assigned_conference_form105">
+<div class="sb06_assigned_conference_date">
+  <%= Gwsub.fyear_to_namejp2(@item.conf_at) %>
+  <%= %Q(　　　　年　　　月　　　日) if @item.conf_at.blank?%>
+</div>
+<div class="sb06_assigned_conference_group_to"><%= @item.c_kind.conf_to_name + '　殿' unless @item.c_kind.conf_to_name.blank? %></div>
+<div class="sb06_assigned_conference_group_from"><%= @item.group_name %></div>
+<div class="sb06_assigned_conference_title"><%= @item.c_kind.conf_title %></div>
+<!-- table width="60%" align="center" border="1" -->
+<table class=""show">
+<tr><td>
+<div class="left"><%= br @item.c_kind.conf_body %></div>
+<table class="index">
+  <tr>
+    <th>所属</th>
+    <th>氏名</th>
+    <th>連絡先</th>
+  </tr>
+  <% @members.each do |item| %>
+    <tr>
+      <td><%= item.group_name_display %></td>
+      <td><%= item.user_name %></td>
+      <td><%= item.extension %></td>
+    </tr>
+  <% end %>
+</table>
+</td></tr>
+</table>
+</div>

@@ -1,0 +1,40 @@
+<div class="piece AdminSetting AdminGroups">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'navi' %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:start_date) %></th>
+    <td><%= safe{@item.start_date.strftime("%Y-%m-%d")} %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:incoming_group_code) %></th>
+    <td><%= @item.incoming_group_code %></td>
+  </tr><tr>
+    <th><%= @item.locale(:incoming_group_name) %></th>
+    <td><%= @item.incoming_group_name %></td>
+  </tr>
+</table>
+<br />
+
+<p class="form">引継元情報</p>
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:present_group_code) %></th>
+    <td><%= @item.present_group_code %></td>
+  </tr><tr>
+    <th><%= @item.locale(:present_group_name) %></th>
+    <td><%= @item.present_group_name %></td>
+  </tr>
+</table>
+
+<div class="btReturn">
+  <%= link_to '戻る', system_group_changes_path %>
+</div>
+
+</div>
+</div>

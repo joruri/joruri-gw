@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title><%= Core.title %></title>
+</head>
+<body onload="document.form.submit();">
+<%= @product.name %>へ接続しています...
+<%= form_tag @uri.to_s, :name => 'form' do %>
+  <%= hidden_field_tag :account, Core.user.code %>
+  <%= hidden_field_tag :token, @token %>
+  <%= hidden_field_tag :path, params[:path] if params[:path] %>
+  <% if params[:item] && params[:item].is_a?(Hash) %>
+    <% params[:item].each do |key, value| %>
+      <% if params[:flat] %>
+        <%= hidden_field_tag key, value %>
+      <% else %>
+        <%= hidden_field_tag "item[#{key}]", Base64.encode64(value) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+</body>
+</html>

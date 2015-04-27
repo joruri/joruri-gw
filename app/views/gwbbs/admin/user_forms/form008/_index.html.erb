@@ -1,0 +1,15 @@
+<%# ソフトウエア掲示板 -%>
+<table class="index">
+  <tr>
+    <th class="category">分類</th>
+    <th class="name">名称</th>
+    <th class="update">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td class="category"><%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="name"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="update"><%= link_to item.latest_updated_at.strftime('%Y-%m-%d'), "#{item.show_path}#{gwbbs_params_set}" %></td>
+  </tr>
+  <% end %>
+</table>

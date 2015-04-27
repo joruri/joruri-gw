@@ -1,0 +1,27 @@
+<div class="piece memo index">
+<div class="pieceHeader">
+<%= render '/gw/admin/memos/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'search' %>
+<%= render 'tabmenu' %>
+<div id="contentTable">
+<%= form_for :item, :url => {action: :update}, :html => {method: :put, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <div class="userSelect">
+  <%= link_to image_tag("/_common/themes/gw/files/smartphone/btn/ic_act_okuria-userchoice.gif"), "/gw/mobile_participants?view=edit&memo_id=#{@item.id}" %>
+  <span class="textRed">10人まで</span>
+  </div>
+  <%= render 'form', f: f %><br /><br />
+  <%= submit_for_create f, :caption => "送信する" %>
+<% end %>
+<p class="leftPad2">
+  <%= link_to "戻る", {action: :show, id: @item.id} %>
+</p>
+</div>
+</div>
+<div class="pieceBodyBody"></div>
+<div id="loadImg" style="display: none;">Now Loading...</div>
+</div>
+</div>

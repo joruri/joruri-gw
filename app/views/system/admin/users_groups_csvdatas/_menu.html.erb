@@ -1,0 +1,25 @@
+<div class="indexTabs">
+  <% if params[:action] == "csvget" %>
+  <span>CSV出力</span>
+  <% else %>
+  <%= link_to 'CSV出力', {:action => :csvget} %>
+  <% end %>
+
+  <% if params[:action] == "csvup" %>
+  <span>CSV登録</span>
+  <% else %>
+  <%= link_to 'CSV登録', {:action => :csvup} %>
+  <% end %>
+
+  <% if params[:action] == "csv" %>
+  <span>CSV仮データ</span>
+  <% else %>
+  <%= link_to 'CSV仮データ', {:action => :csv} %>
+  <% end %>
+
+  <% if params[:action] == "csvset" %>
+  <span>CSV登録反映</span>
+  <% else %>
+  <%= link_to 'CSV登録反映', {:action => :csvset} %>
+  <% end %>
+</div>

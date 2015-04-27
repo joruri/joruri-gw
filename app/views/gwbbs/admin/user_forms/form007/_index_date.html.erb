@@ -1,0 +1,19 @@
+<table class="index">
+  <tr class="headIndex">
+    <th class="category">分類</th>
+    <th class="charge">担当</th>
+    <th class="docName">文書名</th>
+  </tr>
+  <% brk_code = '' %>
+  <% @items.each do |item| %>
+    <% unless brk_code == item.latest_updated_at.strftime('%Y-%m-%d') %>
+      <% brk_code = item.latest_updated_at.strftime('%Y-%m-%d') %>
+      <tr><th style="text-align: left;"colspan="3"><%= item.latest_updated_at.strftime('%Y年%m月%d日') %></th></tr>
+    <% end %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="category"><%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+      <td class="charge"><%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %></td>
+      <td class="docName"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,22 @@
+<%
+u = Core.user
+uid = u.id
+link_params = "?gid=#{params[:gid]}&uid=#{uid}&cgid=#{params[:cgid]}&dis=#{@dis}"
+schedule_users_select_path = list_gw_mobile_schedules_path({:gid=>params[:gid],:uid=>params[:uid],:cgid=>params[:cgid],:dis=>@dis,:view=>"new",:link=>params[:link]})
+
+@create_path = gw_schedules_path({:gid=>params[:gid],:uid=>params[:uid],:cgid=>params[:cgid],:dis=>@dis})
+@create_path += %Q(&s_date=#{params[:s_date].to_s}sh=#{params[:sh].to_s}&prop_id=#{params[:prop_id].to_s}&s_genre=#{params[:s_genre].to_s})
+%>
+<p class="mobileScheduleCurrent">スケジュール</p>
+<p class="bgAsh">作成</p>
+<%= form_for :item, :url =>@create_path , :html => { :id => 'itemForm'} do |f| %>
+<%= f.error_messages %>
+<%= render 'form_kind', f: f, item_id: nil, link_params: link_params, f_mode: "new" %>
+<%= link_to "参加ユーザー選択", schedule_users_select_path %><span class="textRed">※</span><br />
+<%= render 'form_mobile', f: f %>
+<%= submit_for_create f, :caption=>"登録する" %>
+<% end %>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%= link_to("<戻る", %Q(/gw/schedules/#{link_params}&st_date=#{@topdate})) %>
+</p>

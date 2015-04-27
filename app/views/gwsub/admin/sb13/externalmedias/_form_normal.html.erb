@@ -1,0 +1,54 @@
+<%= f.error_messages %>
+<%= required_head %>
+
+<table class="show">
+<tbody>
+<tr><th>管理所属</th>
+<td><%=@item.section_name%></td></tr>
+<%unless @item.new_registedno.blank?%>
+<tr><th>登録番号</th>
+<td><%=sprintf('%06d',@item.new_registedno)%><%=hidden_field_tag('item[new_registedno]', @item.new_registedno) %></td></tr>
+<%end%>
+<tr><th>H20まで登録番号</th>
+<td><%=@item.registedno%></td></tr>
+</tbody>
+</table>
+  
+<table class="show">
+<tr>
+<th>登録年月日<%= required %></th>
+<td><%= f.datepicker :registed_at %></td>
+</tr>
+<tr>
+<th>媒体名<%= required %></th>
+<td>
+<%= f.select(:externalmediakind_id, Gwsub::Externalmediakind.where.not(kind: 'USB').order(kind: :asc).all.map{|k| [k.name, k.id]} )  %>
+　追加設定<%= f.text_field :externalmediakind_name ,:class=>'name' , :size=>"20", :maxlength=>"50"%>
+</td>
+</tr>
+
+<tr>
+<th>保有者</th>
+<td>
+<% users = System::User.get_user_select(@item.section_id, nil, :ldap=>1) %>
+<%= f.select :user_id , options_for_select(users , @item.user_id.to_i ) , {:include_blank=>'指定なし'} %>※選択項目を優先<br/>
+<%= f.text_field :user, :class=>'name', :style => 'width:100%;' %>
+</td>
+</tr>
+
+<tr>
+<th>分類</th>
+<td><%= f.collection_radio_buttons :categories, @item.categories_status, :first, :last %></td>
+</tr><tr>
+<th>廃棄年月日</th>
+<td><%= f.datepicker :ending_at %></td>
+</tr><tr>
+<th>備考　※50文字以内</th>
+<td><%= f.text_field :remarks ,:class=>'name', :style => 'width:100%;' %></td>
+</tr>
+</table>
+<br />
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+<br />

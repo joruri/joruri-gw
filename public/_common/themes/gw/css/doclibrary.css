@@ -1,0 +1,50 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doclibrary.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+.docLibrary {
+  background-image: url(/_common/themes/gw/files/title/title_library.gif);
+}
+
+/* 紺色大枠
+------------------------------------------*/
+.docLibrary .pieceBody {
+  padding: 10px;
+}
+
+/* table index
+------------------------------------------*/
+table.index td.manager {
+  width: 145px;
+}
+table.index td.update {
+  width: 120px;
+}
+table.index td.libraryTitle {
+  width: 22%;
+}
+
+/* タブ周り
+-----------------------------------------*/
+#contentBody td.tab {
+  width: 140px;
+}
+#contentBody .tabBox td.current {
+  border-bottom: 1px solid #E3EFFF;
+}
+#page-doclibrary-cabinets-index table.index th,
+#page-doclibrary-cabinets table.index th {
+  border: none;
+}
+
+/* 機能ボタン
+-----------------------------------------*/
+.docLibrary .editingBox {
+  width: 100%;
+}
+.docLibrary .contentMenu {
+  margin-bottom: 10px;
+}

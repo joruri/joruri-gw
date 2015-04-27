@@ -1,0 +1,153 @@
+<%
+
+concat hidden_field_tag('init[committees_json]', '')
+current_committee = @item.state.to_sym != :draft  && @item.current_step ? @item.current_step.committee : nil
+current_step = @item.current_step
+%>
+<script type="text/javascript">
+//<![CDATA[
+  var initial = <%= if current_step then "#{current_step.number + 1}" else "0" end %>;
+  var fixed = [
+    <%=
+     if current_committee && !@remanded
+       @item.steps.select{|s| s.number <= current_step.number}.map{|s|s.committee.user_id}
+         .inject(''){|a,i|"#{a}#{a=='' ? '' : ','}#{i}"}
+     end
+    %>
+  ];
+  var cs = [];
+<% (current_committee && !@remanded ? @item.future_committees : @item.sorted_steps.map{|s|s.committee}).compact.each do |committee| %>
+  cs.push([<%= committee.user_id %>, "<%= committee.user_name_and_code %>"]);
+<% end %>
+  var redraw_rows = function() {
+    var table = $('committees_body');
+    for (var i = table.rows.length - 1; i >= 0 ; i--) {
+      table.deleteRow(i);
+    }
+    for(var i = 0; i<cs.length; i++) {
+      var c = cs[i]
+      var row = table.insertRow(table.rows.length);
+      row.insertCell(0).innerHTML = "<input type='hidden' name='committees[]' value='" + c[0] + "'>" + (initial + i + 1)
+      row.insertCell(1).innerHTML = c[1];
+      row.insertCell(2).innerHTML = "<a onclick='delete_row("+i+")'>削除</a>";
+      row.insertCell(3).innerHTML = (i>0 ? "<a onclick='up_row("+i+")'>▲</a>" : "");
+      row.insertCell(4).innerHTML = (i<cs.length - 1 ? "<a onclick='down_row("+i+")'>▼</a>" : "");
+    }
+  }
+  var add_user = function(fr_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    for (var i = 0; i < idxs.length; i++){
+      var eflg = false;
+      for(var j=0; j<cs.length; j++){
+      	if(cs[j][0] == fr[idxs[i]].value) { eflg = true; break;}
+      }
+      for(var j=0; j<fixed.length; j++){
+      	if(fixed[j] == fr[idxs[i]].value) { eflg = true; break;}
+      }
+      if(!eflg){
+        cs.push([fr[idxs[i]].value, fr[idxs[i]].innerHTML]);
+      }
+    }
+    redraw_rows();
+  }
+  
+  var delete_row = function(idx) {
+  	ds = new Array();
+  	for(var i=0; i<cs.length; i++) {
+  	  if(i != idx){ ds.push( cs[i] ); }
+  	}
+  	cs = ds;
+    redraw_rows();
+  }
+  var up_row = function(idx) {
+	t = cs[idx];
+	cs[idx] = cs[idx - 1];
+	cs[idx - 1] = t;
+    redraw_rows();
+  }
+  var down_row = function(idx) {
+	t = cs[idx];
+	cs[idx] = cs[idx + 1];
+	cs[idx + 1] = t;
+    redraw_rows();
+  }
+  
+  var load_cand = function () {
+    update_reader_cand();
+  }
+
+  var update_reader_cand = function () {
+    var fr = $('item_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0, j=0; i<xha.length; i++) {
+        xh = xha[i];
+      	if(xh[1] != <%= @item.creater_id %>){
+          to.options[j] = new Option(xh[2], xh[1]);
+          to.options[j].title = xh[0];
+          j++;
+      	}
+      }
+    });
+  }
+
+  var add_custom_routes = function() {
+    var id = $("custom_route").value;
+    url = '/gwworkflow/ajax_custom_route.json?custom_route_id=' + id;
+    ajax_request(url, function(r){
+      cs = [];
+      redraw_rows();
+      for(var i = 0; i<xha.length; i++) {
+        cs.push([xha[i][0], xha[i][1]]);
+      }
+      redraw_rows();
+    });
+  }
+  
+  var my_submit = function(state) {
+    var to = $('item_committees');
+    var xs = new Array();
+    for(var i=0; i<cs.length; i++){
+      var c = cs[i];
+      xs.push(new Array([i,c[0],c[1]]));
+    }
+    to.value = Object.toJSON(xs);
+    var st = $('committee_state');
+    st.value = state;
+    $('itemForm').submit();
+  }
+
+  document.observe("dom:loaded",function(){
+  	load_cand();
+    redraw_rows();
+  });
+//]]>
+</script>
+
+<table width="100%">
+  <thead>
+  <tr>
+  	<th style="width:30pt">順番</th>
+  	<th colspan=4>名前</th>
+  </tr>
+  </thead>
+  <% if current_committee && !@remanded  %>
+  <tbody id="fixed_committees_body">
+    <% @item.steps.select{|s| s.number <= current_step.number}.each do |step| %>
+  	<tr>
+      <td><%= step.number + 1 %></td>
+      <td><%= step.committee.user_name_and_code %></td>
+      <td colspan=3 class="fixed_committee_state" style="text-align:center"><%= step.committee.state_str %></td>
+    </tr>
+    <% end %>
+  </tbody>
+  <% end %>
+  <tbody id="committees_body"></tbody>
+</table>
+
+<%= hidden_field_tag("submit_type", [], :id=>"committee_state") %>
+<%= hidden_field_tag("item[committees]", [], :id=>"item_committees") %>

@@ -1,0 +1,40 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/prop_extra/pm_rentcar.css
+========================================================= */
+/* base style
+----------------------------------------------- */
+.prop_extra {
+  font-size: 120%;
+}
+.prop_extra.pm_rentcars .pieceHeader table.title {
+  margin-top: 10px;
+}
+.prop_extra.pm_rentcars .pieceHeader table.title td {
+  padding: 0 5px;
+  font-weight: bold;
+}
+.prop_extra.pm_rentcars .pieceBody div.title {
+  font-weight: bold;
+}
+.prop_extra.pm_rentcars .pieceBody table.cols2 {
+  width: 100%;
+}
+.prop_extra.pm_rentcars .pieceBody table.cols2 td {
+  width: 50%;
+  margin: 5px;
+  vertical-align: top;
+}
+.prop_extra.pm_rentcars .pieceBody table.cols2 table {
+  width: 99%;
+}
+.prop_extra.pm_rentcars .pieceBody table.cols2 table td{
+  width: auto;
+}
+
+/* prop_rentcars 
+----------------------------------------------------*/
+.prop.show table.main.rentcar td {
+  padding: 5px;
+  vertical-align: top;
+}

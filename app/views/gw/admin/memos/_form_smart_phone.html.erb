@@ -1,0 +1,49 @@
+<%
+suffixes_raw = I18n.a('enum.gw/memo.category')
+suffixes = Gw.options_for_select(suffixes_raw, nil,{:include_blank=>['', '']})
+%>
+<%= render '/gw/admin/memos/form_participant', f: f %>
+<table class="show">
+  <tr>
+    <th>時刻<span class="textRed">※</span></th>
+  </tr>
+  <tr>
+    <td><%= f.datetime_select_for_mobile :ed_at %></td>
+  </tr>
+  <tr>
+    <th>所属/担当/社名</th></tr>
+  <tr>
+    <td><%= f.text_area :fr_group, :rows => 5, :style => 'width:100%;' %></td>
+  </tr>
+  <tr>
+    <th>担当者</th></tr>
+  <tr>
+    <td><%= f.text_area :fr_user, :rows => 5, :style => 'width:100%;' %></td>
+  </tr>
+  <tr>
+    <th>伝言<span class="textRed">※</span></th>
+  </tr>
+  <tr>
+    <td>
+      <%= f.text_area :title, :rows => 5, :style => 'width:100%;' %><br />
+      <b>定型文</b>　<%= select_tag :_category, suffixes, :onchange => 'select_category()' %>
+    </td>
+  </tr>
+  <tr>
+    <th>備考</th>
+  </tr>
+  <tr>
+    <td><%= f.text_area :body, :rows => 6, :style => 'width:100%;' %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  var select_category = function() {
+    var fr = $('_category');
+    var idxs = select_options_selected_indexes(fr);
+    var to = $('item_title');
+    to.value = fr[idxs].innerHTML;
+  }
+//]]>
+</script>

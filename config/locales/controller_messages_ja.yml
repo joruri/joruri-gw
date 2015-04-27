@@ -1,0 +1,45 @@
+#
+# <locale>:                ... 1
+#   actioncontroller:      ... 2
+#     messages:            ... 3
+#       <controller_name>: ... 4
+#         <action_name>:   ... 5
+#           <message_key>: ... 6
+#
+#
+ja:
+  actioncontroller:
+    messages:
+      default:
+        create:
+          success: "登録処理が完了しました。"
+          failure: "登録処理が失敗しました。"
+          could_not_create: "登録できませんでした。"
+        update:
+          success: "更新処理が完了しました。"
+          failure: "更新処理が失敗しました。"
+          could_not_update: "更新できませんでした。"
+        destroy:
+          success: "削除処理が完了しました。"
+          failure: "削除処理が失敗しました。"
+          could_not_delete: "削除できませんでした。"
+
+      wdb/admin/connection_specs:
+        multiedit:
+          success: "登録処理が完了しました。"
+      wdb/admin/table_associations:
+        multiedit:
+          success: "登録処理が完了しました。"
+      wdb/admin/table_association_options:
+        multiedit:
+          success: "登録処理が完了しました。"
+      wdb/admin/form_field_options:
+        multiedit:
+          success: "登録処理が完了しました。"
+        div_multiedit:
+          success: "登録処理が完了しました。"
+      wdb/admin/table_fields:
+        multiedit:
+          success: "登録処理が完了しました。"
+        div_multiedit:
+          success: "登録処理が完了しました。"

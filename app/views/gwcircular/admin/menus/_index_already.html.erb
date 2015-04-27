@@ -1,0 +1,18 @@
+<table class="index">
+  <tr class="headIndex">
+    <th style="width:60px;">状態</th>
+    <th class="docTitle">回覧件名</th>
+    <th class="update">作成者</th>
+    <th style="width:120px;">回覧期限日時</th>
+    <th style="width:120px;">最終更新日時</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:60px;"><%= item.status_name %></td>
+    <td class="docTitle"><%= link_to item.title, item.show_path %></td>
+    <td class="update"><%= item.creater %></td>
+    <td class="update"><%=l item.expiry_date if item.expiry_date %></td>
+    <td class="update"><%= item.display_editdate %></td>
+  </tr>
+  <% end %>
+</table>

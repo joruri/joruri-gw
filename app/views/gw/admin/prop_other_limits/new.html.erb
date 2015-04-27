@@ -1,0 +1,20 @@
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader"></div>
+<%= render '/gw/admin/prop_others/prop_master_menu' %>
+<%= render 'titleline' %>
+<div class="pieceBodyBody">
+
+<%= form_for :item, :url => "/gw/prop_other_limits", :html => {:method => :post} do |f| %>
+  <%= render 'form', f: f %>
+  <div class="preserve">
+    <%= f.submit '保存' %>
+  </div>
+<% end %>
+
+</div>
+</div>
+</div>

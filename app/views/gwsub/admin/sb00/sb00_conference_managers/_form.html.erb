@@ -1,0 +1,79 @@
+<%
+mark_jp     = Gw::YearFiscalJp.select_dd_markjp_id(nil,10)
+@item.fyear_id.to_i==0 ? fy_id = @fy_id : fy_id = @item.fyear_id
+groups      = Gwsub::grouplist4(nil,nil,@u_role)
+users       = System::User.get_user_select(@item.group_id)
+ctrl_name   = Gwsub::Sb00ConferenceManager.ctrl_show(@ctrl)
+send_status = Gwsub::Sb00ConferenceManager.send_states
+-%>
+<%= hidden_field_tag 'limit'      , @limit      -%>
+<%= hidden_field_tag 'fy_id'      , @fy_id      -%>
+<%= hidden_field_tag 'pre_fyear'  , @fy_id      -%>
+<%= hidden_field_tag 'h1_menu'    , @render_menu1 -%>
+<%= hidden_field_tag 'h2_menu'    , @render_menu2 -%>
+<%= hidden_field_tag 'h3_menu'    , @render_menu3 -%>
+<%= hidden_field_tag 'ctrl'       , @ctrl       -%>
+<%= hidden_field_tag 'ctrl_name'  , @ctrl_name  -%>
+<%= hidden_field_tag 'u_role'     , @u_role     -%>
+<% if @ctrl_name == '' -%>
+  <%= hidden_field_tag 'c_cat_id'   , @c_cat_id -%>
+  <%= hidden_field_tag 'kind_id'    , @kind_id  -%>
+  <%= hidden_field_tag 'help'       , @help     -%>
+<% end -%>
+<%= f.hidden_field :controler, :value => @ctrl %>
+
+<%= f.error_messages %>
+<%= required_head %>
+
+<table class="show">
+  <tr>
+    <th>通知元</th>
+    <td><%= ctrl_name %></td>
+  </tr>
+  <tr>
+    <th>通知文<%= required %></th>
+    <td><%= f.text_field :memo_str, :size => 50 %></td>
+  </tr>
+  <tr>
+    <th>年度<%= required %></th>
+    <td><%= f.select :fyear_id, options_for_select(mark_jp, fy_id) %></td>
+  </tr>
+  <tr>
+    <th>管理者所属<%= required %></th>
+    <td><%= f.select :group_id, options_for_select(groups, @item.group_id), {}, {onchange: 'get_user()'} %></td>
+  </tr>
+  <tr>
+    <th>管理者<%= required %></th>
+    <td><%= f.select :user_id, options_for_select(users, @item.user_id) %></td>
+  </tr>
+  <tr>
+    <th>通知要否<%= required %></th>
+    <td><%= f.radio_buttons :send_state, send_status %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+<br />
+<%#= render 'gwsub/admin/sb04/sb04_common_info_form', f: f %>
+<br />
+
+<script type="text/javascript">
+<!--
+  var end_cnt = -1;
+  var ed_str = '';
+  function get_user() {
+    g_id = $("item_group_id").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("<%= @index_uri%>user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+      $('item_user_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+-->
+</script>

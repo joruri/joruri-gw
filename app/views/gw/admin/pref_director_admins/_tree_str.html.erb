@@ -1,0 +1,7 @@
+<% item = @item || @items.try(:first) %>
+<div style="margin: 10px 0;">
+<%= link_to '所属一覧', {action: :index, g_cat: nil} %>
+<% if params[:g_cat].present? && item.present? %>
+　<span>＞</span>　<%= link_to item.parent_g_name, {action: :index, g_cat: item.parent_g_order} %>
+<% end %>
+</div>

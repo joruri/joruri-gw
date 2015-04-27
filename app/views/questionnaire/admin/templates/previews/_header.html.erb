@@ -1,0 +1,6 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= Page.title %></h2>
+<% if @is_sysadm %>
+  <div class="btsHeaderLeft"><span class="btNew"><%= link_to '新規作成', new_questionnaire_template_path if @is_sysadm %></span></div>
+<% end %>
+</div>

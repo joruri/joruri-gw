@@ -1,0 +1,24 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader">
+  <h2 class="pieceTitle"><%= Page.title %></h2>
+  <div class="btsHeaderLeft">
+  </div>
+  <div class="btsHeadeRight">
+  </div>
+</div><!--pieceHeader-->
+
+<div class="pieceBody">
+
+<%= form_for :item, :url => {:action => :update, :id => 0} ,:html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters"><%= f.submit "保存" %></div>
+<% end %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to "照会・回答システム 機能設定へ戻る", "/gwmonitor/settings" %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

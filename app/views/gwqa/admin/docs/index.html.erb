@@ -1,0 +1,18 @@
+<%= render 'header' %>
+
+<% case params[:state] %>
+<% when "GROUP" %>
+  <%= render 'index_group' %>
+<% when "CATEGORY" %>
+  <%= render 'index_category' %>
+<% else %>
+  <%= render 'index_date' %>
+<% end %>
+
+<%= render 'limit_change' %>
+
+<%= paginate @items %>
+
+<div class="btReturn">
+  <%= link_to "Q&A一覧へ戻る", "/gwqa/" %>
+</div>

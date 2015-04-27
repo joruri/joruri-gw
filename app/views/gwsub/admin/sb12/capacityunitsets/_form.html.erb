@@ -1,0 +1,16 @@
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+<tr>
+<th>単位区分<%= required %></th>
+<td><%= f.text_field :code  ,:class=>'num' %>※数字５桁以内</td>
+</tr>
+<tr>
+<th>単位<%= required %></th>
+<td><%= f.text_field :name  ,:class=>'name' %>※５文字以内</td>
+</tr>
+</table>
+<br />
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>

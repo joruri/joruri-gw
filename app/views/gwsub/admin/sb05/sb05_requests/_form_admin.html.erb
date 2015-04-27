@@ -1,0 +1,16 @@
+<%
+r_states = @req1.r_state.to_i
+%>
+<table class="show">
+  <tr><th colspan ="3">管理者メモ</th></tr>
+  <tr><th>編集期限基準日</th><td><%= Gw.date_str(@req1.base_at) %></td></tr>
+  <tr><th>編集期限</th>
+  <td colspan="2"><%= f.datepicker :contract_at %></td>
+  </tr>
+  <% if @req1.media_code==4 %>
+  <tr><th>掲載状況</th><td colspan ="2"><%= f.radio_buttons :magazine_state, Gwsub::Sb05Request.select_mm_state %></td></tr>
+  <% end %>
+  <tr><th>確認</th><td colspan ="2"><%= f.radio_buttons :m_state, Gwsub::Sb05Request.select_m_state %></td></tr>
+  <tr><th>処理</th><td colspan ="2"><%= @req1.request_open?(r_states) %> </td></tr>
+  <tr><th>メモ</th><td colspan ="2"><%= f.text_area :admin_remarks ,:rows=>3 , :cols=> 80 %></td></tr>
+</table>

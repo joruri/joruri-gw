@@ -1,0 +1,36 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+  <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+  <%= render 'gwsub/admin/sb04/sb04_limit_settings/menu' -%>
+  <%= render 'display_name' -%>
+</div>
+
+<div class="pieceBody">
+
+  <div class="pieceBodyBody">
+    <% if @items.blank? -%>
+      <%= show_notice -%>
+    <% else -%>
+    <table class="index">
+      <tr>
+      <th></th>
+      <th>種別</th>
+      <th>URL</th>
+      <th>更新日</th>
+      </tr>
+      <% @items.each do | item| -%>
+      <tr class="<%= cycle '', 'cycle' -%>">
+        <td><%= link_to '詳細' , "/gwsub/sb04/09/sb04_settings/#{item.id}" -%></td>
+        <td><%= item.get_name -%></td>
+        <td><%= item.data -%></td>
+        <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      </tr>
+      <% end %>
+    </table>
+    <% end -%>
+  </div>
+    <%= paginate @items -%>
+</div>
+
+</div>

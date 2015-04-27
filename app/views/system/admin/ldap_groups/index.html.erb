@@ -1,0 +1,53 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render '/system/admin/ldap_temporaries/menu' %>
+<%= render 'menu' %>
+
+<% unless Core.ldap.connection %>
+<div class="notice">LDAPサーバーに接続できませんでした。</div>
+<% else %>
+<script type="text/javascript">
+//<![CDATA[
+function showSpec(u) {
+  var spec = $(u.id.replace(/Link$/, "Spec"));
+  if (spec.style.display == "none") spec.show(); else spec.hide();
+  return false;
+}
+//]]>
+</script>
+<div class="crudTree clearfix">
+<div class="tree" style="float: left; width: 30%;">
+  <table class="index">
+    <tr><th><%= @parent ? @parent.ou : 'LDAP' %></th></tr>
+    <% @groups.each do |g| %>
+      <tr>
+        <td><%= link_to h(g.ou), url_for(:action => :index, :parent => g.ou) %></td>
+      </tr>
+    <% end %>
+    <% if @groups.size == 0 %><tr><td>no groups<br /></td></tr><% end %>
+  </table>
+</div>
+<div class="content" style="width: 69%;">
+  <table class="index">
+    <tr><th>Users</th></tr>
+    <% @users.each_with_index do |u, idx| %>
+    <tr>
+      <td>
+        <a id="uid<%= idx %>Link" href="#" onclick="return showSpec(this);">詳細</a>&nbsp;
+        <%= u.name %> (<%= u.uid %>) <%= u.email %>
+        <div id="uid<%= idx %>Spec" style="display: none;"><hr />
+        <% u.attributes.each do |key, values| %><%= "#{key} : #{values.join(",")}" %><br /><% end %>
+        </div>
+      </td>
+    </tr>
+    <% end %>
+    <% if @users.size == 0 %><tr><td>no users<br /></td></tr><% end %>
+  </table>
+</div>
+</div>
+<% end %>
+
+</div>
+</div>

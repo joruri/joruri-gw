@@ -1,0 +1,31 @@
+<%
+case @s_ctl
+when 'u'
+  title = '連絡先一覧(users)'
+when 'r'
+  title = '依頼一覧(requests)'
+else
+  title = ''
+end
+%>
+<br />
+<h4><%= title %> ＣＳＶ 出力</h4>
+<div>
+<span style="color:blue">
+出力対象を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。
+</span>
+</div>
+<%= form_for :item, url: "#{@index_uri}csvput", html: {method: :get, multipart: true} do |f| %>
+  <table class="show">
+    <tr>
+      <th></th>
+      <td>文字コードを選択して実行してください</td>
+    </tr>
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+  </table>
+  <br />
+  <%= f.submit "#{title}CSV出力" %>
+<% end %>

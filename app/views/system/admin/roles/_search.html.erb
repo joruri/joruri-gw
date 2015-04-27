@@ -1,0 +1,17 @@
+<%
+if @is_dev
+  roles = System::RoleName.all.order(:sort_no)
+else
+  roles = System::RoleName.where.not(:table_name => "gwsub").order(:sort_no)
+end
+%>
+
+<%= form_tag '', :method => :get, :class => 'search', :name=>'frmSearch' do %>
+<table>
+  <tr>
+    <td>機能名</td>
+    <td><%= select_tag 'role_id', options_for_select([['すべて',0]] + roles.map{|role| [role.display_name, role.id]}, @role_id.to_i), :onchange => 'submit();' %></td>
+    <td><%= submit_tag 'リセット', :name => :reset  %></td>
+  </tr>
+</table>
+<% end %>

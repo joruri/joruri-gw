@@ -1,0 +1,33 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'system/admin/roles/header_menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', "/system/role_name_privs/new#{@params_set}" %></span>
+</div>
+<%= render 'search' %>
+
+<table class="index">
+  <tbody>
+    <tr>
+      <th style="width: 60px;"></th>
+      <th>機能名</th>
+      <th>権限名</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td style="text-align: center;"><%= link_to '詳細', "/system/role_name_privs/#{item.id}#{@params_set}" %></td>
+      <td><%= item.role.display_name %></td>
+      <td><%= item.priv.display_name %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+  
+<br/>
+<%= paginate @items %>
+<br/>
+
+</div>
+</div>

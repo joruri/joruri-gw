@@ -1,0 +1,141 @@
+<%
+sect = Gwsub::Sb04section.where(:id => @items[0].section_id).first
+sect_bbs_url = nil
+seat_str = nil
+unless sect.blank?
+  if Gwsub::Sb04SeatingList.bbs_docs_link_check(sect.bbs_url)==true
+    sect_bbs_url = sect.bbs_url
+    seat_str = link_to("事務分掌表・座席表", sect_bbs_url, {:target=>"_blank", :title => @bbs_link_title})
+  end
+end
+edit_state1 = Gwsub::Sb04stafflist.duties_editable?(Core.user.id , @items[0] , @u_role)
+unless edit_state1 == true
+  edit_state1 = true if @role_sb04_dev && Gwsub::Sb04stafflistviewMaster.is_sb04_dev_group_role(@items[0].fyear_id, @items[0].section_code)
+end
+
+assigned_job  = Gwsub::Sb04assignedjob.where(:id => @items[0].assignedjobs_id).first
+edit_state1 =false unless @menu_header3 == 'sb04divideduties'
+if edit_state1 == true
+  jobs_edit_str  = "#{base_url}/#{@items[0].id}/assigned_job_edit?#{@qs}"
+else
+  jobs_edit_str = nil
+end
+
+staff                       = Gwsub::Sb04stafflist.new
+staff.fyear_id              = @items[0].fyear_id
+staff.section_id            = @items[0].section_id
+staff.assignedjobs_code_int = nil
+user_no_assigned_count      = staff.find(:all).count
+
+if @items[0].assignedjobs_id.to_i==0
+  jobs_name     = @items[0].assignedjobs_name
+  jobs_address  = @items[0].assignedjobs_address
+  jobs_tel      = @items[0].assignedjobs_tel
+else
+  unless assigned_job.blank?
+    jobs_name     = assigned_job.name
+    jobs_address  = assigned_job.address
+    jobs_tel      = assigned_job.tel
+  else
+    jobs_name     = @items[0].assignedjobs_name
+    jobs_address  = @items[0].assignedjobs_address
+    jobs_tel      = @items[0].assignedjobs_tel
+  end
+end
+if  @qs.blank?
+  add_param = "show=#{@items[0].id}"
+else
+  add_param = @qs+"&show=#{@items[0].id}"
+end
+-%>
+
+<% if @items.blank? %>
+<div class="notice">表示する項目はありません。</div>
+<% else %>
+  <% if jobs_edit_str.blank? %>
+  <%# 編集権限なし %>
+  <table class="show">
+  <tr>
+  <th style="width:10%;">所属名</th><td style="width:40%;"><%= @items[0].section_name %> <%=  seat_str %></td>
+  <th style="width:10%;">担当名</th><td style="width:40%;"><%= jobs_name %></td>
+  </tr>
+  <tr>
+  <th>住所/電話</th><td><%= jobs_address %></td>
+  <th>担当電話</th><td><%= jobs_tel %></td>
+  </tr>
+  </table>
+  <% else %>
+  <%# 編集権限あり %>
+  <table class="index">
+  <tr>
+  <td rowspan="2" style="width:20%;">
+    <% if assigned_job.blank? %>
+    <div class="btReturn"><%= Gw.required("この担当は削除されています。<br />職員の担当は、別の担当に割り振ってください。") -%></div>
+    <% else %>
+    <div class="btReturn"><a href='<%= "#{jobs_edit_str}"%>' >担当名等編集</a></div>
+    <% end %>
+  </td>
+  <th style="width:10%;">所属名</th><td style="width:30%;"><%= @items[0].section_name %> <%=  seat_str %></td>
+  <th style="width:10%;">担当名</th><td style="width:30%;"><%= jobs_name %></td>
+  </tr>
+  <tr>
+  <th>住所/電話</th><td><%= jobs_address %></td>
+  <th>担当電話</th><td><%= jobs_tel %></td>
+  </tr>
+  </table>
+  <% end %>
+  <br />
+  <table class="index">
+  <tr>
+    <% if edit_state1 == true %>
+    <th style="text-align:center;"></th>
+    <% end %>
+  <th style="text-align:center;">No</th>
+  <th style="text-align:center;">分掌事務</th>
+  <th style="text-align:center;">職名</th>
+  <th style="text-align:center;">氏名</th>
+  <th style="text-align:center;">内線</th>
+  <th >備考</th>
+  </tr>
+  <%  @items.each do |d| %>
+  <tr>
+    <% edit_state = Gwsub::Sb04stafflist.duties_editable?(Core.user.id , d , @u_role) %>
+    <%
+    unless edit_state == true
+      edit_state = true if @role_sb04_dev && Gwsub::Sb04stafflistviewMaster.is_sb04_dev_group_role(d.fyear_id, d.section_code)
+    end
+    %>
+    <% edit_state = false unless @menu_header3 == 'sb04divideduties' %>
+    <% if edit_state == true %>
+    <td style="width:05%;">
+      <%= link_to '編集',"#{base_url}/#{d.id}/edit?#{@qs}" %>
+      <% if false %>
+      <br />
+      <%= link_to '削除',"#{base_url}/#{d.id}?#{@qs}",:confirm=>"削除してよろしいですか？",:method=>:delete %>
+      <% end %>
+    </td>
+    <% end %>
+    <td style="width:05%; text-align:center;"><%= d.divide_duties_order %></td>
+    <td style="width:43%;"><%= hbr d.divide_duties %></td>
+    <td style="width:12%;"><%= d.official_title_name %></td>
+    <td style="width:10%;"><%= d.name %></td>
+    <td style="width:05%;"><%= d.extension %></td>
+    <td ><%= d.remarks %></td>
+  </tr>
+  <% end %>
+  <%# if edit_state1 == true %>
+  <% if false %>
+  <%# 兼務者登録は抑止 %>
+    <% unless user_no_assigned_count==0 %>
+    <tr>
+      <td colspan="3">
+        <div style="text-align:center;">
+        <a href=<%= "#{@csv_base_url}/add?#{add_param}" %>  >担当を割当</a>
+        </div>
+      </td>
+      <td colspan="4"></td>
+    </tr>
+    <% end %>
+  <% end %>
+  </table>
+<% end %>

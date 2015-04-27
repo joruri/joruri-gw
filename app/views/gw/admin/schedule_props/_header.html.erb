@@ -1,0 +1,38 @@
+<%
+if params[:prop_id].present?
+  type_id = Gw::PropOther.where("id=#{params[:prop_id]} and delete_state = 0").first.type_id
+else
+  if @is_gw_admin
+    type_id = nz(params[:type_id], 100).to_i
+  else
+    type_id = nz(params[:type_id], 0).to_i
+  end
+end
+url_mode = mode != 'month' ? mode : "week"
+url_mode = url_mode.to_sym
+
+params_set = Gw::ScheduleProp.prop_params_set(params, [:s_genre, :gid, :tree_page, :prop_id])
+if url_mode == :week
+  url = "/gw/schedule_props/show_week?s_date=#{td_s}&#{params_set}"
+elsif url_mode == :month
+  url = "/gw/schedule_props/show_month?s_date=#{td_s}&#{params_set}&prop_id=#{@month_prop_id}"
+else
+  url = "/gw/schedule_props/#{td_s}?#{params_set}"
+end
+
+link_s = %Q(<span class="current_menu">)
+link_s_end = %Q(</span>)
+lnks2 = (@hedder2lnk == 2 ? "#{link_s}一般施設マスタ#{link_s_end}" : "<span>一般施設マスタ</span>")
+lnks9 = (@hedder2lnk == 9 ? "#{link_s}一般施設マスタ件数制限#{link_s_end}" : "<span>一般施設マスタ件数制限</span>")
+
+%>
+<% if params[:controller] == "gw/admin/schedule_props" -%>
+  <% @prop_types.each do |prop_type| -%>
+  <a href="<%= "#{url}&type_id=#{prop_type.id}" -%>"><span<%= raw(type_id == prop_type.id ? ' class="current_menu"': "") -%>><%= prop_type.name -%></span></a>
+  <% end -%>
+<% end -%>
+
+<%= link_to raw(lnks2), "/gw/prop_others" -%>
+<% if @is_gw_admin && params[:controller] == "gw/admin/prop_others" %>
+<%= link_to raw(lnks9), "/gw/prop_other_limits" -%>
+<% end %>

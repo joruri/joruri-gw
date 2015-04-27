@@ -1,0 +1,15 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+
+<%= form_for :item, :url => {:action => :update} ,:html => {:method => :put , :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for f,{:caption=>'確認画面'} %>
+<% end %>
+<div style="text-align: center;"><%= required('「確認画面」ボタンを押すと確認ページに移動します。') %></div>
+
+</div>
+</div>

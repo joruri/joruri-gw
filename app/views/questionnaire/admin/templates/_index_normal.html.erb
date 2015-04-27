@@ -1,0 +1,23 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%=@system_title%></h2>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: center;"></th>
+    <th style="width: 220px;">タイトル</th>
+    <th>概要説明</th>
+    <th style="width: 120px;">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: left;"><%=link_to('プレビュー', new_questionnaire_template_preview_path(item)) %></td>
+    <td style="text-align: left;"><%=link_to(item.manage_title, new_questionnaire_template_preview_path(item)) %></td>
+    <td style="text-align: left;"><%=link_to(item.title, new_questionnaire_template_preview_path(item)) %></td>
+    <td style="text-align: left;"><%=item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+</div>

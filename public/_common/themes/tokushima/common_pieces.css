@@ -1,0 +1,259 @@
+@charset "UTF-8";
+
+
+
+/* =========================================================
+   Common Pieces
+========================================================= */
+
+/* header
+----------------------------------------------- */
+#commonHeader {
+  background-color: #ddd;
+  text-align: right;
+  background-image:url(/_common/themes/tokushima/files/head_tool_back.gif);
+}
+
+.head-tools {
+  margin: 0px 0 0px 0;
+  padding: 4px 0 3px 0;
+  width:100%;
+  background-image:url(/_common/themes/tokushima/files/head_tool_back.gif);
+  background-position:left top;
+  background-repeat:repeat-x;
+  text-align:right;
+}
+
+.head-tools a{
+  margin-right: 8px;
+}
+
+.head-tools img{
+  margin-bottom:2px;
+  margin-right:3px;
+  vertical-align:middle;
+}
+
+.head-annai {
+  clear: both;
+  float:right;
+  margin: 0 5px 0 0;
+}
+
+.rubyOn {
+  color: #000;
+  font-weight: bold;
+}
+.rubyOff {
+  color: #000;
+}
+
+
+
+/* banner
+----------------------------------------------- */
+
+/* banner
+----------------------------------------------- */
+
+/*---------------------------
+  common banner
+---------------------------*/
+#commonBanner {
+  clear: both;
+  height: 70px;
+  background-color: #ffffff;
+  background-image: url(/_common/themes/tokushima/files/top_header.gif);
+  background-repeat: no-repeat;
+  background-position:0% 0%;
+  text-align:right;
+  margin:0;
+  padding:0px;
+}
+
+
+
+
+
+
+
+
+
+
+-------header--------------------*/
+#commonBanner {
+  margin: 0px;
+  padding: 0px;
+}
+
+#commonBanner h1 {
+  float: left;
+  height: 70px;
+  width: 250px;
+}
+
+#commonBanner h1 a {
+  display: block;
+  overflow: hidden;
+  width: 250px;
+  height: 0px !important;
+  height /**/:70px; /* å›ä∑ÉÇÅ[Éhóp */
+  padding-top: 70px;
+  outline: 0;
+}
+
+
+
+
+
+#commonBanner .menu {
+  float:right;
+  width:60%;
+  text-align: right;
+  margin:0px;
+  height:70px;
+}
+
+#commonBanner .menu * {
+  /*vertical-align: middle;*/
+}
+
+#commonBanner .upperMenu {
+  padding: 0px;
+  margin:5px 0px;
+}
+
+#commonBanner .middleMenu {
+  padding: 0px;
+  margin:0px;
+}
+
+*:first-child+html #commonBanner .middleMenu {
+  padding: 0px;
+}
+
+html*#commonBanner .middleMenu {
+  padding: 0px;
+}
+
+#commonBanner .lowerMenu {
+  background-color: #fff;
+}
+#commonBanner .lowerMenu {
+  padding: 0px 0px 0px;
+}
+
+#commonBanner .menu form {
+display:inline;
+}
+
+
+
+
+/*
+#commonBanner .menu .anshin {
+  display: inline-block; height:0; overflow:hidden; width: 154px; padding-top: 36px;
+  background-image: url(/_common/themes/tokushima/files/bth_anshin.gif);
+}
+#commonBanner .menu .call {
+  display: inline-block; height:0; overflow:hidden; width: 154px; padding-top: 36px;
+  background-image: url(/_common/themes/tokushima/files/bth_call.gif);
+}
+#commonBanner .menu .movie {
+  display: inline-block; height:0; overflow:hidden; width: 154px; padding-top: 36px;
+  background-image: url(/_common/themes/tokushima/files/bth_net.gif);
+}
+#commonBanner .menu .tokumeru {
+  display: inline-block; height:0; overflow:hidden; width: 154px; padding-top: 36px;
+  background-image: url(/_common/themes/tokushima/files/bth_tokumel.gif);
+}
+*/
+
+
+
+
+
+
+/*---------------------------
+  global navi
+---------------------------*/
+#globalNavi {
+  clear: both;
+}
+#globalNavi .pieceHeader {
+  height: 10px;
+}
+#globalNavi .pieceBody {
+  font-size: 1%;
+  letter-spacing: -1px;
+  text-align: center;
+}
+#globalNavi a * {
+  letter-spacing: normal;
+}
+#globalNavi a {
+  display: inline-block;
+  width: 12.4%;
+  height: 34px;
+  background-image: url(images/global_navi/menu_back.gif);
+  background-repeat: no-repeat;
+  background-position: top left;
+  color: #000;
+  font-size: 11000%;
+  font-weight: bold;
+  text-decoration: none;
+  line-height: 34px;
+  outline: 0;
+}
+#globalNavi a.bousai {
+  width: 12.8%;
+  background-image: url(images/global_navi/menu_bousai_back.gif);
+}
+#globalNavi a:hover {
+  background-position: 0px -34px;
+}
+
+#page-bunya-bousai-index #globalNavi a.bousai {
+  background-position: 0px -34px;
+}
+
+#page-bunya-kurashi-index #globalNavi a.kurashi,
+#page-bunya-kyouikubunka-index #globalNavi a.kyouiku,
+#page-bunya-kankoubussan-index #globalNavi a.kankou,
+#page-bunya-sangyouroudou-index #globalNavi a.sangyou,
+#page-bunya-kendozukuri-index #globalNavi a.kendo,
+#page-bunya-gyouseichiiki-index #globalNavi a.chiiki {
+  background-position: 0px -34px;
+}
+
+
+/* navi
+----------------------------------------------- */
+#breadCrumbs {
+  margin: 5px 0px 0px 5px;
+}
+#breadCrumbs .a {
+}
+#breadCrumbs .direction {
+  margin: 0px 5px;
+}
+#breadCrumbs .current {
+}
+
+/* menu
+----------------------------------------------- */
+
+
+/* links
+----------------------------------------------- */
+
+
+
+
+/* footer
+----------------------------------------------- */
+#footerAddr {
+  height: 60px;
+  text-align: center;
+  margin-bottom:2%;
+}

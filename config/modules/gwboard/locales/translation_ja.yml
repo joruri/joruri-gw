@@ -1,0 +1,21 @@
+ja:
+  activerecord:
+    attributes:
+      gwboard/theme:
+        state: ""
+        if_name: "名称"
+      gwboard/image:
+        memo: 画像説明
+        share: 画像種別
+        _upload: 画像
+      gwboard/renewal_group:
+        incoming_group_id: 新所属ID
+        incoming_group_code: 新所属コード
+        incoming_group_name: 新所属名称
+        level_no: 所属階層
+        parent_code: 新規親所属コード
+        parent_name: 新規親所属名称
+        present_group_id: 旧所属ID
+        present_group_code: 旧所属コード
+        present_group_name: 旧所属名称
+        start_date: 組織変更開始日

@@ -1,0 +1,213 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/common_classes_gw.css";
+/* =========================================================
+   _common/themes/gw/css/error.css
+========================================================= */
+/* base style
+----------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  background-repeat: no-repeat;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1.3;
+}
+input, textarea {
+  font-size: 110%;
+  font-family: Arial,sans-serif;
+}
+blockquote {
+  margin: 10px 20px;
+}
+h1, h2, h3, h4, h5 {
+  font-size: 120%;
+  font-family: verdana;
+}
+img {
+  border-style: none;
+  text-decoration: none;
+}
+pre {
+  font-family: monospace, "ＭＳ ゴシック", "ヒラギノ角ゴ ProN W3", sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  empty-cells: show;
+}
+ul {
+  list-style-position: outside;
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
+}
+a:link {
+  color: #fff;
+}
+a:visited {
+  color: #fff;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* layout style
+----------------------------------------------- */
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  border: 0px none;
+  background-color: #ffffff;
+  font-size: 80%;
+}
+body, td, th, select, option {
+  font-weight: lighter;
+  font-family: "MS PGothic","ＭＳ Ｐゴシック",Arial,Verdana,Osaka,sans-serif;
+}
+br {
+  letter-spacing: normal;
+}
+#container {
+  width: 100%;
+  height: 100%;
+  min-height: 100%; 
+  margin: 0px auto;
+}
+#header {
+  background-image: url(/layout/portal2/files/header_back.gif);
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+#headerBody {
+  height: 35px;
+  padding-bottom: 5px;
+}
+#main {
+  clear: both;
+  width: 455px;
+  margin: 0px auto 100px auto;
+  padding-bottom: 30px;
+  text-align: center;
+}
+#footer {
+/*  position: absolute;  
+  bottom: 0;*/
+  clear: both;
+  width: 100%;
+  height: 30px;
+  padding: 0px 0px 0px 0px;
+  text-align: center;  
+}
+#footerBody {
+  margin: 0px 0px 0px 0px;
+  padding: 5px 0px;
+  background-color: #011c75;
+  color: #fff;
+}
+
+/* avoid output navigation on printing
+----------------------------------------------- */
+@media print {
+  #header, #headerBody, #banner, #bannerBody, #navi,
+  #naviBody, #menu, #menuContainer, #links, #linksContainer,
+  #footer, #footerContainer, #footerBody, #popup_select_group_2, 
+  form.search, 
+  .menu, .showMenu, .noprint {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  #content, #contentContainer {
+    margin: 0;
+  }
+}
+@media screen {
+}
+
+/* Header style
+----------------------------------------------- */
+#header h1 {
+  height: 40px;
+  width: 155px;
+  background-image: url(/_common/themes/gw/files/header_joruri.gif);
+  background-position: left top;
+  vertical-align: top;
+}
+#header h1 a {
+  display: block;
+  overflow: hidden;
+  width: 140px;
+  height: 0px !important;
+  height /**/: 35px; /* 互換モード用 */
+  padding-top: 35px;
+  vertical-align: top;
+  outline: 0;
+}
+
+/* main piece style
+----------------------------------------------- */
+#main {
+  width: 455px;
+  margin: 40px auto 0 auto;
+  text-align: center;
+}
+h2 {
+  margin-bottom: 10px;
+  color: #7581B5;
+  font-size: 280%;
+  font-weight: bold;
+}
+p {
+  margin-bottom: 10px;
+}
+.details {
+  width: 100%;
+  border: 1px solid #666;
+}
+.detailsBody {
+  padding: 10px 15px 10px 70px;
+  background-image: url(/_common/themes/gw/files/ic_warning.gif);
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  text-align: left;
+}
+.back {
+  margin: 50px 0px;
+
+/* below imported from _common/themes/admin/common.css
+----------------------------------------------- */
+.fieldWithErrors {
+  display: inline-block;
+  /display: inline;
+  padding: 1px;
+  border: 1px solid #f00;
+}
+#errorExplanation {
+  width: 500px;
+  margin: 15px 0px;
+  border: 2px solid #f00;
+}
+#errorExplanation h2 {
+  padding: 5px 10px;
+  background-color: #c00;
+  color: #ffffff;
+  font-size: 100%;
+}
+#errorExplanation p {
+  padding: 5px 10px;
+  color: #333;
+  font-weight: bold;
+}
+#errorExplanation ul {
+  padding: 0px 0px 10px 0px;
+  list-style-type: square;
+}
+#errorExplanation ul li {
+  margin-left: 30px;
+  padding-left: 0px;
+  font-size: 12px;
+}

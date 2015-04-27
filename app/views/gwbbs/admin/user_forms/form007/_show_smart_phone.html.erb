@@ -1,0 +1,16 @@
+<table class="show">
+  <tr><th>国通知日</th></tr>
+  <tr><td><%= Gwboard.fyear_to_namejp_ymd(@item.inpfld_006d) %></td></tr>
+  <tr><th>国文書番号</th></tr>
+  <tr><td><%= @item.inpfld_001 %></td></tr>
+  <tr><th>担当別</th></tr>
+  <tr><td><%= @item.inpfld_002 %></td></tr>
+  <tr><th>文書名</th></tr>
+  <tr><td><%= @item.title %></td></tr>
+  <tr><th>摘要</th></tr>
+  <tr><td><%= @item.inpfld_003 %></td></tr>
+  <tr><th>備考</th></tr>
+  <tr><td><%= convert_for_mobile_body(@item.inpfld_004, params[:_jgw_session]) if @item.inpfld_004.present? %></td></tr>
+  <tr><th>参考</th></tr>
+  <tr><td><%= @item.inpfld_005 %></td></tr>
+</table>

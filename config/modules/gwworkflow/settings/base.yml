@@ -1,0 +1,12 @@
+defaults: &defaults
+  workflow_settings:
+    admin_email_from: admin@localhost.localdomain.jp
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

@@ -1,0 +1,1549 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/schedule.css
+========================================================= */
+/* ミニアイコン設定
+--------------------------------------*/
+.schedulePiece {
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/title/title_schedule.gif);
+}
+.schedulePiece .pieceBody {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.schedulePiece .pieceBody table {
+  clear: both;
+}
+.dayview .pieceBody table,
+.guardview .pieceBody table,
+.weekview .pieceBody table,
+.monthview .pieceBody table {
+  width: 100%;
+  margin-bottom: 5px;
+  border-right: 1px solid #CCCCCC;
+  table-layout: fixed;
+}
+
+/* 表示切替ボタン
+--------------------------------------*/
+.btBox {
+  width: auto;
+  height: 1%;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+*html .btBox {
+  margin-left: 2px;
+}
+.btBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .btBox             { zoom: 1; }
+*:first-child+html .btBox { zoom: 1; }
+.btBox .btIndex {
+  width: 48px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-arrow01.gif");
+  background-position: right bottom;
+  border-top: 1px solid #aaa;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  text-align: center;
+}
+.btBox .btIndex.current {
+  background-color: #FFF29E;
+  background-image: url("/_common/themes/gw/files/schedule/menu_tri_07on.gif");
+}
+.btBox a {
+  line-height: 1.9;
+}
+.btBox div {
+  float: left;
+  height: auto;
+  min-height: 25px;
+  margin-top: 0px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.btBox .btRight {
+  float: right;
+  margin-right:100px;
+}
+.btBox .schSelBox {
+  height: 20px;
+  min-height: 21px;
+  padding-top: 5px;
+  padding-right: 3px;
+  padding-bottom: 3px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #666;
+}
+.btBox .schSelBox select {
+  line-height: 1;
+}
+.btBox div.btHead {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.btBox .btHead {
+  margin-left: 5px;
+  padding-left: 5px;
+  line-height: 1.9;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07off.gif);
+  background-position: right bottom;
+  background-repeat: no-repeat;
+}
+.btBox .btHead.currentHead {
+  border-right: none;
+  background-image: none;
+}
+*html .btBox .btIndex {
+  border-right: 1px solid #666;
+}
+*html .btBox .btPerson,
+*html .btBox .btGroup,
+*html .btBox .btZaichou,
+*html .btBox .btTodo {
+  padding-top: 26px;
+  background-color: #FFF;
+}
+.btBox .btGroup,
+.btBox .btPerson,
+.btBox .btZaichou,
+.btBox .btTodo {
+  height: 0;
+  margin-left: 5px;
+  min-height: 0;
+  padding-left: 0;
+  padding-top: 27px;
+  padding-bottom: 2px;
+  border-top: 1px solid #AAA;
+  border-left: 1px solid #AAA;
+  border-bottom: 1px solid #666;
+  background-position: 6px 3px;
+  overflow: hidden;
+}
+.btBox .btGroup {
+  padding-right: 5px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-group.gif");
+}
+.btBox .btPerson {
+  padding-right: 5px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-oneman.gif");
+}
+.btBox .btZaichou {
+  background-image: url("/_common/themes/gw/files/schedule/ic-onpref.gif");
+}
+.btBox .btTodo {
+  background-image: url("/_common/themes/gw/files/schedule/ic-todo.gif");
+}
+.btBox .customLink {
+  width: auto;
+  padding: 2px 10px;
+}
+.piece .pieceBodyHeader .settingLink {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.piece .pieceBodyHeader .settingLink a {
+  display: inline-block;
+  padding: 2px;
+  border-color: #CCCCCC #999999 #999999 #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* メニュー
+--------------------------------------------------*/
+.menu a {
+  padding: 0 8px 0 0;
+}
+.menu a span {
+  padding-left: 10px;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05off.gif);
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+.menu a span.current_menu {
+  padding-left: 10px;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05on.gif);
+}
+
+/* メッセージ編集ボタン
+--------------------------------------------------*/
+.pieceBodyHeader {
+  position: relative;
+  zoom: 100%;
+}
+.pieceBodyHeader .settingLink {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.pieceBodyHeader .settingLink a {
+  display: inline-block;
+  padding: 2px;
+  border-color: #CCCCCC #999999 #999999 #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* グループ表示　課名部分
+--------------------------------------------------*/
+.scheduleTableTitle {
+  clear: both;
+  position: relative;
+  margin-top: 20px;
+  margin-left: 0px;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #B1BEE3;
+  font-size: 130%;
+  font-weight: bold;
+  color: #1E3B8C;
+}
+
+/* notice
+--------------------------------------------------*/
+.weekview .notice {
+  margin-left: 10px;
+}
+
+/* タイトル右横　テキストリンク
+--------------------------------------------------*/
+.titleLine .linkSpace {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+*html .schedulePiece .titleLine .linkSpace {
+  right: 10px;
+}
+.titleLine .linkSpace span {
+  display: inline-block;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid #CCCCCC;
+}
+
+/* 日付、前日・翌日等の移動ボタン
+--------------------------------------------------*/
+.lineBox .btTodo {
+  position: absolute;
+  left: 0;
+  margin-left: 10px;
+}
+.lineBox .btTodo a {
+  float: left;
+  display: inline-block;
+  height: 0;
+  padding-top: 19px;
+  width: 78px;
+  background-image: url(/_common/themes/gw/files/schedule/bt-sw-todo-onoff.gif);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  overflow: hidden;
+}
+
+.lineBox .on a {
+  background-position: 0 -19px;
+}
+
+.lineBox {
+  clear: both;
+  width: 100%;
+}
+.lineBox .dayInformation {
+  clear: both;
+  width: 100%;
+  height: 3px;
+  font-weight: bold;
+  font-size: 140%;
+  text-align: center;
+}
+.lineBox .scheduleMove {
+  margin-right: 15px;
+  padding-bottom: 5px;
+  text-align: right;
+}
+*html .pieceBodyHeader .lineBox .scheduleMove {
+  margin-top: -20px;
+}
+.pieceBodyFooter .lineBox .scheduleMove {
+  padding-bottom: 0;
+}
+.scheduleFooter .lineBox .scheduleMove {
+  margin-top: 0px;
+}
+*html .lineBox .scheduleMove {
+  margin-right: 10px;
+}
+*:first-child+html .lineBox .scheduleMove {
+  margin-right: 10px;
+}
+.lineBox .calendar_date_select_popup_icon {
+  margin-top: 0px;
+}
+.pieceBodyHeader .lineBox .calendar_date_select_popup_icon {
+  vertical-align: bottom;
+}
+.pieceBodyFooter .lineBox .calendar_date_select_popup_icon {
+  vertical-align: top;
+}
+*:first-child+html .pieceBody .pieceBodyFooter {
+  margin-top: -12px;
+}
+html:not(:target) .pieceBody .pieceBodyFooter {
+  margin-top: 0px;
+}
+.pieceBodyHeader .lineBox .scheduleMove form a,
+.pieceBodyFooter .lineBox .scheduleMove form a {
+  display: inline-block;
+  overflow: hidden;
+  height: 0;
+  padding-top: 15px;
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  font-size: 0;
+}
+.pieceBodyHeader .lineBox .scheduleMove a {
+  vertical-align: bottom;
+}
+.pieceBodyFooter .lineBox .scheduleMove a {
+  vertical-align: top;
+}
+.lineBox .scheduleMove .last_month {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays00.gif");
+}
+.lineBox .scheduleMove .last_week {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays01.gif");
+}
+.lineBox .scheduleMove .yesterday {
+  width: 26px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays02.gif");
+}
+.lineBox .scheduleMove .today {
+  width: 45px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays03.gif");
+}
+.lineBox .scheduleMove .tomorrow {
+  width: 26px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays04.gif");
+}
+.lineBox .scheduleMove .following_week {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays05.gif");
+}
+.lineBox .scheduleMove .following_month {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays06.gif");
+}
+.lineBox .scheduleMove .last_year {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth01.gif");
+}
+.lineBox .scheduleMove .this_month {
+  width: 45px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth03.gif");
+}
+.lineBox .scheduleMove .following_year {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth05.gif");
+}
+.monthview .lineBox .scheduleMove .last_month {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth02.gif");
+}
+.monthview .lineBox .scheduleMove .following_month {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth04.gif");
+}
+.schedulePiece .pieceBodyFooter .lineBox span.month {
+  float: left;
+  margin-left: 5px;
+}
+.schedulePiece .pieceBodyFooter .lineBox span.month a, 
+.schedulePiece .pieceBodyFooter .lineBox span.month span {
+  border-color: #aaa #666 #666 #aaa;
+  border-style: solid;
+  border-width: 1px;
+  display: inline-block;
+  padding: 0 9px;
+}
+
+/* スケジュールテーブル　基本設定
+----------------------------------------------------*/
+th.scheduleUser {
+  width: 175px;
+  padding: 5px;
+  background-color: #E3EFFF;
+}
+.scheduleTableHead th.scheduleUser {
+  height: 28px;
+  padding: 0 5px;
+}
+th.scheduleUser a img {
+  margin-left: 5px;
+}
+td.scheduleData {
+  overflow: hidden;
+}
+.scheduleTableBody .scheduleData {
+  vertical-align: top;
+}
+.ind a.title {
+  display: inline-block;
+}
+.ind  br {
+  display: none;
+}
+
+/* スケジュールテーブル　色設定
+----------------------------------------------------*/
+.dayview .scheduleTableHead th.scheduleData,
+.guardview .scheduleTableHead th.scheduleData,
+.scheduleTableHead.weekdayHead th.weekday,
+.weekview .scheduleTableHead.dayHead th.weekday {
+  background-color: #FFEDB3;
+}
+th.sunday,
+th.holiday {
+  background-color: #FFD4D9;
+}
+td.sunday,
+.monthview tr.dayHead th.sunday,
+td.holiday,
+.monthview tr.dayHead th.holiday,
+td.holiday .ind {
+  background-color: #FFF3F2;
+}
+th.saturday {
+  background-color: #A6EFFF;
+}
+td.saturday,
+.monthview tr.dayHead th.saturday {
+  background-color: #F1FCFF;
+}
+th.sunday span.nobr a,
+th.holiday span.nobr a,
+td.holiday .ind {
+  color: #D40D0B;
+}
+
+/* スケジュール一覧
+----------------------------------------------------*/
+.schedulePiece table.scheduleList th.st_at_time,
+.schedulePiece table.scheduleList th.ed_at_time  {
+  width: 60px;
+}
+.schedulePiece table.scheduleList th.body {
+  width: 20%;
+}
+.schedulePiece table.scheduleList th.place,
+.schedulePiece table.scheduleList th.users {
+  width: 10%;
+}
+.schedulePiece table.scheduleList td.day {
+  background-color: #ffedb3;
+}
+.schedulePiece table.scheduleList td.day {
+  background-color: #ffedb3;
+}
+.schedulePiece table.scheduleList td.day {
+  background-color: #ffedb3;
+}
+.schedulePiece table.scheduleList td.saturday {
+  background-color: #a6efff;
+}
+.schedulePiece table.scheduleList td.sunday,
+.schedulePiece table.scheduleList td.holiday {
+  background-color: #ffd4d9;
+}
+
+/* ユーザアイコン欄
+-------------------------------------------------------*/
+
+.username {
+  height: auto!important;
+  min-height: 32px;
+  height: 32px;
+  padding-left: 35px;
+  background-position: 0 0px;
+  text-align: left;
+}
+.schedulePiece table .leftHeader .title,
+.schedulePiece table .left-header .title {
+  padding-left: 35px;
+  line-height: 1;
+}
+.leftHeader,
+.left-header,
+.userIcon1 {
+  min-height: 36px;
+  height: auto !important;
+  height: 36px;
+  margin-top: 5px;
+  background-image: url(/_common/themes/gw/files/ic_human_01.gif);
+  background-repeat: no-repeat;
+  background-position:0 0px;
+  text-align: left;
+}
+.username span a {
+  line-height: 1;
+}
+.username span.linkBox {
+  display: block;
+}
+.username .linkBox a {
+  display: inline-block;
+  width: 12px;
+  height: 0;
+  margin-top: 1px;
+  margin-right: 3px;
+  padding-top: 12px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.username a.dayLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-time.gif");
+}
+.username a.weekLink {
+  width: 15px;
+  padding-top: 8px;
+  background-image: url("/_common/themes/gw/files/tab/ic-week.gif");
+}
+.username a.monthLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-month.gif");
+}
+.username a.listsLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-schedule.gif");
+}
+
+/* 会議室・レンタカー・その他設備
+----------------------------------------------------*/
+.username.meetingroom,
+.username.room {
+  background-image: url(/_common/themes/gw/files/ic_meetingroom.gif);
+}
+.username.rentcar,
+.username.car  {
+  background-image: url(/_common/themes/gw/files/ic_car.gif);
+}
+.username.facility,
+.scheduleUser .username.other {
+  background-image: url(/_common/themes/gw/files/ic_etc.gif);
+}
+
+/* 幹部予定
+----------------------------------------------------*/
+.userIcon3 {
+  background-image: url(/_common/themes/gw/files/ic_human_03.gif);
+}
+.userIcon2 {
+  background-image: url(/_common/themes/gw/files/ic_human_02.gif);
+}
+.userIcon4 {
+  background-image: url(/_common/themes/gw/files/ic_human_04.gif);
+}
+.userIcon5 {
+  background-image: url(/_common/themes/gw/files/ic_human_05.gif);
+}
+.userIcon6 {
+  background-image: url(/_common/themes/gw/files/ic_human_06.gif);
+}
+.userIcon9 {
+  background-image: url(/_common/themes/gw/files/group_allpref.gif);
+}
+.userIcon8 {
+  background-image: url(/_common/themes/gw/files/group_depa.gif);
+}
+.userIcon7 {
+  background-image: url(/_common/themes/gw/files/group_unit.gif);
+}
+table.sectionSchedules .scheduleTableBody.lineNo3 td,
+table.sectionSchedules .scheduleTableBody.lineNo3 th,
+table.sectionSchedulesVer2 .scheduleTableBody.lineNo2 td,
+table.sectionSchedulesVer2 .scheduleTableBody.lineNo2 th  {
+  border-bottom: 1px solid #1E3B8C;
+}
+table.sectionSchedules .scheduleTableBody.lineNo4 td,
+table.sectionSchedules .scheduleTableBody.lineNo4 th,
+table.sectionSchedulesVer2 .scheduleTableBody.lineNo3 td,
+table.sectionSchedulesVer2 .scheduleTableBody.lineNo3 th {
+  border-top: 1px solid #1E3B8C;
+}
+
+/* 行事予定
+----------------------------------------------------*/
+#page-gw-schedules-event_month th.day {
+  width: 70px;
+}
+#page-gw-schedules-event_month td.day {
+  padding: 3px 10px;
+}
+#page-gw-schedules-event_month td {
+  vertical-align: top;
+}
+#page-gw-scheduleLists-index td.day,
+#page-gw-schedules-event_month td.day {
+  background-color: #FFEDB3;
+}
+#page-gw-schedules-event_month td.day.sunday,
+#page-gw-schedules-event_month td.day.holiday,
+#page-gw-scheduleLists-index td.sunday,
+#page-gw-scheduleLists-index td.holiday {
+  background-color: #FFD4D9;
+}
+#page-gw-schedules-event_month td.day.saturday,
+#page-gw-scheduleLists-index td.saturday {
+  background-color: #A6EFFF;
+}
+#page-gw-schedules-event_month td.event {
+  padding: 0 7px;
+  border-top: none;
+  border-bottom: 1px dashed #ccc;
+}
+#page-gw-schedules-event_month td.event.end {
+  border-bottom: 1px solid #ccc;
+}
+#page-gw-schedules-event_month tr.today td.day,
+#page-gw-schedules-event_month tr.today td.event {
+  background-color: #FFFF99;
+}
+#page-gw-schedules-event_month td .allday{
+  display: inline-block;
+  vertical-align: top;
+  padding: 3px;
+  background-color: #2E67B5;
+  color: #FFFFFF;
+}
+#page-gw-schedules-event_month td .title,
+#page-gw-schedules-event_month td .time{
+  display: inline-block;
+  padding: 3px 0;
+}
+#page-gw-schedules-event_month td.event span {
+  display: inline-block;
+  vertical-align: middle;
+}
+#page-gw-schedules-event_month table.index {
+  margin-top: 0;
+}
+#page-gw-schedules-event_week .schedulePiece table .leftHeader {
+  padding-top: 10px;
+  background-image: url(/_common/themes/gw/files/group.gif);
+}
+#page-gw-schedules-event_week .scheduleTableBody .scheduleData {
+  padding: 0 0 5px;
+}
+#page-gw-schedules-event_week .scheduleData div {
+  padding: 1px 5px 0;
+  border-top: 1px dashed #CCCCCC;
+}
+#page-gw-schedules-event_week .scheduleData div.first {
+  border-top: none;
+}
+#page-gw-schedules-event_week .ind a {
+  height: auto;
+}
+#page-gw-schedules-event_week .scheduleTable span.title {
+  display: block;
+}
+#page-gw-schedules-event_week .scheduleTable .scheduleTableBody .scheduleUser {
+  vertical-align: top;
+}
+table.scheduleTable span.allday {
+  display: inline-block;
+  padding: 1px 2px;
+  background-color: #2E67B5;
+  color: #FFFFFF;
+}
+
+/* 月表示
+----------------------------------------------------*/
+.monthview tr.dayHead th {
+  padding-left: 5px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 120%;
+}
+.monthview tr.scheduleTableHead th {
+  border-bottom: none;
+}
+.monthview tr.scheduleTableBody td {
+  height: 80px;
+  padding: 0 5px 5px;
+  border-top: none;
+}
+th.rangeOut,
+td.rangeOut,
+td.rangeOut .ind {
+  background-color: #EEE!important;
+}
+th.rangeOut span.nobr a {
+  color: #0033CC;
+}
+
+/* 週表示
+----------------------------------------------------*/
+.weekview .scheduleTableBody .scheduleData {
+  padding: 5px;
+}
+.functionBox {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+.functionBox a {
+  display: inline-block;
+  width: 71px;
+  height: 0;
+  padding: 15px 0 0;
+  background-image: url(/_common/themes/gw/files/ic_act_csv.gif);
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.schedulePiece .meetingroom .ind a,
+.schedulePiece .rentcar .ind a,
+.schedulePiece .maaPropBs .ind a {
+  white-space: nowrap;
+}
+
+/* 当日部分
+----------------------------------------------------*/
+.schedulePiece.monthview table .scheduleTableBody td.today,
+.schedulePiece.monthview table .scheduleTableHead th.today,
+.schedulePiece.weekview table .scheduleTableBody td.today {
+  background-color: #FFFF99;
+}
+.schedulePiece.monthview table .scheduleTableBody td.today {
+  border-bottom: solid 2px #FF0000;
+  border-left: solid 2px #FF0000;
+  border-right: solid 2px #FF0000;
+}
+.schedulePiece.monthview table .scheduleTableHead th.today {
+  border-top: solid 2px #FF0000;
+  border-left: solid 2px #FF0000;
+  border-right: solid 2px #FF0000;
+}
+
+/* showOne
+----------------------------------------------------*/
+.schedulePiece.showOne .pieceBody table.show.notConfirmed th {
+  background-color: #ecc;
+}
+.link_to_sso_mail {
+  text-align: right;
+}
+/* 新規作成ページ
+----------------------------------------------------*/
+.pieceBodyBody table#inputDatetimeRepeatNoprop,
+.pieceBodyBody table#inputDatetimeNormalNoprop {
+  margin-top: 0;
+}
+.pieceBody #inputDatetimeNormal,
+.pieceBody #inputDatetimeRepeat {
+  margin-top: 0;
+}
+.pieceBody table tr.close td.day .timeSet {
+  float: left;
+  margin-right: 10px;
+}
+.scheduleform table.show,
+#page-gw-maaSchedules-new table.show {
+  width: 105%;
+}
+.scheduleform table.tabtable td.tab {
+  width: 70px;
+  padding: 2px 10px;
+}
+.schedulePiece .pieceBodyBody {
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-bottom: 0px;
+}
+*:first-child+html .schedulePiece .pieceBodyBody {
+  margin-bottom: 15px;
+}
+.schedulePiece.form .pieceBodyBody {
+  clear: both;
+  width: 760px;
+  margin-top: 0;
+}
+.schedulePiece table th,
+.schedulePiece table td {
+  border: 1px solid #ccc;
+}
+.schedulePiece table.show td.actionButton {
+  width: 150px;
+}
+.index table.index td {
+  overflow: hidden;
+}
+.index table.index td.day {
+  width: 105px;
+}
+.schedulePiece.dayview table .scheduleTableBody td.scheduleData {
+  border-left: none;
+  border-right: none;
+}
+.schedulePiece.form .tabBox {
+  margin: 10px auto -1px;
+}
+.schedulePiece.form .tabBox td.spaceRight {
+  border: none;
+}
+.form .tabBox .spaceLeft {
+  border-top: none;
+  border-left: none;
+}
+.form .tabBox .spaceCenter {
+  border-top: none;
+}
+
+/* 日表示・衛視用
+-----------------------------------------*/
+.dayview table tr.scheduleTableBody.categoryBorder td.scheduleData,
+.guardview table tr.scheduleTableBody.categoryBorder td.scheduleData {
+  height: 15px;
+  border-top: none;
+  border-bottom: none;
+  text-indent: -9999px;
+}
+.dayview table tr.scheduleTableBody.explanation td,
+.guardview table tr.scheduleTableBody.explanation td {
+  border-top: none;
+  border-bottom: 1px dashed #CCCCCC;
+  border-left: none;
+  border-right: none;
+  vertical-align: top;
+  overflow: hidden;
+}
+.dayview table tr.scheduleTableBody.explanation.end td,
+.guardview table tr.scheduleTableBody.explanation.end td {
+  border-bottom: 1px solid #CCCCCC;
+}
+
+/* 衛視用
+-----------------------------------------*/
+#page-gw-scheduleProps-showGuard td.scheduleData {
+  overflow: hidden;
+  border-left: none;
+  border-right: none;
+}
+#page-gw-scheduleProps-showGuard table th.scheduleUser {
+  width: 180px;
+  padding: 5px 0px 0px;
+}
+#page-gw-scheduleProps-showGuard .ind a {
+  white-space: normal;
+}
+.dayview .ind a,
+.guardview .ind a {
+  margin-bottom: 0px;
+}
+
+/* カテゴリ色設定　個人スケジュール
+-----------------------------------------*/
+.ind a {
+  display: block;
+  margin-bottom: 2px;
+}
+.schedulePiece .ind {
+  background-color: #CCC;
+  word-break: break-all;
+}
+#page-gw-schedules-event_week .schedulePiece .ind {
+  background: none;
+}
+.allday {
+  background-color: transparent;
+}
+.ind a.category0,
+.ind.allday a.category0,
+.ind.allday a.category0 .square,
+.ind.allday a.category0 span.allday {
+  background-color: #FF3399;
+  color: white;
+}
+.monthview .ind a.category0,
+.weekview .ind a.category0{
+  background-color: #fff;
+  color: #000;
+}
+.today .ind a.category0 {
+  background-color: #FFFF99;
+  color: #000;
+}
+.rangeOut .ind a.category0 {
+  background-color: #EEEEEE;
+  color: #000;
+}
+.saturday .ind a.category0 {
+  background-color: #F1FCFF;
+  color: #000;
+}
+.sunday .ind a.category0 {
+  background-color: #FFF3F2;
+  color: #000;
+}
+.ind a.category1,
+.ind a.category100,
+.ind.allday a.category100 .square,
+.ind.allday a.category100 span.allday {
+  background-color: #2283E5;
+  color: white;
+}
+.ind a.category200,
+.ind.allday a.category200 .square,
+.ind.allday a.category200 span.allday {
+  background-color: #009900;
+  color: white;
+}
+.ind a.category400,
+.ind.allday a.category400 .square,
+.ind.allday a.category400 span.allday {
+  background-color: #FF3F38;
+  color: white;
+}
+.ind a.category300,
+.ind.allday a.category300 .square,
+.ind.allday a.category300 span.allday {
+  background-color: #003300;
+  color: white;
+}
+.ind a.category500,
+.ind.allday a.category500 .square,
+.ind.allday a.category500 span.allday {
+  background-color: #000099;
+  color: white;
+}
+.ind a.category600,
+.ind.allday a.category600 .square,
+.ind.allday a.category600 span.allday {
+  background-color: #A17300;
+  color: white;
+}
+.ind a.category700,
+.ind.allday a.category700 .square,
+.ind.allday a.category700 span.allday {
+  background-color: #DC6500;
+  color: white;
+}
+.ind a.category800,
+.ind.allday a.category800 .square,
+.ind.allday a.category800 span.allday {
+  background-color: #FFC300;
+  color: #000;
+}
+.ind a.category900,
+.ind.allday a.category900 .square,
+.ind.allday a.category900 span.allday {
+  background-color: #8658B2;
+  color: white;
+}
+.ind a.category950,
+.ind.allday a.category950 .square,
+.ind.allday a.category950 span.allday {
+  background-color: #FFF28F;
+  color: #000;
+}
+.ind a.category1000,
+.ind.allday a.category1000 .square,
+.ind.allday a.category1000 span.allday {
+  background-color: #777;
+  color: white;
+}
+.ind a.category1100,
+.ind.allday a.category1100 .square,
+.ind.allday a.category1100 span.allday {
+  background-color: #663333;
+  color: white;
+}
+.ind a.category1200,
+.ind.allday a.category1200 .square,
+.ind.allday a.category1200 span.allday {
+  background-color: #0A4F1E;
+  color: white;
+}
+
+/* カテゴリ色設定　会議室・レンタカー
+-----------------------------------------*/
+.rentcar .ind a,
+.meetingroom .ind a {
+  height: 15px;
+  overflow: hidden;
+}
+.meetingroom .ind a.category0 {
+  background-color: #35e1ff;
+  color: #000;
+}
+.rentcar .ind a.category1,
+.meetingroom .ind a.category1 {
+  background-color: #2e49b4;
+  color: white;
+}
+.rentcar .ind a.category2,
+.meetingroom .ind a.category2 {
+  background-color: #ff3f38;
+  color: white;
+}
+.rentcar .ind a.category3,
+.meetingroom .ind a.category3 {
+  background-color: #cfd0d2;
+  color: #000;
+}
+.rentcar .ind a.category4,
+.meetingroom .ind a.category4 {
+  background-color: #860000;
+  color: #fff;
+}
+.rentcar .ind a.category5,
+.meetingroom .ind a.category5 {
+  background-color: #FFC5FF;
+  color: #000;
+}
+.rentcar .ind a.category900,
+.meetingroom .ind a.category900 {
+  background-color: #008100;
+  color: #fff;
+}
+.rentcar td.scheduleData a.category2 {
+  padding-left: 19px;
+  background-image: url(/_common/themes/gw/files/car_key.gif);
+  background-position: 0 3px;
+  background-repeat: no-repeat;
+}
+
+/* 凡例
+----------------------------------------*/
+.explainColor {
+  clear: both;
+  padding-right: 30px;
+  border-top: solid 1px #ccc;
+  text-align: right;
+}
+.explainColor span {
+  vertical-align: middle;
+}
+.explainColor .text, .explainColor .title {
+  color: #444;
+}
+.explainColor .square {
+  font-size: 140%;
+}
+.explainColor .title,
+.explainColor .reserveNoCarry,
+.explainColor .reserveCarry,
+.explainColor .use,
+.explainColor .settled,
+.explainColor .reserve,
+.explainColor .cancelled,
+.explainColor .temporary,
+.explainColor .received,
+.explainColor .confirmed,
+.explainColor .rented,
+.explainColor .returned {
+  margin-right: 5px;
+  font-size: 90%;
+}
+.explainColor .reserve .square,
+.explainColor .reserveCarry .square {
+  color: #2E49B4;
+}
+.explainColor .reserveNoCarry .square {
+  color: #35E1FF;
+}
+.explainColor .use .square {
+  color: #FF3F38;
+}
+.explainColor .settled .square {
+  color: #CFD0D2;
+}
+.schedulePiece .explainColor.bottom {
+  border-bottom: 1px solid #ccc;
+  border-top: medium none;
+  margin-bottom: 5px;
+  width: auto;
+}
+
+/* 凡例（互助会）
+----------------------------------------------------*/
+.explainColor .confirmed .square {
+  color: #2E49B4;
+}
+table.maaPropBs a.cancelled {
+  background-color: #008100;
+  color: #fff;
+}
+.explainColor .cancelled .square {
+  color: #008100;
+}
+table.maaPropBs a.rented {
+  background-color: #FF3F38;
+  color: #000;
+}
+.explainColor .rented .square {
+  color: #FF3F38;
+}
+table.maaPropBs a.returned {
+  background-color: #CFD0D2;
+  color: #000;
+}
+.explainColor .returned .square {
+  color: #CFD0D2;
+}
+table.maaPropBs a.received {
+  background-color: #BBFF00;
+  color: #000;
+}
+.explainColor .received .square {
+  color: #BBFF00;
+}
+table.maaPropBs a.temporary {
+  background-color: #35E1FF;
+  color: #000;
+}
+.explainColor .temporary .square {
+  color: #35E1FF;
+}
+
+/* 在庁表示
+-------------------------------------------*/
+.pageLink {
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  background-color: #1E3B8C;
+}
+.pageLink a {
+  margin-right: 15px;
+  padding-left: 11px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-pagelink.gif");
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  color: #FFF;
+}
+.pageLink a:link {
+  color: #FFF;
+}
+.pageLink a:visited {
+  color: #FFF;
+}
+.presentTime {
+  margin-left: 10px;
+  font-size: 80%;
+}
+.unit {
+  margin-bottom: 6px;
+}
+.unit:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .unit             { zoom: 1; }
+*:first-child+html .unit { zoom: 1; }
+
+div.scheduleUser {
+  float: left;
+  width: 23%;
+  height: 58px;
+  margin-right: -1px;
+  margin-bottom: -1px;
+  padding: 5px;
+  background-color: #FFFB96;
+  border: solid 1px #B1BEE3;
+}
+*html div.scheduleUser {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+#page-gw-prefExecutives .leftHeader,
+#page-gw-prefDirectors .leftHeader,
+#page-gw-prefAssembly .leftHeader {
+  margin-top: 0;
+  background-image: none;
+}
+.unitHeader {
+  height: 20px;
+  line-height: 1.6;
+  padding-left: 10px;
+  background-color: #1E3B8C;
+  background-image: url("/_common/themes/gw/files/schedule/bg-tl-head.gif");
+  background-repeat: no-repeat;
+  color: #FFF;
+}
+div.scheduleUser .leftHeader {
+  min-height: 54px;
+  margin-left: 3px;
+  background-repeat: no-repeat;
+}
+div.scheduleUser .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-04.gif");
+}
+div.scheduleUser .userIcon1 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-01.gif");
+}
+div.scheduleUser .userIcon2 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-02.gif");
+}
+div.scheduleUser .userIcon3 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-03.gif");
+}
+div.off .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-not.gif");
+}
+#page-gw-prefExecutives .username,
+#page-gw-prefDirectors .username {
+  padding-left: 0;
+}
+div.off {
+  background-color: #F1F1F1;
+}
+div.scheduleUser .linkBox {
+  display: block;
+}
+div.scheduleUser .linkBox a {
+  display: inline-block;
+  height: 0;
+  margin-top: 5px;
+  margin-right: 3px;
+  padding-top: 12px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.schedulePiece div.scheduleUser a.dayLink {
+  width: 12px;
+  background-image: url("/_common/themes/gw/files/tab/ic-time.gif");
+  background-position: 0 0;
+}
+.schedulePiece div.scheduleUser a.weekLink {
+  width: 15px;
+  background-image: url("/_common/themes/gw/files/tab/ic-week.gif");
+  background-position: 0 3px;
+}
+.schedulePiece div.scheduleUser a.monthLink {
+  width: 12px;
+  background-image: url("/_common/themes/gw/files/tab/ic-month.gif");
+  background-position: 0 0;
+}
+div.scheduleUser a.userIcon,
+div.scheduleUser span.userIcon {
+  display: inline-block;
+  float: left;
+  width: 35px;
+  height: 0px;
+  margin-right: 5px;
+  padding-top: 54px;
+  overflow: hidden;
+}
+div.scheduleUser .title span {
+  font-size: 80%;
+}
+
+/* 在庁表示 議会
+-------------------------------------------*/
+#page-gw-prefExecutives .pieceBodyBody,
+#page-gw-prefDirectors .pieceBodyBody,
+#page-gw-prefAssembly .pieceBodyBody {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.unitBox {
+  margin-bottom: 5px;
+}
+.unitBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .unitBox             { zoom: 1; }
+*:first-child+html .unitBox { zoom: 1; }
+
+.unitBox .unit {
+  float: left;
+  margin-bottom: 0;
+}
+.assembly .unitHeader {
+  background-color: #140C00;
+  background-image: url("/_common/themes/gw/files/schedule/bg-tl-head-giin.gif");
+}
+.assembly .unitBox .unitHeader {
+  width: 166px;
+}
+.assembly .username {
+  min-height: 0;
+  padding-top: 5px;
+  padding-left: 0;
+  font-size: 130%;
+}
+.assembly div.scheduleUser {
+  width: 165px;
+  height: auto;
+  background-color: #FFFB96;
+  border: solid 1px #70685C;
+}
+.assembly div.off {
+  background-color: #F1F1F1;
+}
+.assembly div.scheduleUser .leftHeader {
+  height: auto !important;
+  height: 32px;
+  min-height: 30px;
+  margin-top: 0;
+}
+.assembly div.scheduleUser a.userIcon,
+.assembly div.scheduleUser span.userIcon {
+  width: 25px;
+  padding-top: 28px;
+}
+.assembly div.scheduleUser .userIcon1 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-on.gif");
+}
+.assembly div.scheduleUser .userIcon2 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-on02.gif");
+}
+.assembly div.off .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-off.gif");
+}
+
+/* 詳細ページ　タイトル横リンク
+----------------------------------------*/
+.showLink a {
+  width: 200px;
+}
+
+/* 機能ボタン
+----------------------------------------*/
+.editingBox {
+  width: 100%;
+}
+
+/* settings
+----------------------------------------*/
+#page-gw-holidays .setting table.index .action {
+  width: 45px;
+}
+.schedulePiece.setting .pieceBodyBody {
+  width: 95%;
+  margin: 0 auto;
+  padding: 0;
+}
+.setting table.index th {
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+  border-top: medium none;
+}
+
+/* akijikan kensaku
+--------------------------------------------------*/
+#page-gw-scheduleSearchBlanks-showWeek .attention,
+#page-gw-scheduleSearchBlanks-showDay .attention {
+  display: block;
+  position: absolute;
+  top: 10px;
+  width: 70%;
+  margin-left: 150px;
+  text-align: center;
+  color: #F00;
+}
+#page-gw-scheduleSearchBlanks-showWeek .schedulePiece .lineBox {
+  width: 99%;
+}
+#page-gw-scheduleSearchBlanks-showWeek .schedulePiece .lineBox .scheduleMove {
+  margin-right: 0;
+}
+#page-gw-scheduleSearchBlanks-showWeek .pieceFooter {
+  margin-top: 10px;
+  border: none;
+}
+#page-gw-scheduleSearchBlanks-showWeek table.scheduleTable {
+  width: 99%;
+}
+/*schedule event*/
+#page-gw-schedules-new table.tabtable td.tab,
+#page-gw-simpleSchedules-new table.tabtable td.tab,
+#page-gw-simpleSchedules table.tabtable td.tab {
+  width: 70px;
+  padding: 2px 10px;
+}
+#page-gw-schedules-event_week .schedulePiece table .leftHeader {
+  padding-top: 10px;
+  background-image: url(/_common/themes/gw/files/group.gif);
+}
+#page-gw-schedules-event_week .schedulePiece table .username {
+  margin-left: 0;
+  //padding-left: 0;
+  padding-top: 0;
+  background-image: none;
+}
+
+#page-gw-schedules-event_month table.index td.day {
+  padding: 3px 10px;
+}
+#page-gw-schedules-event_month th.day {
+  width: 70px;
+}
+#page-gw-schedules-event_month td {
+  vertical-align: top;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.day,
+#page-gw-schedules-event_month td.day {
+  background-color: #FFEDB3;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.saturday,
+#page-gw-schedules-event_month td.day.saturday {
+  background-color: #A6EFFF;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.sunday,
+#page-gw-schedules-event_month td.day.sunday,
+#page-gw-scheduleLists-index .schedulePiece table td.holiday,
+#page-gw-schedules-event_month td.day.holiday {
+  background-color: #FFD4D9;
+}
+#page-gw-schedules-event_month tr.today td.event{
+  background-color: #FFEDB3;
+}
+#page-gw-schedules-event_month td.event {
+  padding: 0 7px;
+  border-top: none;
+  border-bottom: 1px dashed #ccc;
+}
+#page-gw-schedules-event_month td.event.end {
+  border-bottom: 1px solid #ccc;
+}
+#page-gw-schedules-event_month tr.today td.day,
+#page-gw-schedules-event_month tr.today td.event {
+  background-color: #FFFF99;
+}
+#page-gw-schedules-event_month td .allday{
+  display: inline-block;
+  vertical-align: top;
+  padding: 3px;
+  background-color: #2E67B5;
+  color: #FFFFFF;
+}
+#page-gw-schedules-event_month td .title,
+#page-gw-schedules-event_month td .time{
+  display: inline-block;
+  padding: 3px 0;
+}
+#page-gw-schedules-event_month td.event span {
+  display: inline-block;
+  vertical-align: middle;
+}
+#page-gw-schedules-event_month table.index {
+  margin-top: 0;
+}
+#page-gw-schedules-event_week .schedulePiece .scheduleTableBody .scheduleData {
+  padding: 0 0 5px;
+}
+#page-gw-schedules-event_week .schedulePiece .scheduleData div {
+  padding: 1px 5px 0;
+  border-top: 1px dashed #CCCCCC;
+}
+#page-gw-schedules-event_week .schedulePiece .scheduleData div.first {
+  border-top: none;
+}
+#page-gw-schedules-event_week .schedulePiece .ind a {
+  height: auto;
+}
+#page-gw-schedules-event_week .schedulePiece .scheduleTable span.title {
+  display: block;
+}
+#page-gw-schedules-event_week .schedulePiece .scheduleTable .scheduleTableBody .scheduleUser {
+  vertical-align: top;
+}
+
+#page-gw-schedules-event_week .schedulePiece .ind {
+  background: none;
+}
+
+/*
+----------------------------------------*/
+.linkLine {
+  clear: both;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  text-align: right;
+}
+.linkLine span {
+  margin-right: 10px;
+}
+.linkLine .subMenu {
+  display: inline-block;
+}
+.titleLine,
+.scheduleTableTitle {
+  clear: both;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #B1BEE3;
+}
+.titleLine .title,
+.scheduleTableTitle {
+  margin-left: 10px;
+  font-size: 130%;
+  font-weight: bold;
+  color: #1E3B8C;
+}
+.titleLine .linkSpace {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+*html .schedulePiece .titleLine .linkSpace {
+  right: 10px;
+}
+.titleLine .linkSpace span {
+  border:1px solid #CCCCCC;
+}
+.scheduleTableTitle {
+  margin-left: 0px;
+  padding-left: 10px;
+}
+.titleLine .linkSpace span {
+  display: inline-block;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.schedulePiece .pieceBodyFooter .lineBox span.month a,
+.schedulePiece .pieceBodyFooter .lineBox span.month span {
+  display: inline-block;
+/*  margin-right: 5px;*/
+  padding: 0px 9px;
+  border-top: 1px solid #AAA;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  border-left: 1px solid #AAA;
+}

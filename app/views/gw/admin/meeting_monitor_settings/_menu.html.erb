@@ -1,0 +1,15 @@
+<div class="titleLine">
+<span class="title">監視設定</span>
+</div>
+
+<div class="menu">
+<%= link_to url_for(action: :index) do -%>
+  <span class="<%= 'current_menu' if action_name == 'index' %>">一覧</span>
+<% end %>
+<%= link_to url_for(action: :new) do -%>
+  <span class="<%= 'current_menu' if action_name.in?(%w(new create)) %>">登録</span>
+<% end %>
+<%= link_to url_for(controller: "gw/admin/meeting_monitor_managers") do %>
+  <span>＞＞通知先設定</span>
+<% end %>
+</div>

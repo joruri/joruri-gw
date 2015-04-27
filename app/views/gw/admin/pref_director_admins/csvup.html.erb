@@ -1,0 +1,49 @@
+<%
+target_fyear_id = Gw::YearFiscalJp.get_record(Time.now).id
+target_start_at = Gw::YearFiscalJp.find(target_fyear_id).start_at.strftime("%Y-%m-%d 00:00:00")
+p_groups = System::Group.where("end_at IS NULL and state = ? and level_no = ? and code !='300' ","enabled",2).order("sort_no,code")
+groups = p_groups.collect{|x| ["(#{x.code})#{x.name}", x.code]}
+%>
+
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+
+<div class="titleLine">
+<span class="title">ＣＳＶ登録</span>
+</div>
+
+<div class="explain">
+登録対象ＣＳＶファイルを指定して実行してください<br />
+<span style="color:red">「すべて」を選んだ場合は、全件が更新対象となります。</span><br />
+<span style="color:red">部局単位で更新する場合は、対象となる部局を必ず選択してください。</span>
+</div>
+
+<%= form_for :item, url: {action: :csvup}, html: {method: :post, multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th>部局</th>
+      <td><%= select_tag 'item[extras][g_cat]', raw("<option value='all'>すべて</option>" + options_for_select(groups, @item.extras[:g_cat])) %></td>
+    </tr>
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+    <tr>
+      <th>対象ファイル</th>
+      <td><%= f.file_field :file, size: 80 , accept: 'text/csv' %></td>
+    </tr>
+  </table>
+  <br />
+  <div class="preserve">
+    <div class="submitters">
+      <%= f.submit 'CSV登録' %>
+    </div>
+  </div>
+<% end %>
+<br />
+
+</div>
+</div>

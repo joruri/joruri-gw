@@ -1,0 +1,17 @@
+<h4 style="margin-left:2em;">CSV 出力</h4>
+<div style="margin-left:3em;">
+文字コードを選択して実行してください<br />
+<span style="color:blue">出力対象を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。</span>
+</div>
+<br />
+<%= form_for :item, url: "#{@csv_base_url}/csvput", html: {method: :get, multipart: true} do |f| %>
+  <table class="show">
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+  </table>
+  <div class="preserve">
+    <%= f.submit 'CSV出力' %>
+  </div>
+<% end %>

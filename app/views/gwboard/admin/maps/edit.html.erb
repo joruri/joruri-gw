@@ -1,0 +1,20 @@
+<%= form_for :item, :url => {:action => :update, :system => params[:system],:title_id => params[:title_id],:field_id => params[:field_id]}, :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= hidden_field_tag(:system, params[:system]) unless params[:system].blank? %>
+  <%= hidden_field_tag(:title_id, params[:title_id]) unless params[:title_id].blank? %>
+  <%= hidden_field_tag(:field_id, params[:field_id]) unless params[:field_id].blank? %>
+  <%= hidden_field_tag(:parent_id, params[:parent_id]) unless params[:parent_id].blank? %>
+  <table>
+    <tr>
+      <td>
+        <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="登録" />
+        <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+      </td>
+      <td>　</td>
+      <td>
+        <%=link_to("一覧へ戻る", gwboard_maps_path(params[:parent_id]) + "?system=#{params[:system]}&title_id=#{params[:title_id]}&field_id=#{params[:field_id]}")%>
+      </td>
+    </tr>
+  </table>
+<% end %>

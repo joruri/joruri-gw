@@ -1,0 +1,20 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= Page.title %></h2>
+</div>
+<div class="pieceBody">
+
+<table class="show">
+  <tr>
+    <td>現在の設定 （<%= link_to '編集', questionnaire_itemdeletes_path %>）</td>
+    <td><%= @item.limit_line_name %>  経過した期限切れのアンケートを削除</td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '管理者設定へ戻る', '/gw/config_settings' %>
+</div>
+
+</div>
+</div>

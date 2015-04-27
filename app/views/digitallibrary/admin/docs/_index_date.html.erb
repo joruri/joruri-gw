@@ -1,0 +1,43 @@
+<%
+#検索キーワードの引き継ぎ用
+str_params = ''
+str_params += "&state=DATE" if params[:state].to_s == 'DATE'
+str_params += "&state=RECOGNIZE" if params[:state].to_s == 'RECOGNIZE'
+str_params += "&state=PUBLISH" if params[:state].to_s == 'PUBLISH'
+str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
+%>
+<%= render 'header' %>
+<div class="inner">
+<% if @items.present? %>
+<table class="docformTitle">
+  <tr>
+    <th style="width: 160px; text-align: left;">階層</th>
+    <% if @title.category == 0 %>
+      <th style="width: 40px; text-align: center;">索引</th>
+    <% end %>
+    <th style="text-align: left;">タイトル</th>
+    <th style="width: 180px; text-align: center;">記事管理課</th>
+    <th style="width: 120px; text-align: center;">最終更新日</th>
+    <% if @title.is_writable? %>
+      <th style="width: 30px; text-align: center;"> </th>
+    <% end %>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td style="text-align: left;"><%= item.parent.title %></td>
+    <% if @title.category == 0 %>
+      <td style="text-align: center;"><%= item.seq_name %></td>
+    <% end %>
+    <td><%= link_to item.title, "#{digitallibrary_doc_path(item,{:title_id=>@title.id})}#{str_params}#{cat_params(item)}" %></td>
+    <td><%= "#{item.section_code}#{gwbd_category_name(@groups, item.section_code)}" %></td>
+    <td><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') if item.latest_updated_at %></td>
+    <% if @title.is_writable? %>
+      <td style="width: 30px; text-align: right;"><%= item.display_order %></td>
+    <% end %>
+  </tr>
+  <% end %>
+</table>
+<%= render 'limit_change' %>
+<%= paginate @items %>
+<% end %>
+</div><!--inner-->

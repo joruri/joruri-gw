@@ -1,0 +1,43 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>タイトル</th>
+    <td><%= f.text_field :filename, :class => 'string filename', :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th>和暦<%= required('※') %></th>
+    <td><%= f.text_field :wareki, :class => 'string wareki', :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>年<%= required('※') %></th>
+    <td><%= f.text_field :nen, :class => 'string nen', :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>月<%= required('※') %></th>
+    <td><%= f.text_field :gatsu, :class => 'string gatsu', :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>その<%= required('※') %></th>
+    <td><%= f.text_field :sono, :class => 'string sono', :style => 'width: 200px;' %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>
+
+<% if @title.use_old_upload_system? %>
+  <%= gwboard_attach_form(f, @item) %>
+<% else %>
+  <%= gwboard_attachments_form(f, @item) %>
+<% end %>

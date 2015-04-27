@@ -1,0 +1,217 @@
+<%
+destroy_confirm_s = '削除してよろしいですか？'
+if @item.schedule_users.collect{|x|[x.class_id, x.uid]}.reject{|x| x[0] == 1 && x[1] == Core.user.id }.length > 0
+  destroy_confirm_s = "この予定は、複数の参加者が登録されています。この予定は、参加者全員のスケジューラーからも削除されます。#{destroy_confirm_s}"
+end
+if @item.repeated?
+  destroy_confirm_repeated_s = "\nなお、繰り返し期間に属している場合、その繰り返しに属する全ての予定が削除されますので、ご注意ください。"
+else
+  destroy_confirm_repeated_s = ""
+end
+%>
+<div class="piece schedulePiece showOne">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+</div>
+<% if params[:action] == 'show_one' %>
+  <%= render '/gw/admin/schedules/schedule_bt_box', d: Gw.datetime_to_date(@item.st_at), mode: 'form' %>
+<% end %>
+<div class="pieceBodyBody">
+<div class="editingBox">
+  <div class="btEdit">
+    <% if @auth_level[:edit_level] == 1 %>
+      <%= link_to '編集', {action: :edit, id: @item.id} %>
+    <% elsif @auth_level[:edit_level] == 2 %>
+      <%= link_to '編集する', "/gw/schedules/#{@item.id}/editlending?sh=#{params[:sh]}" %>
+    <% elsif @auth_level[:edit_level] == 3 %>
+      <%= link_to '編集する', "/gw/schedules/#{@item.id}/edit_1?sh=#{params[:sh]}" %>
+    <% elsif @auth_level[:edit_level] == 4 %>
+      <%= link_to '編集する', "/gw/schedules/#{@item.id}/edit_2?sh=#{params[:sh]}" %>
+    <% end %>
+  </div>
+  <% if @auth_level[:edit_level] == 1 && @item.repeated? %>
+    <div class="btEditRepeat">
+      <%= link_to_edit @item.id, nil, qs: "repeat=1" %>
+    </div>
+  <% end %>
+  <% if @item.is_quotable? %>
+    <div class="btQuote">
+      <%= link_to '引用作成', {action: :quote, id: @item.id}, target: :_blank %>
+    </div>
+  <% end %>
+  <% if @auth_level[:delete_level] == 1 %>
+    <div class="btDestroy">
+      <%= link_to_destroy @item.id, nil, confirm: destroy_confirm_s -%>
+    </div>
+    <% if @item.repeated? %>
+      <div class="btDestroyRepeat">
+        <%= link_to '繰返一括削除', {action: :destroy_repeat, id: @item.id}, method: :get, confirm: destroy_confirm_s + destroy_confirm_repeated_s %>
+      </div>
+    <% end %>
+  <% end %>
+  <% if @item.schedule_todo.present? && (@is_gw_admin || @item.is_creator_or_participant?(Core.user)) %>
+    <% if !@item.schedule_todo.is_finished? %>
+      <div class="btFinish"><%= link_to '完了する', "/gw/schedule_todos/#{@item.schedule_todo.id}/finish?link=show_one" %></div>
+    <% else %>
+      <div class="btUnfinish"><%= link_to '未完了に戻す', "/gw/schedule_todos/#{@item.schedule_todo.id}/finish?link=show_one" %></div>
+    <% end %>
+  <% end %>
+  <% if (sp = @item.collect_readable_schedule_props.detect(&:other_related?)) && sp.prop && sp.prop.prop_type %>
+    <span class="showLink"><%= link_to '一般施設スケジュール画面へ', "/gw/schedule_props/show_week?s_date=#{@item.st_at.strftime("%Y%m%d")}&cls=other&s_genre=other&type_id=#{sp.prop.prop_type.id}" %></span>
+  <% end %>
+  <% if @item.collect_readable_schedule_props.any?(&:rentcar_related?) %>
+    <span class="showLink"><%= link_to 'レンタカースケジュール画面へ', "/gw/schedule_props/show_week?s_date=#{@item.st_at.strftime("%Y%m%d")}&cls=pm&s_genre=rentcar" %></span>
+    <span class="showLink"><%= link_to 'レンタカー車庫用画面へ', "/gw/schedule_props/show_guard?s_date=#{@item.st_at.strftime("%Y%m%d")}&cls=pm&s_genre=rentcar" if @is_pm_admin %></span>
+  <% end %>
+  <% if @item.collect_readable_schedule_props.any?(&:meetingroom_related?) %>
+    <span class="showLink"><%= link_to '会議室スケジュール画面へ', "/gw/schedule_props/show_week?s_date=#{@item.st_at.strftime("%Y%m%d")}&cls=pm&s_genre=meetingroom" %></span>
+    <span class="showLink"><%= link_to '会議室衛視用画面へ', "/gw/schedule_props/show_guard?s_date=#{@item.st_at.strftime("%Y%m%d")}&cls=pm&s_genre=meetingroom" if @is_pm_admin %></span>
+  <% end %>
+</div>
+
+<% if @item.repeated? %>
+  <table class="show">
+    <tr>
+      <td colspan="2">繰り返し予定です。<%= @item.repeat.st_date_at.strftime('%Y年%m月%d日') %>～<%= @item.repeat.ed_date_at.strftime('%Y年%m月%d日') %>まで繰り返されてます。</td>
+    </tr>
+  </table>
+<% end %>
+
+<% limit = Joruri.config.application['gw.prop_meetingroom_participant_limit'] %>
+<% if @item.schedule_props.any?(&:meetingroom_related?) && @item.exeed_participant_num?(limit) %>
+  <table class="show">
+    <tr>
+      <td colspan="2">管財会議室の利用時、庁外の参加者が<%= limit %>人を超える時は、通知文書の提出が必要です</td>
+    </tr>
+  </table>
+<% end %>
+
+<%= render '/gw/admin/schedules/prop_show', item: @item if @is_pm_admin %>
+
+<table class="show">
+  <% unless @item.todo_flg %>
+  <tr>
+    <th>開始日時</th><td><%= @item.time_show_str[:st_at_s] %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>終了日時</th>
+    <td><%= @item.time_show_str[:ed_at_s] %></td>
+  </tr>
+  <tr>
+    <th>件名（用務名等）</th>
+    <td><%= @item.title_with_category %></td></tr>
+  <tr>
+    <th>場所</th>
+    <td><%= @item.place %></td>
+  </tr>
+  <tr>
+    <th>メモ</th>
+    <td><%= @item.memo %></td>
+  </tr>
+  <tr>
+    <th>作成者</th>
+    <td><%= @item.creator_gname %>　<%= @item.creator_uname %></td>
+  </tr>
+  <tr>
+    <th>作成日</th>
+    <td><%=l @item.created_at if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th>最終更新者</th>
+    <td><%= @item.updater_gname %>　<%= @item.updater_uname %></td>
+  </tr>
+  <tr>
+    <th>最終更新日</th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+  <% if @item.schedule_props.present? %>
+    <tr>
+      <th>連絡先電話番号</th>
+      <td><%= @item.inquire_to %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <th>公開</th>
+    <td><%= @item.is_public_label %></td>
+  </tr>
+  <% if @item.is_public == 2 %>
+    <tr>
+      <th>公開所属</th>
+      <td><%=raw Gw.join([@item.public_groups_display], '<br />') %></td>
+    </tr>
+  <% end %>
+</table>
+
+<% if @item.schedule_events.present? %>
+  <table class="show">
+    <tr>
+      <th>広報行事予定種別</th>
+      <td><%= @item.schedule_events.event_kind_str %></td>
+    </tr>
+  </table>
+<% end %>
+
+<% if @item.guide_state.to_i >= 1 -%>
+  <table class="show">
+    <tr>
+      <th>会議等案内表示</th>
+      <td><span style="<%= 'color: red;' if @item.guide_state == 1 -%>"><%= Gw::Schedule.guide_state_show(@item.guide_state) -%></span></td>
+    </tr>
+    <tr>
+      <th>場所</th>
+      <td><%= @item.guide_place -%></td>
+    </tr>
+    <% if @item.allday.to_i == 0 %>
+    <tr>
+      <th>終了時間の表示</th>
+      <td><%= @item.guide_ed_at == 1 ? '表示しない' : '表示する' -%></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>
+
+<%= render 'show_participant', item: @item %>
+
+<% schedule_props = @item.collect_readable_schedule_props %>
+<% if schedule_props.length > 0 %>
+  <% if params[:sh] == "sh" || !@is_pm_admin %>
+    <table class="show">
+      <tr><th colspan="4">施設予約</th></tr>
+      <% schedule_props.each do |sp| %>
+        <tr>
+          <th>名称</th><td><%= sp.prop.name if sp.prop %></td>
+          <% if sp.prop_type == "Gw::PropOther" %>
+            <th>管理所属</th><td><%= sp.owner_s %></td>
+          <% else %>
+            <th>施設の状態</th><td><%= sp.prop_stat_s2 %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <% other_schedule_props = schedule_props.select(&:other_related?) %>
+    <% if other_schedule_props.present? %>
+      <table class="show">
+        <tr><th colspan="4">施設予約</th></tr>
+        <% other_schedule_props.each do |sp| %>
+        <tr>
+          <th>名称</th><td><%= sp.prop.name if sp.prop %></td>
+          <th>管理所属</th><td><%= sp.owner_s %></td>
+        </tr>
+        <% end %>
+      </table>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render 'prop_table', item: @item if !@is_pm_admin && schedule_props.any?(&:pm_related?) %>
+
+<%= render 'show_mail_link', item: @item %>
+
+</div>
+</div>
+</div>

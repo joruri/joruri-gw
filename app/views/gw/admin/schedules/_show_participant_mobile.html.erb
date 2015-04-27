@@ -1,0 +1,8 @@
+<% if item.schedule_users.present? %>
+<p class="leftPad2"><%= item.participant_title %></p>
+<p class="leftPad1">
+<% item.schedule_users.each do |su| %>
+  <%= su.get_object.try(:display_name) if su.class_id != 0 %><br />
+<% end %>
+</p>
+<% end %>

@@ -1,0 +1,12 @@
+<div class="piece AdminSetting AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+
+<%= form_for :item, :url => system_users_path do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for(f, {:caption => '保存'}) %>
+<% end %>
+
+</div>
+</div>

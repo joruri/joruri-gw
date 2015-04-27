@@ -1,0 +1,16 @@
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', action: :edit %></span>
+  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+</div>
+<table class="show">
+ <tr><th style="width: 120px;">画像種別</th>
+ <td><div class="show"><%=@item.share_states[@item.share.to_s]%></div></td></tr>
+ <tr><th style="width: 120px;">画像説明</th>
+ <td><div class="show"><%=@item.memo%></div></td></tr>
+</table>
+<table class="show">
+ <tr> <th style="width: 120px;">画像</th> </tr>
+<tr>
+ <td><div class="show"><%= image_tag(@item.file_path, :alt=>@item.memo) %></div></td>
+ </tr>
+</table>

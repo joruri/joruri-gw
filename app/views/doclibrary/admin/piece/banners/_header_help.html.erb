@@ -1,0 +1,8 @@
+<div class="helpBox">
+  <% if @title.help_display.blank? or @title.help_display.to_i == 0 %>
+    <div><%= link_to_if @title.help_url.present?, 'ヘルプ', @title.help_url %></div>
+    <% if @title.is_admin? %>
+      <div><%= link_to_if @title.help_admin_url.present?, '管理者ヘルプ', @title.help_admin_url %></div>
+    <% end -%>
+  <% end -%>
+</div>

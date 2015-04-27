@@ -1,0 +1,45 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwqa_common.css
+========================================================= */
+
+/* 詳細ページ　質問欄
+--------------------------------------------------*/
+.questionPerson {
+  padding: 3px 7px;
+  text-align: right;
+}
+.questionPerson a {
+  margin-right: 15px;
+}
+
+/* 詳細ページ　回答欄
+--------------------------------------------------*/
+.questionAnswer a { /*「回答する」ボタン*/
+  display: inline-block;
+  overflow: hidden;
+  width: 72px;
+  height: 0;
+  padding-top: 18px;
+  background-image: url(/_common/themes/gw/files/bt_addanswer.gif);
+  background-repeat: no-repeat;
+}
+.questionAnswer,
+.answerArea {
+  padding-left: 10px;
+}
+.answerPerson a {
+  margin-right: 15px;
+}
+.answerBox {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.answerhead {
+  padding: 5px;
+  text-align: right;
+}
+
+

@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwfaq.css
+========================================================= */
+
+/* ミニアイコン設定
+-------------------------------------------------*/
+.gwfaq {
+  background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+}
+
+/* 紺色大枠
+------------------------------------------*/
+.gwfaq .pieceBody {
+  padding: 10px;
+}
+
+/* table index
+------------------------------------------*/
+table.index {
+  margin-bottom: 20px
+}
+table.index td.manager {
+  width: 145px;
+}
+table.index td.gwfaqTitle,
+table.index td.gwqaTitle {
+  width: 200px;
+}
+table.index td.update {
+  width: 120px;
+}
+#page-gwfaq-controls-index table.index th,
+#page-gwfaq-controls table.index th,
+#page-gwfaq-makers-index th,
+#page-gwqa-makers-index th {
+  border: none;
+}
+
+/* タブ周り
+------------------------------------------*/
+#contentBody .tabBox {
+  height: auto;
+  background-color: #FFFFFF;
+}
+#contentBody .tabBox td.tab {
+  width: 130px;
+}
+#contentBody .tabBox td.current {
+  border-bottom: 1px solid #E3EFFF;
+}
+
+/* 機能ボタン
+------------------------------------------*/
+.gwfaq .editingBox {
+  width:100%;
+}
+.gwfaq .contentMenu {
+  margin-bottom: 10px;
+}
+

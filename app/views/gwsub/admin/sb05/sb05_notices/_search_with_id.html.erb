@@ -1,0 +1,25 @@
+<%
+medias    = Gwsub::Sb05MediaType.select_dd_media_group('all','code')
+limits = Gw.limit_select
+%>
+<%= form_tag('', :method => :get, :class => 'search' , :name=>'frmSearch') do %>
+<table>
+  <tr>
+    <th>媒体</th>
+    <td><%= select_tag( 'media_code',options_for_select( medias ,@media_code.to_i )) %></td>
+  </tr>
+  <tr>
+    <th>表示行数</th>
+    <td><%= select_tag( 'limit',options_for_select( limits , @limit.to_i ) ) %></td>
+    <th>検索</th>
+    <td colspan ="5"><%= text_field_tag "s_keyword", params[:s_keyword] ,:size=>80 %></td>
+    <td class="submitters">
+    <%= submit_tag '検索',     :name => :search %>
+    <%= submit_tag 'リセット', :name => :reset  %>
+    </td>
+  </tr>
+</table>
+<% end %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>

@@ -1,0 +1,24 @@
+<%
+t01 = %Q(<span>検索・申込</span>)
+t02 = %Q(<span>企画・設定</span>)
+t03 = %Q(<span>利用の手引</span>)
+t04 = %Q(<span>管理者</span>)
+case @l1_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">検索・申込</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">企画・設定</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">利用の手引</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">管理者</span>)
+else
+end
+%>
+<div class="menu">
+<p>研修申込・受付</p>
+<%= link_to t01, url_for('/gwsub/sb01/sb01_training_entries')%>
+<%= link_to t02, url_for('/gwsub/sb01/sb01_training_plans')%>
+<%= link_to t03, url_for('/gwsub/sb01/sb01_training_guides')%>
+<%= link_to t04, url_for('/gwsub/sb01/sb01_trainings') if @u_role==true %>
+</div>

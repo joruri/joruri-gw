@@ -1,0 +1,19 @@
+<%= f.hidden_field :wiki, :value => 0 %>
+<table class="show">
+  <tr>
+    <th>職<%= required('※') %></th>
+    <td><%= f.text_field :inpfld_001, :size => "20" %></td>
+  </tr>
+  <tr>
+    <th>氏名<%= required('※') %></th>
+    <td><%= f.text_field :title, :size => "20" %></td>
+  </tr>
+  <tr>
+    <th>電話番号<%= required('※') %></th>
+    <td><%= f.text_field :body, :size => "20" %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス<%= required('※') %></th>
+    <td><%= f.text_field :inpfld_002, :size => "40" %></td>
+ </tr>
+</table>

@@ -1,0 +1,26 @@
+<%
+if @menu_type.blank?
+  files_uri = gwsub_attaches_path(@req1.id) + "?system="+@system+"&menu_type="
+else
+  files_uri = gwsub_attaches_path(@req1.id) + "?system="+@system+"&menu_type="+@menu_type
+end
+
+
+if @req1.attaches_file == 'false'
+  str = "display: none;"
+else
+  str = ""
+end
+
+%>
+
+  <tr>
+    <th><label><%= f.check_box :attaches_file, {:value=>@req1.attaches_file ,:onclick =>%q[chageDisp(this,'attach_form');]}, 'true', 'false' %>添付ファイル</label></th>
+    <td></td>
+  </tr>
+  <tr id="attach_form" style="<%= str %>">
+    <td colspan="3">
+      <iframe src="<%= files_uri %>" style="width: 100%; height: 200px;" frameborder="0"></iframe>
+    </td>
+  </tr>
+

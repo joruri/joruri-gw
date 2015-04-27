@@ -1,0 +1,299 @@
+################################################################################
+# GW_SUB グループウェア　補完機能　研修申込受付
+################################################################################
+#
+gwsub_sb01_training_categories:
+  1: 研修一覧
+  2: 受講者向け利用の手引
+  3: 企画者向け利用の手引
+  4: 管理者向け利用の手引
+gwsub_sb01_training_states:
+  1: 準備中
+  2: 受付中
+  3: 締切
+  4: 終了
+  5: その他
+gwsub_sb01_trainings:
+  _common:
+    id: 詳細
+    categories: r:記事分類:gwsub_sb01_training_categories
+    fyear_id: x
+    fyear_markjp: 年度
+    title: 研修名
+    bbs_url: 記事内容(url)
+    body: 研修案内
+    state: r:状況:gwsub_sb01_training_states
+    updated_at: d:最終更新日時
+    updated_user: x
+    updated_group: x
+    created_at: x
+    created_user: x
+    created_group: x
+    members_max: 定員
+    group_id: x
+    group_code: x
+    group_name: 企画所属
+    member_id: x
+    member_code: x
+    member_name: 企画者
+    member_tel: 連絡先電話番号
+  index:
+    _cols: state:fyear_markjp:title:_last_date:updated_at
+    _last_date: 最終開催日
+  show:
+    _cols: categories:state:fyear_markjp:title:body:bbs_url
+  bbs:
+    #_cols: id:state:fyear_markjp:title:updated_group:body
+    _cols: id:title:group_name:updated_at
+  bbs_plan:
+    #_cols: id:state:fyear_markjp:title:updated_group:body
+    _cols: id:state:title:group_name:updated_at
+  bbs_show:
+    #_cols: state:fyear_markjp:body:members_max:group_name
+    _cols:  state:title:body:group_name:member_name:member_tel:updated_at
+  condition_show:
+    _cols: title:body:member_tel:group_name
+gwsub_sb01_training_schedule_repeat:
+  1: なし
+  2: 繰返し
+  3: 連続
+gwsub_sb01_training_schedule_repeat_flag:
+  1: なし
+  2: あり
+gwsub_sb01_training_schedule_repeat_rule:
+  1: 毎日
+  2: 毎日（土日除く）
+  3: 毎週
+gwsub_sb01_training_schedule_repeat_weekday_checkboxes:
+  0: 日曜日
+  1: 月曜日
+  2: 火曜日
+  3: 水曜日
+  4: 木曜日
+  5: 金曜日
+  6: 土曜日
+gwsub_sb01_training_schedule_repeat_monthly_checkboxes:
+  1: 第１
+  2: 第２
+  3: 第３
+  4: 第４
+  5: 第５
+gwsub_sb01_training_time_range:
+  1: 8
+  2: 18
+gwsub_sb01_training_time_range_end:
+  1: 8
+  2: 18
+gwsub_sb01_training_schedule_prop_kind:
+  1: 会議室（管財課）
+  2: 自所属会議室
+  3: 他所属
+  4: 職員会館
+  8: その他外部
+  9: 使わない
+gwsub_sb01_training_schedule_state:
+  1: 未実施
+  2: 予約済
+gwsub_sb01_training_schedule_conditions:
+  _common:
+    id: 詳細
+    training_id: dbraw:研修:gwsub/gwsub_sb01_trainings:title:id
+    members_max: 定員
+    title: x
+    from_at: D:研修日
+    from_start: 開始時刻
+    from_end: 終了時刻
+    member_id: dbraw:登録者:system_users:name:id
+    group_id: dbraw:登録所属:system_groups:name:id
+    prop_id: dbraw:施設:gw/gw_prop_meetingrooms:name:id
+    prop_kind: x
+    prop_name: 場所
+    repeat_flg: r:繰返し:gwsub_sb01_training_schedule_repeat
+    repeat_monthly: 週指定
+    repeat_weekday: 曜日指定
+    to_at: D:繰返し期間終了日
+    state: r:予約状況:gwsub_sb01_training_schedule_state
+    updated_at: x
+    updated_user: x
+    updated_group: x
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: id:from_at:from_start:from_end:prop_name:members_max:group_id:repeat_flg
+#    _cols: id:state:from_at:from_start:from_end:_propname:members_max:group_id:repeat_flg
+#    _cols: id:state:from_at:from_start:from_end:prop_id:members_max:group_id:repeat_flg
+#    _propname: 施設
+  show:
+    _cols: from_at:from_start:from_end:prop_name:members_max:group_id:member_id:repeat_flg:repeat_weekday:to_at
+#    _cols: state:from_at:from_start:from_end:prop_id:members_max:group_id:member_id:repeat_flg:repeat_monthly:repeat_weekday:to_at
+#    _propname: 施設
+gwsub_sb01_training_schedule_props_state:
+  1: 準備中
+  2: 受付中
+  3: 締切
+  4: 終了
+#   1: 受付中
+#   2: 締切
+gwsub_sb01_training_schedule_props:
+  _common:
+    id: 詳細
+    training_id: 研修名
+    condition_id: x
+    schedule_id: x
+    from_start: D:最終更新日
+    from_end: x
+    prop_id: dbraw:施設:gw/gw_prop_meetingrooms:name:id
+    prop_name: 場所
+    member_id: dbraw:登録者:system_users:name:id
+    group_id: dbraw:登録所属:system_groups:name:id
+    members_max: 定員
+    members_current: 申込人数
+    state: r:受付:gwsub_sb01_training_schedule_props_state
+    updated_at: D:最終更新日
+    updated_user: x
+    updated_group: 担当所属
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: id:state:from_start:members_max:members_current:group_id:updated_at
+#    _cols: id:state:from_start:from_end:_propname:members_max:members_current:group_id
+#    _cols: id:state:from_start:from_end:prop_id:members_max:members_current:group_id
+#    _propname: 施設
+  show:
+    _cols: state:from_start:from_end:prop_name:members_max:members_current:group_id:member_id
+#    _cols: state:from_start:from_end:_propname:members_max:members_current:group_id:member_id
+#    _cols: state:from_start:from_end:prop_id:members_max:members_current:group_id:member_id
+#    _propname: 施設
+  index_top:
+    _cols: id:state:from_start:members_max:members_current:training_id:group_id:updated_at
+#    _cols: id:_entry:training_id:state:from_start:from_end:_planed_group:_propname:members_max:members_current
+#    _cols: id:_entry:training_id:state:from_start:from_end:_planed_group:prop_id:members_max:members_current
+#    _cols: id:_entry:training_id:state:from_start:from_end:prop_id:members_max:members_current:group_id
+    _entry: 申込
+    _planed_group: 担当所属
+#    _propname: 施設
+  index_top3:
+    _cols: id:training_id:state:from_start:from_end:_planed_group:prop_name:members_max:members_current
+#    _cols: id:training_id:state:from_start:from_end:_planed_group:_propname:members_max:members_current
+#    _cols: id:training_id:state:from_start:from_end:_planed_group:prop_id:members_max:members_current
+#    _cols: id:training_id:state:from_start:from_end:prop_id:members_max:members_current:group_id
+    _planed_group: 担当所属
+#    _propname: 施設
+  index_show:
+    _cols: id:_entry:training_id:state:from_start:members_max:members_current:_planed_group:prop_name
+    _planed_group: 企画所属
+    _entry: 申込
+gwsub_sb01_training_schedules:
+  _common:
+    id: 詳細
+    training_id: 研修名
+    condition_id: x
+    schedule_id: x
+    updated_at: D:最終更新日
+    updated_user: x
+    updated_group: 担当所属
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: id:_state:_from_start:_members_max:_members_current:training_id:_planed_group:updated_at
+    _state: 状況
+    _members_max: 定員
+    _from_start: 開催日時
+    _members_current: 受付
+    _planed_group: 企画所属
+  index_show:
+    _cols: id:_state:_from_start:_members_max:_members_current:_planed_group:updated_at
+    _state: 状況
+    _members_max: 定員
+    _from_start: 開催日時
+    _members_current: 受付
+    _planed_group: 企画所属
+  show:
+    _cols: id:state:from_start:prop_name:members_max:members_current:_planed_group:updated_at
+    _state: 状況
+    _members_max: 定員
+    _from_start: 開催日時
+    _members_current: 受付
+    _planed_group: 企画所属
+    _planed_member: 企画者
+gwsub_sb01_training_schedule_members:
+  _common:
+    id: 詳細
+    training_schedule_id: x
+    training_user_id: dbraw:受講者:system_users:name:id
+    training_group_id: dbraw:受講者所属:system_groups:name:id
+    entry_user_id: dbraw:申込者:system_users:name:id
+    entry_group_id: dbraw:申込者所属:system_groups:name:id
+    updated_at: x
+    updated_user: x
+    updated_group: x
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: id:training_user_id:training_group_id
+  show:
+    _cols: training_user_id:training_group_id:entry_user_id:entry_group_id
+gwsub_sb01_training_help_categories:
+  1: 受講者向け利用の手引
+  2: 企画者向け利用の手引
+  3: 管理者向け利用の手引
+gwsub_sb01_training_guides:
+  _common:
+    id: x
+    categories: r:記事分類:gwsub_sb01_training_help_categories
+    fyear_id: x
+    fyear_markjp: 年度
+    title: 記事名
+    bbs_url: 記事内容(url)
+    remarks: 備考
+    state: x
+    updated_at: d:最終更新日時
+    updated_user: x
+    updated_group: 担当所属
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: fyear_markjp:categories:title:remarks:updated_at
+  show:
+    _cols: fyear_markjp:categories:state:title:bbs_url:remarks
+  bbs:
+    _cols: id:state:fyear_markjp:title:updated_group:remarks
+  bbs_show:
+    _cols: state:fyear_markjp:title:updated_group:remarks
+gwsub_sb01_training_board_states:
+  1: 有効
+  2: 無効
+gwsub_sb01_training_boards:
+  _common:
+    id: x
+    fyear_id: x
+    fyear_markjp: 年度
+    bbs_rel_id: x
+    bbs_title: 掲示板タイトル
+    remarks: 備考
+    state: r:利用状況:gwsub_sb01_training_board_states
+    sort_no: 並び順
+    updated_at: d:最終更新日時
+    updated_user: x
+    updated_group: 担当所属
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: bbs_title:_bbs_state:state:remarks:sort_no:updated_at
+    _bbs_state: 状態
+  show:
+    _cols: bbs_title:_bbs_state:state:remarks:sort_no:updated_at
+    _bbs_state: 状態
+  bbs:
+    _cols: id:state:fyear_markjp:title:sort_no:updated_group:remarks
+  bbs_show:
+    _cols: state:fyear_markjp:title:sort_no:updated_group:remarks
+################################################################################
+# GW_SUB グループウェア　補完機能　研修申込受付
+################################################################################

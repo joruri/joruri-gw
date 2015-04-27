@@ -1,0 +1,30 @@
+<div class="piece digitalLibrary">
+<div class="pieceHeader">
+  <h2>電子図書</h2>
+  <% if Digitallibrary::Control.is_admin? %>
+  <div class="btsHeadeRight">
+    <span class="btManager"><a href="/digitallibrary/cabinets/">管理者</a></span>
+  </div>
+  <% end %>
+</div>
+<div class="pieceBody">
+
+<table class="index">
+  <tr class="items">
+    <td class="libraryTitle">タイトル</td>
+    <td class="explanation">説明</td>
+    <td class="manager">管理</td>
+    <td class="update">更新日時</td>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="libraryTitle"><%= link_to item.title, item.docs_path %></td>
+      <td class="explanation"><%=raw item.caption %></td>
+      <td class="manager"><%= item.display_first_admin_name %></td>
+      <td class="update"><%= item.docslast_updated_at.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+</div>
+</div>

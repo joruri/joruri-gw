@@ -1,0 +1,15 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>年号<%= required %></th>
+    <td><%= f.text_field :name, :size => 30 %></td>
+  </tr>
+  <tr>
+    <th>記号<%= required %></th>
+    <td><%= f.text_field :mark, :size => 30 %></td>
+  </tr>
+  <tr>
+    <th>開始日（西暦）<%= required %></th>
+    <td><%= f.datepicker :start_at %></td>
+  </tr>
+</table>

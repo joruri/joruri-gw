@@ -1,0 +1,25 @@
+<%
+link_str1 = %Q(<span>研修一覧</span>)
+link_url1 = "/gwsub/sb01/sb01_training_entries"
+link_str2 = %Q(<span>研修日一覧</span>)
+link_url2 = "/gwsub/sb01/sb01_training_entries/index_date"
+link_str3 = %Q(<span>申込者利用の手引き</span>)
+link_url3 = "/gwsub/sb01/sb01_training_guides/user"
+case @l2_current
+when '01'
+link_str1 = %Q(<span class="gwsub_current_menu">研修一覧</span>)
+when '02'
+link_str2 = %Q(<span class="gwsub_current_menu">研修日一覧</span>)
+when '03'
+link_str3 = %Q(<span class="gwsub_current_menu">申込者利用の手引き</span>)
+else
+end
+%>
+<%#= render 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
+<% unless link_str1.blank? %>
+<div class="menu">
+<%= link_to raw(link_str1) , url_for(link_url1) -%>
+<%= link_to raw(link_str2) , url_for(link_url2) -%>
+<%= link_to raw(link_str3) , url_for(link_url3) -%>
+</div>
+<% end %>

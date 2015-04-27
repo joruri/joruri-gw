@@ -1,0 +1,14 @@
+<div class="piece AdminSetting AdminGroups">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'navi' %>
+
+<%= form_for @item, :as => :item, :url => {:action => :update}, :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= button_tag '戻る', :type => :button, :onclick => "document.location='#{url_for(:action => :index)}';" %>
+  <%= f.submit 'この内容で登録する' %>
+<% end %>
+
+</div>
+</div>

@@ -1,0 +1,43 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<script type="text/javascript">
+//<![CDATA[
+window.onload = function() {
+  setInterval('location.reload()',1000*30);
+}
+//]]>
+</script>
+
+<table class="show">
+  <tr>
+    <th>バージョン: <%= @item.version %></th>
+  </tr>
+</table>
+
+<table class="index">
+  <tr>
+    <th style="width: 100px; text-align: center;">プロダクト名</th>
+    <th style="width: 80px; text-align: center;">状態</th>
+    <th style="text-align: center;">中間結果</th>
+    <th style="text-align: center;">保管結果</th>
+    <th style="text-align: center;">同期結果</th>
+    <th style="width: 120px; text-align: center;">更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td><%= item.product.try(:name) %></td>
+    <td style="text-align: center;"><%= item.state_label %></td>
+    <td><%=br item.remark_temp %></td>
+    <td><%=br item.remark_back %></td>
+    <td><%=br item.remark_sync %></td>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M:%S') if item.updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+
+</div>
+</div>

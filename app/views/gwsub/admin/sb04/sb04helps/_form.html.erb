@@ -1,0 +1,25 @@
+<%
+  cats  =Gwsub::Sb04help.select_help_categories
+-%>
+<%= hidden_field_tag 'limit', @limits %>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+<tr>
+  <th>記事分類<%= required %></th>
+  <td><%= f.select :categories ,options_for_select(cats,@item.categories.to_i) %></td>
+</tr>
+<tr>
+  <th>タイトル<%= required %></th>
+  <td><%= f.text_field :title ,:size=>80 %></td>
+</tr>
+<tr>
+  <th>ヘルプ記事url<%= required %></th>
+  <td><%= f.text_field :bbs_url ,:size=>80 %></td>
+</tr>
+<tr>
+  <th>備考</th>
+  <td><%= f.text_field :remarks ,:size=>80 %></td>
+</tr>
+</table>
+<div class="preserve"><%= f.submit '保存' %></div>

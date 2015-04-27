@@ -1,0 +1,34 @@
+<div class="piece docLibrary">
+<div class="pieceHeader">
+  <h2>書庫</h2>
+  <%= render 'header' if Doclibrary::Control.is_admin? %>
+</div>
+<div class="pieceBody">
+
+<table class="index">
+  <tr class="items">
+    <td class="libraryTitle">書庫</td>
+    <td class="explanation">説明</td>
+    <td class="manager">管理</td>
+    <td class="update">更新日時</td>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="libraryTitle"><%= link_to item.title, doclibrary_docs_path(title_id: item.id) %></td>
+      <td class="explanation"><%= raw(item.caption) %></td>
+      <td class="manager"><%= item.display_first_admin_name %></td>
+      <td class="update"><%= item.docslast_updated_at.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+    </tr>
+    <% if item.special_link.present? && (gwbbs_control = item.special_link_gwbbs_control) %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="libraryTitle"><%= link_to gwbbs_control.title, gwbbs_control.docs_path %></td>
+      <td class="explanation"><%= gwbbs_control.caption %></td>
+      <td class="manager"><%= gwbbs_control.display_first_admin_name %></td>
+      <td class="update"><%= gwbbs_control.docslast_updated_at.strftime('%y-%m-%d %H:%M') if gwbbs_control.docslast_updated_at %></td>
+    </tr>
+    <% end %>
+  <% end %>
+</table>
+<%= paginate @items %>
+</div>
+</div>

@@ -1,0 +1,16 @@
+<hr class="borderDash"/>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">作成</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+</p>
+<%= form_for :item, :url => {action: :create}, :html => {method: :post, class: "leftSide"} do |f| %>
+  <%= f.error_messages %>
+  <%= link_to "送り先ユーザー選択", "/gw/mobile_participants?view=quote&group_id=#{Core.user_group.id}&memo_id=#{@item.id}" %>
+  <span class="textRed">※</span><br />
+  <%= render 'form_mobile', f: f %><br /><br />
+  <%= submit_for_create f, :caption=>"送信する" %>
+<% end %>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%= link_to "戻る", {action: :index} %>
+</p>

@@ -1,0 +1,11 @@
+<%= render 'folder_name' %>
+
+<%= form_for :item, :url => "/doclibrary/folders?title_id=#{params[:title_id]}&state=#{params[:state]}&cat=#{params[:cat]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}", :html => {:method=>:post, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for(f, :caption=>"編集する",:js_submitter => 'my_submit()')%>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to 'ファイル一覧へ', "#{doclibrary_docs_path({:title_id=>@title.id})}&state=#{params[:state]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}" %>
+</div>

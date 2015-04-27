@@ -1,0 +1,223 @@
+/* =========================================================
+   Scaffold.
+========================================================= */
+
+/* index's tabs
+------------------------------------- */
+.indexTabs {
+  position: relative;
+  top: -8px;
+  left: 0px;
+}
+.indexTabs * {
+  margin-right: 5px;
+}
+.indexTabs a {
+  display: inline-block;
+  width: 100px;
+  border: 1px solid #ccc;
+  color: #999;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.5;
+}
+.indexTabs a:hover {
+  background-color: #eee;
+  color: #000;
+}
+.indexTabs span {
+  display: inline-block;
+  width: 100px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* index's table 
+------------------------------------- */
+table.index {
+  width: 100%;
+  margin: 10px 0px 0px 0px;
+}
+table.index th {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+}
+table.index td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+
+table.index td.integer {
+  text-align: right;
+}
+table.index td.string {
+}
+table.index td.text {
+}
+table.index td.date {
+}
+table.index td.datetime {
+}
+table.index td.time {
+}
+table.index td.timestamp {
+}
+table.index td.decimal {
+  text-align: right;
+}
+table.index td.float {
+  text-align: right;
+}
+table.index td.binary {
+}
+table.index td.boolean {
+}
+
+table.index tr.cycle td {
+  background-color: #fafafa;
+}
+
+/* show's menu
+------------------------------------- */
+.showMenu {
+}
+.showMenu a {
+  display: inline-block;
+  width: 80px;
+  margin: 0px 10px 0px 0px;
+  border: 1px solid #ccc;
+  border-width: 1px 2px 2px 1px;
+  background-color: #eee;
+  color: #800;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.7;
+}
+.showMenu a:hover {
+  border-color: #bbb;
+}
+
+/* show's table
+------------------------------------- */
+table.show {
+  width: 100%;
+  margin: 10px 0px 0px 0px;
+}
+table.show th {
+  width: 150px;
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  font-weight: lighter;
+  text-align: left;
+  vertical-align: top;
+}
+table.show th .note {
+  margin: 0px 0px 0px 10px;
+  padding: 0px;
+  color: red;
+}
+table.show td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+table.show tr.onlyManager th {
+  background-color: #fdd;
+}
+table.show tr.onlyManager td {
+  background-color: #fee;
+}
+table.show td input, table.show td textarea {
+}
+table.show td input.num {
+  width: 100px;
+}
+table.show td input.string {
+  width: 600px;
+}
+table.show td input.date {
+  width: 80px;
+}
+table.show td input.datetime {
+  width: 180px;
+}
+table.show td input.file {
+  width: 500px;
+  padding: 2px;
+  color: #888;
+}
+table.show td div.files {
+  margin: 5px 0px 0px 20px;
+}
+table.show td div.files hr {
+  border-bottom: 1px dashed #ccc;
+}
+table.show td input.fileGroupName ,
+table.show td input.fileName {
+  width: 200px;
+}
+table.show td textarea.head {
+  width: 97%;
+  height: 100px;
+}
+table.show td textarea.body {
+  width: 97%;
+  height: 300px;
+}
+table.show td textarea.mceEditor {
+  width: 100%;
+  height: 500px;
+}
+table.show td.mceEditor {
+  padding:0px;
+}
+table.show td textarea.stylesheet {
+  width: 97%;
+  height: 100px;
+}
+table.show td textarea.mobile_body {
+  width: 220px;
+  height: 200px;
+}
+/*
+ *  TODO translation_missingの整理 - Rails ActionViewのtranslateのキーが無い場合に括るクラス
+ */
+span.translation_missing {
+  background-color: red;
+  color: white;
+}
+
+/*
+ * TODO extra-container(仮)の設計 - YUIパネル関係の微調整用
+ * overwrite yui stylesheet-class.
+ */
+/*
+.yui-skin-sam .extra-container .yui-panel .bd{
+  background: white;
+}
+*/
+.yui-dialog #errorExplanation {
+ width: 100%;
+ border: 2px solid #f00;
+ margin: 15px 0px;
+}
+.field_with_errors{
+  border: 1px solid #FF0000;
+  display: inline-block;
+  padding: 1px;
+}
+.field_with_errors input{
+  color: red;
+}
+.field_with_errors label{
+  color: red;
+}
+.required {
+  color: #c00;
+}

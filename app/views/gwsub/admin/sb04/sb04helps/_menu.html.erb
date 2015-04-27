@@ -1,0 +1,21 @@
+<%
+  link_str1 = %Q(<span>一覧</span>)
+  link_str2 = %Q(<span>登録</span>)
+  link_url1 = "/gwsub/sb04/05/sb04helps"
+  link_url2 = "/gwsub/sb04/05/sb04helps/new"
+  case @l2_current
+  when '01'
+    link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+  when '02'
+    link_str2 = %Q(<span class="gwsub_current_menu">登録</span>)
+  else
+  end
+  if  @u_role==true
+  else
+    link_str2 =nil
+  end
+-%>
+<div class="menu">
+<%= link_to raw(link_str1) , url_for(link_url1) %>
+<%= link_to raw(link_str2) , url_for(link_url2)  unless link_str2.blank? %>
+</div>

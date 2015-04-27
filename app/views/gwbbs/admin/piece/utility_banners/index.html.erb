@@ -1,0 +1,10 @@
+<%if @title.blank?%>
+<div class="pieceBanner">
+ <h3>背景テーマ割り当て</h3>
+ <a class="btNew" href="<%=@new_url%>"></a>
+</div>
+<%else%>
+<div class="pieceBanner">
+<h3><%=@title.title%></h3>
+</div>
+<%end%>

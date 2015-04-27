@@ -1,0 +1,42 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'gw/admin/portal_adds/menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
+</div>
+
+<% if @items.length == 0 -%>
+  <%= show_notice -%>
+<% else -%>
+  <table class="index">
+    <tr>
+      <th style="width: 90px; align: center;"></th>
+      <th class="sort" colspan="2" >表示順</th>
+      <th>管理用タイトル</th>
+      <th>表示形式</th>
+      <th>表示場所</th>
+      <th style="width: 90px; align: center;"></th>
+    </tr>
+    <% @items.each_with_index do |item, idx| -%>
+      <%
+        uid = did = 0
+        uid = @items[idx-1].id if idx >= 1
+        did = @items[idx+1].id if idx <= @items.length-2
+      %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '展開', {action: :show, id: item.id} %></td>
+        <td class="up" ><%= link_to '▲', {action: :g_updown, id: item.id, order: 'up'} if uid != 0 %></td>
+        <td class="down" ><%= link_to '▼', {action: :g_updown, id: item.id, order: 'down'} if did != 0 %></td>
+        <td><%= item.title %></td>
+        <td><%= item.pattern_show %></td>
+        <td><%= item.place_show if item.pattern != 4 %></td>
+        <td><%= link_to '編集', {action: :edit, id: item.id} %></td>
+      </tr>
+    <% end -%>
+  </table>
+<% end -%>
+
+</div>
+</div>

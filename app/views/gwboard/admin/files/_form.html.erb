@@ -1,0 +1,23 @@
+<table class="show bbsText">
+  <% if @share_mode.to_s < '2' && Gwbbs::Control.is_sysadm? %>
+    <tr>
+      <th>画像管理課<%= required('※') %></th>
+      <td colspan="3">
+        <%= f.select(:section_code, Gwboard::Group.level3_all.collect{|i|
+            [i.name, i.code]}, :include_blank => '画像の管理課を選択してください') %>
+      </td>
+    </tr>
+  <% end %>
+  <tr>
+    <th>画像種別</th>
+    <td><%= @item.show_share_states -%><%= f.hidden_field :share -%></td>
+  </tr>
+  <tr>
+    <th>画像ファイル<%= required('※') %></th>
+    <td><%= f.file_field :_upload %></td>
+  </tr>
+  <tr>
+    <th>画像説明<%= required('※') %></th>
+    <td><%= f.text_field :memo, :size=>'60'%></td>
+  </tr>
+</table>

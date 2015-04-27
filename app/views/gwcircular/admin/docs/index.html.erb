@@ -1,0 +1,27 @@
+<div class="bbsDocList circular">
+<%= render 'gwcircular/admin/menus/piece_header' %>
+<%= render 'gwcircular/admin/menus/piece_banner' %>
+
+<div class="pieceBody">
+<%= render 'gwcircular/admin/menus/tabbox' %>
+
+<table class="index">
+  <tr class="headIndex">
+    <th class="state">状態</th>
+    <th class="docTitle">回覧件名</th>
+    <th style="width:120px;">回覧期限日時</th>
+    <th class="update">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td class="state"></td>
+    <td class="docTitle"><%= link_to item.title, item.show_path %></td>
+    <td class="update"><%=l item.expiry_date if item.expiry_date %></td>
+    <td class="update"><%=l item.latest_updated_at, format: :date if item.latest_updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

@@ -1,0 +1,54 @@
+<%
+
+if @doc_check == true
+  doc_link = %Q(<a href="#{h @item1.bbs_url}" target="_blank" title="#{@bbs_link_title}" >#{@item1.title}</a>)
+else
+  doc_link = %Q(#{@item1.title})
+end
+state = Gwsub::Sb01TrainingSchedule.state_show(@item.state)
+today = Time.now
+if @item.state == '2'
+  state = "終了" if @item.from_start < today unless @item.from_start.blank?
+end
+-%>
+
+<table class="show leftSide">
+  <tr>
+    <th>研修名</th>
+    <td><%= doc_link %></td>
+  </tr>
+  <tr>
+  <th valign="top">開催日時</th>
+  <td style="align: left;">
+    <%= @item.from_start.strftime('%Y年%m月%d日') unless @item.from_start.blank?%><%=" (#{Gw.weekday(@item.from_start.wday)}) " unless @item.from_start.blank?%>
+    <%= @item.from_start.strftime('%H:%M') unless @item.from_start.blank?%>～<%= @item.from_end.strftime('%H:%M') unless @item.from_end.blank? %>まで
+    <table style="width: 600px;">
+      <tr>
+        <td>場所</td><td>状況</td><td>定員</td><td>受付</td>
+      </tr>
+      <tr>
+        <td><%= @item.prop_name %></td>
+        <td><%= state %></td>
+        <td><%= @item.members_max %></td>
+        <td><%= @item.members_current %></td>
+      </tr>
+    </table>
+  </td>
+  </tr>
+  <tr>
+    <th>企画所属</th>
+    <td><%= @item1.group_name %></td>
+  </tr>
+  <tr>
+    <th>企画者</th>
+    <td><%= @item1.member_name %></td>
+  </tr>
+  <tr>
+    <th>連絡先電話番号</th>
+    <td><%= @item1.member_tel %></td>
+  </tr>
+  <tr>
+    <th>最終更新日</th>
+    <td><%= safe{@item.updated_at.strftime('%Y-%m-%d')} %></td>
+  </tr>
+</table>

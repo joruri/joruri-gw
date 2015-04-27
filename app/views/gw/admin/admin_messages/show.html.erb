@@ -1,0 +1,40 @@
+<div class="piece AdminMessage">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+
+<div class="editingBox">
+ <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
+ <span class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+ <span class=""><%= link_to '管理者設定へ >>', "/gw/admin_settings" %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>表示モード</th>
+    <td><%= @item.mode_label %></td>
+  </tr>
+  <tr>
+    <th>表示</th>
+    <td><%= @item.state_label %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>メッセージ</th>
+    <td><%=raw @item.body %></td>
+  </tr>
+  <tr>
+    <th>更新日</th>
+    <td><%=l @item.updated_at if @item.updated_at %></td>
+  </tr>
+</table>
+
+<div class="btReturn">
+  <%= link_to 'メッセージ一覧へ戻る', {action: :index} %>
+</div>
+
+</div>
+</div><!--piece admin_messages-->

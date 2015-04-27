@@ -1,0 +1,34 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'system/admin/roles/header_menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', "/system/priv_names/new?#{@qs}" %></span>
+</div>
+
+<table class="index">
+  <tbody>
+    <tr>
+      <th style="width: 60px;"></th>
+      <th>権限対象名</th>
+      <th>権限コード</th>
+      <th style="width: 40px; text-align: center;">表示順</th>
+      <th style="width: 60px; text-align: center;">ステータス</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td style="text-align: center;"><%= link_to '詳細', "/system/priv_names/#{item.id}?#{@qs}" %></td>
+      <td><%= item.display_name %></td>
+      <td><%= item.priv_name %></td>
+      <td style="text-align: center;"><%= item.sort_no %></td>
+      <td style="text-align: center;"><%= item.state_label %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @items %>
+
+</div>
+</div>

@@ -1,0 +1,21 @@
+<div class="piece AdminMessage">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+
+<table class="show">
+  <tr>
+    <td class="action" style="width:40px" align="center"><%= link_to '設定', action: :edit, id: 0 %></td>
+    <th>表示モード</th>
+    <td><%= @item.mode_label %></td>
+  </tr>
+  <tr>
+    <td class="action" style="width:40px" align="center"><%= link_to '設定', action: :edit, id: 1 %></td>
+    <th>災害時に表示する掲示板</th>
+    <td><%= @bbs_item.bbs_label %></td>
+  </tr>
+</table>
+
+</div>
+
+</div><!--piece admin_messages-->

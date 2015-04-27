@@ -1,0 +1,19 @@
+<table class="show bbsText">
+<tr>
+  <th>状態<%= required %></th>
+  <td>
+  <input <% if @item.state == 'enabled' %>checked="checked" <% end %> class="state" id="item_state_enabled" name="item[state]" type="radio" value="enabled" /><label for="item_state_enabled">有効</label>
+  <input <% if @item.state == 'disabled' %>checked="checked" <% end %> class="state" id="item_state_disabled" name="item[state]" type="radio" value="disabled" /><label for="item_state_disabled">無効</label>
+  </td>
+</tr>
+<tr>
+  <th>並び順</th>
+  <td><%= f.text_field :sort_no, :class => 'sort_no', :size => 5, :maxlength => 5 %></td>
+</tr>
+<tr>
+  <th>名称<%= required %></th>
+  <td><%= f.text_field :name, :class => 'name', :size => 30, :maxlength => 30 %></td>
+</tr>
+</table>
+
+<%= render 'form_users' %>

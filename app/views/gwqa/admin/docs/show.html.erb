@@ -1,0 +1,123 @@
+<!--掲示板タブ-->
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+    <tr>
+      <td class="spaceLeft"></td>
+      <td class="tab "><%= link_to "公開記事一覧", "/gwqa/docs?title_id=#{params[:title_id]}" %></td>
+      <% if @title.is_writable? %>
+      <td class="spaceCenter"></td>
+      <td class="tab "><%= link_to "本日分", "/gwqa/docs?title_id=#{params[:title_id]}&state=TODAY" %></td>
+      <td class="spaceCenter"></td>
+      <td class="tab "><%= link_to "下書一覧", "/gwqa/docs?title_id=#{params[:title_id]}&state=DRAFT" %></td>
+      <% end %>
+      <td class="spaceRight"></td>
+    </tr>
+  </tbody>
+</table>
+</div><!--tabBox-->
+
+<div class="docsInnerBox">
+<div class="questionDivision">
+  <div>
+    <% if @title.category == 1 %>
+      <%= @title.category1_name + ' : ' unless @title.category1_name.blank? %>
+      <%= gwbd_category_name(@d_categories,@item.category1_id) %>
+    <% end %>
+  </div>
+</div>
+<% if @item.is_editable? %>
+  <div class="questionPerson">
+    <div>
+      <%= link_to '削除', gwqa_doc_path(@item, title_id: @item.title_id), confirm: '削除をすると元に戻せません。削除しますか', method: :delete %>
+      <span class="questionDay"><%= @item.latest_updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+    </div>
+  </div>
+<% else %>
+  <div class="questionPerson">
+    <div>
+      <span>質問者 : <%= @item.editordivision || @item.createrdivision %> <%= @item.editor || @item.creater %></span>
+      <span class="questionDay"><%= @item.latest_updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+    </div>
+  </div>
+<% end %>
+<table class="questionArea">
+  <tbody>
+    <tr>
+      <th>
+      <span><%= @item.content_state != "resolved" ? "質問　" : "【解決しました】" %></span>
+      <% if @item.is_editable? %>
+        <%= link_to "質問者 : #{@item.editordivision || @item.createrdivision} #{@item.editor || @item.creater}", edit_gwqa_doc_path(@item, {:title_id => @title.id, :p_id => "Q"}), :title => "この質問の内容を修正します。" %>
+      <% else %>
+        <span>質問者 : <%= @item.editordivision || @item.createrdivision %> <%= @item.editor || @item.creater %></span>
+      <% end %>
+      </th>
+    </tr>
+    <tr><td class="questionTitle"><%= @item.title %></td></tr>
+    <tr>
+      <% if @item.wiki_enabled? -%>
+        <td class="questionText wiki"><%= raw(wiki_show @item.body) -%></td>
+      <% else -%>
+        <td class="questionText"><%=raw @item.body -%></td>
+      <% end -%>
+    </tr>
+    <% if @item.is_settlementable? %>
+    <tr><td class="solution"><%= link_to '解決済にする', settlement_gwqa_doc_path(@item, {:title_id => @title.id}), :confirm => 'この質問を解決済みにします。', :method => :get %></td></tr>
+    <% end %>
+  </tbody>
+</table>
+<%= render 'question_file_index' %>
+
+<div class="questionAnswer">
+ <% if @title.is_writable? %>
+   <% if @item.content_state != "resolved" %>
+     <div>
+       <%= link_to "【回答を記入します】", new_gwqa_doc_path(title_id: @title.id, p_id: @item.id), title: "この質問に回答を付けます" %>
+     </div>
+   <% end %>
+ <% end %>
+</div>
+<% if @answers.present? %>
+  <div class="answerSort"><%=raw anser_sort_link(@item) %></div>
+  <div class="answerArea">
+  <% @answers.each do |answer| %>
+    <div class="answerBox">
+      <div class="answerhead">
+        <div>
+          <span class="answerPerson">
+            <%= link_to '削除', answer.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete if @title.is_admin? %>
+          </span>
+          <span class="answerDay"><%= answer.updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+        </div>
+      </div>
+      <table class="bbsUserformBody">
+        <tr>
+          <th>
+            <div class="answerTitle"><span>回答</span>
+              <% if @item.is_editable? %>
+                <%= link_to "回答者 : #{answer.editordivision || answer.createrdivision} #{answer.editor || answer.creater}", edit_gwqa_doc_path(answer, {:title_id => @title.id, :p_id => @item.id}), :title => "この回答の内容を修正します" %>
+              <% else %>
+                <span>回答者 : <%= answer.editordivision || answer.createrdivision %> <%= answer.editor || answer.creater %></span>
+              <% end %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <% if answer.wiki_enabled? -%>
+            <td class="answerText wiki"><%= raw(wiki_show answer.body) -%> </td>
+          <% else -%>
+            <td class="answerText"><%=raw answer.body -%> </td>
+          <% end -%>
+        </tr>
+      </table>
+      </div>
+      <%#= render 'answer_file_index', answer: answer if @title.content_id == 9 %>
+    <% end %>
+  </div>
+<% end %>
+</div>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '質問一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>
+</div>

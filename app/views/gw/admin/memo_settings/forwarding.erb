@@ -1,0 +1,35 @@
+<div class="piece memo setting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+<span class="title">携帯等メール転送設定</span>
+</div>
+</div>
+<div class="pieceBodyBody">
+
+<%= form_tag({:action => 'update_forwarding'}) do %>
+  <%= error_messages_for @item %>
+  <table class="show">
+    <tr>
+      <th>携帯メール転送</th>
+      <td><%= select_tag 'item[mobiles][ktrans]', options_for_select([['する','1'],['しない','2']], @item.ktrans) %></td>
+    </tr>
+    <tr>
+      <th>携帯メールアドレス</th>
+      <td><%= email_field_tag 'item[mobiles][kmail]', @item.kmail, size: 80 %></td>
+    </tr>
+  </table>
+<div class="submitters"><%= submit_tag('保存') %></div>
+<% end %>
+
+</div>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '連絡メモ設定へ戻る', "/gw/memo_settings" %>
+</div>
+
+</div>
+</div>

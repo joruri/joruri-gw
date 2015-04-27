@@ -1,0 +1,74 @@
+<%
+#render '/gw/public/todos/header'
+#render 'search'
+now = Time.now
+%>
+<hr class="borderDash"/>
+<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif"><%= link_to "新規作成", "/gw/todos/new"%></p>
+<hr  class="borderDash"/>
+<p class="leftPad2">
+<%if @s_finished == '1'%>
+未完了｜
+<%= link_to('完了', "/gw/todos?s_finished=2") -%>｜
+<%= link_to('両方', "/gw/todos?s_finished=3") -%>
+<%elsif @s_finished == '2'%>
+<%= link_to('未完了', "/gw/todos?s_finished=1") -%>｜
+完了｜
+<%= link_to('両方', "/gw/todos?s_finished=3") -%>
+<%else%>
+<%= link_to('未完了', "/gw/todos?s_finished=1") -%>｜
+<%= link_to('完了', "/gw/todos?s_finished=2") -%>｜
+両方
+<%end%>
+</p>
+<hr  class="borderDash"/>
+<% if @items.length== 0 %>
+  <%= show_notice -%>
+<% else %>
+
+  <% @items.each do |item| %>
+    <%
+    # 場所
+    #schedule = item.schedule
+    if item.is_finished.blank?
+      finish_str = '完了する'
+    else
+      finish_str = '未完了に戻す'
+    end
+    # 完了予定時刻が、現在時刻より前なら赤文字にする。
+    item_ed_at_str = ''
+    unless item.ed_at.blank?
+      ed_at = item.ed_at
+      ed_at_str = ed_at.strftime('%Y-%m-%d %H:%M')
+      if item.is_finished == 0
+        if now > ed_at
+          item_ed_at_str = %Q(<font color="#FF0000">#{ed_at_str}</font>)
+        else
+          item_ed_at_str = %Q(#{ed_at_str})
+        end
+      else
+        item_ed_at_str = %Q(#{ed_at_str})
+      end
+    end
+    state_str = Gw::Todo.finished_show(item.is_finished)
+    if item.is_finished.blank? || item.is_finished == 0
+      state_link = %Q(<font color="#FF0000">#{state_str}</font>)
+    else
+      state_link = finish_str
+    end
+
+    show_link = "/gw/todos/#{item.id}?s_finished=#{@s_finished}"
+    finish_link = "/gw/todos/#{item.id}/finish#{@params_set}"
+    %>
+    <p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">
+    <%= raw(state_link) -%>　<%= link_to(h(item.title), show_link) -%>
+    </p>
+    <p class="leftPad2">
+    <%= item_ed_at_str -%><br />
+    <%= link_to(h(finish_str), finish_link) -%><br />
+    </p>
+    <br />
+  <% end %>
+<% end %>
+<%= raw(paginate(@items)) %>
+

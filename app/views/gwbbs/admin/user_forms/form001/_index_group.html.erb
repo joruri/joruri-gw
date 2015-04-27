@@ -1,0 +1,44 @@
+<%
+mode = ''
+mode = 'date' unless @title.categoey_view
+mode = 'date' if @title.category == 0
+%>
+<table class="index">
+  <tr class="headIndex">
+    <% if @title.importance == 1 %>
+    <th class="item"></th>
+    <% end %>
+    <th class="docTitle"><%= @title.form_name == 'form009' ? 'システム名' : '記事件名' %></th>
+    <th class="item"></th>
+    <th class="item"></th>
+    <% if mode.blank? %>
+      <th class="category"><%= @title.category1_name %></th>
+    <% else %>
+      <th class="update">登録日時</th>
+    <% end %>
+    <th class="update">最終更新日時</th>
+  </tr>
+  <% brk_key = nil %>
+  <% @items.each do |item| %>
+    <% if brk_key != item.section_code %>
+    <tr class="subIndex">
+      <th colspan="<%= @title.importance == 1 ? 6 : 5 %>" class="docTitle"><%= item.section_name %></th>
+    </tr>
+    <% end %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <% if @title.importance == 1 %>
+      <td class="bbsImportant" style="text-align: center;"><%=raw retstr_important_span(item.importance) %></td>
+      <% end %>
+      <td class="docTitle"><%= link_to hbr(item.title), item.show_path  + gwbbs_params_set %><%=raw '<span class="new">new</span>' if @title.id == 1 && item.new_mark_flg %></td>
+      <td class="bbsAttach"><%=raw retstr_attache_span(item.attachmentfile) %></td>
+      <td class="bbsBalloon"><%=raw retstr_balloon_span(item) %></td>
+      <% if mode.blank? %>
+        <td class="category"><%= gwbd_category_name(@d_categories, item.category1_id) %></td>
+      <% else %>
+        <td class="update"><%=l item.created_at if item.created_at %></td>
+      <% end %>
+      <td class="update"><%=l item.latest_updated_at if item.latest_updated_at %></td>
+    </tr>
+    <% brk_key = item.section_code %>
+  <% end %>
+</table>

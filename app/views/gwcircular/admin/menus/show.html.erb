@@ -1,0 +1,69 @@
+<%
+s_cond_btn = ''
+s_cond = '?cond=owner'
+s_cond = '?cond=void' if params[:cond] == 'void'
+s_cond = '?cond=admin' if params[:cond] == 'admin'
+s_cond_btn = '?cond=admin' if params[:cond] == 'admin'
+
+this_path = gwcircular_menus_path
+%>
+<div class="bbsDocList circular">
+<%= render 'piece_header' %>
+<%= render 'piece_banner' %>
+
+<div class="pieceBody">
+<%= render 'gwcircular/admin/menus/tabbox' %>
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', "#{this_path}/#{@item.id}/edit#{s_cond_btn}" %></span>
+  <span class="btDestroy"><%= link_to '削除', "#{this_path}/#{@item.id}#{s_cond_btn}", method: :delete, confirm: '削除をすると元に戻せません。削除しますか' %></span>
+</div>
+  
+<div class="docsInnerBox">
+
+<table class="bbsExpirydate">
+  <tr>
+    <td>　回覧期限日時 : </td>
+    <td class="space"></td>
+    <td><%=l @item.expiry_date if @item.expiry_date %></td>
+  </tr>
+</table>
+
+<div class="bbsCreatorInf">
+<table>
+  <tr>
+    <td>作成 : &nbsp;</td>
+    <td><%= @item.createrdivision %></td>
+    <td class="space"></td>
+    <td><%= @item.creater %></td>
+    <td class="space"></td>
+    <td><%= @item.createdate %></td>
+  </tr>
+</table>
+</div>
+
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span><%=hbr @item.title %></span></td></tr>
+  <tr><td class="spaceBottom"></td></tr>
+  <tr>
+    <% if @item.wiki_enabled? -%>
+      <td class="wiki"><%=raw wiki_show(@item.body) -%></td>
+    <% else -%>
+      <td><%=raw @item.body -%></td>
+    <% end -%>
+  </tr>
+</table>
+</div>
+
+</div><!--docsInnerBox-->
+
+<%= render 'commissions' %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '回覧板一覧へ戻る', "#{this_path}#{s_cond}" %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

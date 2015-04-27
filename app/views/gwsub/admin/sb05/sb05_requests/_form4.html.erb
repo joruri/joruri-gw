@@ -1,0 +1,52 @@
+<%
+#cond = "media_code = #{@media.media_code} and categories_code=#{@media.categories_code} "
+#notice = Gwsub::Sb05Notice.find(:first,:conditions=>cond)
+if @categories_code==2
+span_str = %Q(rowspan="6" style="vertical-align: top;")
+else
+span_str = %Q(rowspan="5" style="vertical-align: top;")
+end
+%>
+<%= render 'gwsub/admin/sb05/sb05_requests/form_hiddens', f: f %>
+<%= f.error_messages %>
+<%= required_head %>
+<%#*<div class="mock">広報依頼：メルマガ</div> -%>
+<table class="show">
+<tr>
+  <th>媒体・分類</th>
+  <td><%= @req1.m_rel.media_name %>(<%= @req1.m_rel.categories_name %>)</td>
+  <td <%= span_str.html_safe %>><%=hbr @notice.blank? ? '注意事項準備中':@notice.sample %></td>
+</tr>
+<tr>
+  <th>希望日<%= required %></th>
+  <td><%= f.text_field :start_at, :value=> Gw.date_str(@req1.start_at), :class => 'datepicker_with_desired_date' %></td>
+</tr>
+<tr>
+  <th>タイトル<%= required %></th>
+  <td><%= f.text_field :title , :size=>50 %></td>
+</tr>
+<% if @categories_code==2 %>
+  <%# イベント情報 %>
+  <tr><th>本文<%= required %></th><td><%= f.text_area :body1 , :rows=>10 ,:cols=>50 %></td></tr>
+  <tr><th>URL</th><td><%= f.text_field :magazine_url , :size=>50 %></td></tr>
+  <%= gwsub_attach_form_sb05(f, @req1)%>
+<% else %>
+  <%# 情報BOX %>
+  <tr><th>ＰＣ版URL<%= required %></th><td><%= f.text_field :magazine_url , :size=>50 %></td></tr>
+  <tr><th>携帯版URL</th><td><%= f.text_field :magazine_url_mobile , :size=>50 %></td></tr>
+<% end %>
+</table>
+
+<% if @u_role==true %>
+<%= render 'gwsub/admin/sb05/sb05_requests/form_admin', f: f %>
+<% end %>
+
+<%= render 'gwsub/admin/sb05/sb05_requests/form_cal_js', f: f %>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    Element.toggle($(changeObjId));
+  }
+//]>
+</script>

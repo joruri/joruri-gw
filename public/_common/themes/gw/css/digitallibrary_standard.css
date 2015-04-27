@@ -1,0 +1,82 @@
+@charset "UTF-8";
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwboard/gwdoc_standard.css
+========================================================= */
+
+/* 検索ボックス
+----------------------------------------------- */
+.DLDocList .search {
+  display: inline-block;
+  width: auto;
+  margin: 0;
+  border: none;
+}
+
+/* 詳細ページ　下部の記事情報
+----------------------------------------------- */
+.docInf table {
+  width: auto;
+  text-align: left;
+  font-size: 90%;
+  color: #777;
+}
+.docInf table td {
+  padding: 1px 4px;
+}
+.docInf table td.space {
+  padding: 0;
+}
+
+/* table docformTitle(一覧テーブル)
+----------------------------------------------- */
+table.docformTitle th {
+  padding: 4px 7px;
+}
+table.docformTitle td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+}
+
+/* 詳細ページ　本文欄
+----------------------------------------------- */
+.dlDocform {
+  overflow: auto;
+  width: 100%;
+}
+table.docformBody {
+  border: 1px solid #CCC;
+  text-align: left;
+  vertical-align: top;
+  margin-bottom: 10px;
+}
+table.docformBody th {
+  padding: 4px 7px;
+}
+table.docformBody td {
+  padding: 4px 7px;
+  border: 1px solid #CCC;
+}
+table.docformBody td img {
+  display: inline-block;
+}
+.PABDEF_RTID6_16 {
+  display:none;
+}
+
+/* 詳細ページ　添付ファイル欄
+----------------------------------------------- */
+table.gwboardAttachlist {
+  margin: 10px 0 0;
+  border: 1px solid #CCC;
+  text-align: left;
+}
+table.gwboardAttachlist th {
+  padding: 4px 7px;
+  background-color: #E3EFFF;
+}
+table.gwboardAttachlist td {
+  padding: 4px 7px;
+  border: 1px solid #CCC;
+}
+

@@ -1,0 +1,40 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<% if @items.length == 0 -%>
+  <%= show_notice -%>
+<% else -%>
+  <table class="index">
+    <tr>
+      <th class="action"></th>
+      <th class="published">公開</th>
+      <th class="sort" colspan="2" >並び順</th>
+      <th class="file_path">ファイル名パス</th>
+      <th class="file_name">ファイル名</th>
+      <th class="img">画像</th>
+      <th class="background_color">背景色</th>
+      <th class="area">地域</th>
+      <th class="caption">キャプション</th>
+    </tr>
+    <% @items.each_with_index do |item, idx| -%>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+        <td><span style="<%= 'color:red;' if item.published != 'opened' %>"><%= item.published_label %></span></td>
+        <td class="up"><%= link_to '▲', {action: :updown, id: item.id, order: "up"} if @items.offset + idx >= 1 %></td>
+        <td class="down"><%= link_to '▼', {action: :updown, id: item.id, order: "down"} if @items.offset + idx < @items.total_entries - 1 %></td>
+        <td><%= item.file_path %></td>
+        <td><%= item.file_name %></td>
+        <td><img src="<%= item.file_path -%>" width="100" /></td>
+        <td><%= item.background_color_label %></td>
+        <td><%= item.area_label %></td>
+        <td><%= item.caption %></td>
+      </tr>
+    <% end -%>
+  </table>
+  <%= paginate @items %>
+<% end -%>
+
+</div>
+</div>

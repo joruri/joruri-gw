@@ -1,0 +1,14 @@
+<% if @item.recognizers.present? %>
+<table class="docCreator">
+  <tr>
+    <th style="width: 60px;">承認者</th>
+    <td>
+      <% @item.recognizers.each do |recognizer| %>
+        <%= recognizer.name %> / 
+        <%= recognizer.recognized_at? ? "承認日時:#{recognizer.recognized_at.strftime('%Y-%m-%d %H:%M')}" : '未承認' %>
+        <br />
+      <% end %>
+    </td>
+  </tr>
+</table>
+<% end %>

@@ -1,0 +1,69 @@
+<table class="show">
+<tr><th colspan="6">保存後情報</th></tr>
+<% if @action == "edit" %>
+<tr>
+<th>更新日</th>
+<td><%= '（保存時の日時）' %><%= f.hidden_field :updated_at %></td>
+<th>編集者</th>
+<td><%= Core.user ? Core.user.name : nil %><%= f.hidden_field :updated_user ,:value=>Core.user ? Core.user.name : nil  %></td>
+<th>編集者所属</th>
+<td><%= Core.user_group ? Core.user_group.name : nil %><%= f.hidden_field :updated_group ,:value=>Core.user_group ? Core.user_group.name : nil  %></td>
+</tr>
+<tr>
+<th>登録日</th>
+<td><%= date_common(@item.created_at) unless @item.created_at.blank? %></td>
+<th>登録者</th>
+<td><%= @item.created_user unless @item.created_user.blank? %></td>
+<th>登録者所属</th>
+<td><%= @item.created_group unless @item.created_group.blank? %></td>
+</tr>
+<%else%>
+<tr>
+<th>更新日</th>
+<td><%= '（保存時の日時）' %><%= f.hidden_field :updated_at %></td>
+<th>編集者</th>
+<td><%= Core.user ? Core.user.name : nil %><%= f.hidden_field :updated_user ,:value=>Core.user ? Core.user.name : nil  %></td>
+<th>編集者所属</th>
+<td><%= Core.user_group ? Core.user_group.name : nil %><%= f.hidden_field :updated_group ,:value=>Core.user_group ? Core.user_group.name : nil  %></td>
+</tr>
+<tr>
+<th>登録日</th>
+<td><%= '（保存時の日時）' %><%= f.hidden_field :created_at %></td>
+<th>登録者</th>
+<td><%= Core.user ? Core.user.name : nil  %><%= f.hidden_field :created_user ,:value=>Core.user ? Core.user.name : nil  %></td>
+<th>登録者所属</th>
+<td><%= Core.user_group ? Core.user_group.name : nil %><%= f.hidden_field :created_group ,:value=>Core.user_group ? Core.user_group.name : nil  %></td>
+</tr>
+<%end%>
+
+<tr><th colspan="6">保存前情報</th></tr>
+<% if @action == "edit" %>
+<tr>
+<th>更新日</th>
+<td><%= date_common(@item.created_at) unless @item.created_at.blank? %></td>
+<th>更新者</th>
+<td><%= @item.created_user unless @item.created_user.blank? %></td>
+<th>更新者所属</th>
+<td><%= @item.created_group unless @item.created_group.blank? %></td>
+</tr>
+<tr>
+<th>登録日</th>
+<td><%= date_common(@item.created_at) unless @item.created_at.blank? %></td>
+<th>登録者</th>
+<td><%= @item.created_user unless @item.created_user.blank? %></td>
+<th>登録者所属</th>
+<td><%= @item.created_group unless @item.created_group.blank? %></td>
+</tr>
+<% else %>
+<tr>
+<th>更新日</th><td><%= ''%></td>
+<th>更新者</th><td><%= ''%></td>
+<th>更新者所属</th><td><%= ''%></td>
+</tr>
+<tr>
+<th>登録日</th><td><%= ''%></td>
+<th>登録者</th><td><%= ''%></td>
+<th>登録者所属</th><td><%= ''%></td>
+</tr>
+<% end %>
+</table>

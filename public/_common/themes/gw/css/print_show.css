@@ -1,0 +1,210 @@
+@charset "UTF-8";
+/* =========================================================
+   print_show.css
+========================================================= */
+
+/* 全体
+----------------------------------------------------*/
+.printView {
+  font-size: 105%;
+}
+
+/* table index
+----------------------------------------------------*/
+table.index {
+  border-right: none;
+  border-left: none;
+}
+.applicationSlip {
+  clear: both;
+}
+
+/* 請求書
+----------------------------------------------------*/
+table.sign td.sign_space {
+  height: 150px;
+  width: 170px;
+  border-top: 1px solid #CCCCCC;
+}
+.invoiceSlip {
+  width: 700px;
+  margin-bottom: 50px;
+  margin-top: 10px;
+}
+.slipHeader div.sign {
+  float: left;
+  border: 1px solid #000000;
+}
+.slipHeader td {
+  height: 20px;
+  font-size: 80%;
+  text-align: center;
+}
+.slipHeader .title {
+  padding-top: 90px;
+  font-size: 200%;
+  text-align: center;
+}
+.slipHeader .invoiced_at {
+  margin-right: 20px;
+  margin-top: 40px;
+  text-align: right;
+}
+.slipTo {
+  clear: both;
+  width: 300px;
+  margin-top: 30px;
+  border-bottom: 1px solid #000000;
+  text-align: center;
+}
+.slipFrom {
+  float: right;
+  width: 470px;
+  margin-top: 50px;
+}
+.slipFrom .claimantInfo {
+  margin-left: 15px;
+}
+.slipFrom .claimantInfo td {
+  padding: 3px 10px;
+}
+.slipFrom .claimantInfo span {
+  padding: 0px 10px;
+}
+.slipFrom .claimantInfo span.sign_point {
+  padding-left: 25px;
+}
+.slipFrom .claimantInfo .hat {
+  padding-left: 0px;
+}
+.invoiceSlip .slipContent {
+  clear: both;
+  padding-top: 60px;
+}
+.slipContent div.contentHeader {
+  float: right;
+  width: 470px;
+  margin-bottom: 30px;
+  border: 1px solid #000000;
+  text-align: center;
+}
+.slipContent table.contentHeader {
+  width: 100%;
+}
+.slipContent .contentHeader td {
+  padding: 3px 10px;
+  border-right: 1px solid #CCCCCC;
+}
+.slipContent .contentHeader td.money {
+  width: 60%;
+  border-right: none;
+  font-size: 120%;
+}
+.slipContent div.contentBody {
+  clear: both;
+  width: 100%;
+  border: 1px solid #000000;
+  text-align: center;
+}
+.slipContent table.contentBody {
+  text-align: center;
+  width: 100%;
+}
+.slipContent .contentBody td {
+  padding: 3px 10px;
+}
+.contentBody .content .title {
+  float: left;
+  width: 125px;
+  text-align: left;
+}
+.contentBody .content td {
+  border-top: 1px solid #CCCCCC;
+}
+.contentBody .content .body td {
+  border: none;
+}
+.contentBody .content .kbnTitle {
+  width: 20%;
+  border-right: 1px solid #CCCCCC;
+}
+.contentBody .content .kbnBody {
+  padding-left: 25px;
+  text-align: left;
+}
+#contentBody .contentBody .content table.body {
+  float: left;
+  clear: none;
+  text-align: left;
+}
+.invoiceSlip .slipContent .contentDetail {
+  width: 100%;
+  margin-top: 30px;
+  border: 1px solid #000000;
+}
+.slipContent .contentDetail div {
+  padding: 3px 10px;
+}
+.slipContent .contentDetail .depositType img {
+  vertical-align: -9px;
+}
+.slipContent .contentDetail div.title {
+  padding: 3px 5px;
+}
+.slipContent .contentDetail div.accountNum .title {
+  float: left;
+  margin-right: 20px;
+  padding: 3px 0px;
+}
+.printView .contentDetail .accountNum .num {
+  float: left;
+  clear: none;
+}
+#contentBody .piece .pieceBody table.num {
+  clear: none;
+}
+.accountNum .num td {
+  height: 30px;
+  width: 20px;
+  border: 1px solid #CCCCCC;
+  text-align: right;
+  vertical-align: bottom;
+}
+.contentDetail .accountNum .comment {
+  padding-top: 15px;
+}
+.slipContent .contentDetail .accountHolder div {
+  padding-left: 0;
+}
+.slipContent .contentDetail .accountHolder div.body {
+  margin-left: 50px;
+}
+
+/* 申込書
+----------------------------------------------------*/
+table.index .noneBorder td {
+  border: none
+}
+table.index td {
+  border: solid 1px #999;
+  text-align: center;
+}
+.applicationSlip table td {
+  text-align: center;
+}
+.applicationSlip .headerInfo table td {
+  width: 150px;
+}
+table.index td.leftSide, 
+.applicationSlip table td.leftSide {
+  float: none;
+  text-align: left;
+}
+table.index td.rightSide {
+  float: none;
+  text-align: right;
+}
+td.rightSide {
+  text-align: right;
+}
+

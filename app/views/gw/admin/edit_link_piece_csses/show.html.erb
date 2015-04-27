@@ -1,0 +1,47 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render '/gw/admin/edit_link_pieces/menu' %>
+
+<div class="editingBox">
+  <span class="btEdit">
+    <%= link_to '編集', {action: :edit} %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to_destroy @item.id %>
+  </span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= Gw::EditLinkPieceCss.state_show(@item.state) %></td>
+  </tr>
+  <tr>
+    <th>css表示名</th>
+    <td><%= @item.css_name %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.css_sort_no %></td>
+  </tr>
+  <tr>
+    <th>cssクラス</th>
+    <td><%= @item.css_class %></td>
+  </tr>
+  <tr>
+    <th>css種別</th>
+    <td><%= Gw::EditLinkPieceCss.css_type_show(@item.css_type) %></td>
+  </tr>
+  <tr>
+    <th>作成者</th>
+    <td><%= @item.created_user %></td>
+  </tr>
+  <tr>
+    <th>作成者所属</th>
+    <td><%= @item.created_group %></td>
+  </tr>
+</table>
+
+</div>
+</div>

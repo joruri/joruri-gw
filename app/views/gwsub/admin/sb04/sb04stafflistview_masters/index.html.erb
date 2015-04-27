@@ -1,0 +1,67 @@
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <div class="pieceBanner">
+    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render 'menu' %>
+    <%= render 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
+  </div>
+  <div class="pieceBody">
+  <div class="pieceBodyBody">
+    <%= render 'search' -%>
+    <%#= @content_for_search -%>
+    <% if @items.blank? -%>
+      <%= show_notice -%>
+    <% else -%>
+    <table class="index">
+      <tr>
+      <th></th>
+      <th><%= sort_link '年度', @sort_keys, "#{@public_uri}/", "fyear_id_sb04", @qs %></th>
+      <th><%= sort_link '主管課担当者 所属課', @sort_keys, "#{@public_uri}/", "management_gcode", @qs %></th>
+      <th>主管課担当者</th>
+      <th><%= sort_link '所属', @sort_keys, "#{@public_uri}/", "division_gcode", @qs %></th>
+      <th>作成日</th>
+      <th>更新日</th>
+      </tr>
+      <% @items.each do | item| %>
+      <%
+        fyear_markjp = ""
+        fyear = Gwsub::Sb04EditableDate.where(:fyear_id=>item.fyear_id_sb04).first
+        fyear_markjp = fyear.fyear_markjp if !fyear.blank?
+
+        management_uid_sb04_name = ""
+        staff = Gwsub::Sb04stafflist.where(:id=>item.management_uid_sb04).first
+        management_uid_sb04_name = "#{staff.name}" if !staff.blank?
+
+        management_gid_sb04_name = ""
+        section = Gwsub::Sb04section.where(:id=>item.management_gid_sb04).first
+        management_gid_sb04_name = "#{section.name}" if !section.blank?
+
+        division_gid_sb04_name = ""
+        section = Gwsub::Sb04section.where(:id=>item.division_gid_sb04).first
+        division_gid_sb04_name = "#{section.name}" if !section.blank?
+      %>
+      <tr class="<%= cycle '', ' cycle' %>">
+        <td><%= link_to('詳細', "#{@public_uri}/#{item.id}#{@params_set}") %></td>
+        <td><%= fyear_markjp -%></td>
+        <td><%= management_gid_sb04_name -%></td>
+        <td><%= management_uid_sb04_name -%></td>
+        <td><%= division_gid_sb04_name -%></td>
+        <td><%= item.created_at.strftime('%Y-%m-%d %H:%M') -%></td>
+        <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      </tr>
+      <% end %>
+    </table>
+    <% end -%>
+  </div>
+    <%=  nz(paginate(@items)) %>
+  </div>
+</div>
+
+<script language = "JavaScript" type="text/javascript">
+//<![CDATA[
+
+var search_submit = function () {
+  document.forms['search'].submit();
+}
+//]]>
+</script>

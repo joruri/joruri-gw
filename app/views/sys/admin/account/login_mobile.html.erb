@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=<%= request.mobile.default_charset %>" />
+<meta http-equiv="content-style-type" content="text/css" />
+<title><%= Core.title %></title>
+<%= stylesheet_link_tag '/layout/login/mobile.css', :media => 'all' %>
+</head>
+<body>
+
+<div id="container">
+<div class="headerTop">
+<img src="/_common/themes/gw/files/mobile/header-logo.gif" border="0" />
+</div>
+  <%=div_notice%>
+  <%= form_tag do %>
+  <%= hidden_field_tag :uri, h(@uri.gsub(/(\?|&)mobile=top/, "").concat(($1?$1:"?")+"mobile=top")) %>
+  <div class="fields">
+    <font class="head">ユーザーID</font><br/>
+    <%= text_field_tag 'account', '', :class => "inputItem", :istyle => "3", :format => "*m", :mode => "alphabet" %><br/>
+    <font class="head">パスワード</font><br/>
+    <%= password_field_tag 'password', '', :class => "inputItem", :istyle => "3", :format => "*m", :mode => "alphabet", :autocomplete => "off" %><br/>
+    <font class="head">モバイルパスワード</font><br/>
+    <%= password_field_tag 'mobile_password', '', :class => "inputItem", :istyle => "3", :format => "*m", :mode => "alphabet", :autocomplete => "off" %><br/>
+  </div>
+  <div class="submitters">
+    <input class="login" type="submit" name="commit" value="ログイン" />
+  </div>
+  <% end %>
+<div class="footer">
+<img src="/_common/themes/gw/files/mobile/footer.gif" border="0" />
+</div>
+
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<%
+notes01 = []#単位数
+notes01 = JSON.parse(@title.notes_field01) unless @title.notes_field01.blank?
+%>
+<table class="show">
+  <tr>
+    <th>研修名</th></tr><tr>
+    <td><%= f.text_field :title, :size => "80" %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>研修開始日<%= required('') %></th>
+    <td><%= f.text_field :inpfld_001, class: 'datepicker', style: 'width:10em;' %></td>
+  </tr>
+  <tr>
+    <th>単位数</th>
+    <td><%= f.select :inpfld_004, notes01, :include_blank => '－' %></td>
+  </tr>
+  <tr>
+    <th>申込締切日</th>
+    <td><%= f.text_field :inpfld_002, class: 'datepicker', style: 'width:10em;' %></td>
+  </tr>
+</table>
+<%= render '/gwbbs/admin/docs/form_wiki_select', f: f %>
+
+<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
+  <tr>
+    <th>本文</th></tr><tr>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :rows => 20, :cols => 40, :style => 'height:500px; width:100%' %></td>
+  </tr>
+</table>
+<%= render '/gwbbs/admin/docs/form_wiki', f: f, title: "本文" %>
+
+<% if @title.use_old_upload_system? %>
+  <%= gwboard_image_form(f, @item, 'item_body') %>
+  <%= gwboard_attach_form(f, @item) %>
+<% else %>
+  <%= gwboard_attachments_form(f, @item) %>
+<% end %>
+
+<table class="show">
+  <tr>
+    <th>摘要</th></tr><tr>
+    <td ><%= f.text_area :inpfld_003, :cols => "80", :rows => "5" %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('input.datepicker').datepicker();
+  });
+})(jQuery);
+</script>

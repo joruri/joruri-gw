@@ -1,0 +1,22 @@
+<h4 class="docFolderTitle">フォルダ一覧</h4>
+<table class="docFolder">
+<tr>
+  <th style="text-align: left;">フォルダ名</th>
+  <th style="width: 120px; text-align: center;">更新日時</th>
+</tr>
+<% for folder in @folders %>
+<tr>
+  <%
+  case params[:state]
+  when 'DRAFT'
+    folder_path = "/doclibrary/folders/#{folder.id}/edit?title_id=#{@title.id}&state=CATEGORY&cat=#{folder.id}"
+  else
+    folder_path = folder_doclib_category_qstring(folder)
+  end
+  %>
+  <td><%= link_to folder.name, folder_path %></td>
+  <td><%= (folder.docs_last_updated_at || folder.updated_at).strftime('%Y-%m-%d %H:%M') %></td>
+</tr>
+<% end %>
+</table>
+<%= paginate @folders %>

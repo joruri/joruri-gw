@@ -1,0 +1,78 @@
+<%
+label=["","","","","","","","","",""]
+enable  =["","","","","","","","","",""]
+main_title = ["",""]
+answers   = ["","","","","","","","","",""]
+remarks   = ["","","","","","","","","",""]
+unless @title.form_configs.blank?
+  configs = JSON.parse(@title.form_configs)
+  main_title = configs[0]
+  enable = configs[1]
+  label = configs[2]
+end
+unless @item.body.blank?
+  answer_sets = JSON.parse(@item.body)
+  answers = answer_sets[0]
+  remarks = answer_sets[1]
+end
+%>
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+<%= render 'gwmonitor/admin/menus/title_info', skip_action_menu: true %>
+
+<div class="pieceBody">
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', @item.result_edit_path %></span>
+</div>
+
+<%= render 'board_config' %>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%=raw @item.status_name_show %></td>
+  </tr>
+  <tr>
+    <th>受信所属</th>
+    <td><%= "#{@item.target_user_name}#{@item.target_user_code}" %></td>
+  </tr>
+  <tr>
+    <th>回答者</th>
+    <td><%= @item.editor %></td>
+  </tr>
+  <tr>
+    <th>最終更新日時</th>
+    <td><%= @item.display_editdate %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>回答欄</th>
+    <th><%= main_title[0] %></th>
+    <th><%= main_title[1] %></th>
+  </tr>
+  <% 10.times do |i| %>
+    <% next if enable[i] != "enabled" %>
+    <tr>
+      <th><%= label[i] %></th>
+      <td><%= answers[i] %></td>
+      <td><%=hbr remarks[i] %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render '/gwmonitor/admin/menus/results/library_index', files: @item.files %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to '一覧へ戻る', "#{@title.monitor_path}#{@item.already_state}" %>
+</div>
+</div>
+
+</div>
+</div>

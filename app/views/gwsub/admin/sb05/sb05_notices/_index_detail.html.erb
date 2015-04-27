@@ -1,0 +1,26 @@
+<br />
+<table class="index">
+<tr>
+<th></th>
+<th>媒体コード<br />記入例</th>
+<th>媒体名<br />注意事項</th>
+<th>分類コード<br />テンプレート</th>
+<th>分類名<br />管理者備考</th>
+</tr>
+<% @items.each do |item| %>
+<tr>
+<td rowspan="2"><%= link_to_show item.id %></td>
+<td><%= item.media_code %></td>
+<td><%= item.media_name %></td>
+<td><%= item.categories_code %></td>
+<td><%= item.categories_name %></td>
+</tr>
+<tr>
+<td><%=hbr item.sample %></td>
+<td><%=hbr item.remarks %></td>Ｓ
+<td><%=hbr item.form_templates %></td>
+<td><%=hbr item.admin_remarks %></td>
+</tr>
+<% end %>
+</table>
+<br />

@@ -1,0 +1,14 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<%= form_for :item, :url => {:action => :update}, :html => {:method => :put, :name => 'form'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for_update f %>
+<% end %>
+
+</div>
+</div>

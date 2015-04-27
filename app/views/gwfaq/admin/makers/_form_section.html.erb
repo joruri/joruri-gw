@@ -1,0 +1,50 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>一覧表示行数</th>
+    <td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>分類使用区分</th>
+    <td><%= f.radio_buttons :category, @item.use_states_list %></td>
+  </tr>
+  <tr>
+    <th>分類呼称設定</th>
+    <td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>利用説明<br />(HTML形式可)</th>
+    <td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption'%></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>件数表示形式</th>
+    <td><%= f.select :left_index_pattern, @item.left_index_pattern_name %></td>
+  </tr>
+  <tr>
+    <th>分類件数表示</th>
+    <td><%= f.select :categoey_view, @item.list_view_name %></td>
+  </tr>
+  <tr>
+    <th>所属件数表示</th>
+    <td><%= f.select :group_view, @item.list_view_name %></td>
+  </tr>
+  <tr>
+    <th>月別件数表示</th>
+    <td><%= f.select :monthly_view, @item.list_view_name %></td>
+  </tr>
+  <tr>
+    <th>月別件数行数<br />(0で全件表示)</th>
+    <td class="IMEoff"><%= f.text_field :monthly_view_line, :size=>3 %></td>
+  </tr>
+</table>
+
+<%= render '/gwboard/admin/adms/form' %>

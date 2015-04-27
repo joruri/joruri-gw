@@ -1,0 +1,12 @@
+<% if @open_state %>
+<div class="adLower">
+<% if @items.blank? %>
+  <%= nobanner_show(@add_limit) %>
+<% else %>
+  <% @items.each do |item| %>
+    <%= display_ad(item) %>
+  <% end %>
+  <%= nobanner_show(@add_limit - @items.size.to_i) %>
+<% end %>
+</div>
+<% end %>

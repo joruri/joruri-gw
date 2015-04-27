@@ -1,0 +1,9 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle">ToDo</h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%= link_to_unless_current '', :controller => "todos", :action => "new" %></span>
+</div>
+<div class="btsHeaderRight">
+<span class="btSet"><%= link_to '設定する', gw_todo_settings_path %></span>
+</div>
+</div>

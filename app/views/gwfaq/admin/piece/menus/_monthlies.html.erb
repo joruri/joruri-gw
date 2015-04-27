@@ -1,0 +1,11 @@
+<h3 class="iconSideMonth">月別
+  <span class="<%= 'current' if params[:state] == 'DATE'%>">
+    <%= link_to '月別', "#{gwfaq_docs_path({:title_id=>@title.id})}&state=DATE" %>
+  </span>
+</h3>
+<ul>
+<% @monthlies.each do |monthly| %>
+  <% monthly_name = "#{monthly.month}(#{monthly.cnt})" %>
+  <li>・<%= link_to monthly_name, gwfaq_docs_path(title_id: @title.id) + "&state=DATE&yyyy=#{monthly.yy}&mm=#{monthly.mm}" %></li>
+<% end %>
+</ul>

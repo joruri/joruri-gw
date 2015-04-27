@@ -1,0 +1,85 @@
+<%
+fyear_order = "published_at DESC"
+if @u_role
+  fyears = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+elsif @role_sb04_dev
+  fyears = Gwsub::Sb04stafflistviewMaster.sb04_dev_fyear_select
+  if fyears.rassoc(@fyed_id.to_i).blank?
+    @fyed_id = '0'
+  end
+end
+if !params[:item].blank?
+  @fyed_id = nz(params[:item][:fyear_id], @fyed_id)
+  @grped_id = nz(params[:item][:section_id], @grped_id)
+end
+
+if @u_role
+  sections = Gwsub::Sb04section.sb04_group_select(@fyed_id , 'notall' )
+  controller_name = 'section_fields'
+elsif @role_sb04_dev
+  sections = Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(@fyed_id)
+  controller_name = 'sb04_dev_section_fields'
+end
+
+%>
+<%= hidden_field_tag 'pre_fyear'  , @fyed_id %>
+<%= hidden_field_tag 'fyed_id'    , @fyed_id %>
+<%= hidden_field_tag 'grped_id'   , @grped_id %>
+<%= hidden_field_tag 'limit'      , @limits %>
+<%= hidden_field_tag 's_keyword'  , @s_keyword %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th><%= required %>年度</th>
+    <td><%= f.select :fyear_id, options_for_select(fyears, @fyed_id.to_i), {}, {onchange: "get_fyear();"} %></td>
+  </tr>
+  <tr>
+    <th><%= required %>所属</th>
+    <td><%= f.select :section_id, options_for_select(sections, @grped_id.to_i)  %></td>
+  </tr>
+  <tr>
+    <th><%= required %>担当コード</th>
+    <td><%= f.text_field :code, :class => 'num' %></td>
+  </tr>
+  <tr>
+    <th>担当名称</th>
+    <td><%= f.text_field :name, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th>担当電話</th>
+    <td><%= f.text_field :tel, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th>担当住所・電話</th>
+    <td><%= f.text_area :address, :rows => 5, :cols => 50 %></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%= f.text_field :remarks ,:class=>'name'  %></td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>
+
+<script type="text/javascript">
+<!--
+  var end_cnt = -1;
+  var ed_str = '';
+  function get_fyear() {
+    fyear_id = $("item_fyear_id").value
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("/gwsub/sb04/04/sb04assignedjobs/<%= controller_name -%>?fyear_id=" + fyear_id, {method:'get', onComplete: function(x){
+      $('item_section_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      ed_str = ed_str + 'section:';
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+-->
+</script>

@@ -1,0 +1,12 @@
+<div class="editingBox">
+<%case params[:action]%>
+<%when "index"%>
+    <span class="btNew"><%= link_to '新規作成', new_system_group_change_date_path %></span>
+<%when "show"%>
+
+    <span class="btEdit"><%= link_to '編集', edit_system_group_change_date_path(@item) %></span>
+    <span class="btDestroy"><%=link_to '削除', system_group_change_date_path(@item), :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+<%when "csv_up"%>
+    <span class="btTitle"><%= link_to '戻る', system_user_path %></span>
+<%end%>
+</div>

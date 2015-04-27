@@ -1,0 +1,16 @@
+<table>
+  <tr>
+    <% if @is_ev_management_edit_auth %>
+    <td><input id="approval_submit" name="approval_submit" type="submit" value="　選択承認　" /></td>
+    <td><input id="approval_cancel_submit" name="approval_cancel_submit" type="submit" value="　選択承認取消　" /></td>
+    <% end %>
+    <% if @is_ev_admin %>
+    <td><input id="open_submit" name="open_submit" type="submit" value="　選択公開　" /></td>
+    <td><input id="open_cancel_submit" name="open_cancel_submit" type="submit" value="　選択公開取消　" /></td>
+    <% end %>
+    <td>
+      <%= link_to '全選択', "javascript:List_Form.checkAll('listForm', 'ids', 1);" %><br />
+      <%= link_to '全解除', "javascript:List_Form.checkAll('listForm', 'ids', 0);" %>
+    </td>
+  </tr>
+</table>

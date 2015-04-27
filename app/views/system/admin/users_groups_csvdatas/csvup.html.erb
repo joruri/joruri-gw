@@ -1,0 +1,36 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'system/admin/users/header_menu' %>
+<%= render 'menu' %>
+
+<h3>CSV登録</h3>
+<div class="user_explanation user_attention">
+  CSVデータを登録します。<br />
+  この時点では、実際にデータは登録されません。CSV登録反映を実行すると反映されます。<br />
+  なお、この操作を実行すると、現在のCSV仮データは全て削除されますので、ご注意ください。<br />
+</div>
+<%= form_for :item, url: {action: :csvup}, html: {method: :post, multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th></th>
+      <td>登録対象CSVファイルと文字コードを選択して実行してください</td>
+    </tr>
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+    <tr>
+      <th>ファイル</th>
+      <td><%= f.file_field :file, :size => 80, :accept => 'text/csv' %></td>
+    </tr>
+  </table>
+  <div class="submitters">
+    <%= f.submit 'CSV登録' %>
+  </div>
+<% end %>
+
+</div>
+</div>

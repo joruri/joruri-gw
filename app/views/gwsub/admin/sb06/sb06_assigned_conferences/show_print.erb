@@ -1,0 +1,10 @@
+<%
+form_no = @item.c_kind.conf_form_no
+render_show_str = "/gwsub/admin/sb06/sb06_assigned_conferences/form#{form_no}/show#{form_no}"
+%>
+
+<%= render render_show_str %>
+<% if @show_mode == "recognize"%>
+  <% if @item.search_recognized_after(@rec_items) == true and search_recognize_user(@rec_items) == true -%>
+  <% end -%>
+<% end -%>

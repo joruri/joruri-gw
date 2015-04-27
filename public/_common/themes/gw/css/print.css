@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+/* =========================================================
+   print.css
+========================================================= */
+html body {
+  height: 1%;
+}
+*html body {
+  zoom: 0.73;
+}
+*:first-child+html body{
+  zoom: 0.75;
+}
+#header, #banner, #navi, #navi2 ,#contentHeader, .pieceHeader, .pieceBanner, #contentBody .pieceBody .sideMenu, .right .tabBox, .btReturn,
+.navi, .btBox, .editingBox, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
+#contentBody .titleLine, .pieceBodyHeader .tabBox, form table.batchProcess {
+  display: none;
+}
+*html #contentContainer #contentBody .pieceBody .sideMenu,
+*:first-child+html #contentContainer #contentBody .sideMenu {
+  display: none;
+}
+#wrapper #content, #content,
+#content #contentBody .piece .pieceBody,
+#main #content #contentBody .bbs .pieceBody,
+#content #contentBody .bbsDocList .pieceBody, 
+#content .DLDocList .pieceBody,
+#contentContainer #contentBody .sideMenu,
+#content #contentBody .gwqaDocList .pieceBody,
+#content #contentBody .gwfaqDocList .pieceBody,
+#content #contentBody .gwqaDocList .pieceBody,
+#content #contentBody .doclibraryDocList .pieceBody {
+  border: none;
+}
+#content #contentBody .pieceBody {
+  overflow: visible;
+}
+#content #contentBody .piece,
+#content #contentBody .memo,
+#content #contentBody .todo,
+#content #contentBody .notification {
+  background-image: none;
+}
+*html .outer .docsInnerBox .bbsCreatorInf {
+  float: none;
+  width: 100%;
+}
+*:first-child+html .outer .docsInnerBox .bbsCreatorInf {
+  float: none;
+  width: 100%;
+}
+.pieceBody .outer {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.outer .bbsCreator, .outer .bbsImportance,
+.outer .bbsCreatorInf, .outer .docTitle {
+  font-size: 9pt;
+}
+.docsInnerBox .bbsUserformBody  {
+  font-size: 9pt;
+}
+*html #content #contentBody .docsInnerBox .bbsCreatorInf table {
+  float: right;
+  width: 50%;
+}
+*:first-child+html #content #contentBody .docsInnerBox .bbsCreatorInf table {
+  float: right;
+  width: 50%;
+}
+#contentBody .DLDocList .inner .docCreator th,
+#contentBody .DLDocList .inner .docCreator td, 
+#contentBody .DLDocList .inner .docImportance th,
+#contentBody .DLDocList .inner .docImportance td {
+  font-size: 75%;
+}
+.pageBreak {
+  page-break-before: always;
+}
+
+/*--FAQ QA--*/
+#content .gwfaqDocList .outer,
+#content .gwqaDocList .outer {
+  margin-left: 0;
+  width: 85%;
+}
+html:not([lang*=""]) #content .gwfaqDocList .outer,
+html:not([lang*=""]) #content .gwqaDocList .outer {
+  margin-left: 0;
+  width: 85%;
+}
+#content .gwfaqDocList .docsInnerBox,
+#content .gwqaDocList .docsInnerBox {
+  width: 100%;
+}
+.answerArea td.answerText {
+  vertical-align: top;
+}
+
+/*syoko*/
+#contentBody .selectFormBox {
+  display: none;
+}
+*html #contentBody .doclibraryDocList .inner {
+  zoom: 80%;
+}
+*html #contentBody .doclibraryDocList .inner table.docCreator {
+  font-size: 80%;
+}
+
+/*denshiTosyo*/
+#contentBody .DLDocList .inner {
+  font-size: 120%;
+}
+.right .inner .dlDocform,
+.inner table.docformBody {
+  overflow: visible;
+}
+*html .inner {
+  zoom: 130%;
+  font-size: 180%;
+}
+*html .DLDocList .inner {
+  width: 100%;
+}
+*:first-child+html .inner {
+  zoom: 110%;
+  font-size: 120%;
+}
+*:first-child+html .DLDocList {
+  width: 135%;
+  zoom: 150%;
+}
+div.search, .pagination, form.changelimit {
+  display: none;
+}
+#page-digitallibrary-docs .DLDocList,
+#page-digitallibrary-docs-index .DLDocList {
+  zoom: 100%;
+  width: 100%;
+}
+*html #page-digitallibrary-docs .inner,
+*html #page-digitallibrary-docs-index .inner  {
+  zoom: 80%;
+  width: 90%;
+}
+*:first-child+html #page-digitallibrary-docs .DLDocList,
+*:first-child+html #page-digitallibrary-docs-index .DLDocList {
+  zoom: 80%;
+  width: 100%;
+}
+
+/* gwbbs IE7 print error */
+*:first-child+html #contentBody .bbsDocList .sideMenu {
+  display: none;
+}
+
+/*--bbs--*/
+#contentBody .right,
+#contentBody .docsInnerBox,
+#contentBody .docsInnerBox .bbsUserform {
+  overflow-x: visible;
+  overflow-y: visible;
+}
+#contentBody .docsInnerBox .bbsUserform {
+  clear: both;
+}
+#contentBody .docsInnerBox .bbsUserform table.bbsUserformBody td {
+  vertical-align: top;
+}
+
+/* koujyotuuchi
+----------------------------------------------------------------*/
+.deductions .date {
+  font-size: 150%;
+}
+.deductions .name {
+  margin-top: 30px;
+  margin-bottom: 100px;
+  font-size: 250%;
+}
+*:first-child+html .deductions .date {
+  font-size: 170%;
+}
+*:first-child+html .deductions .name {
+  font-size: 350%;
+  margin-bottom: 150px;
+}
+

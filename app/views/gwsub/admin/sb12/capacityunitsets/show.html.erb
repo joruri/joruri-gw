@@ -1,0 +1,28 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= render 'display_name' %>
+
+<div class="showMenu">
+  <%= link_to '編集', {action: :edit} %>
+  <%= link_to '削除', {action: :destroy}, confirm: '削除してよろしいですか？', method: :delete %>
+</div>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :code %></th>
+    <td><%= @item.code %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+</table>
+
+</div>
+</div>

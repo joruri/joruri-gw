@@ -1,0 +1,39 @@
+<%
+# 所属未設定の表示
+  if @item.section_id.to_i==0
+    if @item.section_code.blank?
+      section_code = %Q(<div class="sb04_staff_assign_warning">未割当</div>)
+    else
+      section_code = %Q(<div class="sb04_staff_assign_warning">#{@item.section_code}</div>)
+    end
+  else
+    section_code = %Q(<div>#{@item.section_code}</div>)
+  end
+%>
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04stafflists/display_name' %>
+</div>
+<div class="pieceBody">
+  <table class="show">
+    <tbody>
+      <tr><th>年度</th><td><%= @item.fyear_markjp -%></td></tr>
+      <tr><th>所属コード</th><td><%= raw(section_code) -%></td></tr>
+      <tr><th>所属名</th><td><%= @item.section_name -%></td></tr>
+      <tr><th>職員番号</th><td><%= @item.staff_no -%></td></tr>
+      <tr><th>氏名（変換前）</th><td><%= @item.name_print -%></td></tr>
+      <tr><th>氏名（変換後）</th><td><%= @item.name -%></td></tr>
+      <tr><th>フリガナ</th><td><%= @item.kana -%></td></tr>
+      <tr><th>兼務</th><td><%= Gwsub::Sb04stafflist.multi_section_flg_show(@item.multi_section_flg) %></td></tr>
+      <tr><th>職員録表示</th><td><%= Gwsub::Sb04stafflist.stafflists_personal_state_show(@item.personal_state) -%></td></tr>
+      <tr><th>事務分掌表示</th><td><%= Gwsub::Sb04stafflist.stafflists_display_state_show(@item.display_state) -%></td></tr>
+    </tbody>
+  </table>
+  <div class="btReturn">
+  <%= link_to '一覧に戻る',"#{@csv_base_url}/index_csv?#{@qs}" %>
+  </div>
+</div>
+</div>

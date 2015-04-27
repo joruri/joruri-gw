@@ -1,0 +1,6 @@
+<table class="show">
+  <tr><th>事務の名称</th></tr>
+  <tr><td><%= @item.title %></td></tr>
+  <tr><th>保有課名</th></tr>
+  <tr><td><%= convert_for_mobile_body(@item.body, params[:_jgw_session]) %></td></tr>
+</table>

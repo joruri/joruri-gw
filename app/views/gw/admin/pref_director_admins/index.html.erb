@@ -1,0 +1,20 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+<%= render 'display_config' %>
+<%= render 'tree_str' %>
+
+<% if @items.length == 0 -%>
+  <%= show_notice -%>
+<% else -%>
+  <% if params[:g_cat].blank? %>
+    <%= render 'index_group' %>
+  <% else %>
+    <%= render 'index' %>
+  <% end %>
+  <%= paginate @items %>
+<% end -%>
+
+</div>
+</div>

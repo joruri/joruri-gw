@@ -1,0 +1,36 @@
+<table class="show">
+  <tr>
+    <th>連絡先電話番号（内線）</th>
+    <td><%= item.inquire_to %></td>
+  </tr>
+  <tr>
+    <th>利用責任者</th>
+    <td><%= item.owner_uname %></td>
+  </tr>
+  <tr>
+    <th>利用責任者所属</th>
+    <td><%= item.owner_gname %></td>
+  </tr>
+  <tr>
+    <th>行き先（最遠地）</th>
+    <td><%= safe{schedule_to_go(item.to_go)} %></td>
+  </tr>
+  <tr>
+    <th>予約人数(庁内)</th>
+    <td><%= item.participant_nums_inner %></td>
+  </tr>
+  <tr>
+    <th>予約人数(庁外)</th>
+    <td><%= item.participant_nums_outer %></td>
+  </tr>
+  <tr>
+    <th>通知文書</th>
+    <td><%= "登録者了解済み" if item.check_30_over.to_i == 1 %></td>
+  </tr>
+  <% if @is_pm_admin %>
+  <tr>
+    <th>管理者メモ</th>
+    <td><%= item.admin_memo || "" %></td>
+  </tr>
+  <% end %>
+</table>

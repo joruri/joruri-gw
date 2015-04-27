@@ -1,0 +1,18 @@
+<table class="show">
+  <tr>
+    <th>カテゴリ名<%= required %></th>
+    <td><%= f.text_field :name, :size => 90 %></td>
+  </tr>
+  <tr>
+    <th>並び順<%= required %></th>
+    <td><%= f.text_field :sort_no, :size => 90 %></td>
+  </tr>
+  <tr>
+    <th>参加可能ユーザを制限する<%= required %></th>
+    <td><%= f.radio_buttons :restricted, @item.restricted_select %></td>
+  </tr>
+  <tr>
+    <th>「参加者」代替テキスト</th>
+    <td><%= f.text_field :user_str, :size => 90 %></td>
+  </tr>
+</table>

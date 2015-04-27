@@ -1,0 +1,19 @@
+ja:
+  activerecord:
+    attributes:
+      gwmonitor/custom_group:
+        state: ""
+        name: "名称"
+        reader_groups_json: "配信先設定"
+        sort_no: 並び順
+      gwmonitor/control:
+        state: ""
+        able_date: 開始日
+        expiry_date: 期限日
+        title: ""
+      gwmonitor/file:
+        file: ファイル
+        filename: ファイル名
+      gwmonitor/base_file:
+        file: ファイル
+        filename: ファイル名

@@ -1,0 +1,71 @@
+<%
+@item.selected_receiver_uids ||= @item.memo_users.map(&:uid)
+selected_receiver_options = Gw::Memo.receiver_options(@item.selected_receiver_uids, with_image_class: @mobile_image)
+receiver_options = Gw::Memo.receiver_options(Core.user_group.users.pluck(:id), with_image_class: @mobile_image)
+%>
+<table class="show">
+  <tr>
+    <th>送り先<%= required('※<br />10人まで') %></th>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="userChange">
+            <%= select_tag :receivers_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
+            <%= select_tag :receivers, options_for_select(receiver_options), :multiple => true, :size => 10, :style => 'width:200px;' %>
+          </td>
+          <td>
+            <%= button_tag '追加 →', :type => :button, :id => 'mv1' %><br /><br />
+            <%= button_tag '← 削除', :type => :button, :id => 'mv2' %>
+          </td>
+          <td>
+            <br />
+            <%= select_tag :selected_receivers, options_for_select(selected_receiver_options), :multiple => true, :size => 10, :style => 'width:200px;' %>
+            <%= f.select :selected_receiver_uids, options_for_select(selected_receiver_options, selected_receiver_options.map{|o| o[1]}), {}, {:multiple => true, :style => 'display: none;'} %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#receivers_group_id').on('change', function() {
+      $.get('<%= url_for(action: :getajax) %>', {group_id: $(this).val()}, function(data) {
+        $('#receivers').html(data);
+      });
+    });
+    $('#receivers').on('dblclick', function() {
+      moveSelectedOptions('#receivers', '#selected_receivers');
+    });
+    $('#mv1').on('click', function() {
+      moveSelectedOptions('#receivers', '#selected_receivers');
+    });
+    $('#selected_receivers').on('dblclick', function() {
+      moveSelectedOptions('#selected_receivers', '#receivers');
+    });
+    $('#mv2').on('click', function() {
+      moveSelectedOptions('#selected_receivers', '#receivers');
+    });
+
+    function moveSelectedOptions(from, to) {
+      var from = $(from);
+      var to = $(to);
+      from.find('option:selected').each(function() {
+        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
+          to.append($(this).removeAttr('selected'));
+        }
+      });
+      var clone_options = $('#selected_receivers').find('option').clone().attr('selected', 'selected');
+      $('#item_selected_receiver_uids').empty().append(clone_options);
+    }
+
+    $('form').on('submit', function() {
+      var count = $('#item_selected_receiver_uids').find('option').length;
+      if (count == 0) { alert('送り先を選択してください。'); return false; }
+      if (count > 10) { alert('送り先は10人以下にしてください。'); return false; }
+    });
+  });
+})(jQuery);
+</script>

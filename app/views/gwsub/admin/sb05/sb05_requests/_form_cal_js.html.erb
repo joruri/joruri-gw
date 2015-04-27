@@ -1,0 +1,31 @@
+<%
+s_select =  "desired_at"
+d_cond = "media_code='#{@media.media_code}' and edit_limit_at > '#{Gw.date_str(Time.new) + ' 00:00:00' }'"
+desired_dates = get_desired_dates(d_cond,s_select)
+@desired_dates = desired_dates.map{|d| [d.desired_at.try(:strftime, '%Y/%-m/%-d')]}.compact
+%>
+
+<style>
+.ui-datepicker .highlight-green a {
+  background: none;
+  background-color: lightgreen;
+}
+</style>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('input.datepicker_with_desired_date').datepicker({
+      beforeShowDay: function(date) {
+        var dates = <%=raw @desired_dates.flatten.to_json %>;
+        var d = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+        if ($.inArray(d, dates) >= 0) {
+          return [true, "highlight-green", "掲載日"];
+        } else {
+          return [true, ""];
+        }
+      }
+    });
+  });
+})(jQuery);
+</script>

@@ -1,0 +1,9 @@
+<hr class="borderDash" />
+<% @items.each do |item| %>
+<p class="leftPad1">
+分類：<%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %><br />
+名称：<%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %><br />
+最終更新日：<%= link_to item.latest_updated_at.strftime('%Y-%m-%d'), "#{item.show_path}#{gwbbs_params_set}" %><br />
+</p>
+<br />
+<% end %>

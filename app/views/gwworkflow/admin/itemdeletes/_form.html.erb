@@ -1,0 +1,6 @@
+<table class="show">
+<tr>
+<th>削除対象</th>
+<td><%= f.select(:limit_date, @item.limit_line, :include_blank => false , :class => 'select limit')%>  経過した期限切れの稟議書を削除</td>
+</tr>
+</table>

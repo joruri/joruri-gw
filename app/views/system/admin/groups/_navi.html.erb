@@ -1,0 +1,17 @@
+<%
+if params[:controller] == "system/admin/groups"
+  list_link = list_system_groups_path(0)
+else
+  list_link = list_system_users_groups_path(0)
+end
+%>
+
+<div class="navi">
+<span class="Menu" style="margin-right:3em;">
+  <%= link_to "全一覧", list_link -%>
+</span>
+<% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+<%= link_to "(#{c.code})#{c.name}", url_for(:action => :index, :parent => c) -%>
+<%= '>' if tree.size != k + 1 -%>
+<% end %>
+</div>

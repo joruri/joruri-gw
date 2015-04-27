@@ -1,0 +1,6 @@
+<%= render 'header' %>
+<%= render 'explain' if @title.form_name  == 'form001' %>
+<%= render @title.gwbbs_form_name + 'index' %>
+<%= render 'limit_change' unless @title.form_name  == 'form001' %>
+<%= paginate @items %>
+<%= render 'index_attach_list' %>

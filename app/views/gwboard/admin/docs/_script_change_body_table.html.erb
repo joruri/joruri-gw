@@ -1,0 +1,51 @@
+<%
+# 通常入力テーブルとwiki入力テーブルとの切り替え。wiki入力機能を最初に作成した電子図書は、このファイルを使用せず直接formに書かれているので修正時は注意。
+%>
+<script type="text/javascript">
+//<![CDATA[
+  var selected_log = <%= @item.wiki.to_i -%>;
+  function change_body_table() {
+    idx = radio_selected('item[wiki]');
+    if (selected_log == idx-1) {
+      return false; // 処理を中止
+    }
+    msg = "記事入力方式を切り替えることにより、現在の記事の内容は失われます。よろしいですか？";
+    if(window.confirm(msg)){ // 確認ダイアログを表示
+//    return true; // 「OK」時は送信を実行
+      selected_log = idx-1;
+    } else { // 「キャンセル」時の処理
+      if (selected_log == 1) {
+        $('item_wiki_1').checked = true;
+      } else {
+        $('item_wiki_0').checked = true;
+      }
+      return false; // 処理を中止
+    }
+
+    //alert(idx);
+  <% if @title.use_old_upload_system? -%>
+    files_uri = "<%= gwboard_images_path(@item.id) + "?system=#{@item.system_name}&form_id=item_body&title_id=#{@item.title_id}" -%>"
+  <% else -%>
+    files_uri = "<%= gwboard_attachments_path(@item.id) + "?system=#{@item.system_name}&title_id=#{@item.title_id}" -%>"
+  <% end -%>
+    if (idx == 2) {
+      Element.hide($('nomal_body_table'));
+      Element.show($('wiki_body_table'));
+      files_uri = files_uri + "&wiki=1"
+      Element.show($('wiki_help'));
+    } else {
+      Element.show($('nomal_body_table'));
+      Element.hide($('wiki_body_table'));
+      Element.hide($('wiki_help'));
+    }
+    tinyMCE.getInstanceById('item_body').setContent('');
+    $('item_wiki_body').value = "";
+    <% if @title.use_old_upload_system? -%>
+    var ifm = $('image_attach_form');
+    <% else -%>
+    var ifm = $('file_attach_form');
+    <% end -%>
+    ifm.src = files_uri;
+  }
+//]]>
+</script>

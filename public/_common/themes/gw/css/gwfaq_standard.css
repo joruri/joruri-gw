@@ -1,0 +1,68 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwfaq_standard.css
+========================================================= */
+
+/* table bbsCreator(詳細ページ　記事管理課欄)
+-----------------------------------------------------*/
+table.bbsCreator td {
+  padding: 4px 7px;
+}
+
+/* table show
+----------------------------------------------------*/
+.gwfaqDocList table.show {
+  width: 98%;
+  margin: 10px 10px 0;
+}
+
+/* 詳細ページ　メインエリア
+----------------------------------------------------*/
+.docsInnerBox {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 96%;
+}
+*html .docsInnerBox {
+  padding-bottom: 20px;
+}
+*:first-child+html .docsInnerBox {
+  padding-bottom: 20px;
+}
+*html .right {
+  overflow: hidden;
+}
+
+/* 詳細ページ　作成者情報欄
+-----------------------------------------------------*/
+.bbsCreatorInf table {
+  float: right;
+  width: auto;
+}
+.bbsCreatorInf table td.space {
+  width: 15px;
+}
+
+/* table questionArea(詳細ページ　質問欄)
+----------------------------------------------------*/
+table.questionArea {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 10px 0 10px;
+  vertical-align: top;
+}
+
+/* table gwboardAttachlist(詳細ページ　添付ファイル欄)
+----------------------------------------------------*/
+table.gwboardAttachlist {
+  margin: 10px 10px 0;
+  text-align: left;
+}
+table.gwboardAttachlist th {
+  padding: 4px 7px;
+}
+table.gwboardAttachlist td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+}
+

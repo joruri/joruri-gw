@@ -1,0 +1,19 @@
+img.ui-datepicker-trigger {
+  margin-left: 4px;
+  margin-top: -4px;
+  vertical-align: middle;;
+  cursor: pointer;
+}
+.ui-datepicker {
+  font-size: 90%;
+  select.ui-datepicker-month, 
+  select.ui-datepicker-year {
+    width: 40%;
+  }
+  .ui-datepicker-close {
+    font-weight: lighter;
+  }
+  .ui-timepicker-div dl dd {
+    margin: 0 10px 10px 20%;
+  }
+}

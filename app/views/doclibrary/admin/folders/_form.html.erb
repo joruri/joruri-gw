@@ -1,0 +1,25 @@
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td>
+      <%= f.radio_buttons :state, @item.status_select %>
+      <%=required("「非公開」に変更すると、下位フォルダも合わせて非公開となります。")%>
+    </td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= f.text_field :sort_no, :class => 'num sort_no' %></td>
+  </tr>
+  <tr>
+    <th>フォルダ名称 <%= required %></th>
+    <td><%= f.text_field :name, :class => 'string name', :style => 'width: 200px;' %></td>
+  </tr>
+  <% if @item.persisted? %>
+  <tr>
+    <th>分類フォルダ</th>
+    <td><%= f.select :parent_id, options_for_select(@item.parent_options, @item.parent_id) %></td>
+  </tr>
+  <% end %>
+</table>
+<%= render 'form_acls', f: f %>
+<%= render 'doclibrary/admin/docs/hidden_form', f: f %>

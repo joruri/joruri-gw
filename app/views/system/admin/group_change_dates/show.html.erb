@@ -1,0 +1,19 @@
+<div class="piece AdminSetting AdminGroups">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'navi' %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:start_at) %></th>
+    <td><%= safe{@item.start_at.strftime("%Y-%m-%d %H:%M")} %></td>
+  </tr>
+</table>
+<br />
+
+<div class="btReturn">
+  <%= link_to '戻る', system_group_change_dates_path %>
+</div>
+
+</div>
+</div>

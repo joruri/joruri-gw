@@ -1,0 +1,19 @@
+<% if !@previous.blank? || !@next.blank? %>
+<%#ページ移動データあり -------------------------------------------------------------------------------------- -%>
+<p class="leftPad2">
+  <% unless @title.use_other_system? %>
+    <%#他シスリンクなし%>
+    <% unless @previous.blank? %>
+      <%= link_to '< 前のページ', "#{@previous.show_path}#{gwbbs_params_set}" %>
+    <% else %>
+      先頭ページ
+    <% end %>
+    |
+    <% unless @next.blank? %>
+      <%= link_to "次のページ>", "#{@next.show_path}#{gwbbs_params_set}" %>
+    <% else %>
+      最終ページ
+    <% end %>
+  <% end %>
+</p>
+<% end %>

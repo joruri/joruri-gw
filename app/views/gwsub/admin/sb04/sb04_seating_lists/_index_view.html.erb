@@ -1,0 +1,19 @@
+<table class="index">
+  <tr>
+    <th></th>
+    <th>年度</th>
+    <th>タイトル</th>
+    <th>座席表掲示板URL</th>
+    <th>備考</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細' , "/gwsub/sb04/04/sb04_seating_lists/#{item.id}?#{@qs}" %></td>
+    <td><%= item.fyear_markjp %></td>
+    <td><%= link_to item.title , "#{item.bbs_url}" ,:target=>'_blank' , :title=>"#{@bbs_link_title}" %></td>
+    <td><%= item.bbs_url %></td>
+    <td><%= item.remarks %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>

@@ -1,0 +1,60 @@
+<div class="piece scheduleEventPiece show">
+<div class="pieceHeader">
+  <%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedule_props/bt_box', d: Date.today -%>
+  <%= render '/gw/admin/prop_extras/header' -%>
+</div>
+<div class="pieceBodyBody">
+
+<div class="editingBox">
+  <div class="btEdit">
+    <%= link_to('編集する', "#{@public_uri}#{@item.id}/edit#{@params_set}") -%>
+  </div>
+  <div class="btDestroy">
+    <%= link_to_destroy @item.id, nil, :confirm => '削除してよろしいですか？', :qs => @qs -%>
+  </div>
+</div>
+
+<table class="show">
+  <tr>
+    <th>主管課担当者 所属部</th>
+    <td><%= @item.r_dept1.try(:name) -%></td>
+  </tr>
+  <tr>
+    <th>主管課担当者 所属課</th>
+    <td><%= @item.r_sect1.try(:name) -%></td>
+  </tr>
+  <tr>
+    <th>主管課担当者</th>
+    <td><%= @item.r_user.try(:name) -%></td>
+  </tr>
+  <tr>
+    <th>範囲</th>
+    <td><%= @item.range_class_id == 1 ? '部局' : "所属" -%></td>
+  </tr>
+  <tr>
+    <th>部局</th>
+    <td><%= @item.r_dept2.try(:name) -%></td>
+  </tr>
+  <tr>
+    <th>所属</th>
+    <td><%= @item.r_sect2.try(:name) if @item.division_gid.present? -%></td>
+  </tr>
+  <tr>
+    <th>作成日</th>
+    <td><%= @item.created_at.strftime('%Y-%m-%d %H:%M') -%></td>
+  </tr>
+  <tr>
+    <th>更新日</th>
+    <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+  </tr>
+</table>
+</div>
+<div class="btReturn">
+  <%= link_to '戻る', "#{@public_uri}#{@params_set}"  -%>
+</div>
+</div>
+</div>

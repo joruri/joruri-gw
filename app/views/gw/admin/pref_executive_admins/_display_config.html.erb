@@ -1,0 +1,40 @@
+<%
+mode='executives'
+config_uri = "/gw/pref_configs/"
+dislapy_view = Gw::PrefConfig.where(state: "enabled", option_type: mode).order(updated_at: :desc).first
+if dislapy_view.blank?
+  display_str =  "通常表示"
+  link_str    =  "メンテナンスモード表示"
+  link_uri    =  %Q(#{config_uri}new?mode=#{mode})
+  state_str   = "在庁表示は現在準備中です。"
+  edit_url    =  %Q(#{config_uri}new?mode=#{mode})
+else
+  if dislapy_view.name=="admin"
+    display_str =  "メンテナンスモード表示"
+    link_str    =  "通常表示に変更"
+    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?name=normal&mode=#{mode})
+    state_str   =  dislapy_view.options
+    edit_url    =  %Q(#{config_uri}#{dislapy_view.id}/edit?mode=#{mode})
+  else
+    display_str =  "通常表示"
+    link_str    =  "メンテナンスモード表示に変更"
+    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?name=admin&mode=#{mode})
+    state_str   =  dislapy_view.options
+    edit_url    =  %Q(#{config_uri}#{dislapy_view.id}/edit?mode=#{mode})
+  end
+end
+%>
+<div class="titleLine">
+<span class="title">準備中表示</span>
+</div>
+
+<table class="index">
+  <tr>
+    <th>現在の状態</th>
+    <th>表示文言[<%= link_to "編集する", edit_url if dislapy_view.present? %>]</th>
+  </tr>
+  <tr>
+    <td><%= display_str %>[<%= link_to link_str, link_uri %>]</td>
+    <td><%=hbr state_str %></td>
+  </tr>
+</table>

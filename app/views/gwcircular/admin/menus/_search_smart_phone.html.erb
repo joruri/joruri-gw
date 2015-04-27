@@ -1,0 +1,32 @@
+<%= form_tag '', :method => :get, :class => 'search', :name => 'frmSelect' do %>
+<div class="indication">
+<div class="state">状態<%= select_tag :cond, options_for_select([['未読','unread'],['既読','already']], params[:cond]), :onchange=>'loadImg_display();' %></div>
+</div>
+<% end %>
+
+<script type="text/javascript">
+<!--
+  window.onload=pgLoad;
+   function pgLoad(){ //要素'loading'を非表示
+    document.getElementById('loadImg').style.display="none";
+     }
+
+  i=1;
+  function loadImg_display(){
+    //$('loadImg').setStyle("display: inline;")
+    //$('contentTable').setStyle("display: none;")
+    document.getElementById('loadImg').setStyle("display: inline;")
+    document.getElementById('contentTable').setStyle("display: none;")
+    var tid=setTimeout("formChange()",1000);
+  }
+  function formChange(){
+    i++;
+    if (i==2){
+      form_submit();
+    }
+  }
+  function form_submit(){
+    document.frmSelect.submit();
+  }
+-->
+</script>

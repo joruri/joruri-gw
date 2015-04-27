@@ -1,0 +1,91 @@
+<%
+#r_status = Gwsub::Sb05Request.select_dd_status( nil )
+r_status = [['未処理','4'],['処理済','5']]
+cat_medias = Gwsub::Sb05MediaType.select_dd_media_group( nil ,'code')
+@media.blank? ? code = '1' : code = @media.media_code
+#dates  = Gwsub::Sb05Request.select_dd_dates( nil ,4,code)
+#base_dates = Gwsub::Sb05Request.select_dd_base_dates( nil , 2 , @r_status , @media_code )
+base_dates = Gwsub::Sb05Request.select_dd_base_dates( nil , 2 , @r_status , code )
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_requests_put/menu' %>
+</div>
+<div class="pieceBody">
+<div class="titleLine">
+<p class="title">ＣＳＶ 出力</p>
+</div>
+<div>
+<span class="explanation">
+<span style="color:blue">
+  出力対象を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。
+</span>
+</span>
+</div>
+
+<%= form_tag url_for(action: :csvput), {method: :get, multipart: true} do %>
+<%= hidden_field_tag 'item[csv]', 'put' %>
+<table class="show">
+  <tr>
+    <th></th>
+    <td>出力条件を選択して実行してください。確認済データからの選択になります。</td>
+  </tr>
+  <tr>
+    <th>確認</th>
+    <td>確認済</td>
+  </tr>
+  <tr>
+    <th>処理</th>
+    <td><%= select_tag 'item[r_status]', options_for_select(r_status, @r_status), onchange: "get_selects();" %></td>
+  </tr>
+  <tr>
+    <th>媒体</th>
+    <td><%= select_tag 'item[media_code]', options_for_select(cat_medias, code), onchange: "get_selects();" %></td>
+  </tr>
+  <tr>
+    <th>基準日</th>
+    <td>※選択可能な基準日の表示は、処理・媒体の選択にあわせて変わります。 <br />
+      <%= select_tag 'item[b_at]', options_for_select(base_dates, @base_at) %>
+    </td>
+  </tr>
+  <tr>
+    <th>出力項目</th>
+    <td>※タイトル・本文は必須で出力されます。<br />
+      <%= check_box_tags 'item[chks]', Gw.yaml_to_array_for_select('gwsub_sb05_requests_checkboxes', sort_by: nil) %>
+    </td>
+  </tr>
+  <tr>
+    <th>文字コード</th>
+    <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %></td>
+  </tr>
+</table>
+<br />
+<div class="preserve">
+<%= submit_tag 'CSV出力' %>
+</div>
+<% end %>
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  function get_selects() {
+    // start_at
+    r_status    = $("item_r_status").value
+    media_cd  = $("item_media_code").value
+    if (end_cnt == -1) {
+      document.body.style.cursor = 'wait';
+      end_cnt = 0;
+    }
+    new Ajax.Request("<%= @index_uri%>start_fields?r_status=" + r_status + "&media_cd=" + media_cd, {method:'get', onComplete: function(x){
+      $('item_b_at').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+//]]>
+</script>

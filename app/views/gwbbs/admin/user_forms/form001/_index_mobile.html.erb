@@ -1,0 +1,13 @@
+<% if params[:kwd].present? %>
+<h4 class="docSearchTitle">検索結果（タイトル・本文）</h4>
+<% end %>
+
+<% brk_key = nil %>
+<% @items.each do |item| %>
+<% if brk_key != item.latest_updated_at.to_date %>
+  <p class="bgAsh"><%=l item.latest_updated_at, format: :date if item.latest_updated_at %><br /></p>
+<% end %>
+・<%= link_to hbr(item.title), item.show_path  + gwbbs_params_set %>
+<br />
+<% brk_key = item.latest_updated_at.to_date %>
+<% end %>

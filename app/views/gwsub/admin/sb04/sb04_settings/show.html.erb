@@ -1,0 +1,34 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+  <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+  <%= render 'gwsub/admin/sb04/sb04_limit_settings/menu' -%>
+  <%= render 'display_name' -%>
+    <div class="showMenu">
+      <%= link_to '編集' , "#{@public_uri}#{@item.id}/edit" %>
+    </div>
+</div>
+
+<div class="pieceBody">
+  <div class="pieceBodyBody">
+    <table class="show">
+      <tr>
+        <th>種別</th>
+        <td><%= @item.get_name  -%></td>
+      </tr>
+      <tr>
+        <th>URL</th>
+        <td><%= @item.data -%></td>
+      </tr>
+      <tr>
+        <th>更新日</th>
+        <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      </tr>
+    </table>
+  </div>
+  <div class="btReturn">
+    <%=link_to '一覧に戻る', "#{@public_uri}" -%>
+  </div>
+</div>
+
+</div>

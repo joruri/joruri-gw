@@ -1,0 +1,35 @@
+<%
+#ビューの種類判別
+todo_form = false
+mode = params[:action]
+if mode == "edit" || mode == 'quote'
+  todo_form = true if nz(@item.todo, 0) == 1
+  todo_form = true if params[:link] == 'todo'
+elsif mode == 'new'
+  todo_form = true if params[:link] == 'todo'
+elsif mode == 'create' || mode == 'update'
+  form_kind_id = params[:item][:form_kind_id].to_i
+  todo_form = true if form_kind_id == 2
+end
+todo_form = false if params[:link]=="normal"
+if f_mode == "new"
+  normal_lnk = "/gw/schedules/new#{link_params}&link=normal"
+  todo_lnk = "/gw/schedules/new#{link_params}&link=todo"
+elsif f_mode == "edit"
+  normal_lnk = "/gw/schedules/#{item_id}/edit#{link_params}&link=normal"
+  todo_lnk = "/gw/schedules/#{item_id}/edit#{link_params}&link=todo"
+else
+  normal_lnk = "/gw/schedules/#{item_id}/quote#{link_params}&link=normal"
+  todo_lnk = "/gw/schedules/#{item_id}/quote#{link_params}&link=todo"
+end
+%>
+
+<p class="leftPad2">
+<%if todo_form==false%>
+通常｜
+<%= link_to('ToDo', todo_lnk) -%>
+<%else%>
+<%= link_to('通常', normal_lnk) -%>｜
+ToDo
+<%end%>
+</p><br />

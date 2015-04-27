@@ -1,0 +1,20 @@
+<%
+product = System::Product.where(product_type: 'mail').select(:id, :sso).first
+return '' if product.blank? || !product.sso_enabled?
+%>
+<div class="link_to_sso_mail">
+  <%= link_to "メール作成", '#', :onclick => "openMailWindow(); return false;" %>
+</div>
+<%= form_tag '/_admin/gw/link_sso/redirect_to_joruri', :method => :post, :name => "mailForm", :target => "mailWindow_#{@item.id}" do %>
+  <%= hidden_field_tag :to, 'mail' -%>
+  <%= hidden_field_tag :path, "/_admin/gw/webmail/INBOX/mails/new" -%>
+  <%= hidden_field_tag 'item[subject]', @item.title_with_category -%>
+  <%= hidden_field_tag 'item[body]', @item.create_mail_body_parameters -%>
+<% end %>
+<script type="text/javascript">
+function openMailWindow() {
+  var w = window.open('', 'mailWindow_<%= @item.id %>', 'resizable=yes,scrollbars=yes,location=yes,menubar=1,toolbar=1');
+  w.document.write("接続中...")
+  document.mailForm.submit();
+}
+</script>

@@ -1,0 +1,94 @@
+<%
+  section = nil
+  assigned_jobs = nil
+  fyear_namejp = @items[0].fy_rel.namejp unless @items.blank?
+-%>
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb04/sb04stafflistview/search' %>
+<%= render 'gwsub/admin/sb04/sb04stafflistview/select_with_fyear' %>
+
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+  <h4><%= fyear_namejp %> 年度　電子職員録</h4>
+  <table class="index">
+  <tr>
+  <th class="belong">所属</th>
+  <th class="charge">担当</th>
+  <th class="post">職名</th>
+  <th class="name">氏名</th>
+  <th class="kana">フリガナ</th>
+  <th class="extension">内線</th>
+  <th class="remark">備考</th>
+  </tr>
+  <% @items.each do |d| %>
+    <%# section line %>
+    <% unless section == d.section_code -%>
+      <%
+      if d.section_id.to_i==0
+          sect = Gwsub::Sb04section.where("fyear_id= #{d.fyear_id} and code = '#{d.section_code}'").order("fyear_markjp DESC ,code ASC").first
+          if sect.blank?
+            section_name  = nil
+          else
+            section_name  = sect.name
+          end
+      else
+        sect = Gwsub::Sb04section.where(:id=>d.section_id).first
+        if sect.blank?
+            section_name  = nil
+        else
+            section_name  = sect.name
+        end
+      end
+      section = d.section_code
+      assigned_jobs = nil
+      -%>
+        <tr><th colspan="7" align="left"><%=  section_name %></th></tr>
+    <% end %>
+    <%# assigned_jobs line %>
+    <% unless assigned_jobs == d.assignedjobs_code %>
+      <%
+        assigned_jobs = d.assignedjobs_code
+        if d.assignedjobs_id==0
+          a_cond  = "fyear_markjp='#{d.fyear_markjp}' and section_code='#{d.section_code}' and code='#{d.assignedjobs_code}'"
+          a_order = "fyear_markjp DESC , section_code ASC , code ASC "
+          assigned_job  = Gwsub::Sb04assignedjob.where(a_cond).order(a_order).first
+          if assigned_job.blank?
+            jobs_name     = nil
+          else
+            jobs_name     = assigned_job.name
+          end
+        else
+          assigned_job  = Gwsub::Sb04assignedjob.where(:id=>d.assignedjobs_id).first
+          if assigned_job.blank?
+            jobs_name     = nil
+          else
+            jobs_name     = assigned_job.name
+          end
+        end
+      -%>
+    <tr>
+    <td><%= link_to '詳細', "/gwsub/sb04/01/sb04stafflistview/#{d.id}?#{@qs}" %></td>
+    <th colspan="6" style="padding-left:1em;"><%= jobs_name %></th>
+    </tr>
+  <% end %>
+  <%# staff line %>
+    <tr>
+    <td colspan="2"></td>
+    <td><%= d.official_title_name %></td>
+    <td><%= d.name %></td>
+    <td><%= d.kana %></td>
+    <td><%= d.extension %></td>
+    <td><%= d.remarks %></td>
+    </tr>
+  <% end %>
+  </table>
+  <%= paginate @items %>
+<% end %>
+</div>
+</div>

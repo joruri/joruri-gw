@@ -1,0 +1,309 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doc_2column.css
+========================================================= */
+
+/* カラム設定
+---------------------------------------------*/
+#content { 
+  overflow: visible;
+  float: right;
+  width: 100%;
+  border-right: 1px solid #1E3B8C;
+}
+#content .pieceBody {
+  overflow: hidden;
+  float: left;
+  width: 99.85%;
+  border-right: none;
+}
+body:not(:target) #content .pieceBody { 
+  width: auto;
+}
+html:not([lang*=""]) #content .pieceBody {
+  width: 100%;
+}
+html:not(:only-child:only-child) #content .pieceBody {
+  width: 99.85%;
+}
+.outer {
+  width: 81.8%;
+  margin-left: 18.2%;
+}
+* html .outer {
+  float: left;
+  width: 81.7%;
+  margin-left: 0px;
+}
+*:first-child+html .outer {
+  float: left;
+  width: 81.7%;
+  margin-left: 0px;
+}
+body:not(:target) #content .outer { 
+  width: auto;
+}
+html:not([lang*=""]) #content .outer {
+  width: 81.7%;
+}
+html:not(:only-child:only-child) #content .outer {
+  width: 81.8%;
+}
+.right {
+  overflow-x: hidden;
+  width: 100%;
+  padding-bottom: 10px;
+}
+*html .right {
+  overflow-x: hidden;
+}
+*:first-child+html .right {
+  overflow-x: hidden;
+}
+
+/* 掲示板、質問管理タイトル部分
+---------------------------------------------*/
+.pieceBanner {
+  clear:both;
+  height: 80px;
+  border-left: 1px solid #1e3b8c;
+  background-color: #FFFCF0;
+}
+.pieceBanner h3 {
+  padding: 10px;
+  font-size: 200%;
+}
+
+/* 機能ボタン
+---------------------------------------------*/
+.pieceBanner .btNew {
+  display: block;
+  overflow: hidden;
+  width: 70px;
+  height: 15px;
+  margin-left: 10px;
+  background-image: url(/_common/themes/gw/files/icon/ic_act_add.gif);
+  text-indent: -9999px;
+}
+
+/* 詳細ページ　右カラム
+---------------------------------------------*/
+.docsInnerBox {
+  margin: 10px;
+  padding: 10px;
+  background-color: #E3EFFD;
+}
+.docsInnerBox table.bbsUserformBody {
+  background-color: #fff;
+}
+.docsInnerBox .bbsUserformBody th {
+  width: 35px;
+  height: 30px;
+  background-color: #fff;
+  vertical-align: top;
+}
+.docsInnerBox .bbsUserformTitle th {
+  width: 35px;
+  background-color: #fff;
+}
+
+/* サイドメニュー　バナー設定
+---------------------------------------------*/
+.inner .rightBanner {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.sideMenu a img {
+  margin-left: 10px;
+}
+
+/* サイドメニュー　メニュー設定
+---------------------------------------------*/
+#contentBody .sideMenu {
+  float: left;
+  width: 18%;
+  margin: 0 0 -32768px;
+  padding-bottom: 32768px;
+  padding-top: 5px;
+  border-right: 1px solid #CCCCCC;
+  border-top: 1px solid #CCCCCC;
+  border-bottom: none;
+  background-color: #f2f2f2;
+}
+#contentBody .sideMenu, x:-moz-any-link, x:default {
+  border: 1px solid #CCC;
+}
+#content .pieceBody h4.iconSideKey {
+  padding-left: 25px;
+  background-image: url(/_common/themes/gw/files/icon/ic_search-article.gif);
+  background-repeat: no-repeat;
+  background-color: #F2F2F2;
+}
+#contentBody .sideMenu h3 {
+  margin-left: 10px;
+  padding-left: 18px;
+  background-position: 0 2px;
+  font-size: 100%;
+}
+*html #contentBody .sideMenu h3 {
+  background-position: 0 0px;
+}
+.iconSideToday {
+  background-image: url(/_common/themes/gw/files/icon/ic_today-article.gif);
+}
+.iconSideMonth {
+  background-image: url(/_common/themes/gw/files/icon/ic_month-article.gif);
+}
+.iconSideGroup {
+  background-image: url(/_common/themes/gw/files/icon/ic_unit-article.gif);
+}
+.iconSideCategory {
+  background-image: url(/_common/themes/gw/files/icon/ic_class-article.gif);
+}
+#contentBody .sideMenu ul {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 15px;
+}
+#contentBody .sideMenu .search {
+  margin-bottom: 20px;
+}
+#contentBody .sideMenu .submitters {
+  margin: 0;
+}
+#contentBody .sideMenu .submitters a {
+  margin: 0;
+}
+#contentBody .sideMenu input#kwd {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+#contentBody .sideMenu input#kwd a {
+  margin: 0px;
+}
+#contentBody .sideMenu .submitters input {
+  width: 60px;
+  margin-left: 10px;
+  margin-right: 0;
+  font-size: 80%;
+}
+.pieceBody .right #errorExplanation {
+  margin-left: 10px;
+}
+.required {
+  margin-left: 10px;
+}
+
+/* サイドメニュー　表示切替ボタン
+-----------------------------------------------------------*/
+#contentBody .sideMenu h3 span {
+  display: inline-block;
+  vertical-align: middle;
+  width: 13px;
+  height: 13px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+  background-image:url(/_common/themes/gw/files/switch/switch_arrow01_onoff.gif);
+  text-indent: -9999px;
+  overflow: hidden;
+}
+*:first-child+html #contentBody .sideMenu h3 span {
+  margin-top: 2px;
+}
+#contentBody .sideMenu h3 span.current {
+  background-position: 0 -13px;
+}
+#contentBody .sideMenu h3 span a {
+  display: block;
+}
+
+/* タブ周り
+-----------------------------------------------------------*/
+.tabBox {
+  background-color: #FFFCF0;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+   table bbsFile(入力ページ　添付ファイル欄)
+   table bbsComment(入力ページ　1行コメント欄)
+-----------------------------------------------------------*/
+table.bbsImage,
+table.bbsFile,
+table.bbsComment {
+  width: 98%;
+  margin: 0 auto;
+  border: 2px solid #C5D1E7;
+}
+table.bbsImage th,
+table.bbsFile th,
+table.bbsComment th {
+  width: 110px;
+  padding: 6px 7px;
+  background-color: #E3EFFF;
+}
+table.bbsImage td,
+table.bbsFile td,
+table.bbsComment td {
+  padding: 6px 7px;
+  border-left: 1px solid #CCCCCC;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+-----------------------------------------------------------*/
+table.bbsImage {
+  border-top: none;
+}
+table#image_form { 
+  margin-top: -2px;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* table bbsFile(入力ページ　添付ファイル欄)
+-----------------------------------------------------------*/
+table.bbsFile {
+  margin-top: 20px;
+}
+table#attach_form { 
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* 添付ファイルリスト
+-----------------------------------------------------------*/
+table.gwboardAttachlist {
+  margin: 10px auto;
+  text-align: left;
+  vertical-align: top;
+}
+table.gwboardAttachlist th {
+  padding: 4px 7px;
+  background-color: #E3EFFD;
+  text-align: left;
+}
+table.gwboardAttachlist td {
+  padding: 4px 7px;
+  border: 1px solid #D3DCED;
+  background-color: #fff;
+}
+table.gwboardAttachlist td.attachIcon a.iconFile {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}
+table.gwboardAttachlist .remark {
+  width: 35px;
+}
+form table.gwboardAttachlist .remark { 
+  width: 220px;
+}
+
+/* 入力ページ　submitボタン
+-----------------------------------------------------------*/
+.right .submitters {
+  text-align: center;
+}
+*html .right div.submitters {
+  margin-bottom: 50px;
+}

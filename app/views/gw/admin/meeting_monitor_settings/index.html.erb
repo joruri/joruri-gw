@@ -1,0 +1,43 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<% if @items.length == 0 -%>
+  <%= show_notice -%>
+<% else -%>
+  <table class="index">
+    <tr>
+      <th></th>
+      <th>監視状況</th>
+      <th>監視対象</th>
+      <th>通知設定</th>
+      <th></th>
+      <th>種別</th>
+      <th>名称／設置場所</th>
+      <th>IPアドレス</th>
+    </tr>
+    <% @items.each do |item| -%>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+        <td>
+          <%= item.state_label %>
+          <% if item.state == "on" %>
+            [<%= link_to '停止', {action: :switch_monitor, id: item.id, state: 'off'}, confirm: "#{item.monitor_type_label}：#{item.name}の監視を停止します。よろしいですか？" %>]
+          <% else %>
+            [<%= link_to '開始', {action: :switch_monitor, id: item.id, state: 'on'}, confirm: "#{item.monitor_type_label}：#{item.name}の監視を開始します。よろしいですか？" %>]
+          <% end %>
+        </td>
+        <td><span style="<%= 'color:red;' if item.conditions != 'enabled' %>"><%= item.conditions_label %></span></td>
+        <td>平日：<%= item.weekday_notice_label %></td>
+        <td>休日：<%= item.holiday_notice_label %></td>
+        <td><%= item.monitor_type_label %></td>
+        <td><%= item.name %></td>
+        <td><%= item.ip_address %></td>
+      </tr>
+    <% end -%>
+  </table>
+  <%= paginate @items %>
+<% end -%>
+</div>
+</div>

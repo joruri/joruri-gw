@@ -1,0 +1,16 @@
+<div class="piece AdminSetting">
+<%= render '/gw/admin/config_settings/header_str' %>
+<div class="pieceBanner"></div>
+<div class="pieceBody">
+<%= render '/gw/admin/config_settings/menu' if @u_role==true %>
+
+<% if @u_role == true %>
+  <% if @admin_role == true %>
+    <%= render '/gw/admin/config_settings/tabs_admin' %>
+  <% else %>
+    <%= render '/gw/admin/config_settings/tabs_editor' %>
+  <% end %>
+<% end %>
+
+</div>
+</div>

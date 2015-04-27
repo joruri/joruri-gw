@@ -1,0 +1,9 @@
+<%= form_tag '', :method => :get, :class => 'changelimit' do %>
+  <%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
+  <%= hidden_field_tag(:title_id, params[:title_id]) unless params[:title_id].blank? %>
+  <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
+  <%= hidden_field_tag(:gcd, params[:gcd]) unless params[:gcd].blank? %>
+  <%= hidden_field_tag(:kwd, params[:kwd]) unless params[:kwd].blank? %>
+  <span>表示行数</span>
+  <%= select_tag 'limit', options_from_collection_for_select([[10,'10行'],[20,'20行'],[30,'30行'],[50,'50行'],[100,'100行']], :first, :last, params['limit'].to_i), :onchange => 'submit();' %>
+<!-- end .search --><% end %>

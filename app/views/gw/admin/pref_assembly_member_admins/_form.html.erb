@@ -1,0 +1,33 @@
+<%= f.hidden_field :state -%>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>状態<%= required %></th>
+    <td><%= f.radio_buttons :state, Gw::PrefAssemblyMember.state_select %></td>
+  </tr>
+  <tr>
+    <th>会派表示順<%= required %></th>
+    <td><%= f.text_field :g_order, :size => 30, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>会派<%= required %></th>
+    <td><%= f.text_field :g_name, :size => 80 %></td>
+  </tr>
+  <tr>
+    <th>議員表示順<%= required %></th>
+    <td><%= f.text_field :u_order, :size => 30, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>氏名<%= required %></th>
+    <td>姓：<%= f.text_field :u_lname, :size => 50 %></td>
+  </tr>
+  <tr>
+    <th></th>
+    <td>名：<%= f.text_field :u_name, :size => 50 %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+<%= submit_for f, caption: '保存' %>
+</div>

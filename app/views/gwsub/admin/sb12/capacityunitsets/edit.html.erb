@@ -1,0 +1,18 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= render 'display_name' %>
+
+<div class="showMenu">
+<%= link_to_show @item.id %>
+</div>
+<%= form_for :item, :url => {action: :update}, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

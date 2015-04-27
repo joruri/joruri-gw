@@ -1,0 +1,9 @@
+<%= render 'header' %>
+<%= form_for :item, url: "#{gwbbs_doc_path(@item)}#{gwbbs_params_set}", html: {method: :put} do |f| %>
+  <%= f.error_messages %>
+  <div class="formTitle new">新規作成</div>
+  <%= required_head %>
+  <%= doc_size_usage_rate %>
+  <%= render @title.gwbbs_form_name + 'form', f: f %>
+  <%= render 'form', f: f %>
+<% end %>

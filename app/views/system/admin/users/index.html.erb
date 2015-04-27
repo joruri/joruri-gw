@@ -1,0 +1,54 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'header_menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', new_system_user_path %></span>
+</div>
+<%= render 'navi' %>
+<%= render 'search' %>
+
+<table class="index">
+  <colgroup class="action"></colgroup>
+  <colgroup class="code"></colgroup>
+  <colgroup class="ldap"></colgroup>
+  <colgroup class="state"></colgroup>
+  <colgroup class="name"></colgroup>
+  <colgroup class="name_en"></colgroup>
+  <colgroup class="email"></colgroup>
+  <colgroup class="official_position"></colgroup>
+  <colgroup class="_groups"></colgroup>
+  <tbody>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>LDAP</th>
+      <th>状態</th>
+      <th>名前</th>
+      <th>名前(英)</th>
+      <th>メールアドレス</th>
+      <th>役職</th>
+      <th>グループ</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><a href="/system/users/<%= item.id -%>">詳細</a></td>
+      <td><%= item.code -%></td>
+      <td><%= System::UsersGroup.ldap_show(item.ldap) -%></td>
+      <td><%= System::UsersGroup.state_show(item.state) -%></td>
+      <td><%= item.name -%></td>
+      <td><%= item.name_en -%></td>
+      <td><%= item.email -%></td>
+      <td><%= item.official_position -%></td>
+      <td><%= item.show_group_name -%></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @items %>
+
+</div>
+</div>

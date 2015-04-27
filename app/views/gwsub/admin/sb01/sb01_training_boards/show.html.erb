@@ -1,0 +1,23 @@
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_boards/menu' %>
+</div>
+<div class="pieceBody">
+<div class="editingBox">
+<span class="btEdit"><%= link_to_edit @item.id %></span>
+<span class="btDestroy"><%= link_to_destroy @item.id %></span>
+</div>
+
+  <table class="show">
+    <tbody>
+      <tr>
+        <th>掲示板名称</th>
+        <td><%= @bbs_item.blank? ? "" : @bbs_item.title %></td>
+      </tr>
+  </tbody></table>
+<br/>
+</div>
+</div>

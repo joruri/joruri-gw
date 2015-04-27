@@ -1,0 +1,31 @@
+<div class="piece YearMarkJp">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+<%= render 'search' %>
+
+<table class="index">
+  <colgroup class="action"></colgroup>
+  <colgroup class="name"></colgroup>
+  <colgroup class="mark"></colgroup>
+  <colgroup class="start_at"></colgroup>
+  <tr>
+    <th></th>
+    <th>年号</th>
+    <th>記号</th>
+    <th>開始日（西暦）</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr>
+      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+      <td><%= item.name %></td>
+      <td><%= item.mark %></td>
+      <td><%= item.start_at.strftime('%Y-%m-%d') if item.start_at %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
+
+</div>
+</div>

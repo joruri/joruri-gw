@@ -1,0 +1,22 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<div class="docsInnerBox">
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
+</table>
+</div>
+</div>
+
+<%= render 'form' %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', @title.builder_path %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

@@ -1,0 +1,67 @@
+/*-------------------------------------------------------------------------------
+#content .gwqa {
+  background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+}
+#content .gwqa .pieceHeader {
+  position: relative;
+  height: 29px;
+  margin-left: 29px;
+  background-image: url(/_common/themes/gw/files/title/title_re.gif);
+  background-repeat: repeat-x;
+  color: #FFFFFF;
+  line-height: 2.3;
+}
+.gwqa .pieceHeader h2 {
+  display: inline-block;
+  width: 90%;
+  padding-left: 10px;
+  line-height: 1.8;
+}
+.gwqa .pieceHeader .btManage {
+  display: inline-block;
+  height: 15px;
+  width: 69px;
+  background-image: url(/_common/themes/gw/files/icon/ic_act_admin.gif);
+  background-repeat: repeat-x;
+  text-indent: -9999px;
+}
+#content .gwqa .pieceBody {
+  padding: 10px 10px 10px;
+  border-bottom: 1px solid #1E3B8C;
+  border-left: 1px solid #1E3B8C;
+  border-right: 1px solid #1E3B8C;
+}
+#content .gwqa .btBox {
+  margin-bottom: 45px;
+}
+#content .gwqa .btIndex {
+  display: inline-block;
+  width: 61px;
+  height: 20px;
+  padding-top: 5px;
+  background-image: url(/_common/themes/gw/files/switch/switch02-t3_onoff.gif);
+}
+.gwqa table.index {
+  margin-top: 0px;
+}
+.gwqa table.index tr.items td {
+  background-color: #E3EFFF;
+  border: none;
+}
+.gwqa table.index td.gwqaTitle {
+  border-left: none;
+}
+.gwqa table.index td.update {
+  width: 120px;
+  border-right: none;
+}
+.gwqa table.index tr.cycle td {
+  background-color: #F7FBFF;
+}
+.gwqa table.index td {
+  border-right: none;
+}
+.gwqa table.index tr.items td.manager {
+  width: 145px;
+}
+-------------------------------------------------------------------------------------------*/

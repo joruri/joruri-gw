@@ -1,0 +1,30 @@
+<div class="piece circular index">
+<div class="pieceHeader">
+<%= render '/gwcircular/admin/menus/piece_header_smart_phone'%>
+</div>
+<div class="pieceBody">
+<%= render '/gwcircular/admin/menus/search_smart_phone'%>
+<div id="contentTable">
+
+<table class="index">
+  <tr class="headIndex">
+    <th style="width:40px;">状態</th>
+    <th class="docTitle">回覧件名</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr>
+    <td class="state" rowspan="2"><span class="<%= item.state %>"><%= item.status_name.html_safe %></span></td>
+    <td class="title"><%= link_to item.title, item.show_path %></td>
+  </tr>
+  <tr class="expirydate">
+    <td>回覧期限：<%=l item.expiry_date if item.expiry_date %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+
+</div>
+<div id="loadImg">Now Loading...</div>
+</div>
+
+</div>

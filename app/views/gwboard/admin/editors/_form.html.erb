@@ -1,0 +1,99 @@
+<%
+  concat hidden_field_tag('init[title]', params[:id])   # 上記空の場合にロードされる初期値
+  groups = Gwboard::Group.level2
+%>
+<table class="show">
+<tr><th>編集権限設定</th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[editors][gid]', options_for_select(groups, Core.user_group.parent_id), :onchange=>'update_editor_cand();' ) %><br />
+<%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(Core.user_group.parent_id)), :size=>5, :style => 'width:200px;', :ondblclick => 'add_editor()', :multiple => true) %>
+</td>
+<td>
+<%= button_tag '追加 →', :onclick =>'add_editor(); return false;' %><br /><br />
+<%= button_tag '← 削除', :onclick =>'del_editor(); return false;' %>
+</td>
+<td>
+<%= select_tag 'item[editors_add_buf]', [], :size=>6, :style => 'width:200px;', :ondblclick => 'del_editor()', :multiple => true %>
+<%= hidden_field_tag 'item[editors_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  var add_editor = function() {
+    add_editor_list('item_editors_uid', 'item_editors_add_buf')
+  }
+  var del_editor = function() {
+    del_editor_list('item_editors_add_buf')
+  }
+  var add_editor_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_editor_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  var my_editor_load = function() {
+    var u = $('init_editors_json');
+    var to = $('item_editors_add_buf');
+    if ( u != undefined && u.value != '') {
+      var editors = eval(u.value);
+      for (var i = 0; i < editors.length; i++) {
+        select_options_push(to, editors[i][1], editors[i][2], editors[i][0]);
+      }
+    }
+    if (to.options.length == 0)
+      select_options_push(to, $('init_uid').value, $('init_uname').value, $('init_ucls').value);
+  }
+  var my_editor_submit = function() {
+    var fr = $('item_editors_add_buf');
+    if (fr.options.length == 0) {
+      alert('管理者1が選択されていません。');
+//      return false;
+    }
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_editors_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    $('itemForm').submit();
+  }
+  var load_editor_cand = function () {
+    url = '<%="/_admin/gwboard/ajaxgroups/getajax.json?s_genre=load_editors&system=GWBBS&title_id=#{params[:id]}"%>';
+    var to = $('item_editors_add_buf');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  var update_editor_cand = function () {
+    var fr = $('item_editors_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_editors_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  window.onload = load_editor_cand;
+//]]>
+</script>

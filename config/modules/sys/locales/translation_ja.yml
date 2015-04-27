@@ -1,0 +1,38 @@
+ja: 
+  activerecord: 
+    attributes: 
+      sys/user: 
+        id: "ID"
+        created_at: "作成日時"
+        updated_at: "更新日時"
+        state: "状態"
+        account: "ユーザーID"
+        password: "パスワード"
+        mobile_access: "モバイルアクセス"
+        mobile_password: "モバイルパスワード"
+        ldap: "LDAP同期"
+        ldap_version: "LDAP同期バージョン"
+        auth_no: "ユーザー権限"
+        name: "氏名"
+        name_en: "氏名(英語表記)"
+        kana: "フリガナ"
+        sort_no: "並び順"
+        official_position: "役職"
+        assigned_job: "担当"
+        email: "メールアドレス"
+        remember_token: "トークン"
+        remember_token_expires_at: "トークン有効期限"
+        group_id: "グループ"
+        in_group_id: "グループ"
+        role_name: "ロール権限"
+      sys/object_privilege: 
+        item_unid: "コンセプト"
+        action: "権限"
+        in_actions: "権限"
+      sys/maintenance: 
+        created_at: "作成日時"
+        updated_at: "編集日時"
+        published_at: "公開日時"
+        state: "状態"
+        title: "タイトル"
+        body: "本文"

@@ -1,0 +1,29 @@
+<h5>編集中記事一覧</h5>
+<table class="index">
+  <tr>
+    <th style="width: 40px; text-align: center;">表示</th>
+    <th style="width: 60px; text-align: center;">記事No</th>
+    <th style="width: 60px; text-align: center;">種別</th>
+    <th style="width: 60px; text-align: center;">状態</th>
+    <th style="             text-align: left;">タイトル名</th>
+    <th style="width: 120px; text-align: center;">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <% item.creator %>
+      <td style="width:  40px;  text-align: center;"><%= link_to '詳細', item.gwqa_show_path %></td>
+      <td style="width:  60px;  text-align: center;"> <%= item.id %></td>
+      <%if item.doc_type == 0%>
+        <%str_qa = '質問'%>
+      <%else%>
+        <%str_qa = '回答'%>
+      <%end%>
+      <td style="text-align: center;"><%= item.status_show %></td>
+      <td style="text-align: center;"> <%=str_qa%></td>
+      <td style="text-align: left;"> <%= item.control.title unless item.control.blank? %></td>
+      <td style="text-align: center;"><%= item.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>

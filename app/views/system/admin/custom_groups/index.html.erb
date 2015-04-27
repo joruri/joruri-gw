@@ -1,0 +1,67 @@
+<div class="piece AdminMessage">
+<%= render 'header' -%>
+<%= render 'piece_header' -%>
+<div class="pieceBody">
+<%= render 'search' %>
+
+<div class="editingBox">
+  <span class="btNew">
+    <%= link_to '新規作成', {action: :new} %>
+  </span>
+</div>
+
+<%= form_tag url_for(action: :sort_update), {method: :put} do %>
+  <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
+  <%= hidden_field_tag :limit, params[:limit] if params[:limit].present? %>
+  <%= unique_error_messages_for @items %>
+  <table class="index">
+    <colgroup class="sort_id"></colgroup>
+    <colgroup class="name"></colgroup>
+    <colgroup class="sort_prefix"></colgroup>
+    <colgroup class="group"></colgroup>
+    <colgroup class="group"></colgroup>
+    <colgroup class="group"></colgroup>
+    <colgroup class="action"></colgroup>
+    <colgroup class="action"></colgroup>
+    <colgroup class="action"></colgroup>
+    <colgroup class="pre"></colgroup>
+    <tr>
+      <th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+      <th>名称</th>
+      <th>種別</th>
+      <th>作成所属</th>
+      <th>最終更新者</th>
+      <th>最終更新日時</th>
+      <th>状態</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <% @items.each do |item| %>
+      <%= fields_for 'items[]', item do |f| %>
+        <tr class="<%= cycle '', 'cycle' %>">
+          <td><%= item.sort_prefix %>&nbsp;
+            <% if @is_gw_admin || item.owner_uid == Core.user.id %>
+              <%= f.text_field :sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+            <% else %>
+              <%= item.sort_no %>
+            <% end %>
+          <td><%= item.name %></td>
+          <td><%= item.kind_show %></td>
+          <td><%= item.owner_group.ou_name if item.owner_group %></td>
+          <td><%= item.updater.display_name if item.updater %></td>
+          <td><%=l item.updated_at if item.updated_at %></td>
+          <td><%= item.state_label %></td>
+          <td><%= link_to_edit item.id %></td>
+          <td><%= link_to_destroy item.id if @is_gw_admin || item.owner_uid == Core.user.id %></td>
+          <td><%= link_to "プレビュー", "/gw/schedules?cgid=#{item.id}" %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+<% end %>
+
+<%= paginate @items %>
+
+</div><!--pieceBody-->
+</div><!--piece AdminMessage-->

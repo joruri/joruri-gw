@@ -1,0 +1,11 @@
+<%= form_tag '', :method => :get, :class => 'search' do %>
+<table>
+  <tr>
+    <td>LDAP<%= select_tag :ldap, options_for_select([['全て', 'all']] + System::Group.ldap_options, params[:ldap]) %></td>
+    <td>状態<%= select_tag :state, options_for_select([['全て', 'all']] + System::Group.state_options, params[:state]) %></td>
+    <td class="submitters">
+      <%= submit_tag '検索', :name => :search %>
+    </td>
+  </tr>
+</table>
+<% end %>

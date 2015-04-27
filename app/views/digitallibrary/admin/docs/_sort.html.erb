@@ -1,0 +1,7 @@
+<%
+str_limit = ""
+str_limit = "&limit=#{params[:limit]}" unless params[:limit].blank?
+%>
+<div class="btBox">
+<span class="<%= 'current' unless params[:state] == 'DATE'%>"><%=link_to "階層表示", "#{@title.docs_path}#{str_limit}"%></span><%if @title.importance == 0%><span class="<%= 'current' if params[:state] == 'DATE'%>"><%=link_to("日付順一覧", "#{@title.docs_path}&state=DATE#{str_limit}")%></span><%end%>
+</div>

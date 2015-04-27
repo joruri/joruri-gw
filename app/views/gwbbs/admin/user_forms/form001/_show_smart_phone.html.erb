@@ -1,0 +1,10 @@
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr>
+    <td class="docTitle"><span><%=hbr @item.title %></span></td>
+  </tr>
+  <tr>
+    <td><%= convert_for_mobile_body(@item.body, params[:_session_id]) %></td>
+  </tr>
+</table>
+</div>

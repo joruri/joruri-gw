@@ -1,0 +1,87 @@
+<%=render 'header' %>
+
+<div class="editingBox">
+<% if @item.is_editable? %>
+  <% if @item.category4_id == 1 %>
+    <span class="btAppEdit"><%= link_to '承認あり編集', "#{edit_gwfaq_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+  <% else %>
+    <span class="btEdit"><%= link_to '編集', "#{edit_gwfaq_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+  <% end %>
+  <span class="btDestroy"><%= link_to '削除', "#{gwfaq_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+<% end %>
+<% if @item.is_recognizable? && @item.state == 'recognize' %>
+  <span class="btRecognize"><%= link_to '承認', "#{recognize_update_gwfaq_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
+<% end %>
+<% if @item.is_publishable? && @item.state == 'recognized' %>
+  <span class="btPublish"><%= link_to '公開', "#{publish_update_gwfaq_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
+<% end %>
+</div>
+
+<div class="docsInnerBox">
+<table class="bbsCreator">
+  <tr>
+    <th style="width: 80px; text-align: left;">記事管理課 :</th>
+    <td style="text-align: left;"><%= @item.section_name %></td>
+  </tr>
+</table>
+
+<% if @title.category == 1 %>
+ <div class="bbsImportance">
+   <%= @title.category1_name + ' : ' unless @title.category1_name.blank? %>
+   <%= gwbd_category_name(@d_categories,@item.category1_id) %>
+ </div>
+<% end %>
+
+<div class="bbsCreatorInf">
+<table>
+  <tr>
+    <td>作成 : &nbsp;</td>
+    <td><%= @item.createrdivision %></td>
+    <td class="space"></td>
+    <td><%= @item.creater %></td>
+    <td class="space"></td>
+    <td><%= @item.createdate %></td>
+  </tr>
+  <tr>
+    <td>編集 : &nbsp;</td>
+    <td><%= @item.editordivision %></td>
+    <td class="space"></td>
+    <td><%= @item.editor %></td>
+    <td class="space"></td>
+    <td><%= @item.editdate %></td>
+  </tr>
+</table>
+</div>
+
+<table class="questionArea">
+  <tr><th>質問</th></tr>
+  <tr><td class="questionTitle"><%= @item.title %></td></tr>
+</table>
+
+<div class="answerBox">
+<table class="answerArea">
+  <tr>
+    <th><div class="answerTitle">回答</div></th>
+  </tr>
+  <tr>
+    <% if @item.wiki_enabled? -%>
+      <td class="answerText wiki"><%= raw(wiki_show @item.body) -%></td>
+    <% else -%>
+      <td class="answerText"><%= raw(@item.body) -%></td>
+    <% end -%>
+  </tr>
+</table>
+</div>
+<% if @title.content_id == 9 %>
+<!--旧システム外だし移行のみcontent_id == 9を設定-->
+  <%= render '/gwboard/admin/docs/library_index', files: @item.files unless @title.use_old_upload_system? %>
+<% else %>
+  <%= render '/gwboard/admin/docs/upload_index', files: @item.files if @title.use_old_upload_system? %>
+<% end %>
+
+</div>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '件名一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>
+</div>

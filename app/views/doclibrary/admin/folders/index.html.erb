@@ -1,0 +1,25 @@
+<%= render 'header' %>
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: right;">ID</th>
+    <th >フォルダ名称</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 60px; text-align: right;">並び順</th>
+    <th style="width: 80px; text-align: center;">ステータス</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td><%= item.name %></td>
+    <td style="text-align: center;"><%= link_to_list_gwboard_category item %></td>
+    <td style="text-align: center;"><%= link_to '詳細', item.show_path %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_name[item.state] %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<div class="btReturn">
+  <%= link_to 'ファイル一覧へ', "#{@title.docs_path}&state=#{params[:state]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}" %>
+</div>

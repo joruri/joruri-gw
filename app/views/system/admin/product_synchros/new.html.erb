@@ -1,0 +1,16 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<%= form_for :item, :url => {:action => :synchronize}, :html => {:method => :get} do |f| -%>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters">
+    <%= f.submit 'プロダクト同期を実行する', :style => 'width: 15em;', :data => {:confirm => 'プロダクト同期を開始します。よろしいですか？'} %>
+  </div>
+<% end %>
+
+</div>
+</div>

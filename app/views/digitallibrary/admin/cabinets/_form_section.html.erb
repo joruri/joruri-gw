@@ -1,0 +1,32 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>承認機能</th>
+    <td><%= f.radio_buttons :recognize, @item.recognize_states_list %></td>
+  </tr>
+  <tr>
+    <th>一覧表示行数</th>
+    <td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
+  </tr>
+  <tr>
+    <th>日付順一覧表示機能</th>
+    <td><%= f.radio_buttons :importance, @item.display_states_list %></td>
+  </tr>
+  <tr>
+    <th>見出しルート名<%= required('※') %></th>
+    <td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
+  </tr>
+  <tr>
+    <th>索引ツリーに番号<br />を表示する</th>
+    <td><%= f.radio_buttons :category, @item.display_states_list %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>利用説明<br />(HTML形式可)</th>
+    <td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption' %></td>
+  </tr>
+</table>
+
+<%= render '/gwboard/admin/adms/form' %>

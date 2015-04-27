@@ -1,0 +1,22 @@
+<%
+link_str1 = %Q(<span>一覧</span>)
+if @l2_current  == '01'
+  link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+end
+link_url1 = url_for({:action => :index})
+link_str2 = nil
+link_url2 = nil
+case @menu_header3
+when 'sb0606menu'
+  link_url1 = '/gwsub/sb06/sb0606menu'
+else
+end
+%>
+<%#= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<% unless link_str1.blank? %>
+<div class="menu">
+<!-- <p><%#=h "#{@menu_title3}" %></p> -->
+<%= link_to link_str1.html_safe , link_url1  unless link_str1.blank? %>
+<%= link_to link_str2.html_safe , link_url2  unless link_str2.blank? %>
+</div>
+<% end %>

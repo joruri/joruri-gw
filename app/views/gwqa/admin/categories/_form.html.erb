@@ -1,0 +1,13 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>並び順<%= required('※') %></th>
+    <td><%= f.text_field :sort_no, :class => 'num sort_no' %></td>
+  </tr>
+  <tr>
+    <th>名称<%= required('※') %></th>
+    <td><%= f.text_field :name, :class => 'string name', :style => 'width: 200px;' %></td>
+  </tr>
+</table>
+<input type="hidden" name="parent_id" value='<%="#{params[:parent_id]}"%>' />
+<input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />

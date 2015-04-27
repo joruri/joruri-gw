@@ -1,0 +1,583 @@
+<script type="text/javascript">
+//<![CDATA[
+var update_item_st_at = function() {
+  mode = $('init_st_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+  if (mode == 'datetime' || mode == 'time') {
+    hn = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+    var hne = $('item_st_at_4i').value;
+    hne-=0;
+    hne = hne + 1;
+    hne+"";
+    var hned = hne + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+  }
+  var sta;
+  var stb;
+  sta = $('item_st_at_4i').value;
+  stb = $('item_st_at_5i').value;
+  $('item_ed_at_4i').value = sta;
+  $('item_ed_at_5i').value = stb;
+  sta-=0;
+  stb-=0;
+  if (sta < 23) {
+    $('item_ed_at_4i').selectedIndex = sta + 1;
+  }
+
+  sty = $('item_st_at_1i').value;
+  stm = $('item_st_at_2i').value;
+  std = $('item_st_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_ed_at_1i').selectedIndex = sty;
+  $('item_ed_at_2i').selectedIndex = stm;
+  $('item_ed_at_3i').selectedIndex = std;
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+  $('item_ed_at').value = reted;
+
+  $('item_st_at').value = ret;
+  update_prop_cand();
+}
+var update_item_st_at_from_calendar = function() {
+  mode = $('init_st_at_mode').value;
+  value = $('item_st_at').value;
+
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_st_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_st_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+      hn = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+      var hne = $('item_st_at_4i').value;
+      hne-=0;
+      hne = hne + 1;
+      hne+"";
+      var hned = hne + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    $('item_ed_at').value = reted;
+    $('item_ed_at_1i').value= $('item_st_at_1i').value;
+    $('item_ed_at_2i').value= $('item_st_at_2i').value;
+    $('item_ed_at_3i').value= $('item_st_at_3i').value;
+    var sta;
+    var stb;
+    sta = $('item_st_at_4i').value;
+    stb = $('item_st_at_5i').value;
+    $('item_ed_at_4i').value = sta;
+    $('item_ed_at_5i').value = stb;
+    sta-=0;
+    stb-=0;
+    if (sta < 23) {
+      $('item_ed_at_4i').selectedIndex = sta + 1;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_ed_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_st_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_st_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_st_at_4i').selectedIndex = select_options_get_index_by_value($('item_st_at_4i'), match[1].sub(/^0/, ''));
+    $('item_st_at_5i').selectedIndex = select_options_get_index_by_value($('item_st_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+  update_prop_cand();
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_ed_at = function() {
+  mode = $('init_ed_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_ed_at').value = ret;
+  update_prop_cand();
+
+
+}
+var update_item_ed_at_from_calendar = function() {
+  mode = $('init_ed_at_mode').value;
+  value = $('item_ed_at').value;
+
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_ed_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_ed_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+      hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+      var hne = $('item_ed_at_4i').value;
+      var hned = hne + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_ed_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_ed_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_ed_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_ed_at_4i').selectedIndex = select_options_get_index_by_value($('item_ed_at_4i'), match[1].sub(/^0/, ''));
+    $('item_ed_at_5i').selectedIndex = select_options_get_index_by_value($('item_ed_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+  update_prop_cand();
+}
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_repeat_st_date_at = function() {
+  mode = $('init_repeat_st_date_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_repeat_st_date_at_1i').value + '-' + $('item_repeat_st_date_at_2i').value + '-' + $('item_repeat_st_date_at_3i').value;
+
+  sty = $('item_repeat_st_date_at_1i').value;
+  stm = $('item_repeat_st_date_at_2i').value;
+  std = $('item_repeat_st_date_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+
+  <% unless %w(new create).index(params[:action]).nil? %>
+  $('item_repeat_ed_date_at_1i').selectedIndex = sty;
+  $('item_repeat_ed_date_at').selectedIndex = stm;
+  $('item_repeat_ed_date_at').selectedIndex = std;
+  <% end %>
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+
+  <% unless %w(new create).index(params[:action]).nil? %>
+  $('item_repeat_ed_date_at').value = reted;
+  update_item_repeat_ed_day_sync(); // 繰り返し日時の同期
+  <% end %>
+  $('item_repeat_st_date_at').value = ret;
+}
+var update_item_repeat_st_date_at_from_calendar = function() {
+  mode = $('init_repeat_st_date_at_mode').value;
+  value = $('item_repeat_st_date_at').value;
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_repeat_st_date_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_date_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_repeat_st_date_at_1i').value + '-' + $('item_repeat_st_date_at_2i').value + '-' + $('item_repeat_st_date_at_3i').value;
+      hn = $('item_repeat_st_date_at_4i').value + ':' + $('item_repeat_st_date_at_5i').value;
+      var hne = $('item_repeat_st_date_at_4i').value;
+      var hned = hne + ':' + $('item_repeat_st_date_at_5i').value;
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_repeat_st_date_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_repeat_st_date_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_date_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_repeat_st_date_at_4i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_date_at_4i'), match[1].sub(/^0/, ''));
+    $('item_repeat_st_date_at_5i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_date_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+  <% unless %w(new create).index(params[:action]).nil? %>
+  update_item_repeat_ed_day_sync(); // 繰り返し日時の同期
+  <% end %>
+}
+
+var update_item_repeat_ed_day_sync = function() {
+  $('item_repeat_ed_date_at_1i').value = $('item_repeat_st_date_at_1i').value;
+  $('item_repeat_ed_date_at_2i').value = $('item_repeat_st_date_at_2i').value;
+  $('item_repeat_ed_date_at_3i').value = $('item_repeat_st_date_at_3i').value;
+  $('item_repeat_ed_date_at_1i').selectedIndex = $('item_repeat_st_date_at_1i').selectedIndex;
+  $('item_repeat_ed_date_at_2i').selectedIndex = $('item_repeat_st_date_at_2i').selectedIndex;
+  $('item_repeat_ed_date_at_3i').selectedIndex = $('item_repeat_st_date_at_3i').selectedIndex;
+  $('item_repeat_ed_date_at').value = $('item_repeat_st_date_at_1i').value + '-' + $('item_repeat_st_date_at_2i').value + '-' + $('item_repeat_st_date_at_3i').value;
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_repeat_st_time_at = function() {
+  mode = $('init_repeat_st_time_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_repeat_st_time_at_1i').value + '-' + $('item_repeat_st_time_at_2i').value + '-' + $('item_repeat_st_time_at_3i').value;
+  if (mode == 'datetime' || mode == 'time') {
+    hn = $('item_repeat_st_time_at_4i').value + ':' + $('item_repeat_st_time_at_5i').value;
+    var hne = $('item_repeat_st_time_at_4i').value;
+    hne-=0;
+    hne = hne + 1;
+    hne+"";
+    var hned = hne + ':' + $('item_repeat_st_time_at_5i').value;
+  }
+  var sta;
+  var stb;
+  sta = $('item_repeat_st_time_at_4i').value;
+  stb = $('item_repeat_st_time_at_5i').value;
+  $('item_repeat_ed_time_at_5i').value = stb;
+  sta-=0;
+  stb-=0;
+  if (sta < 23) {
+    $('item_repeat_ed_time_at_4i').selectedIndex = sta + 1;
+    $('item_repeat_ed_time_at_4i').value = hne;
+  }
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+  $('item_repeat_ed_time_at').value = reted;
+  $('item_repeat_st_time_at').value = ret;
+  update_prop_cand();
+
+}
+var update_item_repeat_st_time_at_from_calendar = function() {
+  mode = $('init_repeat_st_time_at_mode').value;
+  value = $('item_repeat_st_time_at').value;
+
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_repeat_st_time_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_time_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_repeat_st_time_at_1i').value + '-' + $('item_repeat_st_time_at_2i').value + '-' + $('item_repeat_st_time_at_3i').value;
+      hn = $('item_repeat_st_time_at_4i').value + ':' + $('item_repeat_st_time_at_5i').value;
+      var hne = $('item_repeat_st_time_at_4i').value;
+      var hned = hne + ':' + $('item_repeat_st_time_at_5i').value;
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_repeat_st_time_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_repeat_st_time_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_time_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_repeat_st_time_at_4i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_time_at_4i'), match[1].sub(/^0/, ''));
+    $('item_repeat_st_time_at_5i').selectedIndex = select_options_get_index_by_value($('item_repeat_st_time_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+  update_prop_cand();
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_repeat_ed_date_at = function() {
+  mode = $('init_repeat_ed_date_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_repeat_ed_date_at_1i').value + '-' + $('item_repeat_ed_date_at_2i').value + '-' + $('item_repeat_ed_date_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_repeat_ed_date_at_4i').value + ':' + $('item_repeat_ed_date_at_5i').value;
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_repeat_ed_date_at').value = ret;
+
+}
+var update_item_repeat_ed_date_at_from_calendar = function() {
+  mode = $('init_repeat_ed_date_at_mode').value;
+  value = $('item_repeat_ed_date_at').value;
+
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_repeat_ed_date_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_date_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_repeat_ed_date_at_1i').value + '-' + $('item_repeat_ed_date_at_2i').value + '-' + $('item_repeat_ed_date_at_3i').value;
+      hn = $('item_repeat_ed_date_at_4i').value + ':' + $('item_repeat_ed_date_at_5i').value;
+      var hne = $('item_repeat_ed_date_at_4i').value;
+      var hned = hne + ':' + $('item_repeat_ed_date_at_5i').value;
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_repeat_ed_date_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_repeat_ed_date_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_date_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_repeat_ed_date_at_4i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_date_at_4i'), match[1].sub(/^0/, ''));
+    $('item_repeat_ed_date_at_5i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_date_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_repeat_ed_time_at = function() {
+  mode = $('init_repeat_ed_time_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_repeat_ed_time_at_1i').value + '-' + $('item_repeat_ed_time_at_2i').value + '-' + $('item_repeat_ed_time_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_repeat_ed_time_at_4i').value + ':' + $('item_repeat_ed_time_at_5i').value;
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_repeat_ed_time_at').value = ret;
+  update_prop_cand();
+
+}
+var update_item_repeat_ed_time_at_from_calendar = function() {
+  mode = $('init_repeat_ed_time_at_mode').value;
+  value = $('item_repeat_ed_time_at').value;
+
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_repeat_ed_time_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_time_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_repeat_ed_time_at_1i').value + '-' + $('item_repeat_ed_time_at_2i').value + '-' + $('item_repeat_ed_time_at_3i').value;
+      hn = $('item_repeat_ed_time_at_4i').value + ':' + $('item_repeat_ed_time_at_5i').value;
+      var hne = $('item_repeat_ed_time_at_4i').value;
+      var hned = hne + ':' + $('item_repeat_ed_time_at_5i').value;
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_repeat_ed_time_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_repeat_ed_time_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_time_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_repeat_ed_time_at_4i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_time_at_4i'), match[1].sub(/^0/, ''));
+    $('item_repeat_ed_time_at_5i').selectedIndex = select_options_get_index_by_value($('item_repeat_ed_time_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+  update_prop_cand();
+}
+
+var switchRepeatDate1 = function() {
+  // セレクトボックス（開始日）
+  sty = $('item_repeat_st_date_at_1i').value;
+  stm = $('item_repeat_st_date_at_2i').value;
+  std = $('item_repeat_st_date_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_st_at_1i').selectedIndex = sty;
+  $('item_st_at_2i').selectedIndex = stm;
+  $('item_st_at_3i').selectedIndex = std;
+  $('item_st_at_1i').value = $('item_repeat_st_date_at_1i').value;
+  $('item_st_at_2i').value = $('item_repeat_st_date_at_2i').value;
+  $('item_st_at_3i').value = $('item_repeat_st_date_at_3i').value;
+  set_st_at();
+
+  // セレクトボックス（終了日）
+  sty = $('item_repeat_ed_date_at_1i').value;
+  stm = $('item_repeat_ed_date_at_2i').value;
+  std = $('item_repeat_ed_date_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_ed_at_1i').selectedIndex = sty;
+  $('item_ed_at_2i').selectedIndex = stm;
+  $('item_ed_at_3i').selectedIndex = std;
+  $('item_ed_at_1i').value = $('item_repeat_ed_date_at_1i').value;
+  $('item_ed_at_2i').value = $('item_repeat_ed_date_at_2i').value;
+  $('item_ed_at_3i').value = $('item_repeat_ed_date_at_3i').value;
+  set_ed_at();
+}
+
+var switchRepeatDate2 = function() {
+  // セレクトボックス（終了日時）
+  sty = $('item_ed_at_1i').value;
+  stm = $('item_ed_at_2i').value;
+  std = $('item_ed_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_repeat_ed_date_at_1i').selectedIndex = sty;
+  $('item_repeat_ed_date_at_2i').selectedIndex = stm;
+  $('item_repeat_ed_date_at_3i').selectedIndex = std;
+  $('item_repeat_ed_date_at_1i').value = $('item_ed_at_1i').value;
+  $('item_repeat_ed_date_at_2i').value = $('item_ed_at_2i').value;
+  $('item_repeat_ed_date_at_3i').value = $('item_ed_at_3i').value;
+
+  sta = $('item_ed_at_4i').value;
+  sta-=0;
+  $('item_repeat_ed_time_at_4i').selectedIndex = sta;
+
+  var stb;
+  stb = $('item_ed_at_5i').value;
+  $('item_repeat_ed_time_at_5i').value = stb;
+  stb-=0;
+
+  // セレクトボックス（開始日）
+  sty = $('item_st_at_1i').value;
+  stm = $('item_st_at_2i').value;
+  std = $('item_st_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_repeat_st_date_at_1i').selectedIndex = sty;
+  $('item_repeat_st_date_at_2i').selectedIndex = stm;
+  $('item_repeat_st_date_at_3i').selectedIndex = std;
+
+  var stb1;
+  stb1 = $('item_st_at_5i').value;
+  $('item_repeat_st_time_at_5i').value = stb1;
+}
+
+var set_st_at = function() {
+  ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value
+  hn = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+  $('item_st_at').value = ymd + ' ' + hn;
+}
+var set_ed_at = function() {
+  ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value
+  hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  $('item_ed_at').value = ymd + ' ' + hn;
+}
+//]]>
+</script>

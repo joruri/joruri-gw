@@ -1,0 +1,35 @@
+<div class="piece YearMarkJp">
+<%= render 'header' %>
+<div class="pieceBody">
+
+<% if @item.editable? %>
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
+  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+</div>
+<% else %>
+  <div>最新の年号以外は編集・削除を行うことはできません。</div>
+<% end %>
+
+<table class="show">
+  <tr>
+    <th>年号</th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th>記号</th>
+    <td><%= @item.mark %></td>
+  </tr>
+  <tr>
+    <th>開始日（西暦）</th>
+    <td><%= @item.start_at.strftime('%Y-%m-%d') if @item.start_at %></td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', {action: :index} %>
+</div>
+
+</div>
+</div>

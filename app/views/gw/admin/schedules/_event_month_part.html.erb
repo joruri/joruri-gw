@@ -1,0 +1,44 @@
+<%
+today = Date.today
+holidays = Gw::Holiday.find_by_range(@st_date, @st_date.end_of_month)
+%>
+<table class="index">
+  <tr>
+    <th class="day">日付</th>
+    <th class="event">行事名</th>
+  </tr>
+  <% @st_date.upto(@st_date.end_of_month) do |date| %>
+    <%
+    holiday = holidays.any? {|holiday| holiday.st_at.to_date == date }
+    events = @schedule_events.select {|item| item.st_at.to_date == date && item.schedule.repeat_item_first? } # 繰り返し用の終日日の表示 
+
+    if date.wday == 0
+      class_wday = "sunday"
+    elsif date.wday == 6
+      class_wday = "saturday"
+    else
+      class_wday = ""
+    end
+    %>
+    <tr class="<%= "today" if date == today %>">
+      <td rowspan="<%= events.size if events.size > 0 %>" class="day <%= class_wday %> <%= "holiday" if holiday %>">
+        <%= "#{date.strftime('%d')} （#{Gw.weekday(date.wday)}）" %>
+      </td>
+      <% if events.blank? %>
+        <td class="event end"></td>
+      <% else %>
+        <% events.each_with_index do |event, i| %>
+          <% if i > 0 %>
+            <tr class="<% 'today' if event.st_at.to_date == today %>">
+          <% end %>
+          <td class="event <%= 'end' if i == events.size - 1 %>">
+            <span class="title"><%= event.event_display("month") %></span>
+          </td>
+          <% if i == events.size - 1 %>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

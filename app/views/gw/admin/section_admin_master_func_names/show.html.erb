@@ -1,0 +1,40 @@
+<div class="piece sectionAdminMasters show">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+
+<div class="pieceBodyBody">
+
+<div class="editingBox">
+  <span class="btEdit">
+    <%= link_to '編集', :action => :edit %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', {:action => :destroy}, :method => :delete, :confirm => '削除します。よろしいでしょうか？' -%>
+  </span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no -%></td>
+  </tr>
+  <tr>
+    <th>機能名</th>
+    <td><%= @item.func_name -%></td>
+  </tr>
+  <tr>
+    <th>表示名</th>
+    <td><%= @item.name -%></td>
+  </tr>
+</table>
+
+</div>
+
+<div class="btReturn">
+  <%= link_to '戻る', :action => :index -%>
+</div>
+
+</div>
+</div>

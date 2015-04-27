@@ -1,0 +1,81 @@
+<%
+@num = 0
+@num += session[:mobile][:to].length if session[:mobile][:to] if session[:mobile]
+groups  = Gwsub.grouplist4(nil, nil , true , nil)
+@edit_path = "/gw/mobile_participants/mobile_manage"
+if  params[:view] == "quote"
+ @str = "作成"
+elsif params[:view] == "edit"
+ @str = "編集"
+else
+ @str = "作成"
+end
+%>
+<hr class="borderDash"/>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif"><%=@str%></p>
+<hr class="borderDash"/>
+
+<%= form_tag '', :method => :get, :class => 'search', :name => 'groupForm' do %>
+  <%= select_tag( 'group_id',options_for_select( groups ,@group_id ) ,:style=>'width:200px;margin-top: 5px;') %>
+  <%= hidden_field_tag :view, params[:view] %>
+  <%= hidden_field_tag :memo_id, params[:memo_id] %>
+  <%= submit_tag '検索', :class => 'menuItem', :name => 'select'%>
+<% end %>
+<%unless @group.blank?%><p class="bgAsh"><%="#{@group.name}"%></p><%end%>
+<%= form_for :item, :url => @edit_path, :method=>:get, :html => {:id => 'mailForm', :name => 'mailForm', :class=>"leftSide"} do |f| %>
+  <% if @items.blank? %>
+所属にユーザーが存在しません。
+  <% else %>
+    <% @items.each do |u| %>
+      <input type="checkbox" name="to[<%= u[1] %>]" value="1" />
+<%
+if Gw::Property::MemoMobileMail.where(uid: u[1]).first_or_new.is_email_mobile?
+  mobile_mark = "M "
+else
+  mobile_mark = "　"
+end
+%>
+      <%=mobile_mark%><%= u[0] %><br/>
+    <% end %>
+    <br />
+  <%= submit_tag 'ユーザー選択', :class => 'menuItem', :name => 'selectMember' %>
+  <% end %>
+  <% if @num != 0 %>
+<br /><br />
+<p class="bgAsh">選択済みユーザー</p>
+  <% [:to].each do |t| %>
+    <% if !session[:mobile][t].blank? %>
+      <% session[:mobile][t].each_with_index do |u,idx| %>
+      <%= submit_tag '削除', :class => 'deleteItem', :name => "deleteMember[#{t}_#{idx}]" %>
+      <%to_user = System::User.where(:id =>u).first -%>
+<%
+if Gw::Property::MemoMobileMail.where(uid: u).first_or_new.is_email_mobile?
+  mobile_mark = "M "
+else
+  mobile_mark = "　"
+end
+%>
+      <%=mobile_mark%><%= to_user.display_name unless to_user.blank? %>
+      <br />
+      <% end %>
+    <% end %>
+  <% end %>
+  <% end %>
+  <%= hidden_field_tag :group_id, params[:group_id] %>
+  <%= hidden_field_tag :view, params[:view] %>
+  <%= hidden_field_tag :memo_id, params[:memo_id] %>
+  <% if @num != 0 || !@items.blank? %>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'createMemo' if  params[:view] == "new"%>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'editMemo' if  params[:view] == "edit"%>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'quoteMemo' if  params[:view] == "quote"%>
+  <% end %>
+<% end %>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%=link_to "戻る", "/gw/memos/new" if  params[:view] == "new"%>
+<%=link_to "戻る", "/gw/memos/#{params[:memo_id]}/edit" if  params[:view] == "edit"%>
+<%=link_to "戻る", "/gw/memos/#{params[:memo_id]}/quote" if  params[:view] == "quote"%>
+</p>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%=link_to "連絡メモ一覧へ", "/gw/memos/?s_send_cls=#{@s_send_cls}&s_finished=#{@s_finised}"%></p>

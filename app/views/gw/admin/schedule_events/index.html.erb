@@ -1,0 +1,34 @@
+<div class="piece schedulePiece index">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'index_menu' %>
+<%= render 'search' %>
+<div class="titleLine">
+<span class="title">週間・月間行事予定 （<%= @title_piece %>）</span>
+<% if params[:s_st_at].present? && params[:s_st_at] != '0' && params[:s_open] == '1' && @items.length > 0 %>
+  <% event_date = params[:s_st_at].to_date.strftime('%Y%m%d') %>
+  <% if @pattern == 'week' %>
+    <%= link_to '週間行事予定表 &#62;&#62;', "/gw/schedules/event_week?s_date=#{event_date}", target: '_blank' %>
+  <% elsif @pattern == 'month' %>
+    <%= link_to '月間行事予定表 &#62;&#62;', "/gw/schedules/event_month?s_date=#{event_date}", target: '_blank' %>
+  <% end %>
+<% end %>
+<span class="linkSpace"></span><!--linkSpace-->
+</div>
+
+<%= render 'index_table' %>
+
+<script type="text/javascript">
+//<![CDATA[
+var search_submit = function () {
+  document.forms['search'].submit();
+}
+//]]>
+</script>
+
+</div>
+</div>
+</div>

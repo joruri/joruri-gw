@@ -1,0 +1,38 @@
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+str_tab5_class = 'tab'
+str_tab6_class = 'tab'
+str_tab1_class += ' current' if params[:cond].blank?
+str_tab1_class += ' current' if params[:cond] == 'unread'
+str_tab2_class += ' current' if params[:cond] == 'already'
+str_tab3_class += ' current' if params[:cond] == 'owner'
+str_tab4_class += ' current' if params[:cond] == 'admin'
+str_tab5_class += ' current' if params[:cond] == 'result'
+str_tab6_class += ' current' if params[:cond] == "template"
+%>
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=str_tab1_class%>"><%=link_to "未回答一覧", "/enquete" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%=link_to "回答済一覧", "/enquete?cond=already" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab5_class%>"><%=link_to "アンケート結果", "/questionnaire?cond=result" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab3_class%>"><%=link_to '作成した設問', "/questionnaire" %></td>
+<% if @is_sysadm%>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab4_class%>"><%=link_to "管理者", "/questionnaire?cond=admin" %></td>
+<%end%>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab6_class%>"><%=link_to "テンプレート", "/questionnaire/templates?cond=template" %></td>
+<td class="spaceRight">
+</td></tr>
+</tbody>
+</table>
+</div>

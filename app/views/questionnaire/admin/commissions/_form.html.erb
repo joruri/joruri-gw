@@ -1,0 +1,217 @@
+<%= render '/questionnaire/admin/commissions/form_group' %>
+<%= render '/questionnaire/admin/commissions/form_user' %>
+
+<script type="text/javascript">
+//<![CDATA[
+  //--add-del---------------------------------------------------
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  //所属
+  //custom_groups
+  var add_custom_group = function() {
+    add_list('item_custom_groups_uid', 'item_custom_groups_add_buf')
+  }
+  var del_custom_group = function() {
+    del_list('item_custom_groups_add_buf')
+  }
+  //reader_groups
+  var add_reader_group = function() {
+    add_list('item_reader_groups_uid', 'item_reader_groups_add_buf')
+  }
+  var del_reader_group = function() {
+    del_list('item_reader_groups_add_buf')
+  }
+  //個人
+  //custom_readers
+  var add_custom_reader = function() {
+    add_list('item_custom_readers_uid', 'item_custom_readers_add_buf')
+  }
+  var del_custom_reader = function() {
+    del_list('item_custom_readers_add_buf')
+  }
+  //readers
+  var add_reader = function() {
+    add_list('item_readers_uid', 'item_readers_add_buf')
+  }
+  var del_reader = function() {
+    del_list('item_readers_add_buf')
+  }
+  //---------------------------------------------------add-del--
+
+  var my_submit = function(state) {
+    //所属
+    //custom_groups
+    var fr = $('item_custom_groups_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_custom_groups_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //reader_groups
+    var fr = $('item_reader_groups_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_reader_groups_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    //個人
+    //custom_readers
+    var fr = $('item_custom_readers_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_custom_readers_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //readers
+    var fr = $('item_readers_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_readers_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var st = $('item_state');
+    st.value = state;
+    $('itemForm').submit();
+  }
+
+  var load_cand = function () {
+    //所属
+    var u = $('init_custom_groups_json');
+    var to = $('item_custom_groups_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_reader_groups_json');
+    var to = $('item_reader_groups_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    //個人
+    var u = $('init_custom_readers_json');
+    var to = $('item_custom_readers_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_readers_json');
+    var to = $('item_readers_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+  }
+
+  //--update-----------------------------------------------------------
+  //所属
+  //custom_groups
+  var update_custom_group_cand = function () {
+    var fr = $('item_custom_groups_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwmonitor/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_custom_groups_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //reader_groups
+  var update_reader_group_cand = function () {
+    var fr = $('item_reader_groups_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?msg=1&pattern=1&s_genre=' + genre;
+    var to = $('item_reader_groups_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //個人
+  //custom_readers
+  var update_custom_reader_cand = function () {
+    var fr = $('item_custom_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwmonitor/ajaxusergroups/getajax.json?s_genre=' + genre;
+    var to = $('item_custom_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //readers
+  var update_reader_cand = function () {
+    var fr = $('item_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //-----------------------------------------------------------update--
+
+  window.onload = load_cand;
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+  var sel_bg_select = function() {
+    idx =  radio_selected('item[send_change]')
+    switch (idx) {
+    case 0:
+      $('item_bgselect_type1').setStyle("display : inline;");
+      $('item_bgselect_type2').setStyle("display : none;");
+      break;
+    case 1:
+      $('item_bgselect_type1').setStyle("display : none;");
+      $('item_bgselect_type2').setStyle("display : inline;");
+    break;
+    }
+  }
+sel_bg_select();
+//]]>
+</script>
+

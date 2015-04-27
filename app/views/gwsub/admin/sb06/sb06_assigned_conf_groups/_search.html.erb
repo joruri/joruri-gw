@@ -1,0 +1,40 @@
+<%
+cats    = Gwsub::Sb06AssignedConfCategory.sb06_assign_conf_cat_id_select({:all=>'all'})
+fyears  = Gw::YearFiscalJp.select_dd_markjp_id('all',15)
+group_options = {:cat_id=>@cat_id,:all=>'all'}
+groups  = Gwsub::Sb06AssignedConfGroup.sb06_assign_conf_group_id_select(group_options)
+limits  = Gw.limit_select
+%>
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch') do %>
+<table>
+  <tr>
+    <td>分類</td>
+    <td><%= select_tag( 'cat_id',options_for_select( cats ,@cat_id.to_i )) %></td>
+    <td>年度</td>
+    <td><%= select_tag( 'fy_id',options_for_select( fyears ,@fy_id.to_i )) %></td>
+    <!--
+    <td>管理所属</td>
+    <td><%= select_tag( 'c_group_id',options_for_select( groups ,@c_group_id.to_i ) ) %></td>
+    -->
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>表示行数</td>
+    <td><%= select_tag( 'limit',options_for_select( limits , @limit.to_i ) ) %></td>
+    <td></td>
+    <td></td>
+    <td>検索</td>
+    <td><%= text_field_tag "s_keyword", params[:s_keyword] ,:size=>40 %></td>
+    <td class="submitters">
+    <%= submit_tag '検索',     :name => :search %>
+    <%= submit_tag 'リセット', :name => :reset  %>
+    </td>
+  </tr>
+</table>
+<!-- end form -->
+<% end %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>

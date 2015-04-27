@@ -1,0 +1,6 @@
+<%= form_for :item, :url => digitallibrary_doc_path(@item, {:title_id => @title.id}) + digitallib_uri_params, :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <div class="inner">
+  <%= render 'form', f: f %>
+  </div>
+<% end %>

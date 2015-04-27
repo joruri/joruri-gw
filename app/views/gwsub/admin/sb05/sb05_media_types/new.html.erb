@@ -1,0 +1,16 @@
+<%
+@action = "create"
+@create_path = @index_uri
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_media_types/menu' %>
+</div>
+<div class="pieceBody">
+
+<%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

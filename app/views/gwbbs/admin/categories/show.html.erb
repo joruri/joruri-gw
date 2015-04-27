@@ -1,0 +1,12 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>掲示板</h2>
+</div><!--pieceHeader-->
+<div class="pieceBody">
+<div class="showMenu">
+  <%=link_to '編集', edit_gwbbs_category_path(@item,{:title_id=>item.title_id})  %>
+  <%=link_to '削除', gwbbs_category_path(@item,{:title_id=>item.title_id}) , :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece bbs-->
+s

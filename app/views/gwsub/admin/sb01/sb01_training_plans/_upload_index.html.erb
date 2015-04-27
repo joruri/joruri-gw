@@ -1,0 +1,33 @@
+<%unless @files.blank?%>
+<div class="docsInnerBox2">
+<table class="show">
+<tr>
+<th colspan="2">添付ファイル名</th>
+<th class="remark">備考</th>
+</tr>
+<%
+for item in @files
+  #全ての処理に同じ対応が済むまで(掲示板のみ)
+  case item.system_name.to_s
+  when "gwbbs", "gwfaq"
+    download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 1
+    download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 2
+    unless @title.upload_system == 1
+      download_url = "/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}"
+    end unless @title.upload_system == 2
+  else
+    download_url = "/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}"
+  end
+%>
+ <tr>
+ <td style="width:30px;" class="attachIcon"><%= link_to('',download_url,:class => item.icon_type) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],download_url) %></td>
+ <td class="remark">
+ <%=item.memo%>
+ </td>
+ </tr>
+<%
+end %>
+</table>
+</div>
+<%end%>

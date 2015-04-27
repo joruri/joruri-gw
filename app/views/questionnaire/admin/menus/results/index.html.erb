@@ -1,0 +1,81 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'title_info' %>
+
+<% break_id = 0%>
+<% @items.each do |item| %>
+  <% unless break_id == item.field_id%>
+    <%=raw "</table><br />" unless break_id == 0 %>
+    <table class="index">
+      <tr><th><%= item.question_label %></th></tr>
+    </table>
+    <%=raw display_gruff(item.field_id, item.question_type) %>
+    <%=raw '<table class="index">'%>
+  <% end %>
+  <%
+    is_text = false
+    is_text = true if item.question_type.index('text')
+    is_text = true if item.question_type == 'group'
+  %>
+  <% unless is_text %>
+    <% unless item.question_type == 'display' %>
+      <tr>
+      <td style="width: 20px; text-align: center;"><%= item.option_id %></td>
+      <td style="width: 120px; text-align: right;">
+        <%= number_with_delimiter(item.answer_count, :delimiter => ",", :separator => ".") %>件
+      ( <%= number_with_delimiter(item.answer_ratio, :delimiter => ",", :separator => ".") %>％)
+      <td style="width: 5px; text-align: center; background-color: <%= item.display_color_code %>;"></td>
+      </td>
+      <td style="text-align: left;"><%="#{item.option_label}"%></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <%=raw result_group_line_display(item.field_id) if item.question_type == 'group'%>
+    <%=raw result_text_line_display(item.field_id) unless item.question_type == 'group'%>
+  <% end %>
+  <% break_id = item.field_id %>
+<% end %>
+
+<%=raw "</table>" unless break_id == 0 %>
+
+<% admin_param = '?cond=admin' if @is_sysadm %>
+<% if @is_sysadm || @is_creator %>
+<div align="center">
+<table>
+  <tr>
+    <td><div class="btReturn"><%= link_to '管理一覧へ戻る', "/questionnaire#{admin_param}" %></div></td>
+    <% if @title.result_open_state %>
+    <td>&nbsp;&nbsp;</td>
+    <td><div class="btReturn"><%= link_to 'アンケート結果の公開を停止する', {:action => :result_close} %></div></td>
+    <% else %>
+    <td>&nbsp;&nbsp;</td>
+    <td><div class="btReturn"><%= link_to 'アンケート結果を公開する', {:action => :result_open} %></div></td>
+    <% end if @title.state == 'closed' %>
+  </tr>
+</table>
+</div>
+<% else %>
+<div class="btReturn">
+  <%=link_to 'アンケート結果一覧へ戻る', "/questionnaire?cond=result" %>
+</div>
+<% end %>
+
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '&nbsp;内容の続き……';
+    } else if (display == 'none') {
+      obj.innerHTML = '&nbsp;内容を隠す▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>

@@ -1,0 +1,75 @@
+<table class="show bbsText">
+<% for item in @field_lists %>
+<tr>
+  <th style ="width:40%;"><%=hbr item['title'] %></th>
+  <td>
+    <% case item['question_type'] %>
+    <% when 'group'%>
+      <% field_groups = answer_group_field_table(item['field_id']) %>
+      <table class="index" border="0" cellspacing="0" cellpadding="0">
+        <%=field_groups[:table_th]%>
+        <%
+          group_values = ''
+          group_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].blank?
+          group_repeat = 0
+          group_repeat = item['group_repeat'] unless item['group_repeat'].blank?
+        %>
+        <% for i in 1 .. group_repeat %>
+         <tr>
+           <% for group in field_groups[:groups] %>
+             <% group_field_name = "#{item['field_name']}_#{group['field_name']}" %>
+             <%
+               value = ''
+               value = group_values[group_field_name] unless group_values[group_field_name].blank? unless group_values.blank?
+               value = value[i-1]
+               value = '　' if value.blank?
+             %>
+             <td><%= value %></td>
+           <% end %>
+         </tr>
+        <% end if 0 < group_repeat %>
+      </table>
+    <% when 'text'%>
+      <%=hbr @item[item['field_name']] %>
+    <% when 'textarea'%>
+      <%=hbr @item[item['field_name']] %>
+    <% when 'radio' %>
+      <%
+        options = option_list_array(item['field_id'])
+        check_values = []
+        check_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].size == 0 unless @item[item['field_name']].blank?
+      %>
+      <% for option in options %>
+        <%= option['title'] if check_values.index(option['value']) %>
+      <% end %>
+    <% when 'checkbox' %>
+      <%
+        options = option_list_array(item['field_id'])
+        check_values = []
+        check_values = JSON.parse(@item[item['field_name']]) unless @item[item['field_name']].size == 0 unless @item[item['field_name']].blank?
+        select_label = ''
+        comma_string = ''
+      %>
+      <% for option in options %>
+        <%
+          checked = false
+          comma_string = ' , ' unless select_label.blank?
+          select_label = "#{select_label}#{comma_string}#{option['title']}"  if check_values.index(option['value'])
+        %>
+      <% end %>
+      <%= select_label %>
+    <% when 'select' %>
+      <%
+        options = option_list_array(item['field_id'])
+        select_label = ''
+        options.each { |opt|
+          select_label = opt[0] if opt[1].to_s == @item[item['field_name']].to_s
+        }
+      %>
+      <%= select_label %>
+    <% end %>
+  </td>
+</tr>
+<% end %>
+
+</table>

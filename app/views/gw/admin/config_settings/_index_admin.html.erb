@@ -1,0 +1,242 @@
+<%# システム管理者用 %>
+
+<% if params[:c2].to_i==1 %>
+<div class="titleLine">
+  <p class="title">ポータル設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '表示モード設定' , "/gw/admin_modes" %></span>
+  <span class="explanation">ポータル表示を、通常モード・災害モードで切替えます。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'メッセージ' , "/gw/admin_messages" %></span>
+  <span class="explanation">ポータルに表示するメッセージを設定します。最大２行まで表示できます。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '記事更新情報設定' , "/gwbbs/synthesetup" %></span>
+  <span class="explanation">記事更新情報の基本設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'タブ編集' , "/gw/edit_tabs" %></span>
+  <span class="explanation">リンク配置の編集やリンク先の登録を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'ポータルリンクピース編集' , "/gw/edit_link_pieces" %></span>
+  <span class="explanation">ポータル画面のリンクピースの編集を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'タブメッセージ編集' , "/gw/pref_soumu_messages" %></span>
+  <span class="explanation">ポータル画面のタブ選択時に表示するメッセージを設定します。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '広告アイコン管理' , "/gw/portal_adds" %></span>
+  <span class="explanation">ポータル画面に表示される広告アイコンの登録・管理を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'リマインダー表示設定' , "/gw/reminders" %></span>
+  <span class="explanation">ポータル画面に表示されるリマインダーを設定します。</span>
+</li>
+</ul>
+<% end %>
+
+<% if params[:c2].to_i==3 %>
+<div class="titleLine">
+  <p class="title">スケジューラー設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><a href="/gw/holidays" target="_blank" >国民の祝日</a></span>
+  <span class="explanation">祝祭日の設定を行います。</span>
+</li>
+<li>
+  <span class="function"><a href="/system/custom_groups" target="_blank" >カスタムグループ設定</a></span>
+  <span class="explanation">全庁幹部・所属幹部等、共通で利用するカスタムグループを設定します。</span>
+</li>
+<li>
+  <span class="function"><a href="/gw/schedule_help_configs" target="_blank" >ヘルプリンク設定</a></span>
+  <span class="explanation">スケジュール登録画面ヘルプアイコンのリンク先を指定します。</span>
+</li>
+</ul>
+<% end %>
+
+
+<% if params[:c2].to_i==4 -%>
+<div class="titleLine">
+ <p class="title">会議等案内システム設定</p>
+</div>
+<ul>
+<li>
+<span class="function"><%= link_to '背景画像' , "/gw/meeting_guide_backgrounds" %></span>
+<span class="explanation">会議等案内システムの背景画像の設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to 'お知らせ' , "/gw/meeting_guide_notices" %></span>
+<span class="explanation">会議等案内システム内に表示するお知らせの設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to '場所設定' , "/gw/meeting_guide_places" %></span>
+<span class="explanation">会議等案内システム登録時の、場所のセレクトボックスの表示に関する設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to '監視設定' , "/gw/meeting_monitor_settings" %></span>
+<span class="explanation">会議等案内システムの監視に関する設定を行います。</span>
+</li>
+</ul>
+<% end -%>
+
+<% if params[:c2].to_i==5 %>
+<div class="titleLine">
+  <p class="title">基本設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to 'ユーザー・グループ管理' , "/system/users" %></span>
+  <span class="explanation">ユーザー及びグループ情報の閲覧、登録及び編集を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '組織変更' , "/system/group_changes" %></span>
+  <span class="explanation">組織変更に伴う所属の振り替えを行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'LDAP同期' , "/system/ldap_temporaries" %></span>
+  <span class="explanation">LDAPからユーザー・グループ情報を取り込みます。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'プロダクト同期' , "/system/product_synchros" %></span>
+  <span class="explanation">Joruriプロダクト間でユーザー・グループ情報を同期します。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '権限設定' , "/system/roles" %></span>
+  <span class="explanation">各機能の管理者権限設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to '申請・通知　所属長名管理' , "/gwsub/sb00/sb00_conference_section_manager_names" %></span>
+<span class="explanation">申請書・通知書で表示する所属長名の設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '年度設定' , "/gw/year_fiscal_jps" %></span>
+  <span class="explanation">年度の設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '年号設定' , "/gw/year_mark_jps" %></span>
+  <span class="explanation">年号の設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '警告拡張子管理' , "/gw/admin_check_extensions" %></span>
+  <span class="explanation">添付ファイルのアップロード時、警告メッセージを表示する拡張子を管理します。</span>
+</li>
+</ul>
+<% end %>
+
+<% if params[:c2].to_i==6 %>
+  <% if @role_board==true %>
+    <div class="titleLine">
+      <p class="title">掲示板等設定</p>
+    </div>
+    <ul>
+    <% if @role_bbs == true %>
+      <li>
+        <span class="function"><%= link_to '掲示板設定' , "/gwbbs/makers/"  ,:target=>"_blank"  %></span>
+        <span class="explanation">掲示板の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_faq == true or @role_qa == true %>
+      <li>
+        <span class="function"><%= link_to '質問管理（FAQ/Q&A）設定' , "/gwfaq/controls/"  ,:target=>"_blank"  %></span>
+        <span class="explanation">質問管理（FAQ/Q&A）の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_doclibrary == true %>
+      <li>
+        <span class="function"><%= link_to '書庫設定' , "/doclibrary/cabinets/"  ,:target=>"_blank"  %></span>
+        <span class="explanation">書庫の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_digitallibrary == true %>
+      <li>
+        <span class="function"><%= link_to '電子図書設定' , "/digitallibrary/cabinets/"  ,:target=>"_blank"  %></span>
+        <span class="explanation">電子図書の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_gwcircular == true %>
+      <li>
+        <span class="function"><%= link_to '回覧板設定' , "/gwcircular/basics/1/"  ,:target=>"_blank"  %></span>
+        <span class="explanation">回覧板の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_gwmonitor == true %>
+      <li>
+        <span class="function"><%= link_to '照会回答設定' , "/gwmonitor/settings"  ,:target=>"_blank"  %></span>
+        <span class="explanation">照会回答の設定を行います。</span>
+      </li>
+    <% end %>
+    <% if @role_questionnaire == true -%>
+      <li>
+      <span class="function"><%= link_to 'アンケート集計システムヘルプ設定' , "/questionnaire/help_configs/0/edit" %></span>
+      <span class="explanation">アンケート集計システムのヘルプリンク先の設定を行います。</span>
+      </li>
+    <% end -%>
+    </ul>
+  <% end %>
+<% end %>
+
+<% if params[:c2].to_i==7 %>
+<div class="titleLine">
+  <p class="title">削除設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to 'スケジュール削除設定' , "/gw/schedule_settings/admin_deletes" %></span>
+  <span class="explanation">過去スケジュールの自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '連絡メモ削除設定' , "/gw/memo_settings/admin_deletes" %></span>
+  <span class="explanation">連絡メモの自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'ToDo削除設定' , "/gw/todo_settings/admin_deletes" %></span>
+  <span class="explanation">ToDoの自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '掲示板削除設定' , "/gwbbs/itemdeletes" %></span>
+  <span class="explanation">掲示板にある期限切れ記事の自動削除設定を行います。掲示板を選択しての削除も可能です。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '回覧板削除設定' , "/gwcircular/itemdeletes/0/edit" %></span>
+  <span class="explanation">回覧板にある期限切れ記事の自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '照会・回答システム削除設定' , "/gwmonitor/itemdeletes/0/edit" %></span>
+  <span class="explanation">照会・回答システムにある期限切れ記事の自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'アンケート削除設定' , "/questionnaire/itemdeletes/0/edit" %></span>
+  <span class="explanation">アンケートにある期限切れ記事の自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'ワークフロー削除設定' , "/gwworkflow/itemdeletes/0/edit" %></span>
+  <span class="explanation">ワークフローにある期限切れ記事の自動削除設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to '主管課マスタ一括削除' , "/gw/section_admin_masters/clear" %></span>
+  <span class="explanation">各主管課マスタを一括で削除します。</span>
+</li>
+</ul>
+<% end %>
+
+<% if params[:c2].to_i==8 %>
+<div class="titleLine">
+  <p class="title">各種カウント</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '連絡メモの携帯等転送設定状況' , "/gw/countings/memos?c1=1&c2=8" %></span>
+  <span class="explanation">連絡メモの転送設定状況を表示します。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'モバイルパスワード設定状況' , "/gw/countings/mobiles?c1=1&c2=8" %></span>
+  <span class="explanation">モバイルパスワードの設定状況を表示します。</span>
+</li>
+</ul>
+<% end %>

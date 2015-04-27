@@ -1,0 +1,20 @@
+<%
+t01 = %Q(<span>申込</span>)
+t02 = %Q(<span>企画</span>)
+t03 = %Q(<span>管理者</span>)
+#t04 = %Q(<span>管理者</span>)
+case @l1_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">申込</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">企画</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">管理者</span>)
+else
+end
+%>
+<div class="menu">
+<%= link_to raw(t01), url_for('/gwsub/sb01/sb01_training_entries') %>
+<%= link_to raw(t02), url_for('/gwsub/sb01/sb01_training_plans') %>
+<%= link_to raw(t03), url_for('/gwsub/sb01/sb01_trainings') if @u_role==true %>
+</div>

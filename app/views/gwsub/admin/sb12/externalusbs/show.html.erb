@@ -1,0 +1,40 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= render 'show_menu' %>
+<%# table_to_show2 @item , 'table_name' => 'gwsub_externalusbs' %>
+<table class="show">
+<tbody>
+<tr><th>管理所属</th>
+<td><%=@item.section_name%></td></tr>
+<tr><th>登録番号</th>
+<td><%=sprintf('%06d',@item.new_registedno)%></td></tr>
+<tr><th>H20まで登録番号</th>
+<td><%=@item.registedno%></td></tr>
+<tr><th>登録日</th>
+<td><%=@item.registed_at.strftime('%Y-%m-%d') unless @item.registed_at.blank?%></td></tr>
+<tr><th>製品名</th>
+<td><%=@item.equipmentname%></td>
+</tr><tr><th>容量</th>
+<td><%=@item.capacity%></td></tr>
+<tr><th>単位</th>
+<td><%=@item.capacityunitset.name unless @item.capacityunitset.blank?%></td></tr>
+<tr><th>保有者</th>
+<td><%=@item.user%></td></tr>
+<tr><th>分類</th>
+<td><%=@item.categories_status_show[@item.categories.to_i]%></td></tr>
+<tr><th>使用中止年月日</th>
+<td><%=@item.ending_at.strftime('%Y-%m-%d') unless @item.ending_at.blank?%></td></tr>
+<tr><th>備考</th>
+<td><%=@item.remarks%></td></tr>
+</tbody>
+</table>
+
+<br />
+</div>
+</div>

@@ -1,0 +1,23 @@
+<div class="piece todo setting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<div class="titleLine">
+  <span class="title">スケジュール表示設定</span>
+</div>
+<div class="pieceBodyBody">
+
+<%= form_tag "/gw/todo_settings/edit_schedule", {:method => :put, :multipart => true} do %>
+<table class="show">
+  <tr>
+    <th>スケジュール標示</th>
+    <td>ToDoの期限日を、スケジュール上に
+      <%= select_tag 'item[todos][todos_display_schedule]', options_for_select(@item.display_schedule_options, @item.todos_display_schedule) %>
+    </td>
+  </tr>
+</table>
+<div class="submitters"><%= submit_tag "保存" %></div>
+<% end %>
+
+</div>
+</div>
+</div>

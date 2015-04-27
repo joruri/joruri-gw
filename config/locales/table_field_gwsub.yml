@@ -1,0 +1,98 @@
+################################################################################
+# GW_SUB グループウェア　補完機能　全般
+################################################################################
+#
+gwsub_sb00_conference_references:
+  id: x
+  fyear_id: x
+  fyear_markjp: 年度
+  kind_code: 種別コード
+  kind_name: 種別名称
+  title: 表示文字列
+  group_id: dbraw:対象所属:system_group_histories:name:id
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+gwsub_sb00_conference_references_show:
+  _cols: fyear_markjp:kind_code:kind_name:title
+  id: x
+  fyear_id: x
+  fyear_markjp: 年度
+  kind_code: 種別コード
+  kind_name: 種別名称
+  title: 表示文字列
+  group_id: dbraw:対象所属:system_group_histories:name:id
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+gwsub_sb00_conference_manager_controlers:
+  sb05_requests: 広報依頼
+  sb06_assigned_conferences_10: 担当者名（職員厚生課）
+  sb06_assigned_conferences_20: 担当者名（人事課）
+  sb06_assigned_conferences_30: 担当者名（管財課）
+  sb06_assigned_conferences_40: 担当者名（情報システム課）
+  sb06_assigned_conferences_50: 担当者名（環境首都課）
+  sb06_assigned_conferences_60: 担当者名（会計課）
+  sb09: 端末管理
+  sb10_proposal_userids: ユーザーID申請
+  sb10_proposal_numberids: 連番ID申請
+  sb10_proposal_mailinglists: メーリングリスト申請
+  sb10_proposal_softwares: ソフトウェア追加届
+  sb10_proposal_licenses: ライセンス管理台帳
+gwsub_sb00_conference_managers_state:
+  0: 通知しない
+  1: 通知する
+gwsub_sb00_conference_managers:
+  id: x
+  controler: r:通知元:gwsub_sb00_conference_manager_controlers
+  controler_title: x
+  memo_str: 通知文
+  fyear_id: x
+  fyear_markjp: 年度
+  group_id: x
+  group_code: x
+  group_name: 管理者所属
+  user_id: x
+  user_code: x
+  user_name: 管理者名
+  official_title_id: x
+  official_title_name: x
+  send_state: r:通知要否:gwsub_sb00_conference_managers_state
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+################################################################################
+# GW_SUB 共通　申請・通知　所属長名　管理
+################################################################################
+gwsub_sb00_conference_section_manager_names:
+  _common:
+    id: 詳細
+    feyar_id: 年度
+    markjp: 年度
+    state: 状況
+    parent_gid: 部局
+    g_sort_no: 表示順
+    gid: 所属ID
+    g_code: 所属コード
+    g_name: 所属名
+    manager_name: 所属長名
+    deleted_at: d:削除日
+    updated_at: d:更新日
+    created_at: d:作成日
+  index:
+    _cols: id:id2:markjp:state:g_sort_no:g_code:g_name:manager_name
+    id2: 編集
+  show:
+    _cols: markjp:state:g_sort_no:g_code:g_name:manager_name:created_at:updated_at
+################################################################################
+# GW_SUB グループウェア　補完機能　全般
+################################################################################

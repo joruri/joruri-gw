@@ -1,0 +1,46 @@
+<div class="piece AdminSetting">
+<%= render '/gw/admin/config_settings/header_str' %>
+<div class="pieceBanner"></div>
+<div class="pieceBody">
+<%= render '/gw/admin/config_settings/menu' if @u_role==true %>
+
+<% if @u_role == true %>
+  <% if @admin_role == true %>
+    <%= render '/gw/admin/config_settings/tabs_admin' %>
+  <% else %>
+    <%= render '/gw/admin/config_settings/tabs_editor' %>
+  <% end %>
+<% end %>
+
+<% if @admin_role == true %>
+<div class="titleLine">
+  <p class="title">モバイルパスワードの設定状況</p>
+</div>
+<div><p><%= Time.now.strftime('%Y-%m-%d %H:%M') %>　現在</p></div>
+<table class="show">
+  <tr>
+    <th>パスワード設定数</th><td><%= @m_pass_enable_counts[0] %></td>
+  </tr>
+  <tr>
+    <th>うち　アクセス許可数</th><td><%= @m_pass_enable_counts[1] %></td>
+  </tr>
+  <tr>
+    <th>うち　アクセス不許可数</th><td><%= @m_pass_enable_counts[2] %></td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>パスワード未設定数</th><td><%= @m_pass_disable_counts[0] %></td>
+  </tr>
+  <tr>
+    <th>うち　アクセス許可数</th><td><%= @m_pass_disable_counts[1] %></td>
+  </tr>
+  <tr>
+    <th>うち　アクセス不許可数</th><td><%= @m_pass_disable_counts[2] %></td>
+  </tr>
+</table>
+<% end %>
+
+</div>
+</div>
+

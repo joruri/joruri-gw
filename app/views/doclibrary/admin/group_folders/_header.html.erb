@@ -1,0 +1,17 @@
+<div class="navi">
+<% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+  <%=link_to c.name, url_for(c.link_list_path)%> /
+<% end %>
+</div>
+
+<div class="editingBox">
+<%
+link_closed  = "#{doclibrary_group_folders_path}/sync_groups?title_id=#{@title.id}"
+link_closed += "&state=#{params[:state]}" unless params[:state].blank?
+link_closed += "&grp=#{params[:grp]}" unless params[:grp].blank?
+link_closed += "&gcd=#{params[:gcd]}" unless params[:gcd].blank?
+link_closed += "&mode=public"
+%>
+<span class="btDouki"><%= link_to('所属同期', link_closed, :confirm => '現在の所属から所属フォルダを更新します。記事の無いフォルダは非公開状態になります。処理に時間がかかります、しばらくお待ちください。') %></span>
+<span class="docLink"><a class="" href='/doclibrary/cabinets/<%="#{@title.id}"%>'>書庫詳細へ >></a></span>
+</div>

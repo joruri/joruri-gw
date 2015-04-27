@@ -1,0 +1,10 @@
+<tr class="scheduleTableHead">
+  <th class="scheduleUser">
+    <span class="nobr"><%= @title -%></span>
+  </th>
+  <% @calendar_space_time.each do |i| -%>
+  <th class="scheduleData" colspan="2">
+    <span class="nobr t<%= "%02d" % (i % 12 == 0 ? 12 : i % 12) -%>"><%= i -%></span>
+  </th>
+  <% end -%>
+</tr>

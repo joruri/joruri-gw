@@ -1,0 +1,72 @@
+<%
+str_seikyo_d = ''
+str_seikyo_d = Date.strptime(@item.inpfld_001, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_001.blank?
+
+str_tuya_d = ''
+str_tuya_d = Date.strptime(@item.inpfld_003, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_003.blank?
+str_tuya_t = ''
+str_tuya_t += "#{@item.inpfld_018}～" unless @item.inpfld_018.blank?
+str_tuya_t += "#{@item.inpfld_019}" unless @item.inpfld_018.blank?  unless @item.inpfld_019.blank?
+
+str_kokub_d = ''
+str_kokub_d = Date.strptime(@item.inpfld_006, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_006.blank?
+str_kokub_t = ''
+str_kokub_t += "#{@item.inpfld_020}～" unless @item.inpfld_020.blank?
+str_kokub_t += "#{@item.inpfld_021}" unless @item.inpfld_021.blank?  unless @item.inpfld_020.blank?
+%>
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span>告別式のお知らせ</span></td></tr>
+</table>
+
+<table class="bbsUserformBody">
+<tr>
+  <td>
+    <%= @item.inpfld_012 %>
+    <% if @item.inpfld_024 == "家族" %>
+    <%= @item.inpfld_013 %> さんの
+    <%= @item.inpfld_014 %>
+    <%= @item.inpfld_015 %>　様が
+    <% else %>
+    <%= @item.inpfld_025 %> さんが
+    <% end %>
+    <%= str_seikyo_d %>に亡くなられました。
+  </td>
+</tr>
+</table>
+
+<% unless @item.inpfld_022 == '1' %>
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span>通夜は、次のとおり執り行われます。</span></td></tr>
+</table>
+<table class="show">
+  <tr><th>1 日時</th></tr>
+  <tr><td><%= str_tuya_d %>　<%= str_tuya_t %></td></tr>
+  <tr><th>2 場所</th></tr>
+  <tr><td><%= @item.inpfld_004 %></td></tr>
+  <tr><th>電話</th></tr>
+  <tr><td><%= @item.inpfld_005 %></td></tr>
+</table>
+<% end %>
+
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span>告別式は、次のとおり執り行われます。</span></td></tr>
+</table>
+
+<table class="show">
+  <tr><th>1 日時</th></tr>
+  <tr><td><%= str_kokub_d %>　<%= str_kokub_t %></td></tr>
+  <tr><th>2 場所</th></tr>
+  <tr><td><%= @item.inpfld_007 %></td></tr>
+  <tr><th>電話</th></tr>
+  <tr><td><%= @item.inpfld_008 %></td></tr>
+  <tr><th>3 喪主</th></tr>
+  <tr><td><%= @item.inpfld_009 %></td></tr>
+  <tr><th>4 宗派</th></tr>
+  <tr><td><%= @item.inpfld_010 %></td></tr>
+  <tr><th>5 備考</th></tr>
+  <tr><td><%= convert_for_mobile_body(@item.inpfld_016, params[:_jgw_session]) %></td></tr>
+  <tr><th>6 地図</th></tr>
+  <tr><td><%= @item.inpfld_011 %></td></tr>
+</table>
+</div>

@@ -1,0 +1,290 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/base.css";
+
+/* =========================================================
+   _common/themes/gw/css/gwboard/sidemenu_common.css
+========================================================= */
+
+/* content(中央カラム)
+----------------------------------------------- */
+
+#content {
+  float: right;
+  width: 100%;
+  margin: 0 0 0px -265px;
+  overflow: visible;
+}
+
+
+#contentBody {
+  margin: 0px 0px 0px 265px;
+}
+
+/* バナー位置
+----------------------------------------------- */
+.contentBanner {
+  margin: 0px 0px 0px 265px;
+}
+.contentBannerRight {
+  margin: 0px 0px 0px 265px;
+  text-align: right;
+}
+.contentBannerCenter {
+  margin: 0px 0px 0px 265px;
+  text-align: center;
+}
+
+
+/*-----------------サイドメニュー-----------------*/
+
+#menu {
+  float: left;
+  width: 260px;
+  margin-left: -10px;
+}
+
+#menu ul {
+  margin-left: 10px;
+  padding: 0 0 0 0;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+*:first-child+html #menu ul {
+  margin-left: 0px;
+  padding: 0 0 0 0;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+li {
+  margin: 0;
+  padding: 0 0px 0px 0px;
+}
+
+#sideList {
+  padding-left: 0px;
+/*  background-color: rgb(245,255,225); */
+}
+
+* html #menu li {
+  padding-left: 0;
+}
+
+*:first-child+html #sideList {
+  padding-left: 10px;
+}
+
+*:first-child+html #menu li a {
+  margin-left: -15px;
+}
+
+* html #menu li a {
+  margin:0px 0 0 0px;
+}
+
+li.root{
+  background-image: url(/_common/themes/gw/files/doclibrary/open_f.gif);
+  padding-left: 12px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.rootSelect{
+  background-image: url(/_common/themes/gw/files/doclibrary/open_f.gif);
+  padding-left: 12px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.f_plus{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_P.gif);
+  padding-left: 7px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.f_plusSelect{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_P.gif);
+  padding-left: 7px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.folder{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.folderSelect{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.rootSelect a:visited, li.f_plusSelect a:visited, li.folderSelect a:visited{
+  color: #ff0000;
+  font-weight: bold;
+}
+
+li.rootSelect a, li.folderSelect a, li.f_plusSelect a{
+  color: #FF0000;
+  font-weight: bold;
+}
+
+li.root a, li.f_plus a, li.folder a{
+  color: #0000FF;
+  font-weight: normal;
+}
+
+li.root a:visited, li.f_plus a:visited, li.folder a:visited{
+  color: #0000FF;
+  font-weight: normal;
+}
+
+li.root a:hover, li.f_plus a:hover, li.folder a:hover{
+  color: #FF0000;
+}
+
+/*
+li.level2,li.level3,li.level4,li.level1Select,li.level2Select,li.level3Select {
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 10px;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level1{
+  background-image: url(/_common/themes/gw/files/doclibrary/open_f.gif);
+  padding-left: 12px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level1Select{
+  background-image: url(/_common/themes/gw/files/doclibrary/open_f.gif);
+  padding-left: 12px;
+  background-position: 0px 2px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level2{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level2Select{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+
+li.level3{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level3Select{
+  background-image: url(/_common/themes/gw/files/doclibrary/icon_L.gif);
+  padding-left: 7px;
+  background-position: 0px 5px;
+  background-repeat: no-repeat;
+  list-style-type: none;
+}
+
+li.level1Select a:visited, li.level2Select a:visited, li.level3Select a:visited{
+  color: #ff0000;
+  font-weight: bold;
+}
+
+li.level1Select a, li.level2Select a, li.level3Select a{
+  color: #FF0000;
+  font-weight: bold;
+}
+
+li.level1 a, li.level2 a, li.level3 a{
+  color: #0000FF;
+  font-weight: normal;
+}
+
+li.level1 a:visited, li.level2 a:visited, li.level3 a:visited{
+  color: #0000FF;
+  font-weight: normal;
+}
+
+li.level1 a:hover, li.level2 a:hover, li.level3 a:hover{
+  color: #FF0000;
+}
+
+*/
+
+/*---------------------------
+ ページボディー
+---------------------------*/
+
+table {
+  width: 100%;
+}
+
+
+/*-------------------header--------------------------*/
+
+#breadCrumbs {
+  margin: 0 5px 7px;
+}
+
+#banner {
+  margin-bottom: 7px;
+}
+/*--------------------main---------------------------*/
+
+#main {
+  margin-top: 0px;
+}
+
+table.list th {
+  background-color: #E4E4E4;
+}
+
+.separetor {
+  display: none;
+}
+
+.header h2 {
+  padding: 6px 7px;
+  background-color: #E4E4E4;
+}
+
+.back {
+  width: 80px;
+  margin: 0 auto;
+  border: double #BBBBBB;
+  background-color: #E4E4E4;
+  text-align: center;
+}
+
+.back a {
+  display: block;
+  text-decoration: none;
+}

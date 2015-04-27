@@ -1,0 +1,44 @@
+<%
+@view = "day"
+@dis = nz(params[:dis],'week')
+link_params = "?gid=#{params[:gid]}&uid=#{Core.user.id}&cgid=#{params[:cgid]}&dis=#{@dis}"
+%>
+<div class="pieceBodyBody">
+<table class="scheduleTable">
+  <tr>
+    <th class="date">
+      <%=l @st_date, format: :date_wday2_ja if @st_date.present? -%>
+    </th>
+    <th class="new">
+      <% if @st_date.present? %>
+        <%= link_to "/gw/schedules/new?s_date=#{@st_date.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}" do %>
+          <% image_tag '/_common/themes/gw/files/smartphone/other/ic_add.gif', border: '0', alt: '新規作成', title: '新規作成', class: 'menu_new' %>
+        <% end %>
+      <% end %>
+    </th>
+  </tr>
+  <% @users.each do |user| %>
+    <% user_schedule = @user_schedules["user_#{user.id}"] %>
+    <% if params[:gid].blank? && params[:cgid].blank? && user_schedule[:schedule_len] == 0 -%>
+      <%= no_schedule_show_smartphone -%>
+    <% else -%>
+      <% if user_schedule[:schedule_len] > 0 -%>
+        <tr>
+          <td class="user" colspan="2"><%= user.display_name -%></td>
+        </tr>
+      <% end -%>
+      <% user_schedule[:schedules].each do |schedule| -%>
+        <tr>
+          <td class="scheduleCategory <%= schedule.display_category_class -%>" colspan="2">
+          <% if schedule.is_public_auth?(@is_gw_admin) -%>
+            <%= link_to "#{schedule.display_time_for_mobile(@st_date)}<br />#{schedule.title}".html_safe, "/gw/schedules/#{schedule.id}/show_one#{link_params}&topdate=#{@topdate}" -%>
+          <% else -%>
+            <span style="color: #999999;">[非公開予定]</span>
+          <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  <% end %>
+</table>
+</div>

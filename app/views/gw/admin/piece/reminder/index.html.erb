@@ -1,0 +1,92 @@
+<%
+  remind = []
+  reminders = Gw::Reminder.where(:state => 'enabled').order('sort_no').all
+  icon_clses = reminders.map{|x| [x.name, x.css_name]}
+  reminders.each do |reminder|
+    begin
+      remind += eval("Gw::Model::#{reminder.name.capitalize}.remind.collect{|x| x[:c]='#{reminder.name}'; x}")
+    rescue => e
+      dump e
+    end
+  end
+
+  begin
+    remind += Gw::Model::ReminderExternal.remind
+    items = Gw::ReminderExternalSystem.order(:id).all
+    icon_clses += items.map{|item| [item.code, item.css_name]}
+  rescue => e
+    dump e
+  end
+%>
+<div class="piece gadget reminder" style="<%= 'margin-right: 210px;' if Gw::Property::PortalAddDispOption.display_right? && Gw::Property::PortalMode.first_or_new.normal_mode? %>">
+<div class="pieceHeader"><h3 class="remainder">リマインダー</h3></div>
+<div class="borderbox" id="reminderList">
+<% if remind.length > 0 %>
+<div class="pieceBody">
+<table id="reminderListTable">
+<%
+cols = %w(date_ste cls title)
+cols.each{|col| concat raw %Q(<colgroup class="#{col}"></colgroup>)}
+remind.sort{|a, b| b[:date_d] <=> a[:date_d]}.each do |x|
+  c_s_a = []
+  c_s_a.push cycle('', 'cycle')
+  c_s_a.push 'expired' if x[:delay]
+  c_s_a.push x[:c]
+  c_s_a.push x[:css_class] if !x[:css_class].blank?
+  c_s = Gw.join(c_s_a, ' ')
+  c_s = %Q( class="#{c_s}") if !c_s.blank?
+  icon_cls  = icon_clses.assoc(x[:c])
+  icon_cls1 = icon_cls.blank? ? nil:icon_cls[1]
+  concat raw %Q(<tr#{c_s}><td class="date_ste">#{x[:date_str]}</td><td class="cls #{icon_cls1}"><span>#{x[:cls]}　：　</span></td><td class="title">#{x[:title]}</td></tr>)
+end
+%>
+</table></div>
+<% else %>
+<div class="pieceBody" style="color: #080;">
+表示する内容はありません。
+</div>
+<% end %>
+<script type="text/javascript">
+//<![CDATA[
+setInterval(refreshReminder,180000);
+var reminderRequest;
+function refreshReminder(){
+  document.body.style.cursor = 'wait';
+  ajax_uri = "/gw/reminders/requests";
+  if(reminderRequest!=null){
+       //reminderRequest.abort();
+  }
+  reminderRequest = new Ajax.Request(ajax_uri, {method:'get', onComplete: function(x){
+      if(x.responseText.match(/追加する内容はありません。/)){
+        //
+      }else{
+
+        var resetTable = '<div class="pieceBody"><table id="reminderListTable"><tbody>';
+        var HcsItems = '';
+        var table = document.getElementById("reminderListTable");
+        if(table){
+          for(var i =0 ; i < table.rows.length; i++){
+            var reminderRow = table.rows[i];
+            if(reminderRow.className.match(/hcs/)){
+              HcsItems += '<tr class="' + reminderRow.className + '">' + reminderRow.innerHTML + '</tr>';
+            }
+          }
+        }
+
+        var res = x.responseText.replace('<colgroup class="date_ste"></colgroup><colgroup class="cls"></colgroup><colgroup class="title"></colgroup>', "");
+        res = res.replace(/[\n\r]/g,"");
+        resetTable += res + HcsItems;
+        resetTable += '</tbody></table></div>';
+        $('reminderList').update(resetTable);
+      }
+
+      document.body.style.cursor = 'default';
+    }})
+}
+
+//]]>
+</script>
+
+</div>
+</div>
+

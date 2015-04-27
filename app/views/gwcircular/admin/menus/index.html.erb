@@ -1,0 +1,24 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header' %>
+<%= render 'piece_banner' %>
+
+<div class="pieceBody">
+<%= render 'gwcircular/admin/menus/tabbox' %>
+
+<% case params[:cond] %>
+<% when 'unread' %>
+  <%= render 'index_unread' %>
+<% when 'already' %>
+  <%= render 'index_already' %>
+<% when 'owner' %>
+  <%= render 'index_owner' %>
+<% when 'void' %>
+  <%= render 'index_void' %>
+<% when 'admin' %>
+  <%= render 'index_admin' if @title.is_admin? %>
+<% end %>
+
+<%= paginate @items %>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

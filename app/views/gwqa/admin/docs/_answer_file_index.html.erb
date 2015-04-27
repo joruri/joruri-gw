@@ -1,0 +1,22 @@
+<% if answer.files.present? && answer.files.any? {|file| !file.is_image} %>
+<div class="docsInnerBox2">
+<table class="gwboardAttachlist">
+<tr><th colspan="2">添付ファイル名</th></tr>
+<% answer.files.each do |file| %>
+  <%
+  download_url = if @title.upload_system == 1 && @title.upload_system == 2
+    "#{file.file_uri(file.system_name)}"
+  else
+    "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
+  end 
+  %>
+  <% unless file.is_image %>
+    <tr>
+      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
+      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+</div>
+<% end %>

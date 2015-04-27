@@ -1,0 +1,25 @@
+<%
+# スケジュラーメニューのパラメーター
+d = Time.now
+@st_date = Time.now.strftime('%Y%m%%d')
+%>
+<div class="piece schedulePiece">
+<div class="pieceHeader"><h2 class="pieceTitle">スケジュール</h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><a href="/gw/schedules/new">新規作成</a></span>
+</div>
+</div>
+<div class="pieceBody">
+
+<div class="pieceBodyHeader">
+<%= render "gw/admin/schedules/schedule_bt_box", d: d, mode: 'assembly' %>
+<div class="scheduleTableTitle"><%= "#{Site.title}議会議員在庁表示" %><span class="presentTime"><%= render "gw/admin/pref_directors/display_time" %></span></div>
+</div><!--pieceBodyHeader-->
+
+<div class="pieceBodyBody assembly">
+
+<%= render 'index' %>
+
+</div><!--pieceBodyBody-->
+</div><!--pieceBody-->
+</div><!--schedulePiece-->

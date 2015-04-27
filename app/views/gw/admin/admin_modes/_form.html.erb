@@ -1,0 +1,6 @@
+<% case @item.type_name %>
+<% when "mode" %>
+  <%= render 'form_mode', f: f %>
+<% when "disaster_bbs" %>
+  <%= render 'form_bbs', f: f %>
+<% end %>

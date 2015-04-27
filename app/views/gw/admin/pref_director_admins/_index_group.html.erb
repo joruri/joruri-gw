@@ -1,0 +1,14 @@
+<table class="index">
+  <tr>
+    <th style="width: 90px; align: center;"></th>
+    <th>所属名</th>
+    <th style="width: 90px; align: center;"></th>
+  </tr>
+  <% @items.each do |item| -%>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '展開', {action: :index, g_cat: item.parent_g_order} %></td>
+      <td><%= item.parent_g_name %></td>
+      <td><%= link_to '編集', {action: :edit, id: item.id, g_cat: item.parent_g_order} %></td>
+    </tr>
+  <% end -%>
+</table>

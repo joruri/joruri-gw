@@ -1,0 +1,39 @@
+<%
+  limits = Gw.limit_select
+  #fyears = Gw::YearFiscalJp.select_dd_markjp_id('all')
+  if @u_role==true || @role_sb04_dev
+    fyear_order = "published_at DESC"
+    fyear = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  else
+    fyear_conditions = "published_at <= '#{Gw.date_common(Time.now)}'"
+    fyear_order = "published_at DESC"
+    fyear = Gwsub::Sb04EditableDate.where(fyear_conditions).order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  end
+
+  fyears = fyear
+  groups = Gwsub::Sb04section.sb04_group_select(@fyed_id)
+%>
+<!-- start form -->
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSelect' ) do %>
+  <%= hidden_field_tag 'v'              , params[:v]              , :value=>@v.to_i %>
+  <%= hidden_field_tag 'pre_fyear'      , params[:pre_fyear]      , :value=>@fyed_id.to_i %>
+  <%= hidden_field_tag 'multi_section'  , params[:multi_section]  , :value=>@multi_section if @multi_section %>
+  <%= hidden_field_tag 's_keyword'      , params[:s_keyword]       %>
+<table>
+<tr>
+<td>表示行数</td>
+<td><%= select_tag( 'limit',options_for_select( limits , @limits.to_i )  ,:onchange => 'document.frmSelect.submit()' ) %></td>
+<td>年度選択</td>
+<td><%= select_tag( 'fyed_id',options_for_select( fyears ,@fyed_id.to_i ) ,:onchange => 'document.frmSelect.submit()' ) %></td>
+<td>年度を変更すると、選択した年度の所属一覧に変わるため、所属選択は「すべて」に戻ります。</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>所属選択</td>
+<td><%= select_tag( 'grped_id',options_for_select( groups , @grped_id.to_i ),:onchange => 'document.frmSelect.submit()'  ) %></td>
+</tr>
+</table>
+<%end%>
+<!-- end form -->

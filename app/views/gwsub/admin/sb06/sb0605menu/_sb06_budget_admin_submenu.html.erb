@@ -1,0 +1,45 @@
+<%
+# url
+l01 = "/gwsub/sb06/sb06_budget_assign_mains"
+l02 = "/gwsub/sb06/sb06_budget_assign_admins"
+l03 = "/gwsub/sb06/sb06_budget_roles"
+l04 = "/gwsub/sb06/sb06_budget_assign_csvput"
+l05 = "/gwsub/sb06/sb06_budget_notices"
+l06 = "/gwsub/sb06/sb06_budget_editable_dates"
+l07 = "/gwsub/sb06/sb06_budget_assign_admins?do=init"
+#
+t01 = %Q(<span>主管課登録</span>)
+t02 = %Q(<span>管理者登録</span>)
+t03 = %Q(<span>処理権限登録</span>)
+t04 = %Q(<span>担当CSV出力</span>)
+t05 = %Q(<span>説明管理</span>)
+t06 = %Q(<span>期限設定</span>)
+t07 = %Q(<span>登録初期化</span>)
+#
+case @l2_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">主管課登録</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">管理者登録</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">処理権限登録</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">担当CSV出力</span>)
+when '05'
+  t05 = %Q(<span class="gwsub_current_menu">説明管理</span>)
+when '06'
+  t06 = %Q(<span class="gwsub_current_menu">期限設定</span>)
+when '07'
+  t07 = %Q(<span class="gwsub_current_menu">登録初期化</span>)
+else
+end
+-%>
+<div class="menu">
+<%= link_to t01.html_safe , l01 %>
+<%= link_to t02.html_safe , l02 %>
+<%= link_to t03.html_safe , l03 %>
+<%= link_to t04.html_safe , l04 %>
+<%= link_to t05.html_safe , l05 %>
+<%= link_to t06.html_safe , l06 %>
+<%= link_to t07.html_safe , l07 ,:confirm=>"管理者・主管課・担当者の登録を、すべてクリアします。よろしいですか？" %>
+</div>

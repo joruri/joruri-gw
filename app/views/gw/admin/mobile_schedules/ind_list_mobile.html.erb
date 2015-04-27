@@ -1,0 +1,18 @@
+<%
+link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{Core.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"])
+sche_date = Time.now.strftime('%Y%m%d')
+ucg_link = "/gw/schedules/?s_date=#{sche_date}&dis=group&cgid=" + (@first_custom_group.blank? ? "#{@cgid}" : "#{@first_custom_group.id}" )
+%>
+<hr class="borderDash"/>
+<p class="mobileSchedule">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
+<%= link_to "新規作成", "/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, Time.now)}" %>
+</p>
+<p class="mobileScheduleCurrent">スケジュール</p>
+<p class="bgAsh">スケジュール一覧</p>
+└&nbsp;<%= link_to "個人（週表示）", "/gw/schedules?s_date=#{sche_date}&dis=week" -%><br />
+└&nbsp;<%= link_to "グループ（日表示）", "/gw/schedules/?s_date=#{sche_date}&dis=group&gid=#{Core.user_group.id}" -%><br />
+└&nbsp;<%= link_to "カスタム（日表示）", ucg_link -%><br />
+<% @customs.each do |custom| %>
+└&nbsp;<%= link_to custom.name, "/gw/schedules/?s_date=#{sche_date}&dis=group&cgid=#{custom.id}" -%><br />
+<% end %>

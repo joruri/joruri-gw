@@ -1,0 +1,27 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'title_info' %>
+
+<%= form_for :item, :url => {:action => :create}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for f,{:caption => "回答する"} %>
+<% end %>
+
+<div align="center">
+<table>
+  <tr>
+    <td><div class="btReturn"><%= link_to '設問登録へ戻る', questionnaire_menu_form_fields_path(@title) %></div></td>
+    <% if @title.state == 'draft' %>
+    <td>&nbsp;&nbsp;</td>
+    <td><div class="btReturn"><%= link_to '受付開始', open_enq_questionnaire_menu_path(@title) %></div></td>
+    <% end %>
+  </tr>
+</table>
+</div>
+
+</div>
+</div>

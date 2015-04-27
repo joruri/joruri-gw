@@ -1,0 +1,39 @@
+<%
+  fyears = Gwsub::Sb04EditableDate.all.order("fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  location = "/gwsub/sb04/04/sb04stafflists/stafflists_create_run?#{@qs}"
+-%>
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<div class="titleLine">
+ <p class="title">電子職員録作成</p>
+</div>
+</div>
+<div class="pieceBody">
+<div style="margin-left:1em;">
+</div>
+<div style="margin-left:3em;">
+<span class="explanation">
+<span style="">CSVから仮登録したデータを、電子職員録に反映します。</span><br />
+<span style="color:red">同じ年度の登録済データは削除されます。</span><br />
+<span style="">また、電子職員録への反映が成功すると、仮登録データをクリアします。</span><br /><br />
+</span>
+</div>
+<%= form_for :item, :url => location, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= hidden_field_tag('item[csv]','import') %>
+<%= f.error_messages %>
+<table class="show">
+<tr>
+  <th>年度</th>
+  <td><%= f.select(:fyear_id, fyears, :selected => nz(@fyed_id, 0).to_i) %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= submit_tag '作成', :confirm => "電子職員録の作成を開始します。 同じ年度の登録済データは削除されます。よろしいですか？" %>
+</div>
+<% end %>
+<br />
+</div>
+</div>

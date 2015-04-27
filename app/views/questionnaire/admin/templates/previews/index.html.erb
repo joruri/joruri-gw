@@ -1,0 +1,30 @@
+<div class="bbsDocList circular">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'header_tab' %>
+<%= render 'title_info' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 70px;"></th>
+    <th>回答者</th>
+    <th style="width: 120px;">回答日時</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:70px; text-align:center;"><%= link_to '詳細確認', edit_questionnaire_template_preview_path(@title, item) %></td>
+    <td><%= link_to item.target_user_name, edit_questionnaire_template_preview_path(@title, item) %></td>
+    <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') if item.updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
+
+<div class="btReturn">
+  <%= link_to 'テンプレート一覧へ戻る', questionnaire_templates_path %>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,48 @@
+<%
+str_limit = ""
+str_current_cat  = ''
+str_current_grp  = ''
+str_current_date = ''
+str_current_cat  = ' current' if params[:state] == 'CATEGORY'
+str_current_grp  = ' current' if params[:state] == 'GROUP'
+str_current_date = ' current' if params[:state] == 'DATE'
+%>
+<div class="sideMenu" <%=raw @title.sidelist_style %>>
+<%=raw @title.other_system_link unless @title.other_system_link.blank? %>
+<% unless @title.left_index_use == '0' %>
+  <%= render 'search' %>
+  <%= link_to @title.left_banner.html_safe, @title.docs_path if @title.left_banner.present? %>
+  <% unless @title.form_name == 'form002' %>
+    <div class="btBox">
+      <div class="btIndex<%= str_current_cat %>"><%= link_to "分類順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"CATEGORY"})}#{str_limit}" %></div>
+      <div class="btIndex<%= str_current_grp %>"><%= link_to "所属順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"GROUP"})}#{str_limit}" %>  </div>
+      <% if @title.importance == 0 %><%#区分を使いまわししているので注意　書庫では日付順を表示する区分になります%>
+      <div class="btIndex<%= str_current_date %>"><%= link_to "日付順", "#{@title.docs_path}&state=DATE#{str_limit}" %></div>
+      <% end %>
+    </div>
+  <% end %>
+  <div id="sideList">
+  <% case params[:state] %>
+  <% when 'GROUP' %>
+    <ul class="section">
+    <% @grp_items.each do |group| %>
+      <% next unless @group_doc_counts[group.code] %>
+      <li class="<%= 'current' if group.code == params[:gcd] %>">
+        <%= link_to "#{group.name}(#{@group_doc_counts[group.code]})", "#{@title.docs_path}&state=GROUP&gcd=#{group.code}" %>
+      </li>
+    <% end %>
+    </ul>
+  <% when 'DATE', 'DRAFT', 'RECOGNIZE', 'PUBLISH' %>
+    <ul>
+      <li>
+        <ul class="level1">
+          <li class="root bottomFolder"><%= link_to @title.category1_name, "#{@title.docs_path}&state=#{params[:state]}" %></li>
+        </ul>
+      </li>
+    </ul>
+  <% else %>
+    <ul><%= doclibrary_folder_trees(@items) %></ul>
+  <% end %>
+  </div>
+<% end %><%# left_index_use %>
+</div>

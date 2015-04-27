@@ -1,0 +1,11 @@
+<div class="navi">
+ <% unless @parent.blank? %>
+  <%mark_f = ''%>
+  <% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+   <%if c.doc_type == 0%>
+    <%=link_to("#{mark_f}#{c.title}", url_for(c.link_list_path))%>
+    <%mark_f = '> '%>
+   <% end %>
+  <% end %>
+ <% end %>
+</div>

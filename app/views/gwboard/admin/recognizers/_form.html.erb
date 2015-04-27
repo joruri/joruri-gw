@@ -1,0 +1,79 @@
+<%
+selected_recognizer_options = @item.selected_recognizer_options
+selected_recognizer_options.reject! {|o| o[1] == Core.user.id } unless @title.is_admin?
+
+recognizer_options = Core.user_group.enabled_user_options(ldap: 1)
+recognizer_options.reject! {|o| selected_recognizer_options.detect{|o2| o[1] == o2[1]} }
+recognizer_options.reject! {|o| o[1] == Core.user.id } unless @title.is_admin?
+%>
+
+<table class="show">
+  <tr>
+    <th>承認者</th>
+    <td>
+      <table>
+        <tr>
+          <td style="width: 100px; text-align: left;">
+            <%= select_tag :recognizers_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
+            <%= select_tag :recognizers, options_for_select(recognizer_options), :multiple => true, :size => 10, :style => 'width:300px;' %>
+          </td>
+          <td style="width: 20px; text-align: left;">
+            <input type="button" id="mv1" name="mv1" value=" → " />
+            <br /><br />
+            <input type="button" id="mv2" name="mv2" value=" ← " />
+          </td>
+          <td style="width: 1000px; text-align: left;">
+            <br />
+            <%= select_tag :selected_recognizers, options_for_select(selected_recognizer_options), :multiple => true, :size => 10, :style => 'width:300px;' %>
+            <%= f.select :selected_recognizer_uids, options_for_select(selected_recognizer_options, selected_recognizer_options.map(&:last)), {}, {:multiple => true, :style => 'display: none;'} %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#recognizers_group_id').on('change', function() {
+      $.get('/_admin/gwboard/ajaxusers/getajax_recognizer.json', {s_genre: $(this).val()}, function(data) {
+        $('#recognizers').empty();
+        for (var i=0; i<data.length; i++) {
+          if ($('#selected_recognizers').find('option[value=' + data[i][0] + ']').length == 0) {
+            $('#recognizers').append('<option value="' + data[i][0] + '">' + data[i][1] + '</option>');
+          }
+        }
+      });
+    });
+    $('#recognizers').on('dblclick', function() {
+      moveSelectedOptions('#recognizers', '#selected_recognizers');
+    });
+    $('#mv1').on('click', function() {
+      moveSelectedOptions('#recognizers', '#selected_recognizers');
+    });
+    $('#selected_recognizers').on('dblclick', function() {
+      moveSelectedOptions('#selected_recognizers', '#recognizers');
+    });
+    $('#mv2').on('click', function() {
+      moveSelectedOptions('#selected_recognizers', '#recognizers');
+    });
+
+    function moveSelectedOptions(from, to) {
+      var from = $(from);
+      var to = $(to);
+      if (to.attr('id') == 'selected_recognizers' && from.find('option:selected').length + to.find('option').length > 5) {
+        return alert('承認者は5人以下にしてください。');
+      }
+      from.find('option:selected').each(function() {
+        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
+          to.append($(this).removeAttr('selected'));
+        }
+      });
+      var clone_options = $('#selected_recognizers').find('option').clone().attr('selected', 'selected')
+      $('#item_selected_recognizer_uids').empty().append(clone_options);
+    }
+  });
+})(jQuery);
+//]]>
+</script>

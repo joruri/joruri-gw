@@ -1,0 +1,47 @@
+<%
+options = {
+  'table_name' => 'gwsub_sb05_requests' ,
+  :action=>'index',
+  'link_to_show'    => 0 ,
+  'field_td_criteria' => {
+    'id'  =>  Proc.new{ |item|
+      if @media_code.blank?
+        %Q(<a href="/gwsub/sb05//sb05_requests/#{item.id}?l2_c=#{@l2_current}">詳細</a>)
+      else
+        %Q(<a href="/gwsub/sb05//sb05_requests/#{item.id}?l2_c=#{@l2_current}&media_code=#{@media_code}">詳細</a>)
+      end
+    },
+    'r_state' => Proc.new{|item|
+      if item.r_state.to_i==4
+        # 未処理
+        %Q(<span class="notSettled">未処理</span>)
+      else
+        # 処理済
+        %Q(<span class="settled">処理済</span>)
+      end
+    },
+    'm_state' => Proc.new{|item|
+      if item.m_state.to_i==1
+        # 未確認
+        %Q(<span class="notSettled">未確認</span>)
+      else
+        # 確認済
+        %Q(<span class="settled">確認済</span>)
+      end
+    }
+  }
+}
+
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_requests/menu' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb05/sb05_requests/search_with_id' %>
+
+<%= table_to_index2 @requests, options %>
+<%= paginate @requests %>
+</div>
+</div>

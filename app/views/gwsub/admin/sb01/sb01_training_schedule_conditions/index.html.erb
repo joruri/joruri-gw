@@ -1,0 +1,39 @@
+<%
+options1 ={
+  'table_name' => 'gwsub_sb01_trainings' , :action=>'bbs_show' ,
+  'field_td_criteria' => {
+      'title' => Proc.new{|item|
+       %Q(#{item.title})
+      }
+#    }
+  }
+}
+options2 =  {
+  'table_name' => 'gwsub_sb01_training_schedule_conditions' , :action=>'index',
+  'link_to_show'    => 0 ,
+  'field_td_criteria' => {
+      'id' => Proc.new{|item|
+      %Q(<a href="#{Site.current_node.public_uri}#{item.id}?t_id=#{@item1.id}">詳細</a>)
+    }
+  }
+}
+%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+</div>
+<div class="pieceBody">
+<br />
+<div>研修名</div>
+<%= raw(table_to_show2(@item1,options1)) %>
+
+<div>研修枠作成条件</div>
+<%= raw(table_to_index2(@items,options2)) %>
+<br/>
+<%= paginate @items %>
+<br/>
+</div>
+</div>

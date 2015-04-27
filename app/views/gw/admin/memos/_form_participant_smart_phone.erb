@@ -1,0 +1,10 @@
+<%
+@item.selected_receiver_uids ||= @item.memo_users.map(&:uid)
+%>
+<table class="show">
+  <tr><th>送り先</th></tr>
+  <% Gw::Memo.receiver_options(@item.selected_receiver_uids, with_image_class: true).each do |option| %>
+    <tr><td><%= option[0] %><%= hidden_field_tag 'item[selected_receiver_uids][]', option[1] %></td></tr>
+  <% end %>
+</table>
+<br />

@@ -1,0 +1,34 @@
+<%
+fyears = Array.new
+fyears << ['すべて', 0]
+fyears += Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyear_id_sb04 = nz(@s_f_id, @fyed_id).to_i
+if fyear_id_sb04 == 0
+  groups = [['すべて', 0]]
+else
+  groups = Gwsub::Sb04section.sb04_group_select(fyear_id_sb04)
+end
+
+javascript_fname = 'search_submit();'
+-%>
+
+<%= form_tag '', :method => :get, :class => 'search', :name => 'search' do  %>
+<table>
+  <tr>
+    <td style="width:50px"></td>
+    <td>
+      年度 <%= select_tag('s_f_id' , options_for_select( fyears, @s_f_id.to_i), :onchange=>javascript_fname ) %>
+    </td>
+    <td style="width:30px"></td>
+    <td>
+      主管課担当 <%= select_tag('s_m_gid' , options_for_select( groups, @s_m_gid), :onchange=>javascript_fname ) %>
+    </td>
+    <td style="width:180px"></td>
+    <td>
+      <%= hidden_field_tag('sort_keys', params[:sort_keys]) unless params[:sort_keys].blank? %>
+      <%= hidden_field_tag('s_old_f_id', @s_old_f_id) %>
+      所属 <%= select_tag('s_d_gid' , options_for_select( groups, @s_d_gid), :onchange=>javascript_fname ) %>
+    </td>
+  </tr>
+</table>
+<% end %>

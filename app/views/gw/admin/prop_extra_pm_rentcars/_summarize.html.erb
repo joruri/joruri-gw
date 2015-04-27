@@ -1,0 +1,76 @@
+<%
+@sp_mode_extra_pm = @genre
+location = "#{url_for({:action=>:index})}/#{@action}"
+case @action
+when :summarize
+  finished_title_s = '集計完了'
+  last_month = Gw::PropExtraPmRentcarSummarizeHistory.select('max(end_at) as last_month').first
+  last_month = last_month.last_month unless last_month.blank?
+  last_month = last_month.to_date if !last_month.blank?
+  finished_s = last_month.blank? ? '集計されていません' : "#{Gw.date_format('%Y年%m月まで集計済です', last_month)}"
+  cond = 'coalesce(summaries_state,2)!=1'
+  not_finished_title_s = '未集計実績データ'
+when :csvput
+  finished_title_s = '請求完了'
+  last_month = Gw::PropExtraPmRentcarCsvputHistory.select('max(end_at) as last_month').first
+  last_month = last_month.last_month unless last_month.blank?
+  last_month = last_month.to_date if !last_month.blank?
+  finished_s = last_month.blank? ? '請求されていません' : "#{Gw.date_format('%Y年%m月まで請求済です', last_month)}"
+  cond = 'coalesce(bill_state,2)!=1'
+  not_finished_title_s = '未請求実績データ'
+else
+  raise "action '#{@action}' incorrect."
+end
+value = nz(last_month, Time.now)
+value = Gw.to_time(value)
+this_year = Date.today.year
+years_a = ((this_year - 5)..(this_year + 5)).to_a
+
+actuals = Gw::PropExtraPmRentcarActual.select('min(end_at) as min_m, max(end_at) as max_m').where(cond).first
+
+
+summaries = Gw::PropExtraPmRentcarSummary.select('max(summaries_at) as max_s').first
+summaries_max_s = nz(summaries.max_s, Date.today).to_date
+
+min_m = actuals.min_m.nil? ? nil : actuals.min_m.to_date
+max_m = actuals.max_m.nil? ? nil : actuals.max_m.to_date
+not_finished_s = max_m.blank? ? 'ありません' :
+  min_m == max_m ? "#{Gw.date_format('%Y年%m月', min_m)}" :
+  "#{Gw.date_format('%Y年%m月', min_m)}～#{Gw.date_format('%Y年%m月', max_m)}"
+
+
+select_year = min_m.blank? ? last_month.next_month.year : min_m.year
+select_month = min_m.blank? ? last_month.next_month.month : min_m.month
+%>
+
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedule_props/bt_box', d: Date.today -%>
+  <%= render '/gw/admin/prop_extras/header' %>
+</div>
+<div class="pieceBodyBody">
+  <%= form_tag location, {:method=>:get , :multipart => true} do %>
+    <%= hidden_field_tag('item[action]','exec') %>
+    <br>
+    <%=@pre_phrase.html_safe%>対象期間<br/>
+    <table class="show">
+      <tr><th><%=finished_title_s%></th><td><%=finished_s%></td></tr>
+      <tr><th><%=not_finished_title_s%></th>
+      <td><%=not_finished_s%><%=hidden_field_tag('item[max_s]', summaries_max_s) if !summaries_max_s.blank?%></td></tr>
+      <tr><th>開始月</th>
+      <td><%=select_tag("item[st_at_year]", options_for_select(years_a, select_year))%>年
+      <%=select_tag("item[st_at_month]", options_for_select(1..12, select_month))%>月</td></tr>
+      <tr><th>終了月</th>
+      <td><%=select_tag("item[ed_at_year]", options_for_select(years_a, select_year))%>年
+       <%=select_tag("item[ed_at_month]", options_for_select(1..12, select_month))%>月</td></tr>
+    </table>
+    <div class="submitters"><%=submit_tag '実行', :name => @action%></div>
+  <% end %>
+</div>
+<div class="pieceBodyFooter"></div>
+</div>
+</div>

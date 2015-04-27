@@ -1,0 +1,245 @@
+/* basic style
+----------------------------------------------- */
+body, body div {
+  background-color: #0000bb;
+  color: #ffffff;  
+}
+a {
+  color: #ffffff;
+}
+a:visited {
+  color: #ffffff;
+}
+a:hover {
+  color: #ffffff;
+}
+.docTab .content li {
+  color: #ffffff;
+}
+h1 {
+  color: #ffffff;
+}
+#contentBody .docTab .content li {
+  color: #ffffff;
+}
+
+/* header
+--------------------------------------------------- */
+#commonHeader,
+#commonHeader .pieceContainer,
+#commonHeader .pieceBody,
+#navigationNotice {
+  background-color: #ececec;
+  color: #000000;
+}
+
+/* banner style
+----------------------------------------------- */
+#bannerContainer, #CommonBanner, #commonBanner .lowerMenu {
+  background-color: #0000bb;
+}
+#commonBanner .logo {
+  background-color: transparent;
+}
+
+/* footer style
+----------------------------------------------- */
+#footerNavi .pieceBody,
+#footerNavi a,
+#footerNavi a:visited,
+#footerNavi a:hover {
+  color: #ffffff;
+}
+
+/* menu style
+----------------------------------------------- */
+#mayor .pieceBody,
+#ereaMap {
+  border: none;
+}
+#ereaMap .pieceBody {
+  background-color: #0000bb;
+  color: #ffffff;
+}
+#menu ul {
+  background-color: #0000bb;
+}
+
+/* links style
+----------------------------------------------- */
+#links ul {
+  background-color: #0000bb;
+}
+#calendar .pieceHeader {
+  background-color: #0000bb;
+  color: #fff;
+}
+#calendar .pieceBody {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-image:url(../../piece/images/bg-calendar-repeat.gif);
+  background-position: left top;
+  background-repeat: repeat-y;
+}
+#calendar .calendar {
+  width: 160px;
+  margin-left: 1px;
+}
+
+/* page-title piece
+----------------------------------------------- */
+#pageTitle .pieceBody {
+  border: 1px solid #ffffff;
+  background-image: none;
+}
+/* category
+----------------------------------------------- */
+.category {
+  background-color: #0000bb;
+}
+.contentArticleCategory h3 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+
+/* unit
+----------------------------------------------- */
+table.department {
+  background-color: #0000bb;
+  color: #ffffff;
+  font-weight: bold;
+}
+table.department td {
+  font-weight: bold;
+}
+table.unit tr.cycle {
+  background-color: #0000bb;
+  color: #ffffff;
+}
+
+.contentArticleUnit h3 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+
+/* attribute
+----------------------------------------------- */
+.attribute {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+.contentArticleAttribute h3 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+/* area
+----------------------------------------------- */
+table.ward {
+  background-color: #0000bb;
+  color: #ffffff;
+}
+table.ward td {
+  font-weight: bold;
+}
+table.city tr.cycle {
+  background-color: #0000bb;
+  color: #ffffff;
+}
+/* calendar
+----------------------------------------------- */
+.contentArticleEventDocs h2 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+.attributeNyusatsu span,
+.attributeSaiyojoho span,
+.attributeKakusyushikakushiken span,
+.attributeBosyu span,
+.attributeEventjoho span,
+.attributeKyoka span {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+
+/* doc
+----------------------------------------------- */
+.contentArticleDoc .header {
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background-color: #0000bb;
+}
+.contentArticleDoc .back a {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+}
+.contentArticleDoc .maps h2,
+.contentArticleDoc .rels h2,
+.contentArticleDoc .tags h2 {
+  border: 1px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  background-color: #0000bb;
+}
+.inquiry h2 {
+  color: #ffffff;
+}
+
+/* docs
+----------------------------------------------- */
+.contentArticleRecentDocs .docs h2 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+
+/* tag
+----------------------------------------------- */
+.contentArticleTags .search {
+  border: none;
+  background-color: #0000bb;
+  color: #ffffff;
+}
+.contentArticleTags .hit {
+  border: 1px solid #ffffff;
+  background-image: none;
+  color: #ffffff;
+}
+
+/* sitemap
+----------------------------------------------- */
+.level1 li, ul.level3, ul.level2, .level2 li {
+  background-color: #0000bb;
+  color: #ffffff;
+}
+.level2 a, .level3 a {
+  color: #ffffff;
+}
+
+/* mayor
+----------------------------------------------- */
+#mayorSide {
+  background-color: #0000bb;
+}
+.contentTitle {
+
+  background-color: #0000bb;
+}
+.contentTitle .contentTitleBody,
+.contentTitle .contentTitleBody h2 {
+  margin: 0px;
+  border: none;
+  background-image: none;
+}
+
+/* headerÅEfotter pege
+----------------------------------------------- */
+.contentPage .body h2 {
+  border: 1px solid #ffffff;
+  background-color: #0000bb;
+}

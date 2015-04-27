@@ -1,0 +1,17 @@
+<% if @items.blank? %>
+<%= show_notice %>
+<% else %>
+<table class="index">
+  <tr>
+    <th class="action"></th>
+    <th>会議室等</th>
+  </tr>
+  <% @items.each do |item|-%>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to "詳細", "/gw/prop_extra_pm_#{@genre}s/#{item.car_id}/show_group?mode=prop" %></td>
+      <td><%= safe{item.meetingroom.name} %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<% end %>

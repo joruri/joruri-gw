@@ -1,0 +1,9 @@
+<%= form_tag '', :method => :get, :class => 'changeGroup' do %>
+  <%= hidden_field_tag(:title_id, params[:title_id]) unless params[:title_id].blank? %>
+  <%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
+  <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
+  <span>所属選択</span>
+  <%= select_tag :gcd, options_for_select([['全て','']] + @title.doc_section_code_options(params[:state] == 'DRAFT' ? 'draft' : 'public'), params[:gcd].to_s), :onchange => 'submit();' %>
+  <%= hidden_field_tag(:kwd, params[:kwd]) unless params[:kwd].blank? %>
+  <%= hidden_field_tag(:limit, params[:limit]) unless params[:limit].blank? %>
+<!-- end .search --><% end %>

@@ -1,0 +1,345 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/base.css";
+@import "/_common/themes/gw/css/portal_common.css";
+@import "/_common/themes/gw/css/schedule.css";
+/* =========================================================
+   _common/themes/gw/css/portal.css
+========================================================= */
+
+/* �X�P�W���[�����牺�@�J�����ݒ�
+---------------------------------------------*/
+#content {
+  float: right;
+  width: 100%;
+  margin-left: -210px;
+  margin-bottom:20px;
+  padding: 0px;
+}
+#contentContainer {
+  margin-left: 210px;
+}
+#menu {
+  float: left;
+  width: 200px;
+}
+
+/* �E�J�����@��g
+----------------------------------------------- */
+#content .pieceBody {
+  border: none;
+}
+
+/*  buttonSchedule
+------------------------------------------------*/
+#docTab .btSchedule {
+  position: absolute;
+  right: 10px;
+  top: 0;
+}
+#docTab .btSchedule a {
+  display: inline-block;
+  width: 112px;
+  height: 0;
+  margin-left: 10px;
+  padding-top: 19px;
+  overflow: hidden;
+  background-image: url("/_common/themes/gw/files/schedule/bt-sw-schedule-onoff.gif");
+  background-position: 0 -19px;
+  background-repeat: no-repeat;
+}
+#docTab .btSchedule a.off {
+  background-position: 0 0;
+}
+
+/*  tab
+------------------------------------------------*/
+#docTab {
+  position: relative;
+}
+#docTab a.button {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  width: auto;
+  height: auto;
+  line-height: 1.2;
+  margin-right: 13px;
+  padding: 1px 4px;
+  border-top: 1px solid #AAA;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  border-left: 1px solid #AAA;
+  background: none;
+}
+
+/* �E�J�����@���}�C���_�[
+----------------------------------------------- */
+.reminder {
+  background-image: url(/_common/themes/gw/files/title/title_remainder.gif);
+}
+.reminder h3 {
+  background-image: url(/_common/themes/gw/files/title/title_re_red.gif);
+  background-repeat: repeat-x;
+}
+.reminder .borderbox {
+  margin-bottom: -25px;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-bottom: 20px;
+  border-right: 1px solid #DC5E5E;
+  border-left: 1px solid #dc5e5e;
+  border-bottom: 1px solid #dc5e5e;
+}
+#content .reminder {
+  margin-top: 0;
+}
+#content .reminder table {
+  width: 100%;
+}
+#content .reminder table td{
+  background-color: #fff;
+  border-bottom: solid 1px #ccc;
+}
+#content .reminder table td.date_ste {
+  width: 100px;
+  padding-left: 10px;
+  line-height: 2.3;
+}
+#content .reminder table td.cls {
+  width: 115px;
+}
+#content .reminder .borderbox .pieceBody {
+  border: none;
+}
+.reminder td.cls span {
+  display: inline-block;
+  padding-left: 22px;
+}
+.reminder td.memo span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-memo.gif);
+}
+.reminder td.todo span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rim-todo.gif);
+}
+.reminder td.denshiKessai span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rim-denshiketu.gif);
+}
+.reminder td.notification span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-kyousai.gif);
+}
+.reminder td.soumu span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-general.gif);
+}
+.reminder td.circular span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-circulation.gif);
+}
+.reminder td.monitor span {
+  background-image: url("/_common/themes/gw/files/icon/ic-rem-electronic-reference.gif");
+}
+.reminder td.hss_checkup span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-medical.gif);
+}
+.reminder table .expired td.date_ste {
+  color: red;
+}
+.reminder td.plus_update span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-plus.gif);
+}
+.reminder td.pes span {
+  background-image: url(/_common/themes/gw/files/icon/ic-rem-pes.gif);
+}
+.reminder td.trip span {
+  background-image: url("/_common/themes/gw/files/icon/ic-rem-trip.gif");
+}
+
+/* �E�J�����@���̑�
+----------------------------------------------- */
+.gadget {
+  margin-top: -10px;
+}
+#content .gadget table {
+  table-layout: auto;
+}
+#content .gadget .pieceHeader h3 {
+  line-height: 29px;
+  padding: 0 0 0 10px;
+  font-size: 100%;
+}
+#content .gadget .pieceHeader h3 span.btNew {
+  position: absolute;
+  top: 5px;
+}
+#content .gadget .pieceBody {
+  padding: 5px 5px 20px 5px;
+  border-left: 1px solid #1E3B8C;
+  border-right: 1px solid #1E3B8C;
+  border-bottom: 1px solid #1E3B8C;
+}
+#content .gadget h4 {
+  padding: 5px 0 5px 7px;
+  background-image: none;
+  background-color: #C6D1E8;
+}
+.gadget.bbs {
+  background-image: url(/_common/themes/gw/files/title/title_board_new.gif);
+}
+.gadget.rss {
+  background-image: url(/_common/themes/gw/files/title/title_rss.gif);
+}
+.rss table .published_at {
+  width: 120px;
+}
+table.index {
+  margin: 5px 0 0;
+}
+table.index th {
+  padding: 0;
+}
+.bbs table.index td.title {
+  border-left: none;
+}
+.bbs table.index td.title a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-position: 0 4px;
+  background-repeat: no-repeat;
+}
+.pieceBody .bbsContinue {
+  margin-top: 5px;
+  margin-left: 40px;
+}
+
+/* �T�C�h���j���[
+----------------------------------------------- */
+#menu .headLine h3 {
+  height: 29px;
+  padding-left: 23px;
+  font-size: 100%;
+  font-weight: normal;
+}
+#menu .headLine .head h3 {
+  margin-top: -10px;
+}
+#menu .headLine h3 a {
+  line-height: 29px;
+  padding-left: 10px;
+  color: #ffffff;
+  display: inline-block;
+  height: 29px;
+  overflow: hidden;
+}
+#menu .headLine h3.sqr {
+  background-image: url(/_common/themes/gw/files/title/title_schedule.gif);
+}
+#menu .headLine h3.props {
+  background-image: url(/_common/themes/gw/files/title/title_facilities.gif);
+}
+#menu .headLine h3.soumu {
+  background-image: url(/_common/themes/gw/files/title/title_general.gif);
+}
+#menu .headLine h3.denshiKessai {
+  background-image: url(/_common/themes/gw/files/title/title_denshiketu.gif);
+}
+#menu .headLine h3.directory {
+  background-image: url(/_common/themes/gw/files/title/title_list.gif);
+}
+#menu .headLine h3.ebook {
+  background-image: url(/_common/themes/gw/files/title/title_electronic-book.gif);
+}
+#menu .headLine h3.sbook {
+  background-image: url(/_common/themes/gw/files/title/title_book-search.gif);
+}
+#menu .headLine h3.publication_search {
+  background-image: url(/_common/themes/gw/files/title/title_book-search.gif);
+}
+#menu .headLine h3.library {
+  background-image: url(/_common/themes/gw/files/title/title_library.gif);
+}
+#menu .headLine h3.qa {
+  background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+}
+#menu .headLine h3.fq {
+  background-image: url(/_common/themes/gw/files/title/title_rinksystem.gif);
+}
+#menu .headLine h3.faq {
+  background-image: url(/_common/themes/gw/files/title/title_faq.gif);
+}
+#menu .headLine h3.bbs {
+  background-image: url(/_common/themes/gw/files/title/title_board.gif);
+}
+#menu .headLine h3.circular {
+  background-image: url(/_common/themes/gw/files/title/title_circulation.gif);
+}
+#menu .headLine h3.monitor {
+  background-image: url("/_common/themes/gw/files/title/title-electronic-reference.gif");
+}
+#menu .headLine h3.zaimuKaikei {
+  background-image: url("/_common/themes/gw/files/title/title_zaimukaikei_system.gif");
+}
+#menu .headLine .repeat,
+#menu .headLine span.repeat {
+  display: block;
+  margin-left: 6px;
+  background-image: url(/_common/themes/gw/files/title/title_re.gif);
+  background-repeat: repeat-x;
+}
+#menu .headLine ul {
+  margin: 5px 5px 10px;
+}
+#menu .headLine li {
+  margin: 0 0 3px;
+  border-bottom: 1px solid #E3EFFF;
+}
+#menu .headLine li a {
+  display: block;
+  padding: 0 0 0 5px;
+}
+#menu .headLine li a.ext {
+  display: inline-block;
+  padding-left: 19px;
+}
+.borderbox2 {
+  padding-bottom: 5px;
+  padding-top: 1px;
+  border-right: 1px solid #1E3B8C;
+  border-left: 1px solid #1E3B8C;
+  border-bottom: 1px solid #1E3B8C;
+}
+
+/* �L���ݒ�
+---------------------------------------*/
+.adUpper {
+  margin-bottom: 10px;
+  padding-top: 5px;
+  background-color: #EEE;
+  text-align: center;
+}
+.adUpper img {
+  margin-bottom: 5px;
+  vertical-align: bottom;
+}
+.adLower {
+  padding: 15px 0 15px;
+  background-color: #EEE;
+  text-align: center;
+}
+.adLower img {
+  vertical-align: bottom;
+}
+#contentBody .adUpper {
+  background-color: #eee;
+  float: right;
+  margin: 0 0 5px 10px;
+  padding-top: 5px;
+  text-align: center;
+  width: 200px;
+}
+#menuBody .adUpper {
+  background-color: #eee;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  text-align: center;
+  width: 200px;
+}

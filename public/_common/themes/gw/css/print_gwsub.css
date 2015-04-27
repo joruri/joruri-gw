@@ -1,0 +1,66 @@
+@charset "UTF-8";
+
+/* =========================================================
+   print_gwsub.css
+========================================================= */
+
+html body {
+  font-size: 100%;
+}
+*html body {
+  zoom: 0.73;
+}
+
+/*
+body #container {
+  min-width: auto; --0805追加 ブラウザで印刷幅が違っていた原因--
+}*/
+
+#header, #banner, #navi, #navi2 ,#contentHeader, .pieceHeader, .pieceBanner, #contentBody .pieceBody .sideMenu, .right .tabBox, .btReturn,
+.navi, .btBox, .editingBox, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
+#contentBody .titleLine, .pieceBodyHeader .tabBox, form table.batchProcess {
+  display: none;
+}
+*html #contentContainer #contentBody .pieceBody .sideMenu,
+*:first-child+html #contentContainer #contentBody .sideMenu {
+  display: none;
+}
+#main {
+  margin: auto;
+}
+#wrapper #content, #content,
+#content #contentBody .piece .pieceBody,
+#contentContainer #contentBody .sideMenu {
+  border: none;
+}
+#content #contentBody .pieceBody {
+  overflow: visible;
+}
+#content #contentBody .piece,
+#content #contentBody .memo,
+#content #contentBody .todo,
+#content #contentBody .notification,
+#content #contentBody .checkup {
+  background-image: none;
+}
+/*
+.outer .right {
+  width: 120%; --0805追加--
+}*/
+
+
+.pieceBody .outer {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pageBreak {
+  page-break-before: always;
+}
+
+div.search, .pagination, form.changelimit {
+  display: none;
+}
+
+

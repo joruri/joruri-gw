@@ -1,0 +1,49 @@
+<div class="editingBox">
+  <%#link_to '一覧へ戻る', @item.docs_path + doclib_params_set %>
+  <span class="btEdit">
+    <%= link_to '編集', @item.edit_path %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+  </span>
+</div>
+
+<table class="docCreator">
+  <tr>
+    <th style="width: 50px; text-align: left;">作成者</th>
+    <td style="width: 150px; text-align: left;"><%= @item.createdate %></td>
+    <td style="text-align: left;"><%= @item.createrdivision %></td>
+    <td style="width: 150px; text-align: left;"><%= @item.creater %></td>
+  </tr>
+  <tr>
+    <th style="width: 50px; text-align: left;">編集者</th>
+    <td style="width: 150px; text-align: left;"><%= @item.editdate %></td>
+    <td style="text-align: left;"><%= @item.editordivision %></td>
+    <td style="width: 150px; text-align: left;"><%= @item.editor %></td>
+  </tr>
+</table>
+
+<table class="docformBody">
+  <tr>
+    <th style="width: 50px; text-align: left;">和暦</th>
+    <td><%= @item.wareki %></td>
+  </tr>
+  <tr>
+    <th style="width: 50px; text-align: left;">年</th>
+    <td><%= @item.nen%></td>
+  </tr>
+  <tr>
+    <th style="width: 50px; text-align: left;">月</th>
+    <td><%= @item.gatsu %></td>
+  </tr>
+  <tr>
+    <th style="width: 50px; text-align: left;">その</th>
+    <td><%= @item.sono %></td>
+  </tr>
+</table>
+
+<% if @title.use_old_upload_system? %>
+  <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
+<% else %>
+  <%= render '/gwboard/admin/docs/library_index', files: @item.display_files %>
+<% end %>

@@ -1,0 +1,53 @@
+<%
+# 通常入力テーブルとwiki入力テーブルとの切り替え。wiki入力機能を最初に作成した電子図書は、このファイルを使用せず直接formに書かれているので修正時は注意。
+%>
+<script type="text/javascript">
+//<![CDATA[
+function wiki_attach_insert(text){
+
+  var body = $('item_wiki_body');
+  var body_text = $('item_wiki_body').value;
+
+  if (typeof text == 'undefined') throw 'ArgumentError';
+
+  // カーソル移動位置（#{cursor}）を取得後、削除
+  var cursor = text.indexOf('#{cursor}');
+  if (cursor == -1) cursor = 0;
+  text = text.replace('#{cursor}', '');
+
+  // focusしないとIEでbodyに挿入されたりする
+  // Firefoxでもボタンで挿入後にfocusが戻らない
+  body.focus();
+
+  // for IE
+  if (document.selection) {
+    // 選択範囲を取得
+    var range = document.selection.createRange();
+
+    // 選択中のテキスト引数textで置き換え（現在のカーソル位置にtextを挿入）
+    range.text = text;
+
+    // 現在のカーソル位置を反映する（これやらないと水の泡）
+    range.select();
+  }
+  // Firefox
+  // inかundefinedあたりで判定しないとselectionStartが0の時ミスる
+  else if ('selectionStart' in body) { 
+    // スクロールバーの位置を保存
+    var top = body.scrollTop;
+    // 選択範囲の開始・終了位置を取得
+    var start = body.selectionStart;
+    var end = body.selectionEnd;
+
+    // 開始位置と終了位置の間（現在のカーソル位置）にsを挿入
+    body.value = body.value.slice(0, start) + text + body.value.slice(end);
+
+    // カーソル移動位置に移動させる
+    var index = start + cursor;
+    body.setSelectionRange(index, index);
+    // スクロールバーを戻す
+    body.scrollTop = top;
+  }
+}
+//]]>
+</script>

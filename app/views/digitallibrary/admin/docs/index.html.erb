@@ -1,0 +1,8 @@
+<% case params[:state] %>
+<% when 'DRAFT' %>
+  <%= render 'index_draft' %>
+<% when 'DATE' %>
+  <%= render 'index_date' %>
+<% else %>
+  <%= render 'index_normal' %>
+<% end %>

@@ -1,0 +1,14 @@
+<div class="menu">
+<%= link_to "/gw/portal_adds" do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /portal_adds/ %>">一覧</span>
+<% end %>
+<%= link_to "/gw/portal_add_patterns" do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /portal_add_patterns/ %>">グループ設定</span>
+<% end %>
+<%= link_to "/gw/portal_add_configs" do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /portal_add_configs/ %>">表示設定</span>
+<% end %>
+<%= link_to "/gw/portal_ad_accesses" do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /portal_ad_accesses/ %>">クリック数表示</span>
+<% end %>
+</div>

@@ -1,0 +1,24 @@
+<%= form_tag url_for(action: :index), :method => :get, :class => 'search', :name => 'frmSelect' do %>
+<div class="indication">
+<div class="state">状態<%= select_tag :s_finished, options_for_select([['未完了',1],['完了',2],['両方',3]], params[:s_finished].to_i),
+  :onchange => 'loadImg_display();' %></div>
+</div>
+<% end %>
+
+<script type="text/javascript">
+var i=1;
+function loadImg_display(){
+  $('loadImg').setStyle("display: inline;");
+  $('contentTable').setStyle("display: none;");
+  var tid=setTimeout("formChange()",1000);
+}
+function formChange(){
+  i++;
+  if (i==2){
+    form_submit();
+  }
+}
+function form_submit(){
+  document.frmSelect.submit();
+}
+</script>

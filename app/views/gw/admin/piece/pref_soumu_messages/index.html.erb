@@ -1,0 +1,7 @@
+<% if @items.size > 0 %>
+<div id="message">
+  <% @items.each do |item| %>
+    <div><%=raw item.body %></div>
+  <% end %>
+</div>
+<% end %>

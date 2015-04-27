@@ -1,0 +1,80 @@
+<%
+group_options = user_options = []
+if @item.parent_group
+  group_options = @item.parent_group.enabled_group_options
+  first_group = System::Group.find_by(id: group_options[0][1])
+  user_options = first_group ? first_group.enabled_user_options(ldap: 1) : []
+end
+%>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>所属名</th>
+    <td><%= @item.parent_g_name %></td>
+  </tr>
+  <tr>
+    <th>関連づけるユーザー</th>
+    <td>
+      <table border="0">
+        <tr>
+          <td class="userChange">
+            <%= select_tag :director_group_id, options_for_select(group_options, group_options.first.try(:last)) %><br />
+            <%= select_tag :directors, options_for_select(user_options, Core.user.id), :size => 10, :style => 'width:300px;', :multiple => true %>
+          </td>
+          <td class="roleChange">
+            <%= button_tag "追加 ↓", type: :button, id: 'add', style: 'width:60px;' %>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <%= render 'form_user', f: f %>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#director_group_id').on('change', function() {
+      $.get('<%= url_for(action: :get_users) %>', {group_id: $(this).val()}, function(data) {
+        $('#directors').html(data);
+      });
+    });
+    $('#add').on('click', function() {
+      addSelectedUser('#directors', '#selected_directors');
+    });
+    $('#directors').on('dblclick', function() {
+      addSelectedUser('#directors', '#selected_directors');
+    });
+    function addSelectedUser(from, to) {
+      var from = $(from);
+      var to = $(to);
+      from.find('option:selected').each(function() {
+        if (to.find('tr[data-user-id=' + $(this).val() + ']').length == 0) {
+          var clone = $('#template').clone();
+          clone.removeAttr('id').removeAttr('style').attr('data-user-id', $(this).val());
+          clone.find('input[id$=uid]').val($(this).val());
+          clone.find('td.u_name').text($(this).text());
+
+          var num = to.find('tr').length - 1;
+          var attrs = ['id', 'name', 'for'];
+          clone.find('input, label').each(function() {
+            for (var i=0; i<attrs.length; i++) {
+              var val = $(this).attr(attrs[i]);
+              if (val) { $(this).attr(attrs[i], val.replace(/0/, new String(num))); }
+            }
+          });
+          to.append(clone);
+        }
+      });
+    }
+    $('form').on('submit', function() {
+      $('#template').remove();
+    });
+  });
+})(jQuery);
+</script>

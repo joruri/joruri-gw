@@ -1,0 +1,93 @@
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+</div>
+<div class="pieceBody">
+<br/>
+
+<div class="titleLine"><p class="date_title">研修詳細</p></div>
+<%= render 'gwsub/admin/sb01/sb01_training_entries/training_show' %>
+<%#= render 'gwsub/admion/sb01/sb01_training_plans/upload_index' %>
+<% if @ts.blank?%>
+<div class="notice">申込可能な開催日が存在しません。</div>
+<%else%>
+<br /><div class="titleLine"><p class="date_title">開催日程一覧</p></div>
+<table class="index">
+  <tbody>
+    <tr>
+      <th>詳細</th>
+      <th>申込</th>
+      <th>開催日</th>
+      <th>開始時刻</th>
+      <th>終了時刻</th>
+      <th>定員  </th>
+      <th>受付</th>
+      <th>研修名</th>
+      <th>企画所属 </th>
+      <th>最終更新日</th>
+    </tr>
+<%
+today = Time.now
+expired = false
+date = ""
+%>
+<% for item in @ts %>
+<%
+if item.from_start.blank?
+  expired = false
+else  
+  if item.from_start < today
+    expired = true
+  else
+    expired = false
+  end
+end
+%>
+<tr class="<%= cycle '', 'cycle' %>">
+  <td><%= link_to '詳細', "/gwsub/sb01/sb01_training_schedules/#{item.id}?t_id=#{item.training_id}&t_menu=entries" %></td>
+<%
+schedule_check = Gwsub::Sb01TrainingSchedule.schedule_link_check(item.schedule_id)
+if expired == true
+  entry_link = "終了"
+elsif item.state == '3'
+  entry_link = %Q(<span class="required">締切</span>)
+elsif schedule_check == true
+  skd_link = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{item.training_id}&p_id=#{item.id.to_s}&t_menu=entries"
+  entry_link = link_to '申込む', skd_link
+else
+  entry_link = "申込む"
+end
+-%>
+  <td><%=raw(entry_link)%></td>
+<%
+if expired == true
+  if item.from_start.blank?
+    date = ""
+  else
+   date = %Q(<span class="required">#{h item.from_start.strftime("%Y-%m-%d")} (#{Gw.weekday(item.from_start.wday)})</span>)
+  end
+else
+  if item.from_start.blank?
+    date = ""
+  else
+    date = "#{h item.from_start.strftime('%Y-%m-%d')}" + " (#{safe{Gw.weekday(item.from_start.wday)}})"
+  end
+end
+%>
+  <td><%= raw(date) %></td>
+  <td><%= item.from_start.strftime('%H:%M') unless item.from_start.blank?%></td>
+  <td><%= item.from_end.strftime('%H:%M') unless item.from_end.blank?%></td>
+  <td><%= item.members_max %></td>
+  <td><%= item.members_current %></td>
+  <td><%= item.training.title %></td>
+  <td><%= item.training.group_name %></td>
+  <td><%= item.updated_at.strftime('%Y-%m-%d') unless item.updated_at.blank?%></td>
+</tr>
+<% end %>
+</tbody></table>
+<% end %>
+</div>
+</div>

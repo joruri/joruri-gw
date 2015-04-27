@@ -1,0 +1,19 @@
+<%
+if params[:s_finished]=='2'
+  finished_str  = "選択未読"
+  confirm_str   = "未読"
+else
+  finished_str  = "選択既読"
+  confirm_str   = "既読"
+end
+%>
+<table  class="batchProcess">
+  <tr>
+    <td><%= submit_tag " #{finished_str} ", :name => 'finished_submit', :data => {:confirm => "#{confirm_str}にしますか？"} %></td>
+    <td><%= submit_tag " 選択削除 ", :name => 'delete_submit', :data => {:confirm => "削除しますか？"} %></td>
+    <td>
+      <%= link_to '全選択', '#', :onclick => "List_Form.checkAll('listForm', 'ids', 1); return false;" %><br />
+      <%= link_to '全解除', '#', :onclick => "List_Form.checkAll('listForm', 'ids', 0); return false;" %>
+    </td>
+  </tr>
+</table>

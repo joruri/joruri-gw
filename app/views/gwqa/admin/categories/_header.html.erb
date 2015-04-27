@@ -1,0 +1,10 @@
+<!--
+<%#*<div class="menu">%>
+  <%#= link_to '分類を追加する', "#{Site.current_node.public_uri}new/?parent_id=#{params[:parent_id]}&title_id=#{params[:title_id]}" %>
+  <%#*<a class="" href='/gwfaq/makers/<%="#{params[:title_id]}"%>'>FAQ詳細</a>%>
+<%#*</div>%>
+-->
+<div class="editingBox">
+  <span class="btNew"><%= link_to '分類を追加する', new_gwqa_category_path({:title_id=>params[:title_id],:parent_id=>params[:parent_id]}) %></span>
+  <span class="docLink"><%=link_to "QA詳細画面へ >>", gwqa_maker_path(@title,{:state=>params[:state]})%>
+</div>

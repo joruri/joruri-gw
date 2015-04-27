@@ -1,0 +1,15 @@
+<%= form_tag '', :method => :get, :class => 'search' do %>
+  <%=hidden_field_tag('year', params[:year])%>
+  <table>
+    <tr>
+      <td>会議室等<%=select_tag('s_prop_name' , options_for_select( @prop_list, nz(params[:s_prop_name], 0 ).to_i) )%></td>
+      <td>予約状態<%=select_tag('s_prop_state' , options_for_select( @prop_state, nz(params[:s_prop_state], 100 ).to_i) )%></td>
+      <td>利用者グループ<%=select_tag('s_driver_gid' , options_for_select( @driver_group_list, nz(params[:s_driver_gid], 0 ).to_i) )%></td>
+      <td>貸出日時<%=select_tag('s_start_at' , options_for_select( @start_at_list, nz(params[:s_start_at], 2 ).to_s) )%></td>
+      <td class="submitters">
+      <%=submit_tag '検索',     :name => :search%>
+      <%=submit_tag 'リセット', :name => :reset%>
+    </td>
+    </tr>
+  </table>
+<% end %>

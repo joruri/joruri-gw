@@ -1,0 +1,25 @@
+<div class="piece schedulePiece setting">
+<div class="pieceHeader">
+<%= render '/gw/admin/schedules/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+  <span class="title">スケジュール削除設定</span>
+</div>
+</div>
+<div class="pieceBodyBody">
+
+<%= form_for :item, :url => "/gw/schedule_settings/edit_admin_deletes", :html => {method: :put, multipart: true} do |f| %>
+  <table class="show">
+    <tr>
+      <th>削除対象</th>
+      <td><%= select_tag 'item[schedules][schedules_admin_delete]', options_for_select(@item.delete_options, @item.schedules_admin_delete) -%>　経過したスケジュールを削除</td>
+    </tr>
+  </table>
+  <%= f.submit '保存' -%>
+<% end %>
+
+</div>
+</div>
+</div>

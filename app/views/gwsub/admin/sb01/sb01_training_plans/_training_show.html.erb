@@ -1,0 +1,31 @@
+<%
+doc_link = %Q(#{@item.title})
+state = Gwsub::Sb01TrainingSchedule.state_show(@item.state)
+-%>
+
+<table class="show leftSide">
+  <tr>
+    <th>状況</th>
+    <td><%= state %></td>
+  </tr>
+  <tr>
+    <th>研修名</th>
+    <td><%= doc_link %></td>
+  </tr>
+  <tr>
+    <th>企画所属</th>
+    <td><%= @item.group_name %></td>
+  </tr>
+  <tr>
+    <th>企画者</th>
+    <td><%= @item.member_name %></td>
+  </tr>
+  <tr>
+    <th>連絡先電話番号</th>
+    <td><%= @item.member_tel %></td>
+  </tr>
+  <tr>
+    <th>最終更新日</th>
+    <td><%= @item.updated_at.strftime('%Y-%m-%d') unless @item.updated_at.blank? %></td>
+  </tr>
+</table>

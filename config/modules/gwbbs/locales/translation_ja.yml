@@ -1,0 +1,67 @@
+ja:
+  activerecord:
+    attributes:
+      gwbbs/itemdelete:
+        limit_date: 削除対象
+      gwbbs/control:
+        title: 掲示板タイトル
+        category1_name: 分類フォルダルート名
+        sort_no: 並び順
+        categoey_view_line: 分類件数表示行数
+        monthly_view_line: 月別件数表示行数
+        default_published: 掲載期間の初期値
+        doc_body_size_capacity: 記事本文総容量制限
+        upload_graphic_file_size_capacity: 画像の総容量制限
+        upload_document_file_size_capacity: 添付の総容量制限
+        upload_graphic_file_size_max: 画像ファイルのサイズ制限
+        upload_document_file_size_max: 添付ファイルのサイズ制限
+        adms_json: 管理者設定
+        sueditors_json: 編集者設定
+        sureaders_json: 閲覧者設定
+      gwbbs/category:
+        sort_no: 並び順
+        name: 名称
+      gwbbs/comment:
+        body: コメント
+      gwbbs/doc:
+        state: 状態
+        able_date: 掲載開始日
+        expiry_date: 掲載期限日
+        section_code: ""
+        title: ""
+        body: ""
+        category1_id: 分類
+        inpfld_001: ""
+        inpfld_002: ""
+        inpfld_003: ""
+        inpfld_004: ""
+        inpfld_005: ""
+        inpfld_006: ""
+        inpfld_006w: ""
+        inpfld_006d: ""
+        inpfld_007: ""
+        inpfld_008: ""
+        inpfld_009: ""
+        inpfld_010: ""
+        inpfld_011: ""
+        inpfld_012: ""
+        inpfld_013: ""
+        inpfld_014: ""
+        inpfld_015: ""
+        inpfld_016: ""
+        inpfld_017: ""
+        inpfld_018: ""
+        inpfld_019: ""
+        inpfld_020: ""
+        inpfld_021: ""
+        inpfld_022: ""
+        inpfld_023: ""
+        inpfld_024: ""
+        inpfld_025: ""
+        recognizers: 承認者
+      gwbbs/file:
+        file: ファイル
+        filename: ファイル名
+      gwbbs/image:
+        file: ファイル
+        filename: ファイル名

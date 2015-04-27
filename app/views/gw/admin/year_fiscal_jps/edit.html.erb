@@ -1,0 +1,12 @@
+<div class="piece YearFiscalJp">
+<%= render 'header_str' %>
+<div class="pieceBody">
+
+<%= form_for :item, :url => {action: :update}, :html => {method: :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <%= submit_for f, caption: '保存' %>
+<% end %>
+
+</div><!--pieceBody-->
+</div>

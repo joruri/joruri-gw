@@ -1,0 +1,149 @@
+<%
+
+def name_with_prefix(group)
+  "　"*(group.level_no-2) + group.name
+end
+
+
+def parent_groups(group)
+  parents = []
+  parent = group.parent
+  while parent && parent.level_no != 1 do
+    parents << parent
+    parent = parent.parent
+  end
+  parents.reverse!
+end
+
+def group_selection(group)
+  array = [["// 選択してください",0]]
+  parents = parent_groups(group)
+  parents.each do |parent|
+    array << [name_with_prefix(parent), parent.id]
+  end
+  if group != @root
+    array << [name_with_prefix(group), group.id]
+  end
+  enabled_children= group_enabled_children(group.id)
+  enabled_children.each do |g|
+    array << [name_with_prefix(g), g.id]
+  end
+  array
+end
+
+send_cls = nz(params[:s_send_cls], 1).to_s
+@num = 0
+@num += session[:mobile][:to].length if session[:mobile][:to] if session[:mobile]
+
+@edit_path = "/gw/mobile_participants/mobile_manage"
+if  params[:view] == "quote"
+ @str = "作成"
+elsif params[:view] == "edit"
+ @str = "編集"
+else
+ @str = "作成"
+end
+no_user_msg = "次の階層を選択してください。"
+%>
+<div class="piece memo index">
+<div class="pieceHeader">
+<%= render '/gw/admin/memos/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render '/gw/admin/memos/search' %>
+<%= render '/gw/admin/memos/tabmenu' %>
+
+<%= form_tag '', :method => :get, :class => 'search', :name => 'groupForm' do %>
+  <%= select_tag( 'group_id',options_for_select(group_selection(@group), @group.id) ,:style=>'width:200px;margin-top: 5px;',
+     :onchange => 'loadList_display()') %>
+  <%= hidden_field_tag :view, params[:view] %>
+  <%= hidden_field_tag :memo_id, params[:memo_id] %>
+<% end %>
+
+<div id="contentTable">
+<%= form_for :item, :url => @edit_path, :method=>:get, :html => {:id => 'mailForm', :name => 'mailForm', :class=>"leftSide"} do |f| %>
+<table class="show">
+<tr><th><%= %Q(#{@group.name}) unless @group.blank?%></th></tr>
+  <% if @items.blank? %>
+<tr><td><%=no_user_msg%></td></tr>
+  <% else %>
+    <% @items.each do |u| %>
+    <tr><td>
+      <input type="checkbox" name="to[<%= u[1] %>]" value="1" />
+<%
+if Gw::Property::MemoMobileMail.where(uid: u[1]).first_or_new.is_email_mobile?
+  mobile_mark = "M "
+else
+  mobile_mark = "　"
+end
+%>
+      <%=mobile_mark%><%= u[0] %></td></tr>
+    <% end %>
+    </table>
+  <%= submit_tag 'ユーザー選択', :class => 'menuItem', :name => 'selectMember' %>
+  <% end %>
+  <% if @num != 0 %>
+<br /><br />
+<table class="show"><tr><th>選択済みユーザー</th></tr>
+  <% [:to].each do |t| %>
+    <% if !session[:mobile][t].blank? %>
+      <% session[:mobile][t].each_with_index do |u,idx| %>
+      <tr><td>
+      <%= submit_tag '削除', :class => 'deleteItem', :name => "deleteMember[#{t}_#{idx}]" %>
+<%
+to_user = System::User.where(:id => u).first
+if Gw::Property::MemoMobileMail.where(uid: u).first_or_new.is_email_mobile?
+  mobile_mark = "M "
+else
+  mobile_mark = "　"
+end
+%>
+      <%=mobile_mark%><%= to_user.display_name unless to_user.blank? %>
+      </td></tr>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% end %>
+</table>
+  <%= hidden_field_tag :group_id, params[:group_id] %>
+  <%= hidden_field_tag :view, params[:view] %>
+  <%= hidden_field_tag :memo_id, params[:memo_id] %>
+  <% if @num != 0 || !@items.blank? %>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'createMemo' if  params[:view] == "new"%>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'editMemo' if  params[:view] == "edit"%>
+  <%= submit_tag '連絡メモ作成', :class => 'menuItem', :name => 'quoteMemo' if  params[:view] == "quote"%>
+  <% end %>
+<% end %>
+
+<p class="leftPad2">
+<%=link_to "戻る", "/gw/memos/new" if  params[:view] == "new"%>
+<%=link_to "戻る", "/gw/memos/#{params[:memo_id]}/edit" if  params[:view] == "edit"%>
+<%=link_to "戻る", "/gw/memos/#{params[:memo_id]}/quote" if  params[:view] == "quote"%>
+</p>
+</div>
+</div>
+<div class="pieceBodyBody"></div>
+<div id="loadImg" style="display: none;">Now Loading...</div>
+</div>
+</div>
+<script language = "JavaScript" type="text/javascript">
+<!--
+  i=1;
+
+  function loadList_display(){
+    document.getElementById('loadImg').setStyle("display: inline;")
+    document.getElementById('contentTable').setStyle("display: none;")
+    var tid=setTimeout("grp_formChange()",1000);
+  }
+  function grp_formChange(){
+    i++;
+    if (i==2){
+      grp_form_submit();
+    }
+  }
+  function grp_form_submit(){
+    document.groupForm.submit();
+  }
+-->
+</script>

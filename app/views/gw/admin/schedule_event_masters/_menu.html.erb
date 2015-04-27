@@ -1,0 +1,8 @@
+<div class="menu">
+<a href="/gw/schedule_events/"><span>週間表示</span></a>
+<a href="/gw/schedule_events/?p=month"><span>月間表示</span></a>
+<a href="/gw/schedule_event_masters/"><span class="current_menu">主管課マスタ</span></a>
+<% if @is_gw_admin %>
+<a href="/gw/section_admin_masters/clear" target="_blank"><span>主管課マスタ 一括削除</span></a>
+<% end %>
+</div>

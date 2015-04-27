@@ -1,0 +1,64 @@
+<%
+t01 = %Q(<span>一覧</span>)
+t02 = %Q(<span>登録</span>)
+t03 = %Q(<span>次年度分コピー登録</span>)
+unless params[:l2_c]
+  case @l2_current
+  when  '01'
+    t01 = %Q(<span class="gwsub_current_menu">一覧</span>)
+  when  '02'
+    t02 = %Q(<span class="gwsub_current_menu">登録</span>)
+  when  '03'
+    t03 = %Q(<span class="gwsub_current_menu">次年度分コピー登録</span>)
+  else
+  end
+else
+  unless params[:l3_c]
+    case @l3_current
+    when  '01'
+      t01 = %Q(<span class="gwsub_current_menu">一覧</span>)
+    when  '02'
+      t02 = %Q(<span class="gwsub_current_menu">登録</span>)
+    when  '03'
+      t03 = %Q(<span class="gwsub_current_menu">次年度分コピー登録</span>)
+    else
+    end
+  else
+    unless params[:l4_c]
+      case @l4_current
+      when  '01'
+        t01 = %Q(<span class="gwsub_current_menu">一覧</span>)
+      when  '02'
+        t02 = %Q(<span class="gwsub_current_menu">登録</span>)
+      when  '03'
+        t03 = %Q(<span class="gwsub_current_menu">次年度分コピー登録</span>)
+      else
+      end
+    else
+    end
+  end
+end
+# 共通必須
+comm_params = "?h1_menu=#{@render_menu1}&l1_c=#{@l1_current}"
+comm_params << "&u_role=#{@u_role}"
+comm_params << "&ctrl=#{@ctrl}"
+comm_params << "&ctrl_name=#{@ctrl_name}"
+# 共通任意
+comm_params << "&h2_menu=#{@render_menu2}"  unless @render_menu2.blank?
+comm_params << "&l2_c=#{@l2_current}"       unless @l2_current.blank?
+comm_params << "&h3_menu=#{@render_menu3}"  unless @render_menu3.blank?
+comm_params << "&l3_c=#{@l3_current}"       unless @l3_current.blank?
+# 個別必須
+if @ctrl_name=="sb06_assigned_conferences"
+  comm_params << "&fy_id=#{@fy_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}&help=#{@help}"
+end
+-%>
+<%= render @render_menu1 unless @render_menu1.to_s.blank? %>
+<%= render @render_menu2 unless @render_menu2.to_s.blank? %>
+<%= render @render_menu3 unless @render_menu3.to_s.blank? %>
+<div class="menu">
+<!-- <p><span>通知先管理者設定</span></p> -->
+<%= link_to t01.html_safe , url_for(@index_uri+"#{comm_params}") %>
+<%= link_to t02.html_safe , url_for("#{@index_uri}new#{comm_params}") %>
+<a onclick="return confirm('次年度分を今年度分からコピーで登録します。登録済データは削除されます。よろしいですか？');" href='<%="#{@index_uri}new#{comm_params}&do=copy"%>'><%=t03.html_safe%></a>
+</div>

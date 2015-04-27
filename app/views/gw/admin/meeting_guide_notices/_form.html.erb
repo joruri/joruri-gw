@@ -1,0 +1,22 @@
+<%= f.hidden_field :sort_no -%>
+<%= f.hidden_field :state -%>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td><%= f.radio_buttons :published, Gw::MeetingGuideNotice.published_select %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>件名<%= required '※82文字以内' %></th>
+    <td><%= f.text_field :title, :size => 80 %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+  <%= submit_for f, caption: '保存' %>
+</div>

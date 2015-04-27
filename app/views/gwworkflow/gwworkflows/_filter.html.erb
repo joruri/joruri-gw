@@ -1,0 +1,20 @@
+<%
+  filters = [['全て', :all], ['下書き', :draft],['処理中', :applying],['差し戻し', :remanded], ['決裁', :accepted], ['却下', :rejected]]
+  sorts = [['申請日時', :applied_at],['期限日時', :expired_at],['最終更新日時', :updated_at]]
+  orders = [['降順', :desc], ['昇順', :asc]]
+%>
+<%= form_tag('', :method => :get, :name => 'frmSelect', :class => 'search', :style => 'background-color:white;') do %>
+<table>
+  <tr>
+  	<% if params[:cond].blank? ||params[:cond] == 'committed' %>
+  	  <td>
+  	  	状態<%= select_tag(:filter, options_for_select(filters, @filter), :onchange => 'document.frmSelect.submit()') %>
+      </td>
+  	<% end %>
+  	
+  	<td>
+  	  並び順<%= select_tag(:sort, options_for_select(sorts, @sort), :onchange => 'document.frmSelect.submit()') %><%= select_tag(:order, options_for_select(orders, @order), :onchange => 'document.frmSelect.submit()') %>
+    </td>
+  </tr>
+</table>
+<% end %>

@@ -1,0 +1,4 @@
+<div class="editingBox">
+  <span class="btNew"><%= link_to '分類を追加する', "#{new_gwbbs_category_path}?parent_id=#{params[:parent_id]}&title_id=#{params[:title_id]}" %></span>
+  <span class="docLink"><%= link_to '掲示板詳細画面へ >>', "/gwbbs/makers/#{@title.id}" %></span>
+</div>

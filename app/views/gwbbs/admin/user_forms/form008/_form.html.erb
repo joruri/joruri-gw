@@ -1,0 +1,28 @@
+<table class="show">
+  <tr>
+    <th>【名称】<%= required('※') %></th>
+    <td><%= f.text_field :title, :size=>"90" %></td>
+  </tr>
+  <tr>
+    <th>【対象となるOS】<%= required('※') %></th>
+    <td><%= f.text_field :inpfld_002, :size=>"90" %></td>
+  </tr>
+</table>
+<%= render '/gwbbs/admin/docs/form_wiki_select', f: f %>
+
+<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
+  <tr>
+    <th>【概要】<%= required('※') %></th>
+  </tr>
+  <tr>
+    <td class="mceEditor" colspan="2"><%= f.text_area :body, :class => 'mceEditor', :rows => 20, :cols=>40, :style => 'height:500px; width:100%' %></td>
+  </tr>
+</table>
+<%= render '/gwbbs/admin/docs/form_wiki', f: f, title: "【概要】" %>
+
+<% if @title.use_old_upload_system? %>
+  <%= gwboard_image_form(f, @item, 'item_body') %>
+  <%= gwboard_attach_form(f, @item) %>
+<% else %>
+  <%= gwboard_attachments_form(f, @item) %>
+<% end %>

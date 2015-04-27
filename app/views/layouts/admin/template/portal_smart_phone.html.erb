@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<%= render 'layouts/admin/gw/header_tag' %>
+<link rel="stylesheet" type="text/css" href="/layout/portal/smartphone.css" />
+</head>
+<body <%= Page.body_id %>>
+<div id="smartPhoneContainer">
+<div id="header">
+<div id="headerBody">
+<%= render 'layouts/admin/gw/piece_header' %>
+</div>
+</div>
+<div id="banner">
+<div id="bannerBody">
+<%= render_component :controller => 'gw/admin/piece/header_menus', :action => 'index', :piece_param => '61' %>
+</div>
+</div>
+
+<div id="navi">
+<div id="naviBody">
+<%= render 'layouts/admin/gw/notice' %>
+</div>
+</div>
+
+<div id="navi2">
+<div id="navi2Body">
+
+</div>
+</div>
+
+<div id="main">
+<div id="wrapper">
+<div id="content">
+<div id="contentContainer">
+<div id="contentBody">
+<div id="javascript_tab">
+<ul id="tab">
+<li class="selected"><a href="#portal_reminder_part">リマインダー</a></li>
+<li><a href="#portal_schedule_part">スケジュール</a></li>
+<li><a href="#portal_bbs_par">全庁掲示板</a></li>
+</ul>
+<%= render_component :controller => 'gw/admin/piece/schedules', :action => 'index' %>
+<%= render_component :controller => 'gw/admin/piece/reminder', :action => 'index' %>
+<%= render_component :controller => 'gwboard/admin/piece/news', :action => 'index' , :piece_param=>"gwbbs_1_10" %>
+
+</div>
+<script type="text/javascript">
+//<![CDATA[
+/*--setup--*/
+window.onload=function() {
+tab.setup = {
+tabs: document.getElementById('tab').getElementsByTagName('li'),
+pages: [
+document.getElementById('portal_reminder_part'),
+document.getElementById('schedule_part'),
+document.getElementById('portal_bbs_part')
+]
+}
+tab.init();
+}
+/*--setup end--*/
+
+var tab = {
+init: function(){
+var tabs = this.setup.tabs;
+var pages = this.setup.pages;
+
+for(i=0; i<pages.length; i++) {
+if(i !== 0) pages[i].style.display = 'none';
+tabs[i].onclick = function(){ tab.showpage(this); return false; };
+}
+},
+
+showpage: function(obj){
+var tabs = this.setup.tabs;
+var pages = this.setup.pages;
+var num;
+
+for(num=0; num<tabs.length; num++) {
+if(tabs[num] === obj) break;
+}
+
+for(var i=0; i<pages.length; i++) {
+if(i == num) {
+pages[num].style.display = 'block';
+tabs[num].className = 'selected';
+}
+else{
+pages[i].style.display = 'none';
+tabs[i].className = null;
+}
+}
+}
+}
+
+//]]>
+</script>
+<%= render_component :controller => 'gwcircular/admin/piece/recent', :action => 'index' %>
+<%= render_component :controller => 'gwboard/admin/piece/portals', :action => 'index' %>
+
+</div>
+</div>
+</div>
+
+<div id="footer">
+<div id="footerContainer">
+
+<div id="footerHeader">
+</div>
+<div id="footerBody">
+<%= render 'layouts/admin/gw/piece_footer' %>
+
+</div>
+<div id="footerFooter"></div>
+</div>
+</div>
+</div>
+</body>
+</html>

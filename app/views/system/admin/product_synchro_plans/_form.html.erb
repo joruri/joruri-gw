@@ -1,0 +1,32 @@
+<script type="text/javascript">
+//<![CDATA[
+function checkAll(flag) {
+  var elems = document.getElementsByName("item[product_ids][]");
+  for (var i=0; i<elems.length; i++) {
+    if (!elems[i].disabled) { elems[i].checked = flag; }
+  }
+}
+//]]>
+</script>
+
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>同期予定日時 <%= required %></th>
+    <td><%= f.datetimepicker :start_at %></td>
+  </tr>
+  <tr>
+    <th>同期対象プロダクト <%= required %></th>
+    <td>
+      <input type="button" value="全選択" onclick="checkAll(true);" />
+      <input type="button" value="全解除" onclick="checkAll(false);" /><br />
+      <% System::Product.where(:product_synchro => 1).all.each do |product| %>
+        <%= f.check_box :product_ids, {:checked => @item.products.include?(product), :id => "item_product_ids_#{product.id}", :name => "item[product_ids][]", :disabled => product.product_type == 'gw'}, product.id, nil %>
+        <%= f.label "product_ids_#{product.id}", product.name %><br />
+        <%= hidden_field_tag "item[product_ids][]", product.id if product.product_type == 'gw' %>
+      <% end %>
+    </td>
+  </tr>
+</table>
+
+<%= f.hidden_field :state %>

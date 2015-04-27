@@ -1,0 +1,32 @@
+<!-- start form -->
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch' ) do %>
+<%= hidden_field_tag 'v'              , params[:v]              , :value=>@v.to_i %>
+<%= hidden_field_tag 'limit'          , params[:limit]          , :value=>@limits.to_i %>
+<%= hidden_field_tag 'pre_fyear'      , params[:pre_fyear]      , :value=>@fyed_id.to_i %>
+<%= hidden_field_tag 'fyed_id'        , params[:fyed_id]        , :value=>@fyed_id.to_i %>
+<%= hidden_field_tag 'grped_id'       , params[:grped_id]       , :value=>@grped_id.to_i %>
+<%= hidden_field_tag 'multi_section'  , params[:multi_section]  , :value=>@multi_section if @multi_section %>
+<%# pp [Site.current_node.public_uri,@fyed_id,@grped_id,@limits] %>
+<table>
+<tr>
+<td>文字列検索</td>
+<td><%= text_field_tag 's_keyword', params[:s_keyword] ,:size=>80 %></td>
+<td class="submitters">
+  <%= submit_tag '検索',     :name => :search %>
+  <%= submit_tag 'リセット', :name => :reset  %>
+</td>
+</tr>
+<tr>
+<td>対象項目</td>
+<td>所属・担当・職名・氏名・内線・備考・フリガナ・職員番号・事務分掌</td>
+<td>リセットは、年度・所属・行数の選択も初期化します。</td>
+</tr>
+</table>
+<%end%>
+<!-- end form -->
+
+<% if @menu_header3 == 'sb0404menu' %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>
+<% end %>

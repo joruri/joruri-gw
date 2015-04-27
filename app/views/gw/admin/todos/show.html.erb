@@ -1,0 +1,49 @@
+<%= render '/gw/admin/todos/header' %>
+<div class="piece todo show">
+<%= render '/gw/admin/todos/piece_header' %>
+<div class="pieceBody"><div class="pieceBodyBody">
+<div class="editingBox">
+<div class="btEdit"><%=link_to "編集する", edit_gw_todo_path(@item) if @item.is_finished != 1%></div>
+<div class="btQuote"><%=link_to "引用作成", quote_gw_todo_path(@item)%></div>
+<% if @item.is_finished != 1 %>
+<div class="btFinish"><%=link_to  '完了する',  finish_gw_todo_path(@item)%></div>
+<% else %>
+<div class="btUnfinish"><%=link_to '未完了に戻す', finish_gw_todo_path(@item)%></div>
+<% end %>
+<div class="btDestroy"><%=link_to "削除する",gw_todo_path(@item),:method=>:delete,
+      :confirm=>"このToDoを削除します。よろしいですか？"%></div>
+</div>
+
+<table class="show">
+<tr><th>期限</th><td>
+  <%
+    ed_at = ( @item.ed_at.blank? ? '' : @item.ed_at.strftime("%Y-%m-%d"))
+    is_expaired = true
+    if @item.ed_at.blank?
+      is_expaired = false
+    else
+      is_expaired = false if Time.now < @item.ed_at
+    end
+    if is_expaired && (@item.is_finished || 0 != 1)
+  %>
+  <font color="red"><%= ed_at %></font>
+  <%else%>
+  <%= ed_at %>
+  <%end%>
+  </td>
+  </tr>
+  <tr>
+    <th>内容 </th>
+    <td><%=hbr @item.title%></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td>
+      <%=hbr @item.body%>
+    </td>
+  </tr>
+</table>
+<div class="btReturn"><%=link_to 'ToDo一覧へ戻る', gw_todos_path({:s_finished=>@s_finished})%></div>
+</div>
+</div>
+</div>

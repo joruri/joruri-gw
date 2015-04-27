@@ -1,0 +1,73 @@
+<%
+groups_for_selector = System::Group.where(:level_no => 1).order(:sort_no)
+groups              = System::Group.where(:level_no => 2).order(:sort_no)
+groups_objects      = System::Group.order(:sort_no).all
+%>
+
+<p class="form">操作</p>
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:start_date) %></th>
+    <td><%= f.datepicker :start_date %></td>
+  </tr>
+</table>
+<br />
+
+<p class="form">基本情報</p>
+<script type="text/javascript">
+//<![CDATA[
+
+function setParent() {
+  var s = document.getElementById('item_selector');
+  var codeMapKey ='group_code_' + s.options[s.selectedIndex].value;
+  var nameMapKey ='group_name_' + s.options[s.selectedIndex].value;
+  document.getElementById('item_parent_code').value = document.getElementById(codeMapKey).value
+  document.getElementById('item_parent_name').value = document.getElementById(nameMapKey).value
+}
+
+function setTarget() {
+  var s = document.getElementById('item_selector');
+  var value = s.options[s.selectedIndex].value;
+  var codeMapKey  ='group_code_' + value;
+  var nameMapKey   ='group_name_' + value;
+  var ldapMapKey  ='group_ldap_' + value;
+
+  document.getElementById('item_incoming_group_code').value      = document.getElementById(codeMapKey).value;
+  document.getElementById('item_incoming_group_name').value      = document.getElementById(nameMapKey).value;
+}
+
+//]]>
+</script>
+<table class="show">
+   <tr>
+    <td>引用情報：<%= f.select_with_tree :selector, groups_for_selector %>
+<% groups_objects.each do |g| %>
+<%= hidden_field_tag "group_code_#{g.id}", h(g.code) %>
+<%= hidden_field_tag "group_name_#{g.id}", h(g.name) %>
+<%= hidden_field_tag "group_ldap_#{g.id}", h(g.ldap) %>
+<% end %>
+    </td>
+  </tr>
+</table>
+<br />
+
+<br />
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:incoming_group_code) %></th>
+    <td><%= f.text_field :incoming_group_code, :style => 'id' %>&nbsp;<a href="javascript:void(0)" onclick="setTarget(); return false;">≪引用情報から設定する</a></td>
+  </tr><tr>
+    <th><%= @item.locale(:incoming_group_name) %></th>
+    <td><%= f.text_field :incoming_group_name, :class => 'name' %></td>
+  </tr>
+</table>
+<br />
+
+<p class="form">引継元情報</p>
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:present_group_id) %></th>
+    <td><span><%= f.select_with_tree :present_group_id, groups, :include_blank => true %></span></td>
+  </tr>
+</table>

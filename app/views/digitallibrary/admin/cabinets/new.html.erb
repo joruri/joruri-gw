@@ -1,0 +1,18 @@
+<div class="piece digitalLibrary">
+<div class="pieceHeader">
+<h2>電子図書</h2>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => digitallibrary_cabinets_path, :method=>:post, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+<%= submit_for(f, {:js_submitter => 'my_submit()', :caption=>"編集する"}) %>
+
+<% end %>
+</div>
+</div>
+
+

@@ -1,0 +1,56 @@
+<% 
+@hedder2lnk = 10
+@hedder3lnk = 2
+format = "%,d"
+tag_r = "<p style=\"text-align:right;\">"
+tag_l = "</p>"
+non_field = "#{tag_r}0#{tag_l}"
+non_field_km = "#{tag_r}0 km#{tag_l}"
+%>
+
+<div class="piece prop_extra group_rentcars show_group">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedule_props/bt_box', d: Date.today -%>
+  <%= render 'header' %>
+</div>
+<div class="pieceBodyBody">
+<% if @items.blank? %>
+<%= show_notice %>
+<% else %>
+<table class="index">
+  <tr>
+    <th class="action"></th>
+    <th>年月</th>
+    <th>走行距離</th>
+    <th>利用回数</th>
+    <th>利用日数</th>
+    <th>利用料金</th>
+    <th>通行料</th>
+    <th>合計金額</th>
+    <th>ガソリン補給量</th>
+    <th>請求</th>
+  </tr>
+  <% @items.each do |item|-%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to "明細", "/gw/prop_extra_group_#{@genre}s/#{@gid}/show_group_month?s_ym=#{item._end_at_ym}&mode=#{@s_order}&year=#{params[:year]}" %></td>
+    <td><%= item._end_at_ym -%></td>
+    <td><%= raw(item._meter_sum.blank? ? non_field_km : "#{tag_r}#{Gw.int_format(format, item._meter_sum)} km#{tag_l}")-%></td>
+    <td><%= raw(item._use_num.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._use_num)}#{tag_l}")%></td>
+    <td><%= raw(item._days_num.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._days_num)}#{tag_l}") %></td>
+    <td><%= raw(item._price_sum.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._price_sum)}#{tag_l}")  %></td>
+    <td><%= raw(item._toll_sum.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._toll_sum)}#{tag_l}")%></td>
+    <td><%= raw(item._total_sum.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._total_sum)}#{tag_l}")%></td>
+    <td><%= raw(item._refuel_sum.blank? ? non_field : "#{tag_r}#{Gw.int_format(format, item._refuel_sum)}#{tag_l}") %></td>
+    <td><%= item._bill_state_show %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<% end %>
+</div>
+</div>
+</div>

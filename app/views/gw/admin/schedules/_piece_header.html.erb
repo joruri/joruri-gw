@@ -1,0 +1,26 @@
+<%
+if @key=='ssos'
+elsif @key=='mobiles'
+else
+  setting_url = @is_gw_admin ? "/gw/schedules/setting" : "/gw/schedules/setting_ind"
+  class_tag = @is_gw_admin ? "btSetAdd" : "btSet"
+end
+
+if params[:s_genre].present?
+  s_genre = "?s_genre=#{params[:s_genre]}"
+else
+  s_genre = ""
+end
+%>
+<% if @key == 'ssos' -%>
+<% elsif @key=='mobiles' -%>
+<h2 class="pieceTitle">連絡メモ</h2>
+<% else -%>
+<h2 class="pieceTitle"><%= nz(@piece_head_title, 'スケジュール') -%></h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%= link_to '新規作成', new_gw_schedule_path + s_genre -%></span>
+</div>
+<div class="btsHeaderRight">
+<span class="<%= class_tag -%>"><%= link_to '設定する', setting_url -%></span>
+</div>
+<% end -%>

@@ -1,0 +1,28 @@
+<%
+link_str1 = %Q(<span>一覧</span>)
+link_str2 = %Q(<span>登録</span>)
+#link_url1 = "#{Site.current_node.public_uri}?t_id=#{@item1.id}"
+link_url1 = "/gwsub//sb01/sb01_training_plans/#{@item1.id}"
+link_url2 = "#{Site.current_node.public_uri}new?t_id=#{@item1.id}"
+link_str3 = '会場検索'
+#today = Gw.date_str(Time.now).gsub('-','')
+#link_url3 = "/gw/schedule_props/#{today}?s_genre=meetingroom&cls=pm"
+link_url3 = "/gw/schedule_props/show_week?s_genre=meetingroom&cls=pm"
+html_options3 = {'target'=>'_blank' ,'title'=>'別ウィンドウ・別タブで開きます。'}
+case @l2_current
+when '01'
+  link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+when '02'
+  link_str2 = %Q(<span class="gwsub_current_menu">登録</span>)
+else
+end
+%>
+<%= render 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
+<% unless link_str1.blank? %>
+<div class="menu">
+<p><%= "#{@menu_title}" %></p>
+<%= link_to link_str1 , url_for(link_url1) %>
+<%= link_to link_str2 , url_for(link_url2) %>
+<%= link_to link_str3 , url_for(link_url3) , html_options3 %>
+</div>
+<% end %>

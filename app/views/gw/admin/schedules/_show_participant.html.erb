@@ -1,0 +1,9 @@
+<table class="show">
+  <tr><th colspan="2"><%= item.participant_title %></th></tr>
+  <% item.schedule_users.each do |su| %>
+  <tr>
+    <th><%= su.class_label %></th>
+    <td><%= su.get_object.try(:display_name) if su.class_id != 0 %></td>
+  </tr>
+  <% end %>
+</table>

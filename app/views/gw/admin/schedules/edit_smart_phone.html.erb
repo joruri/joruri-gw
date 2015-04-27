@@ -1,0 +1,25 @@
+<%
+u = Core.user
+uid = u.id
+link_params = "?gid=#{params[:gid]}&uid=#{uid}&cgid=#{params[:cgid]}&dis=#{@dis}"
+schedule_users_select_path = list_gw_mobile_schedules_path({:gid=>params[:gid],:uid=>params[:uid],:cgid=>params[:cgid],:dis=>@dis,:view=>"edit",:link=>params[:link],:memo_id=>@item.id})
+@edit_path = gw_schedule_path(@item,{:gid=>params[:gid],:uid=>params[:uid],:cgid=>params[:cgid],:dis=>@dis})
+@edit_path += "&sh=sh" if !params[:sh].blank?
+s_date = nil
+s_date = Gw.date8_to_date params['s_date'] unless params['s_date'].blank?
+@st_date = nz(s_date, Time.now)
+%>
+<div id="schedule_part">
+<%= render '/gw/admin/schedules/smartphone_header' %>
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :id => 'itemForm'} do |f| %>
+<%= f.error_messages %>
+
+<div class="userSelect">
+<%=link_to image_tag("/_common/themes/gw/files/smartphone/btn/ic_act_sanka-userchoice.gif"), schedule_users_select_path%>
+<span class="textRed">最低1人、10人まで</span>
+</div>
+<%= render 'form', f: f %>
+<%= submit_for_update f, :caption=>"確定する" %>
+<% end %>
+<p class="leftPad2"><%=link_to("<戻る", %Q(/gw/schedules/#{@item.id}/show_one#{link_params}&topdate=#{@topdate}))%></p>
+</div><!--schedule_part-->

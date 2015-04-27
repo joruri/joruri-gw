@@ -1,0 +1,91 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+<%= render 'header_new_botton' %>
+<%= render 'header_navi' %>
+
+<div class="editingBox">
+  <span class="btEdit">
+    <%= link_to '編集', {action: :edit} %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' %>
+  </span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td><%= @item.published_label %></td>
+  </tr>
+  <tr>
+    <th>状態</th>
+    <td><%= @item.state_label %></td>
+  </tr>
+  <tr>
+    <th>表示名</th>
+    <td><%=raw @item.name %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <% if @item.level_no == 1 %>
+  <tr>
+    <th>タブキー</th>
+    <td><%= @item.tab_keys %></td>
+  </tr>
+  <% end %>
+</table>
+
+<% if @parent.level_no >= 2 %>
+<table class="show">
+  <tr>
+    <th>表示モード</th>
+    <td><%= @item.mode_label %></td>
+  </tr>
+  <tr>
+    <th>CSS（アイコン）</th>
+    <td><%= @item.icon.css_name if @item.icon %></td>
+  </tr>
+  <tr>
+    <th>CSS</th>
+    <td><%= @item.css.css_name if @item.css %></td>
+  </tr>
+  <tr>
+    <th>権限判定関数</th>
+    <td><%= @item.display_auth %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>リンク種別</th>
+    <td><%= @item.class_sso_label %></td>
+  </tr>
+  <tr>
+    <th>リンク先URL</th>
+    <td><%= @item.link_url %></td>
+  </tr>
+  <tr>
+    <th>接続先区分</th>
+    <td><%= @item.class_external_label %></td>
+  </tr>
+  <tr>
+    <th>アカウント項目名</th>
+    <td><%= @item.field_account %></td>
+  </tr>
+  <tr>
+    <th>パスワード項目名</th>
+    <td><%= @item.field_pass %></td>
+  </tr>
+  <tr>
+    <th>リンク用アイコンパス</th>
+    <td><%= @item.icon_path %></td>
+  </tr>
+</table>
+<% end %>
+
+</div>
+</div>

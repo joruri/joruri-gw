@@ -1,0 +1,13 @@
+<% if @title.category == 1 -%>
+  <h3 class="iconSideCategory"><%= @title.display_category1_name -%>
+    <span class="<%= 'current' if params[:state] == 'CATEGORY'%>">
+      <%= link_to @title.display_category1_name, "#{@title.docs_path}&state=CATEGORY" -%>
+    </span>
+  </h3>
+  <ul>
+    <% @categories1.each do |cat| -%>
+      <% cat_count = "・#{cat.name}(#{@category_doc_counts[cat.id].to_i})" -%>
+      <li><%= link_to cat_count, @title.docs_path + "&state=CATEGORY&cat1=#{cat.id}" -%></li>
+    <% end -%>
+  </ul>
+<% end %>

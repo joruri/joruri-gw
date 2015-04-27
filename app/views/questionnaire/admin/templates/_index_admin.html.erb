@@ -1,0 +1,34 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%=@system_title%></h2>
+<div class="btsHeaderLeft"><span class="btNew"><%=link_to('新規作成', "#{@system_path}/new") if @is_sysadm%></span></div>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index">
+  <tr>
+    <th style="width: 40px; text-align: center;">状態</th>
+    <th>タイトル</th>
+    <th style="width: 40px; text-align: center;">設問</th>
+    <th style="width: 100px; text-align: center;"></th>
+    <th style="width: 120px;">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%=item.state_name%></td>
+    <td style="text-align: left;"><%=link_to(item.manage_title,questionnaire_template_path(item)) %></td>
+    <td style="text-align: center;">
+    <%if item.admin_setting== 1 %>
+    <%= link_to '登録', questionnaire_template_form_fields_path(item)  if @is_sysadm %>
+    <%else%>
+    <%= link_to '登録', questionnaire_template_form_fields_path(item)  %>
+    <%end%>
+    </td>
+    <td style="text-align: center;"><%= link_to 'プレビュー', new_questionnaire_template_preview_path(item) %></td>
+    <td style="text-align: left;"><%=item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+  </tr>
+  <%end %>
+</table>
+<%= paginate @items %>
+<div class="btReturn"><%=link_to('アンケート管理へ戻る', '/questionnaire/') %></div>
+
+</div>

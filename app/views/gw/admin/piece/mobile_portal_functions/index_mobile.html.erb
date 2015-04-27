@@ -1,0 +1,36 @@
+<%
+todos = []
+memos = []
+circulars = []
+%w(memo  schedule_todo circular).each{|mod|
+  if mod == "schedule_todo"
+    todos += eval("Gw::Model::#{mod.capitalize}.remind.map{|x| x[:c]='#{mod}'; x}")
+  elsif mod == "memo"
+    memos += eval("Gw::Model::#{mod.capitalize}.remind.map{|x| x[:c]='#{mod}'; x}")
+  elsif mod == "circular"
+    circulars += eval("Gw::Model::#{mod.capitalize}.remind(Core.user.id, mobile: true).map{|x| x[:c]='#{mod}'; x}")
+  end
+}
+
+if todos.size > 0
+  latest_todo = "（未読<font color='red'>#{todos.size}</font>件）"
+else
+  latest_todo = ""
+end
+if memos.size > 0
+  latest_memo = "（未読<font color='red'>#{memos.size}</font>件）"
+else
+  latest_memo = ""
+end
+if circulars.size > 0
+  latest_circular = "（未読<font color='red'>#{circulars.size}</font>件）"
+else
+  latest_circular = ""
+end
+%>
+<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">
+<%= link_to "Todo#{latest_todo}".html_safe, "/gw/schedule_todos" -%></p>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
+<%= link_to "連絡メモ#{latest_memo}".html_safe, "/gw/memos" -%></p>
+<p class="mobilecircular"><img src="/_common/themes/gw/files/mobile/ic-rem-circulation.gif">
+<%= link_to "回覧板#{latest_circular}".html_safe, "/gwcircular" -%></p>

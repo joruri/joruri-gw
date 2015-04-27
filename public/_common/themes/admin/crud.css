@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+/* =========================================================
+    CRUD.
+========================================================= */
+
+/* etc.
+--------------------------------------------------------- */
+p.form, p.managerForm {
+  margin: 0px 0px 10px 0px;
+  padding: 0px 5px;
+  border: 1px solid #ccc;
+  border-width: 0px 0px 1px 6px;
+  font-size: 110%;
+  font-weight: bold;
+  line-height: 1.6;
+}
+p.form {
+  border-color: #8cf;
+  color: #48c;
+}
+p.managerForm {
+  border-color: #f88;
+  color: #b44;
+}
+
+.inlineForm {
+  margin: 0px 0px 2px 0px;
+  padding: 2px;
+  border: 1px solid #ccc;
+}
+form .note {
+  color: #e00;
+}
+
+/* Form
+------------------------------------- */
+div.submitters {
+  margin: 20px 0px 0px 0px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: #eee;
+  text-align: center;
+}
+div.submitters input {
+  margin: 0px 10px;
+  width: 120px;
+}
+table.show input.id {
+  width: 240px;
+  ime-mode: disabled;
+}
+table.show input.name {
+  width: 240px;
+}
+table.show input.nameEn {
+  width: 240px;
+  ime-mode: disabled;
+}
+table.show input.title {
+  width: 600px;
+}
+table.show input.number {
+  width: 100px;
+  ime-mode: disabled;
+}
+table.show input.email {
+  width: 400px;
+  ime-mode: disabled;
+}
+table.show input.url {
+  width: 400px;
+  ime-mode: disabled;
+}
+table.show input.date {
+  width: 80px;
+  font-family: "MS PGothic";
+}
+table.show input.dateTime {
+  width: 120px;
+  font-family: "MS PGothic";
+}
+table.show td.mceEditor {
+  padding: 0px;
+}
+table.show td textarea.body {
+  width: 99%;
+  height: 300px;
+}
+table.show td textarea.mceEditor {
+  width: 100%;
+  height: 500px;
+}
+table.show td textarea.head {
+  width: 99%;
+  height: 100px;
+}
+
+/* Tree
+--------------------------------------------------------- */
+.crudTree .navi {
+}
+.crudTree {
+  margin: 10px 0px 0px 0px;
+  padding: 0px;
+}
+.crudTree .tree {
+  float: left;
+  width: 35%;
+  margin: 0px 0px 0px 0px;
+  border: 1px solid #ccc;
+}
+.crudTree .tree p {
+  padding: 6px;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+}
+.crudTree .tree .links {
+  padding: 5px;
+  line-height: 1.5;
+}
+.crudTree .tree .links .remark {
+  color: #777;
+}
+.crudTree .tree .action {
+  padding: 6px 0px;
+  text-align: center;
+}
+.crudTree .tree .action a {
+  margin: 0px 5px;
+}
+.crudTree .content {
+  x_margin-left: 360px;
+  float: right;
+  width: 64%;
+}
+.crudTree .content p {
+}
+.crudTree .footer {
+  position: relative;
+  clear: both;
+}

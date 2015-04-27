@@ -1,0 +1,4 @@
+<div class="editingBox">
+  <span class="btNew"><%= link_to '分類を追加する', new_gwfaq_category_path({:title_id => params[:title_id], :parent_id => params[:parent_id]}) %></span>
+  <span class="docLink"><%= link_to "FAQ詳細画面へ >>", gwfaq_maker_path(@title,{:state=>params[:state]}) %></span>
+</div>

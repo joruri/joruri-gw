@@ -1,0 +1,19 @@
+<%
+@edit_path = "#{@index_uri}#{@item.id}"
+@action = "edit"
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_media_types/menu' %>
+</div>
+<div class="pieceBody">
+
+<div class="showMenu">
+<%= link_to_show @item.id %>
+</div>
+<%= form_for :item, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

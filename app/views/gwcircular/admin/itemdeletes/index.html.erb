@@ -1,0 +1,27 @@
+<div class="bbsDocList circular setting">
+<div class="pieceHeader">
+<h2 class="pieceTitle">回覧板 削除設定</h2>
+<div class="btsHeaderLeft">
+</div>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+</div>
+<div class="pieceBody">
+<div class="titleLine">
+<span class="title">回覧板 削除設定</span>
+</div>
+
+<table class="show">
+  <tr>
+    <td>現在の設定 （<%= link_to '編集', {action: :edit, id: @item.id} %>）</td>
+    <td><%= @item.limit_line_name %>  経過した期限切れの回覧を削除</td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

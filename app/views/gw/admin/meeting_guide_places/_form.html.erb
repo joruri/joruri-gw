@@ -1,0 +1,26 @@
+<%= f.hidden_field :sort_no  -%>
+<%= f.hidden_field :state -%>
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>状態<%= required %></th>
+    <td><%= f.radio_buttons :state, Gw::MeetingGuidePlace.state_select %></td></tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td></tr>
+  <tr>
+    <th>表示名<%= required '※20文字以内' %></th>
+    <td><%= f.text_field :place, :size => 80 %></td></tr>
+  <tr>
+    <th>マスタ表示名</th>
+    <td><%= @item.place_master %></td></tr>
+  <tr>
+    <th>マスタ場所名</th>
+    <td><%= @item.meeting.position if @item.meeting %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+  <%= submit_for f, caption: '保存' %>
+</div>

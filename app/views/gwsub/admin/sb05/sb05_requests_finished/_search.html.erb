@@ -1,0 +1,41 @@
+<%
+#pp params
+count=0
+if params[:controller]
+  if params[:controller].index('sb05_requests') != nil
+    count = @requests.total_entries
+  else
+    if params[:controller].index('sb05_users') != nil
+      count = @users.total_entries
+    end
+  end
+end
+%>
+<%
+medias    = Gwsub::Sb05MediaType.select_dd_media_group('all','code')
+#medias    = Gwsub::Sb05MediaType.select_dd_categories_id(nil,'all')
+r_status  = Gwsub::Sb05Request.select_dd_status( 'all' )
+groups    = Gwsub.grouplist4( nil ,'all')
+limits    = Gw.limit_select
+m_status  = Gwsub::Sb05Request.select_dd_m_status( 'all' )
+base_dates = Gwsub::Sb05Request.select_dd_base_dates( 'all' , @m_status, @r_status , @media_code )
+%>
+<%= form_tag('', :method => :get, :class => 'search' , :name=>'frmSearch') do %>
+<table>
+  <tr>
+    <th>表示行数</th>
+    <td><%= select_tag( 'limit',options_for_select( limits , @limit.to_i ) ,:onchange => 'document.frmSearch.submit()') %></td>
+    <th>媒体</th>
+    <td><%= select_tag( 'media_code',options_for_select( medias ,@media_code.to_i ),:onchange => 'document.frmSearch.submit()') %></td>
+    <th>基準日</th>
+    <td><%= select_tag( 'b_at',options_for_select( base_dates ,@base_at ),:onchange => 'document.frmSearch.submit()') %></td>
+    <th>確認</th>
+    <td><%= select_tag( 'm_status',options_for_select( m_status ,@m_status.to_i ),:onchange => 'document.frmSearch.submit()' ) %></td>
+    <th>処理</th>
+    <td><%= select_tag( 'r_status',options_for_select( r_status ,@r_status.to_i ),:onchange => 'document.frmSearch.submit()' ) %></td>
+  </tr>
+</table>
+<% end %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= count %><%#= "#{@items.total_entries}" %></span>件</div>
+<% end %>

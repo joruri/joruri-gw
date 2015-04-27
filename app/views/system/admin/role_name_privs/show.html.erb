@@ -1,0 +1,28 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'system/admin/roles/header_menu' %>
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to "編集", "/system/role_name_privs/#{@item.id}/edit#{@params_set}" if @item.editable? %></span>
+  <span class="btDestroy"><%= link_to "削除", "/system/role_name_privs/#{@item.id}#{@params_set}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>機能名</th>
+    <td><%= @item.role.display_name %></td>
+  </tr>
+  <tr>
+    <th>権限名</th>
+    <td><%= @item.priv.display_name %></td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '戻る', "/system/role_name_privs#{@params_set}" %>
+</div>
+
+</div>
+</div>

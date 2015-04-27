@@ -1,0 +1,32 @@
+<%
+s_param = ''
+s_param = "?sort=#{params[:sort]}" unless params[:sort].blank?
+%>
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+
+<div class="showMenu">
+<%= link_to_show @item.id %>
+</div>
+<%= form_for :item, :url => {:action => :update}, :html => {:method=>:put , :multipart => true} do |f| %>
+  <% if @role_admin %>
+    <%= render 'form_admin', f: f %>
+  <% else %>
+    <%= render 'form_normal', f: f %>
+  <% end %>
+
+  <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
+  <%= hidden_field_tag(:sort, params[:sort]) unless params[:sort].blank? %>
+  <%= hidden_field_tag(:usage, params[:usage]) unless params[:usage].blank? %>
+  <%= hidden_field_tag(:scn, params[:scn]) unless params[:scn].blank? %>
+  <%= hidden_field_tag(:s_keyword, params[:s_keyword]) unless params[:s_keyword].blank? %>
+  <%= hidden_field_tag(:limit, params[:limit]) unless params[:limit].blank? %>
+<% end %>
+</div>
+</div>

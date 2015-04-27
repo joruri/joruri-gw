@@ -1,0 +1,128 @@
+<%
+# メニュー２行目
+if @c_cat_id.to_i==0
+  l2_menu = Gwsub::Sb06AssignedConfCategory.new
+  l2_menu.order "cat_sort_no"
+  l2_menus_1 = l2_menu.find(:first)
+else
+  l2_menus_1 = Gwsub::Sb06AssignedConfCategory.where(:id =>@c_cat_id).first
+end
+
+if l2_menus_1
+  # メニュー３行目見出し
+  l3_menu = Gwsub::Sb06AssignedConfKind.new
+  l3_menu.select_list = 1
+  l3_menu.conf_cat_id = l2_menus_1.id
+  l3_menu.fyear_id = @fy_id
+  l3_menu.order "conf_kind_sort_no"
+  l3_menus = l3_menu.find(:all)
+  if @c_cat_id.to_i==0
+  display_title = l2_menus_1.cat_name
+  else
+  #display_title = %Q(<span style="color:crimson;">#{l2_menus_1.cat_name}</span>)
+  #display_title = %Q(<span class="gwsub_current_menu">#{l2_menus_1.cat_name}</span>)
+  display_title = %Q(<span>#{l2_menus_1.cat_name}</span>)
+  end
+
+  # ヘルプ
+  group = Gwsub::Sb06AssignedConfGroup.new
+  group.fyear_id = @fy_id
+  group.categories_id = l2_menus_1.id
+  group.order "fyear_markjp DESC , cat_sort_no ASC , group_code ASC"
+  group = group.find(:first)
+  group_id = 0
+  group_id = group.group_id unless group.blank?
+  main_admin   = false
+  if Core.user_group.id == group_id
+  main_admin   = true
+  end
+  if @u_role==true
+  main_admin   = true
+  end
+  if @help=='main_admin'
+  #help_name = %Q(<span style="color:crimson;">説明管理</span>)
+  help_name = %Q(<span class="gwsub_current_menu">説明管理</span>)
+  else
+  help_name = '説明管理'
+  end
+  help_path2   = "/gwsub/sb06/sb06_assigned_helps"
+  help_param2  = "?help=main_admin&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{l2_menus_1.id}&c_cat_id=#{l2_menus_1.id}&kind_id=#{@kind_id}"
+
+  # CSV出力
+  csv_name  = 'CSV出力'
+  csv_path  = "/gwsub/sb06/sb06_assigned_conferences/csvput"
+  csv_params  = "?pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{l2_menus_1.id}&c_cat_id=#{l2_menus_1.id}&kind_id=#{@kind_id}"
+
+  # 通知先管理者設定
+  assined_manager=false
+  manager_group = Gwsub::Sb06AssignedConfGroup.new
+  manager_group.fyear_id  = @fy_id
+  manager_group.categories_id = @c_cat_id
+  manager_group.group_id  = Core.user_group.id
+  manager_groups  = manager_group.find(:all)
+  if manager_groups.blank?
+  else
+    assined_manager=true
+  end
+  if @u_role==true
+    assined_manager=true
+  end
+
+  param = "?pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{l2_menus_1.id}&c_cat_id=#{l2_menus_1.id}&kind_id=#{@kind_id}"
+
+  @render_menu1 = "/gwsub/admin/sb06/sb0602_subfunction_select_menu.html"
+  @render_menu2 = "/gwsub/admin/sb06/sb06_assigned_conferences/submenu.html"
+  @render_menu3 = "/gwsub/admin/sb06/sb06_assigned_conferences/submenu_l3"
+  @ctrl         = "sb06_assigned_conferences_"+l2_menus_1.cat_code.to_s
+  @ctrl_name    = "sb06_assigned_conferences"
+
+  # 共通必須
+  comm_params = "?h1_menu=#{@render_menu1}&l1_c=#{@l1_current}"
+  comm_params << "&u_role=#{@u_role}"
+  comm_params << "&ctrl=#{@ctrl}"
+  comm_params << "&ctrl_name=#{@ctrl_name}"
+  # 共通任意
+  comm_params << "&h2_menu=#{@render_menu2}"  unless @render_menu2.blank?
+  comm_params << "&l2_c=#{@l2_current}"       unless @l2_current.blank?
+  comm_params << "&h3_menu=#{@render_menu3}"  unless @render_menu3.blank?
+  comm_params << "&l3_c=99"
+  # 個別必須
+  if @ctrl_name=="sb06_assigned_conferences"
+    comm_params << "&fy_id=#{@fy_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}"
+  end
+
+  if @l3_current=='csv'
+    # CSV出力メニューをカレントにする
+    link_csv = %Q(<a href="#{csv_path}#{csv_params}"><span class="gwsub_current_menu">#{csv_name}</span></a>)
+  else
+    link_csv = %Q(<a href="#{csv_path}#{csv_params}"><span>#{csv_name}</span></a>)
+  end
+  if @l3_current=='99'
+    link_sb00 = %Q(<a href="/gwsub/sb00/sb00_conference_managers#{comm_params}"><span class="gwsub_current_menu">通知先管理者設定</span></a>)
+  else
+    link_sb00 = %Q(<a href="/gwsub/sb00/sb00_conference_managers#{comm_params}">通知先管理者設定</a>)
+  end
+  %>
+  <div class="menu">
+  <!-- <p><%#= display_title %></p> -->
+  <% l3_menus.each do |menu| -%>
+    <% param = "?pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{l2_menus_1.id}&c_cat_id=#{l2_menus_1.id}&kind_id=#{menu.id}" -%>
+    <%
+  #    if menu.id==@kind_id.to_i
+      if menu.id==@l3_current.to_i
+        if @help=='main_admin'
+          display_name = menu.conf_menu_name
+        else
+          display_name = %Q(<span class="gwsub_current_menu">#{menu.conf_menu_name}</span>)
+        end
+      else
+        display_name = menu.conf_menu_name
+      end
+    -%>
+    <%= link_to display_name.html_safe , url_for("/gwsub/sb06/sb06_assigned_conferences"+param ) -%>
+  <% end %>
+  <%= link_to help_name.html_safe , url_for(help_path2+help_param2) if main_admin==true %>
+  <%= link_csv.html_safe  if main_admin==true %>
+  <%= link_sb00.html_safe if assined_manager==true %>
+<% end %>
+</div>

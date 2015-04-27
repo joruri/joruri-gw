@@ -1,0 +1,61 @@
+<table class="show">
+  <tr>
+    <th>記事管理課<br />（所属フォルダ）<%= required('※') %></th>
+    <td>
+      <%= f.select(:section_code, Gwboard::Group.level3_all.collect{|i|
+      [i.name, i.code]}, :include_blank => '記事の管理課を選択してください') %>
+    </td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>分類フォルダ<%= required('※') %></th>
+    <td>
+      <% if (folder_options = @item.folder_options).present? %>
+        <%= f.select :category1_id, folder_options, include_blank: '分類を選択してください' %>
+      <% else %>
+        <%= required '分類フォルダが登録されていません' %>
+      <% end %>
+    </td>
+  </tr>
+</table>
+<table class="show">
+  <tr>
+    <th>タイトル<%= required('※') %></th></tr><tr>
+    <td><%= f.text_area :title, :cols=>"82", :rows=>"2" %></td>
+  </tr>
+</table>
+
+<%= render '/doclibrary/admin/docs/form_wiki_select', f: f %>
+
+<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
+  <tr>
+    <th>説明</th></tr><tr>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+  </tr>
+</table>
+<%= render '/doclibrary/admin/docs/form_wiki', f: f, title: "説明" %>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>
+
+<%= render '/gwboard/admin/docs/script_change_body_table' %>
+<%= render '/gwboard/admin/docs/script_wiki_attach_insert' %>
+
+<% if @title.use_old_upload_system? %>
+  <%= gwboard_image_form(f, @item, 'item_body') %>
+  <%= gwboard_attach_form(f, @item) %>
+<% else %>
+  <%= gwboard_attachments_form(f, @item) %>
+<% end %>

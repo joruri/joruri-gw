@@ -1,0 +1,60 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>表示形式<%= required %></th>
+    <td><%= select_tag "pattern_item", options_for_select(Gw::PortalAdd.new.pattern_select, @pattern_item.options_value), :class => 'form_input', :onchange => "option_display();" %></td>
+  </tr>
+</table>
+
+<% Gw::PortalAdd.place_select.each_with_index do |place, i| %>
+<table class="show">
+  <%
+    tr_style = ""
+    tr_style = "display: none;" if @pattern_item.options_value >= 3 && place[1] == 3
+    tr_style = "display: none;" if @pattern_item.options_value >= 2 && place[1] == 2
+  %>
+  <tr id="option_tr<%= place[1] %>">
+    <th colspan="2"><%= place[0] %>　表示設定</th>
+  </tr>
+  <tr id="option_limit<%= place[1] %>" style="<%= tr_style %>">
+    <th>表示件数<%= required %></th>
+    <td>
+      <%= text_field_tag "num_item[#{i}][]", @num_item.options_value[i][0], :size => 5, :class => "IMEoff" %>件
+    </td>
+  </tr>
+  <tr id="option_publish<%= place[1] %>">
+    <th>広告表示<%= required %></th>
+    <td>
+      <%= radio_button_tag "option_item[#{i}][]", "opened", @option_item.options_value[i][0] == 'opened' %><label for=<%= "option_item_#{i}__opened" %>>表示する</label>
+      <%= radio_button_tag "option_item[#{i}][]", "closed", @option_item.options_value[i][0] == 'closed' %><label for=<%= "option_item_#{i}__closed" %>>表示しない</label>
+    </td>
+  </tr>
+</table>
+<% end %>
+
+<div class="submitters">
+<%= submit_tag '保存' %>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+function option_display() {
+  var idx = $("pattern_item").value;
+  var showStyle = (navigator.appName == "Microsoft Internet Explorer" ? "display: block;" : "display: table-row;");
+  var hideStyle = "display : none;";
+
+  if (idx==1) {
+    $('option_limit2').setStyle(showStyle);
+    $('option_limit3').setStyle(showStyle);
+  } else if (idx==2) {
+    $('option_limit2').setStyle(hideStyle);
+    $('option_limit3').setStyle(showStyle);
+  } else {
+    $('option_limit2').setStyle(hideStyle);
+    $('option_limit3').setStyle(hideStyle);
+  }
+}
+  
+option_display();
+//]]>
+</script>

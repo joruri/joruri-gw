@@ -1,0 +1,14 @@
+<% if files.size > 0 %>
+<div class="docsInnerBox">
+<table>
+  <tr><th colspan="2">添付ファイル名</th></tr>
+  <% files.each do |file| %>
+    <% download_url = file.file_uri(file.system_name) %>
+    <tr>
+      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, :class => file.icon_type %></td>
+      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
+    </tr>
+  <% end %>
+</table>
+</div>
+<% end %>

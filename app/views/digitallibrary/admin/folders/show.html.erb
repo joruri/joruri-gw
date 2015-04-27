@@ -1,0 +1,9 @@
+<%= render 'show_doc' %>
+<div class="btReturn">
+<%
+str_params = ''
+str_params += "&cat=#{@item.parent_id}" unless @item.parent_id == 0 unless @item.parent_id.blank?
+str_params += "&limit=#{params[:limit]}" unless params[:limit].blank?
+%>
+<%=link_to('一覧へ戻る', "#{digitallibrary_docs_path({:title_id=>@title.id})}#{str_params}")%>
+</div>

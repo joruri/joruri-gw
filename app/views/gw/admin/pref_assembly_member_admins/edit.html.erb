@@ -1,0 +1,15 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+
+<%= form_for :item, :url => {action: :update}, :html => {id: "itemForm", method: :put, multipart: true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to '詳細に戻る', {action: :show} %>
+</div>
+
+</div>
+</div>

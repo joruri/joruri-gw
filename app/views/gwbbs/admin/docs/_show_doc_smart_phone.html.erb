@@ -1,0 +1,62 @@
+<!--掲示板タブ-->
+<%#= render 'header' %>
+
+<%= render @title.gwbbs_form_name + 'show' %>
+<% if @title.use_old_upload_system? %>
+  <%= render '/gwboard/admin/docs/upload_index', files: @item.files %>
+<% else %>
+  <%= render '/gwboard/admin/docs/library_index', files: @item.files if @title.attachfile_index_use %>
+<% end %>
+</div>
+<%= render 'comment_index' if @item.one_line_note == 1 %>
+
+<% if @title.use_recognize? %>
+  <%= render 'recognize_users' if @item.state.in?(%w(draft recognize recognized)) %>
+<% end %>
+
+<div class="docsInnerBox">
+
+<table class="show">
+  <tr>
+    <th>公開終了日</th>
+    <td><%= @item.expiry_date.strftime('%Y-%m-%d') if @item.expiry_date %></td>
+  </tr>
+  <tr>
+    <th>記事管理課</th>
+    <td><%= @item.section_name %></td>
+  </tr>
+  <% if @title.importance == 1 or @title.category == 1 %>
+    <% if @title.importance == 1 %>
+      <tr>
+        <th>ステータス</th>
+        <td style="text-align: left;"><%= @item.importance_name %></td>
+      </tr>
+    <% end %>
+    <% if @title.category == 1 %>
+      <tr>
+        <th><%= @title.category1_name unless @title.category1_name.blank? %></th>
+        <td style="text-align: left;"><%= gwbd_category_name(@d_categories, @item.category1_id) %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  <tr>
+    <th>作成 </th>
+    <td><%= @item.createrdivision %>:<%= @item.creater %></td>
+  </tr>
+  <tr>
+    <th>作成日 </th>
+    <td><%= @item.createdate %></td>
+  </tr>
+  <% unless @item.editordivision.blank? %>
+  <tr>
+    <th>編集</th>
+    <td><%= @item.editordivision %>:<%= @item.editor %></td>
+  </tr>
+  <tr>
+    <th>編集日</th>
+    <td><%= @item.editdate %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= render 'show_prev_next_link' %>

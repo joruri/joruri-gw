@@ -1,0 +1,31 @@
+<div class="piece schedulePiece setting">
+<div class="pieceHeader">
+<%= render '/gw/admin/schedules/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'form' %>
+<div class="titleLine">
+  <span class="title">設定メニュー</span>
+</div><!--titleLine-->
+</div>
+<div class="pieceBodyBody">
+<ul>
+  <li>
+    <span class="function"><a href="/gw/schedules/setting_ind">個人設定</a></span>
+    <span class="explanation"></span>
+  </li>
+  <li>
+    <span class="function"><a href="/gw/holidays">休日管理</a></span>
+    <span class="explanation"></span>
+  </li>
+  <li>
+    <span class="function"><a href="/system/custom_groups">カスタムグループ設定</a></span>
+  </li>
+  <li>
+    <span class="function"><a href="/gw/schedule_help_configs">ヘルプリンク設定</a></span>
+  </li>
+</ul>
+</div>
+</div>
+</div>

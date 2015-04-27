@@ -1,0 +1,13 @@
+/log/
+/tmp/
+/Gemfile.lock
+/.bundle/
+/vendor/bundle/
+
+/config/*.yml
+
+/public/assets/
+/public/_attaches/
+/public/_common/modules/
+/public/_common/tiny_mce/plugins/prefemotions/img/
+/upload/

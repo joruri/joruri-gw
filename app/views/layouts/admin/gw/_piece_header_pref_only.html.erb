@@ -1,0 +1,17 @@
+<!--ここからヘッダー-->
+<div id="header">
+<div id="headerBody">
+
+<div class="piece"><h1><a href="/">Joruri Gw</a></h1>
+  <div class="personal">
+  <% if Core.user %>
+    <span class="department">&nbsp;</span>
+    <span class="name"><%= Core.user.display_name %></span>
+  <% end %>
+  </div>
+  <div class="logout"><a href="/_admin/logout">ログアウト</a></div>
+</div>
+
+</div>
+</div>
+<!--ここまでヘッダー-->

@@ -1,0 +1,6 @@
+<%= form_tag url_for(action: :index), :method => :get, :class => 'search', :name => 'frmSelect' do %>
+  <div class="indication">
+    <div class="state">状態<%= select_tag :s_finished, options_for_select([['未読',1],['既読',2],['両方',3]], params[:s_finished].to_i), :onchange => 'document.frmSelect.submit()' %></div>
+    <div class="listform">一覧形式<%= select_tag :s_index_cls, options_for_select([['詳細',1],['簡易',2]], params[:s_index_cls].to_i), :onchange => 'document.frmSelect.submit()' %></div>
+  </div>
+<% end %>

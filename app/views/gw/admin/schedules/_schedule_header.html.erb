@@ -1,0 +1,34 @@
+<%
+if @sp_mode == :prop
+  raise ArgumentError, 'piece_header 呼び出し前に d/@st_date を設定してください。' if d.nil?
+  raise ArgumentError, 'piece_header 呼び出し前に params[:s_genre] を設定してください。' if params[:s_genre].nil?
+end
+%>
+<%
+if @sp_mode == :prop
+  bt_box = '/gw/admin/schedule_props/bt_box'
+else
+  bt_box = '/gw/admin/schedules/schedule_bt_box'
+end
+%>
+<%= render bt_box, d: d, mode: mode -%>
+
+<% if @custom_group -%>
+<div class="scheduleTableTitle"><%= @custom_group.name -%></div>
+<% end -%>
+<% if @show_flg -%>
+  <%= render '/gw/admin/schedules/schedule_line_box', d: d, mode: mode, move_mode: :header -%>
+  <% if @line_box.present? && @schedule_move_url_directive %>
+    <%= raw(hidden_field_tag('my_url', @schedule_move_url_directive.sub('%q', "#{@schedule_move_qs}"))) %>
+  <% end %>
+<% end %>
+
+<%= render 'gw/admin/schedule_props/pm_legends' %>
+<script type="text/javascript">
+//<![CDATA[
+
+var search_group_search_submit = function () {
+  document.forms['search'].submit();
+}
+//]]>
+</script>

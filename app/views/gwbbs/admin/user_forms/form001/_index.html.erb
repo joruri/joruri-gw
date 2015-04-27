@@ -1,0 +1,14 @@
+<%# 掲示板標準 -%>
+
+<% if params[:kwd].present? %>
+<h4 class="docSearchTitle">検索結果（タイトル・本文）</h4>
+<% end %>
+
+<% case params[:state] %>
+<% when "GROUP" %>
+  <%= render 'gwbbs/admin/user_forms/form001/index_group' %>
+<% when "CATEGORY" %>
+  <%= render 'gwbbs/admin/user_forms/form001/index_category' %>
+<% else %>
+  <%= render 'gwbbs/admin/user_forms/form001/index_date' %>
+<% end %>

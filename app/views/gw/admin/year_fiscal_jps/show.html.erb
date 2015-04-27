@@ -1,0 +1,52 @@
+<div class="piece YearFiscalJp">
+<%= render 'header_str' %>
+<div class="pieceBody">
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
+  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+  <span class=""><%= link_to '管理者設定へ >>', "/gw/admin_settings" %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>開始日（西暦）</th>
+    <td><%= @item.start_at.strftime('%Y-%m-%d') if @item.start_at %></td>
+  </tr>
+  <tr>
+    <th>終了日（西暦）</th>
+    <td><%= @item.end_at.strftime('%Y-%m-%d') if @item.end_at %></td>
+  </tr>
+  <tr>
+    <th>年度（西暦）</th>
+    <td><%= @item.fyear %></td>
+  </tr>
+  <tr>
+    <th>年度（西暦：年度付）</th>
+    <td><%= @item.fyear_f %></td>
+  </tr>
+  <tr>
+    <th>年度（記号）</th>
+    <td><%= @item.markjp %></td>
+  </tr>
+  <tr>
+    <th>年度（記号：年度付）</th>
+    <td><%= @item.markjp_f %></td>
+  </tr>
+  <tr>
+    <th>年度（和暦）</th>
+    <td><%= @item.namejp %></td>
+  </tr>
+  <tr>
+    <th>年度（和暦：年度付）</th>
+    <td><%= @item.namejp_f %></td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '年度一覧へ戻る', {action: :index} %>
+</div>
+
+</div>
+</div><!--piece YearFiscalJp-->

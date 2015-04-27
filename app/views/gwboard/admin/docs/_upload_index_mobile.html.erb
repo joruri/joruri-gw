@@ -1,0 +1,21 @@
+<% if files.present? %>
+<p class="bgAsh">添付ファイル</p>
+<%
+files.each do |file|
+  #全ての処理に同じ対応が済むまで(掲示板のみ)
+  case file.system_name.to_s
+  when "gwbbs", "gwfaq"
+    download_url = "#{file.file_uri(file.system_name)}" if @title.upload_system == 1
+    download_url = "#{file.file_uri(file.system_name)}" if @title.upload_system == 2
+    unless @title.upload_system == 1
+      download_url = "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
+    end unless @title.upload_system == 2
+  else
+    download_url = "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
+  end
+%>
+<p class="leftPad2"><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></p>
+<p class="leftPad1"><%= file.memo %></p>
+<% end %>
+<span style="color: #ff0000;">※パケット定額サービスに入っていない場合、高額の通信料が発生する場合があります。</span>
+<% end %>

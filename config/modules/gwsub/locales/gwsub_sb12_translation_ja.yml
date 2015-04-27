@@ -1,0 +1,71 @@
+ja:
+  activerecord:
+    models:
+      gwsub/externalusb: USBメモリ登録管理台帳
+      gwsub/capacityunitset: 外部記録媒体容量単位
+      gwsub/externalmedia: 外部記録媒体登録管理台帳
+      gwsub/externalmediakind: 外部記録媒体種別
+    attributes:
+      gwsub/externalusb:
+        section_id: 管理所属
+        externalmediakind_id: 媒体区分
+        registed_at: 登録日
+        new_registedno: 登録番号
+        registedno: H20まで登録番号
+        section_code: 登録番号-所属コード
+        registed_seq: 登録番号-通番
+        equipmentname: 製品名
+        user: 保有者
+        categories: 分類
+        ending_at: 使用中止年月日
+        remarks: 備考
+        capacity: 容量
+        capacity_unit_id: 容量単位
+        sendstate: 送付状況
+        created_at: 登録日
+        created_user: 登録者
+        created_group: 登録者所属
+        last_updated_at: 移行元最終更新日
+        updated_at: 編集日
+        updated_user: 編集者
+        updated_group: 編集者所属
+      gwsub/capacityunitset:
+        code: 単位区分
+        name: 単位
+        created_at: 登録日
+        created_user: 登録者
+        created_group: 登録者所属
+        updated_at: 更新日
+        updated_user: 編集者
+        updated_group: 編集者所属
+      gwsub/externalmediakind:
+        kind: 媒体区分
+        name: 媒体名
+        sort_order: 表示順
+        created_at: 登録日
+        created_user: 登録者
+        created_group: 登録者所属
+        updated_at: 更新日
+        updated_user: 編集者
+        updated_group: 編集者所属
+      gwsub/externalmedia:
+        section_id: 管理所属
+        externalmediakind_id: 媒体区分
+        externalmediakind_name: 媒体区分追加名称
+        registed_at: 登録日
+        new_registedno: 登録番号
+        registedno: H20まで登録番号
+        equipmentname: 媒体名
+        user: 保有者
+        categories: 分類
+        ending_at: 廃棄年月日
+        remarks: 備考
+        capacity: 容量
+        capacity_unit_id: 容量単位
+        sendstate: 送付状況
+        created_at: 登録日
+        created_user: 登録者
+        created_group: 登録者所属
+        updated_at: 更新日
+        updated_user: 編集者
+        updated_group: 編集者所属

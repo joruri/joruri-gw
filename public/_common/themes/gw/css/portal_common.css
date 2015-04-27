@@ -1,0 +1,169 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/portal_common.css
+========================================================= */
+
+/* ポータルタブ
+----------------------------------------------------*/
+#docTab {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-bottom: 1px solid #333;
+}
+.tabs:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0pt;
+  content: ".";
+}
+* html .tabs             { zoom: 1; }
+*:first-child+html .tabs { zoom: 1; }
+#docTab a {
+  display: block;
+  float: left;
+  height: 23px;
+  width: 99px;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-image: url(/_common/themes/gw/files/tab/tab-02_off.gif);
+  background-color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+* html #docTab .tabs a {
+  margin-bottom: -3px;
+}
+#docTab a:hover {
+  color: #133995;
+}
+#docTab a.tab1 {
+  background-image: url(/_common/themes/gw/files/tab/tab-01_off.gif);
+}
+#docTab a.endTab {
+  background-image: url(/_common/themes/gw/files/tab/tab-03_off.gif);
+}
+#docTab a.current {
+  width: 111px;
+  background-image: url(/_common/themes/gw/files/tab/tab-02_on.gif);
+  font-weight: bold;
+  color: #FFFFFF;
+}
+#docTab a.tab1.current {
+  background-image: url(/_common/themes/gw/files/tab/tab-01_on.gif);
+}
+#docTab a.end {
+  width: 6px;
+  background-image: url(/_common/themes/gw/files/tab/tab-shadow.gif);
+}
+
+/* スケジューラ外枠
+----------------------------------------------------*/
+.schedulePiece .pieceBody {
+  border-left: 1px solid #1E3B8C;
+  border-right: 1px solid #1E3B8C;
+  border-bottom: 1px solid #1E3B8C;
+}
+
+/* 掲示板ガジェット
+----------------------------------------------------*/
+.gadget td.bbsImportant {
+  width: 10px;
+  padding-top: 7px;
+  border-right: none;
+  vertical-align: top;
+}
+.gadget td.bbsAttach,
+.gadget td.bbsBalloon {
+  width: 30px;
+}
+.gadget td.group {
+  width: 200px;
+}
+.gadget td.bbsImportant span {
+  display: block;
+  position: relative;
+  width: 4px;
+  height: 0;
+  padding-top: 14px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_important.gif);
+  background-repeat: no-repeat;
+  left: 7px;
+  overflow:hidden;
+}
+.gadget td.bbsAttach span {
+  display: block;
+  height: 16px;
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_attach.gif);
+  background-repeat: no-repeat;
+}
+.gadget td.bbsBalloon span {
+  display: block;
+  background-image: url(/_common/themes/gw/files/bbs/ic_comment.gif);
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
+
+/* 並び替えボタン
+----------------------------------------------------*/
+table.index td.up {
+  width: 30px;
+  border-right: 1px solid #C6D1E8;
+  background-position: 15px 50%;
+  background-image: url(/_common/themes/gw/files/ic_sort-up_stand.gif);
+  text-indent: -9999px;
+}
+table.index td.up_first {
+  width: 30px;
+  border-right: 1px solid #C6D1E8;
+  text-indent: -9999px;
+}
+table.index td.down {
+  width: 30px;
+  background-position: 15px 50%;
+  background-image: url(/_common/themes/gw/files/ic_sort-down_stand.gif);
+  text-indent: -9999px;
+}
+table.index td.down_last {
+  width: 30px;
+  text-indent: -9999px;
+}
+
+/* 災害モード
+----------------------------------------------------*/
+#navi #naviBody .emergency div {
+  background-color: #f02b00;
+  color: #fff;
+  font-size: 120%;
+  margin: 15px auto;
+  padding: 5px;
+  text-align: center;
+  width: 97%;
+}
+#content #contentBody .emergency {
+  background-image: url("/_common/themes/gw/files/title/tl_board_emergency.gif");
+}
+#content #contentBody .emergency .pieceHeader {
+  background-image: url("/_common/themes/gw/files/title/tl_re_emergency.gif");
+}
+#content #contentBody .emergency .pieceBody {
+  border-bottom: 1px solid #f02b00;
+  border-left: 1px solid #f02b00;
+  border-right: 1px solid #f02b00;
+}
+#menuBody .headLine .emergency {
+  border-bottom: 1px solid #f02b00;
+  border-left: 1px solid #f02b00;
+  border-right: 1px solid #f02b00;
+}
+#menuBody .headLine .emergency h3.fq {
+  background-image: url("/_common/themes/gw/files/title/tl_link_emergency.gif");
+}
+#menuBody .headLine .emergency .repeat {
+  background-image: url("/_common/themes/gw/files/title/tl_re_emergency.gif");
+}

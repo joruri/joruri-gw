@@ -1,0 +1,1288 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/common_classes_gw.css
+========================================================= */
+
+/* ヘッダー
+-----------------------------------------------------*/
+#header {
+  background-image: url(/layout/portal2/files/header_back.gif);
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+#headerBody {
+  height: 55px;
+}
+#headerBody .piece {
+  color: #fff;
+  white-space: nowrap;
+}
+#header h1 {
+  float: left;
+  height: 55px;
+  width: 200px;
+  background-image: url(/_common/themes/gw/files/header/header-left.gif);
+  background-position: left top;
+  vertical-align: top;
+}
+#header h1 a {
+  display: block;
+  overflow: hidden;
+  width: 200px;
+  height: 0px !important;
+  height /**/: 55px;
+  padding-top: 55px;
+  vertical-align: top;
+  outline: 0;
+}
+#headerBody .personal {
+  float: left;
+  width: 42%;
+  line-height: 55px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.headerSearch {
+  float: right;
+  text-align: right;
+}
+.joruricms {
+  float: right;
+  width: 79px;
+  height: 18px;
+  margin-right: 7px;
+  margin-top: 18px;
+  background-image: url(/_common/themes/gw/files/header/bt_link-cms.gif);
+}
+.joruricms a {
+  display: block;
+  overflow: hidden;
+  width: 79px;
+  height: 0 !important;
+  padding-top: 18px;
+  vertical-align: top;
+  outline-color: -moz-use-text-color;
+  outline-style: none;
+  outline-width: 0;
+}
+.logout {
+  float: right;
+  width: 52px;
+  height: 55px;
+  padding-right: 17px;
+  background-image: url(/_common/themes/gw/files/header/header-right.gif);
+  background-position: 52px 50%;
+  color: #FFFFFF;
+  overflow: hidden;
+}
+.logout a:link {
+    color: #FFFFFF;
+}
+.logout a,
+.logout a:visited {
+  color: #FFFFFF;
+  height: 55px;
+  line-height: 55px;
+}
+.previousLogin {
+  float: right;
+  line-height: 55px;
+  padding-right:10px;
+  color: #FFFFFF;
+}
+
+/* メニューアイコン
+-----------------------------------------------------*/
+#banner {
+  clear: both;
+  cursor: default;
+  padding-top: 2px;
+}
+.headerMenu {
+  border-bottom: 2px #999 solid;
+  zoom: 100%;
+}
+.headerMenu ul:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  content: ".";
+}
+.headerMenu li {
+  float: left;
+  width: 60px;
+  height:1%;
+  padding: 10px 5px 10px 5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.menu_schedules,
+.menu_todo,
+.menu_memo {
+  left: 7px;
+  position: relative;
+}
+.menu_new {
+  top: -1px;
+  position: relative;
+}
+.headerMenu li.menuDeco {
+  width: 95px;
+}
+span.menuDeco {
+  display: inline-block;
+  position: relative;
+}
+span.menuDeco a.menuDecoPref {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* メイン外枠
+-----------------------------------------------------*/
+.piece .pieceHeader,
+.bbsDocList .pieceHeader,
+.DLDocList .pieceHeader,
+.gwfaqDocList .pieceHeader,
+.gwqaDocList .pieceHeader,
+.doclibraryDocList .pieceHeader,
+.gwsub .pieceHeader,
+.hss .pieceHeader {
+  position: relative;
+  height: 29px;
+  margin-left: 29px;
+  background-image: url("/_common/themes/gw/files/title/title_re.gif");
+  background-repeat: repeat-x;
+  color: #FFF;
+}
+.piece .pieceHeader h2,
+.bbsDocList .pieceHeader h2,
+.DLDocList .pieceHeader h2,
+.gwfaqDocList .pieceHeader h2,
+.gwqaDocList .pieceHeader h2,
+.doclibraryDocList .pieceHeader h2,
+.gwsub .pieceHeader h2,
+.hss .pieceHeader h2 {
+  float: left;
+  line-height: 29px;
+  padding-left: 5px;
+}
+#content .pieceBody {
+  border-bottom: 1px solid #1E3B8C;
+  border-left: 1px solid #1E3B8C;
+  border-right: 1px solid #1E3B8C;
+}
+#content .gwfaqDocList .pieceBody,
+#content .gwqaDocList .pieceBody,
+#content .doclibraryDocList .pieceBody,
+#content .DLDocList .pieceBody {
+  border-right: none;
+}
+#content #basic .pieceBody {
+  border: none;
+}
+.setting .pieceBody {
+  padding-top: 10px;
+}
+
+/* 紺色帯機能タイトルボタン
+-----------------------------------------------------*/
+.btsHeaderLeft {
+  float: left;
+  padding-top: 5px
+}
+.btsHeaderLeft a {
+  display: inline-block;
+  overflow: hidden;
+  height: 0px;
+  margin-left: 5px;
+  margin-top: 2px;
+  padding-top: 15px;
+}
+.btsHeaderRight a,
+.btsHeadeRight a {
+  display: inline-block;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 6px;
+  float: right;
+  height: 15px;
+  margin-right: 10px;
+  text-indent: -9999px;
+}
+.btNew a,
+.btSectionNew a {
+  display: inline-block;
+  height: 0;
+  margin-top: 2px;
+  margin-left: 5px;
+  padding-top: 15px;
+  overflow: hidden;
+}
+.btNew a {
+  width: 70px;
+  background-image: url(/_common/themes/gw/files/ic_act_add.gif);
+}
+.btSectionNew a {
+  width: 150px;
+  background-image: url(/_common/themes/gw/files/ic_act_sectionboard_add.gif);
+}
+.btSet a {
+  width: 49px;
+  background-image: url(/_common/themes/gw/files/ic_act_set.gif);
+}
+.btSetAdd a {
+  width: 70px;
+  background-image: url(/_common/themes/gw/files/ic_act_adminsetup.gif);
+}
+.btManager a {
+  width: 70px;
+  background-image: url(/_common/themes/gw/files/ic_act_admin.gif);
+}
+
+/*table index
+-----------------------------------------------------*/
+table.index {
+  width: 100%;
+  margin-bottom: 10px;
+  border-left: solid 2px #FFF;
+  border-right: solid 2px #FFF;
+}
+table.index th {
+  padding: 6px 7px;
+  background-color: #E3EFFF;
+  border: 1px solid #CCCCCC;
+  text-align: left;
+}
+table.index tr.subIndex th {
+  padding: 5px 0 5px 7px;
+  background-color: #C6D1E8;
+  font-weight: bold;
+  color: #000;
+}
+table.index td {
+  padding: 6px 7px;
+  border: 1px solid #CCCCCC;
+}
+table.index td.noneLeft {
+  border-left: none;
+}
+table.index td.noneRight {
+  border-right: none;
+}
+table.index td.noneTop {
+  border-top: none;
+}
+tr.cycle td {
+  background-color: #F7FBFF;
+}
+.bbs table.index tr.items td,
+.gwfaq table.index tr.items td,
+.gwfaq table.index tr.items td,
+.docLibrary table.index tr.items td,
+.digitalLibrary table.index tr.items td {
+  background-color: #E3EFFF;
+  border: medium none;
+}
+table.index .st_at {
+  border-right: 1px solid #ccc;
+}
+table.index ._name {
+  border-right: 1px solid #ccc;
+}
+table.index ._participant_nums_inner {
+  border-right: 1px solid #ccc;
+}
+table.index ._participant_nums_outer {
+  border-right: 1px solid #ccc;
+}
+table.index ._owner {
+  border-right: 1px solid #ccc;
+}
+table.index ._subscriber {
+  border-right: 1px solid #ccc;
+}
+table.index td.integer {
+  text-align: right;
+}
+table.index td.decimal {
+  text-align: right;
+}
+table.index td.float {
+  text-align: right;
+}
+table.index img.thumbnail {
+  width: 49px;
+  height: 44px;
+}
+table.index colgroup.action {
+  white-space: nowrap;
+}
+td.title span.new,
+td.docTitle span.new {
+  display: inline-block;
+  height: 0;
+  width: 23px;
+  margin-left: 3px;
+  padding-top: 12px;
+  background-image: url("/_common/themes/gw/files/icon/ic-new.gif");
+  background-repeat: no-repeat;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+/* table show
+-----------------------------------------------------*/
+table.show {
+  width: 100%;
+  margin: 0 0 10px;
+  border: solid 2px #C6D1E8;
+}
+table.show th {
+  width: 135px;
+  padding: 6px 7px;
+  border: 1px solid #C6D1E8;
+  background-color: #E3EFFF;
+  font-weight: lighter;
+  text-align: left;
+  vertical-align: top;
+}
+table.show th.titleTop {
+  width: auto;
+}
+table.show td {
+  padding: 6px 7px;
+  border: solid 1px #C6D1E8;
+}
+table.show td.mceEditor {
+  padding:0px;
+}
+
+/* table list(添付ファイル欄を開いたテーブル)(使われてる？)
+-----------------------------------------------------*/
+table.list {
+  width: 100%;
+  margin-top: 20px;
+  border-left: solid 2px #FFF;
+  border-right: solid 2px #FFF;
+}
+* html table.list {
+  width: 720px;
+}
+table.list th {
+  padding: 6px 7px;
+  background-color: #E3EFFF;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+}
+table.list td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+table.list tr.cycle td {
+  background-color: #000;
+}
+
+/* table form
+-----------------------------------------------------*/
+table.form {
+  width: 100%;
+  margin: 15px 0px;
+}
+table.form th {
+  width: 200px;
+  padding: 6px 7px;
+  border: 1px solid #bbb;
+  background-color: #e4e4e4;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+}
+table.form td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+
+/* table form
+-----------------------------------------------------*/
+#contentBody table.noBorderTable td {
+  border: none;
+}
+
+/* table 幅設定
+-----------------------------------------------------*/
+.baseBox {
+  width: 800px;
+  margin: 10px auto;
+}
+.wideBox {
+  width: 98%;
+  margin: 10px auto;
+}
+
+/*tab
+-----------------------------------------------------*/
+#contentBody table.tabtable {
+  width: 100%;
+}
+#contentBody td.tab {
+  width: 90px;
+  padding: 3px;
+  border: 1px solid #CCC;
+  background-color: #f1f0f5;
+  text-align: center;
+}
+#contentBody .tabBox td.current {
+  background-color: #fff;
+  border-bottom: none;
+}
+#contentBody .tabBox td.spaceLeft {
+  width: 10px;
+  border-bottom: 1px solid #CCC;
+}
+#contentBody .tabBox td.spaceCenter {
+  width: 10px;
+  border-bottom: 1px solid #CCC;
+}
+#contentBody .tabBox td.spaceRight {
+  padding-left: 20px;
+  border-bottom: 1px solid #CCC;
+}
+
+/* ヘルプアイコン
+-----------------------------------------------------*/
+.help a {
+  background-image: url("/_common/themes/gw/files/icon/ic-help.gif");
+  background-repeat: no-repeat;
+  background-position: left top;
+  clear: both;
+  display: inline-block;
+  height: 0;
+  margin-left: 5px;
+  overflow: hidden;
+  width: 15px;
+  height: 15px;
+  text-indent: -9999px;
+}
+
+/* メッセージ
+-----------------------------------------------------*/
+.required {
+  color: red;
+}
+form .required {
+  margin-bottom: 5px;
+  display: inline-block;
+}
+form table .required {
+  margin-bottom: 0;
+  display: inline;
+}
+.flashNotice {
+ padding: 5px 10px;
+ border: 1px solid #8da;
+ background-color: #f0fff4;
+ color: #073;
+}
+.notice {
+  color: green;
+}
+.setting .notice {
+  padding-bottom: 0;
+  padding-left: 25px;
+}
+
+/* 1行メッセージ
+-----------------------------------------------------*/
+#message div {
+  width: 97%;
+  margin: 15px auto;
+  padding: 5px;
+  background-color: #E3EFFF;
+  font-size: 120%;
+  text-align: center;
+}
+
+/* ページ上部メニュー（スケジューラ・個別業務で使用）
+-----------------------------------------------------*/
+.menu {
+  clear: both;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.menu a {
+  display: inline-block;
+}
+.menu a span.current_menu {
+  display: block;
+  line-height: 1.3;
+  padding: 0 5px;
+  background-color: #FFF29E;
+  color: #000000;
+}
+.menu p {
+  float: left;
+  width: 140px;
+  padding: 0px 0px 0px 10px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  font-size: 100%;
+  font-weight: lighter;
+}
+
+/* 注意書き(スケジューラ　メニュー横)　.requiredに変更でもいける？
+-----------------------------------------------------*/
+span.att {
+  line-height: 1.7;
+  margin-left: 10px;
+  text-align: center;
+}
+span.att a {
+  color: red;
+}
+
+/* 作成・編集ページ　見出し
+-----------------------------------------------------*/
+.formTitle {
+  height: 34px;
+  padding-left: 35px;
+  padding-top: 20px;
+  background-position: 0 15px;
+  font-size: 150%;
+  font-weight: bold;
+}
+.formTitle.new,
+.formTitle.docAdmin {
+  background-image: url(/_common/themes/gw/files/ic_add_big.gif);
+  background-repeat: no-repeat;
+}
+.formTitle.edit {
+  background-image: url(/_common/themes/gw/files/ic_edit_big.gif);
+}
+.formTitle.quote {
+  background-image: url("/_common/themes/gw/files/ic_cita_big.gif");
+  background-repeat: no-repeat;
+}
+.formTitle.editRepeat {
+  background-image: url("/_common/themes/gw/files/ic_edit_big.gif");
+  background-repeat: no-repeat;
+}
+
+/* 入力ページ　エラー表示
+-----------------------------------------------------*/
+#errorExplanation {
+  width: 500px;
+  margin: 10px 0 15px 10px;
+  border: 2px solid #f00;
+}
+#errorExplanation h2 {
+  padding: 5px 10px;
+  background-color: #c00;
+  color: #ffffff;
+  font-size: 100%;
+}
+#errorExplanation p {
+  padding: 5px 10px;
+  color: #333;
+  font-weight: bold;
+}
+#errorExplanation ul {
+  padding: 0px 0px 10px 0px;
+  list-style-type: square;
+}
+#errorExplanation ul li {
+  margin-left: 30px;
+  padding-left: 0px;
+  font-size: 12px;
+}
+.field_with_errors {
+  display: inline-block;
+  padding: 1px;
+  border: 1px solid #f00;
+}
+*:first-child+html .field_with_errors {
+  display: inline;
+}
+*html .field_with_errors {
+  display: inline;
+}
+
+/* 機能ボタン
+-----------------------------------------------------*/
+.editingBox {
+  display: inline-block;
+  clear: both;
+  width: 700px;
+  height: 15px;
+  margin: 0 auto 5px;
+  padding: 10px 0 10px 0;
+}
+.editingBox a {
+  overflow: hidden;
+  float: left;
+  width: 70px;
+  height: 0px;
+  margin-right: 10px;
+  padding-top: 15px;
+}
+.editingBox .showLink a,
+.editingBox .docLink a {
+  width: auto;
+  height: 15px;
+  margin-left: 15px;
+  margin-right: 0;
+  padding-top: 0px;
+}
+
+.editingBox .btQuote a {
+  background-image: url(/_common/themes/gw/files/ic_act_quote.gif);
+}
+.editingBox .btAppEdit a {
+  width: 85px;
+  background-image: url("/_common/themes/gw/files/ic_act_approve-edit.gif");
+}
+.editingBox .btDestroy a {
+  background-image: url(/_common/themes/gw/files/ic_act_destroy.gif);
+}
+.editingBox .btDestroyRepeat a {
+  width: 89px;
+  background-image: url(/_common/themes/gw/files/ic_act_destroy_repeat.gif);
+}
+.editingBox .btEdit a {
+  background-image: url(/_common/themes/gw/files/ic_act_edit.gif);
+}
+.editingBox .btEditRepeat a {
+  width: 89px;
+  background-image: url(/_common/themes/gw/files/ic_act_edit_repeat.gif);
+}
+.editingBox .btFinish a {
+  background-image: url(/_common/themes/gw/files/ic_act_finish.gif);
+}
+.editingBox .btUnfinish a {
+  background-image: url(/_common/themes/gw/files/ic_act_unfinish.gif);
+}
+.editingBox .btRead a {
+  background-image: url(/_common/themes/gw/files/ic_act_read.gif);
+}
+.editingBox .btUnread a {
+  background-image: url(/_common/themes/gw/files/ic_act_unread.gif);
+}
+.editingBox .btRecognize a {
+  background-image: url(/_common/themes/gw/files/ic_act_approve.gif);
+}
+.editingBox .btPublish a {
+  background-image: url(/_common/themes/gw/files/ic_act_open.gif);
+}
+.editingBox .btRevocationRecognize a {
+  background-image: url(/_common/themes/gw/files/ic_act_noapprove.gif);
+}
+.editingBox .btRevocationPublish a {
+  background-image: url(/_common/themes/gw/files/ic_act_noopen.gif);
+}
+.editingBox .btConfirm a {
+  width: 92px;
+  background-image: url("/_common/themes/gw/files/ic_act_pointcheck.gif");
+}
+.editingBox .btUnconfirm a {
+  width: 82px;
+  background-image: url("/_common/themes/gw/files/ic_act_nopointcheck.gif");
+}
+.editingBox .btAllset a {
+  width: 69px;
+  background-image: url("/_common/themes/gw/files/ic_act_all-edit.gif");
+}
+.editingBox .btNewDocs a {
+  background-image: url("/_common/themes/gw/files/ic_act_addarticle_one.gif");
+}
+.editingBox .btOpenDocs a {
+  background-image: url("/_common/themes/gw/files/ic_act_articleopen.gif");
+}
+.editingBox .btProp a {
+  background-image: url("/_common/themes/gw/files/ic_act_application_one.gif");
+}
+.editingBox .btPropCancel a {
+  background-image: url("/_common/themes/gw/files/ic_act_noreport.gif");
+}
+.editingBox .btStartReceipt a {
+  background-image: url("/_common/themes/gw/files/ic_act_receipt_one.gif");
+}
+.editingBox .btPrepare a {
+  width: 90px;
+  background-image: url("/_common/themes/gw/files/ic_act_noreceipt_one.gif");
+}
+.editingBox .btClosed a {
+  background-image: url("/_common/themes/gw/files/ic_act_deadline_one.gif");
+}
+.editingBox .btReturnReceipt a {
+  background-image: url("/_common/themes/gw/files/ic_act_nodeadline_one.gif");
+}
+.editingBox .btEnd a {
+  width: 80px;
+  background-image: url("/_common/themes/gw/files/ic_act_theend_one.gif");
+}
+.editingBox .btAddPlan a {
+  width: 90px;
+  background-image: url("/_common/themes/gw/files/ic_act_addscheduled_one.gif");
+}
+.editingBox .btNewHolyday a {
+  background-image: url(/_common/themes/gw/files/ic_act_holiday.gif);
+}
+.editingBox .btOutputCsv a {
+  width: 71px;
+  background-image: url("/_common/themes/gw/files/ic_act_csv.gif");
+}
+.editingBox .btTransmit a {
+  width: 90px;
+  background-image: url("/_common/themes/gw/files/ic_act_circulation.gif");
+}
+.editingBox .btNewFile a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_fileadd.gif);
+}
+.editingBox .btNewFolder a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_folderadd.gif);
+}
+.editingBox .btEditFolder a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_folderedit.gif);
+}
+.editingBox .btDestroyFolder a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_folder_delete.gif);
+}
+.editingBox .btNewDoc a {
+  width: 70px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_documentadd.gif);
+}
+.editingBox .btDouki a {
+  width: 70px;
+  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_assign-synchro.gif);
+}
+.editingBox .btReproduce a {
+  background-image: url(/_common/themes/gw/files/ic_act_copy.gif);
+}
+.editingBox .btAppReproduce a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/ic_act_approve-copy.gif);
+}
+.btAllApp a {
+  background-image: url(/_common/themes/gw/files/schedule/ic_act_lumpapprove.gif);
+  width: 85px;
+}
+.btAttach a {
+  background-image: url(/_common/themes/gw/files/ic_act_attach.gif);
+}
+
+.editingBox .btTitle a {
+    border: 1px solid #CCCCCC;
+    color: #000000;
+    display: inline-block;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    height: 20px;
+    padding: 2px;
+}
+
+.editingBox .btDocLink a {
+    border: 1px solid #CCCCCC;
+    color: #000000;
+    display: inline-block;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    width: 200px;
+    height: 20px;
+    padding: 2px;
+}
+
+/* 機能ボタン右サイドテキストリンク
+-----------------------------------------------------*/
+.docLink, .showLink {
+ float: right;
+}
+
+/* カレンダーボタン
+-----------------------------------------------------*/
+#content .show_cal_bt {
+  background-image: url("/_common/themes/gw/files/icon/ic_act_calendar.gif");
+  width: 91px;
+}
+.calendar_date_select_popup_icon {
+  margin-top: -2px;
+  vertical-align: middle;
+}
+
+/* テキストボタン
+-----------------------------------------------------*/
+a.borderButton {
+  display: inline-block;
+  padding: 0 5px;
+  border-top: solid 1px #CCC;
+  border-left: solid 1px #CCC;
+  border-right: solid 1px #999;
+  border-bottom: solid 1px #999;
+}
+.btText {
+  padding: 2px 5px;
+  border-top: solid 1px #CCC;
+  border-right: solid 1px #999 ;
+  border-bottom: solid 1px #999 ;
+  border-left: solid 1px #CCC ;
+}
+a.btText {
+  display: inline-block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* 編集・削除ボタン
+-----------------------------------------------------*/
+div.showMenu {
+  margin: 10px 0px 0px 0px;
+}
+.showMenu a {
+  display: inline-block;
+  width: 80px;
+  margin: 0 10px 0 0;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 2px 2px 1px;
+  background-color: #eee;
+  color: #800;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.7;
+}
+.showMenu a:hover {
+  border-color: #bbb;
+  text-decoration: underline;
+}
+.showMenu a:visited {
+  color: #800;
+}
+.showMenu a:link {
+  color: #800;
+}
+
+/* submit ボタン
+-----------------------------------------------------*/
+div.submitters {
+  margin: 20px 10px;
+}
+.right div.submitters {
+  text-align: center;
+}
+div.submitters input {
+  width: 100px;
+  margin: 0px 10px;
+}
+div.submitters a {
+  margin: 0px 10px;
+}
+
+/* 記事ページ　戻るボタン
+-----------------------------------------------------*/
+.btReturn {
+  clear: both;
+  margin-top: 30px;
+  padding-bottom: 25px;
+  text-align: center;
+  width: 100%;
+}
+.btReturn a {
+  display: inline-block;
+  width: auto;
+  padding: 5px 20px;
+  border: 1px solid #CCCCCC;
+  background-color: #F7FBFF;
+  text-decoration: none;
+}
+.btReturn a:hover {
+  text-decoration: none;
+}
+
+/* 外部サイトアイコン設定
+-----------------------------------------------------*/
+a.ext {
+  padding-left: 14px;
+  background-image: url(/_common/themes/gw/files/icon_external.gif);
+  background-position: left 2px;
+  text-decoration: none;
+}
+a:link.ext {
+  color: #00345C;
+}
+a:hover.ext {
+  text-decoration: underline;
+}
+
+/* helpBox
+-----------------------------------------------------*/
+.helpBox {
+  float: right;
+  margin-right: 20px;
+  margin-top: -45px;
+  background: none!important;;
+  text-align: right;
+}
+*html .helpBox {
+  margin-right: 10px;
+}
+
+/* pageNation
+-----------------------------------------------------*/
+.pagination {
+  margin: 20px 0px;
+  text-align: center;
+  color: #999;
+}
+.pagination a,
+.pagination em,
+.pagination span.disabled,
+.pagination span.current {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  padding: 4px 7px;
+  border: 1px solid #CCC;
+  text-decoration: none;
+}
+.pagination a:hover {
+  background-color: #eee;
+}
+.pagination span.disabled {
+  color: #888;
+}
+.pagination em.current,
+.pagination span.current {
+  background-color: #EEE;
+  font-style: normal;
+  font-weight: bold;
+  color: #000;
+}
+.pagination span.separator {
+  display: none;
+}
+
+/* 検索・セレクトボックス
+-----------------------------------------------------*/
+form.search {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+form.search th,
+form.search td {
+  padding: 0 5px 0 0;
+}
+form.search td.submitters input {
+  width: 60px;
+  font-size: 80%;
+}
+
+/* 検索結果一覧テーブル（掲示板～電子図書）
+-----------------------------------------------------*/
+#content .pieceBody .outer .right h4 {
+  clear: both;
+  margin-top: 0px;
+  padding-left:30px;
+  background-position: 5px center;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  font-weight: normal;
+}
+#content .pieceBody .outer .right h4.docFileTitle {
+  background-image:url(/_common/themes/gw/files/file_list.gif);
+  margin-top: 0;
+}
+#content .pieceBody .outer .right h4.docFolderTitle {
+  background-image: url("/_common/themes/gw/files/folder_list.gif");
+  margin-top: 0;
+}
+#content .pieceBody .outer .right h4.docAttachTitle {
+  background-image: url("/_common/themes/gw/files/ic_attach_list.gif");
+  margin-top: 0;
+}
+h4.docFolderTitle {
+  background-image:url(/_common/themes/gw/files/folder_list.gif);
+}
+h4.docAttachTitle {
+  background-image:url(/_common/themes/gw/files/ic_attach_list.gif);
+}
+
+/* 記事ページ　前ページ・次ページ移動リンク（掲示板～電子図書）
+-----------------------------------------------------*/
+.docsPageMove {
+  margin: 20px auto 10px;
+  text-align: center;
+}
+
+/* 掲示板～電子図書　タイトル背景色変更設定周り
+-----------------------------------------------------*/
+#item_bgselect_type1 table.show input {
+  vertical-align: middle;
+}
+#item_bgselect_type1 table.show label {
+  padding-left: 2px;
+  background-color: #9AA;
+  vertical-align: middle;
+}
+
+/* 表示行数選択ボックス（掲示板～電子図書）
+-----------------------------------------------------*/
+.changelimit {
+  margin-bottom: 10px;
+  margin-right: 11px;
+  text-align: right;
+}
+
+/* TinyMCE
+-----------------------------------------------------*/
+table.show td textarea.mceEditor {
+  width: 100%;
+  height: 500px;
+}
+#contentBody table.mceToolbar,
+#contentBody #item_body_tbl td {
+  background-color: #FFFFFF;
+}
+#contentBody td.mceToolbar {
+  padding-bottom: 5px;
+}
+#contentBody span.mceEditor {
+  display: block;
+  padding: 10px 6px 6px;
+}
+.mceEditor .defaultSkin table.mceLayout {
+  background-color: #ffffff;
+  border: none;
+}
+.mceEditor .defaultSkin table.mceLayout tr.mceFirst td {
+  padding: 0;
+  border: none;
+  background-color: #ffffff;
+}
+.defaultSkin span.mceIcon, .defaultSkin img.mceIcon {
+  background-color: #F0F0F0;
+}
+.mceEditor .defaultSkin .mceListBox .mceOpen {
+  background-color: #F0F0F0;
+}
+.bbsUserformBody ol,
+.docsInnerBox .show ol,
+.bbsUserformBody ol,
+.docformBody ol,
+.answerText ol {
+  margin-left: 20px;
+}
+.bbsUserformBody ul,
+.docsInnerBox .show ul,
+.bbsUserformBody ul,
+.docformBody ul,
+.answerText ul {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+
+/* 位置設定クラス
+--------------------------------------------*/
+.centerText,
+table.show th.centerText {
+  text-align: center;
+}
+.rightText,
+table.show th.rightText {
+  text-align: right;
+}
+.leftText,
+table.show th.leftText {
+  text-align: left;
+}
+.rightSide{
+  float:right;
+}
+.editingBox .rightSide{
+  margin-right:21px;
+}
+
+/* グレーアウト設定
+-----------------------------------------------------*/
+.headerMenu li.grayout, #page-tabMain-7 .box .menu li {
+  height: 1%;
+}
+.headerMenu li.grayout a, .headerMenu li.grayout a:hover, .headerMenu li.grayout a:visited,
+li.grayout a, li.grayout a:hover, li.grayout a:visited,
+li.grayout a.mock, li.grayout a.mock:hover, li.grayout a.mock:visited,
+a.grayout, a.grayout:hover, a.grayout:visited {
+  color: #999999;
+  text-decoration: none;
+  cursor: default;
+}
+
+/* ime-mode
+-----------------------------------------------------*/
+#imeon {
+  ime-mode: active;
+}
+#imeoff {
+  ime-mode: inactive;
+}
+#imedisabled {
+  ime-mode: disabled;
+}
+.IMEoff {
+  ime-mode: disabled;
+}
+
+/* 管理者設定画面
+-----------------------------------------------------*/
+.titleLine {
+  clear: both;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #B1BEE3;
+  _zoom: 100%;
+}
+.titleLine .title {
+  margin-left: 10px;
+  font-size: 130%;
+  font-weight: bold;
+  color: #1E3B8C;
+}
+.AdminSetting .pieceBody ul {
+  padding-left: 20px;
+  width: 96%;
+}
+span.function {
+  display: inline-block;
+  vertical-align: middle;
+  width: 280px;
+  margin-bottom: 10px;
+  background-color: #EDEDED;
+  border-top: solid 1px #ccc;
+  border-left: solid 1px #ccc;
+  border-bottom: solid 1px #999;
+  border-right: solid 1px #999;
+  text-align: center;
+}
+span.function a {
+  display: block;
+  line-height: 4;
+  _zoom: 100%;
+}
+span.explanation {
+  display: inline-block;
+  width: 50%;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  vertical-align: middle;
+}
+.setting .pieceBody ul,
+.memoSetting .pieceBody ul {
+  clear: both;
+  margin-bottom: 40px;
+  margin-left: 25px;
+  padding-top: 25px;
+}
+.schedulePiece.form .pieceBodyBody,
+.schedulePiece.showOne .pieceBodyBody,
+.schedulePiece.setting .pieceBodyBody,
+.todo.form .pieceBodyBody,
+.todo.show .pieceBodyBody,
+.todo.setting .pieceBodyBody,
+.memo.form .pieceBodyBody,
+.memo.show .pieceBodyBody,
+.memo.setting .pieceBodyBody,
+.digitalLibrary .pieceBodyBody {
+  width: 700px;
+  height: 1%;
+  margin: 25px auto 0;
+  _padding: 15px;
+}
+
+/* Footer
+-----------------------------------------------------*/
+#footer {
+  clear: both;
+  width: 100%;
+  padding: 30px 0px 0px;
+}
+#footerBody {
+  padding-top: 3px;
+  background: #011c75;
+}
+#footerBody .copyright {
+  position: relative;
+  width: 100%;
+  padding: 5px 0px;
+  border-top: 1px solid #fff;
+  color: #fff;
+  text-align: center;
+}
+#footerBody .copyright a {
+  color: #fff;
+}
+#footerBody .copyright a.siteinfo {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  color: #000;
+}
+#footerBody .copyright a:visited {
+  color: #fff;
+}
+
+/* 印刷設定
+-----------------------------------------------------*/
+@media print {
+  #header, #headerBody, #banner, #bannerBody, #navi,
+  #naviBody, #menu, #menuContainer, #links, #linksContainer,
+  #footer, #footerContainer, #footerBody, #popup_select_group_2,
+  form.search,
+  .menu, .showMenu, .noprint {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  #page-index #menu,
+  #page-index #menu #menuContainer {
+    display: block;
+  }
+  #content, #contentContainer {
+    margin: 0;
+  }
+}
+
+/* TODO
+-----------------------------------------------------*/
+span.translation_missing {
+  background-color: red;
+  color: white;
+}
+.yui-dialog #errorExplanation {
+  width: 100%;
+  margin: 15px 0px;
+  border: 2px solid #f00;
+}
+
+/* その他
+-----------------------------------------------------*/
+#content .pieceBody h4 {
+  background-image: url("/_common/themes/gw/files/icon_bbs.gif");
+  background-position: 10px center;
+  padding: 5px 0px 5px 23px;
+  color: #000;
+  font-size: 100%;
+  font-weight: bold;
+}

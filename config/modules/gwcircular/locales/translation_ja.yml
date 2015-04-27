@@ -1,0 +1,27 @@
+ja:
+  activerecord:
+    attributes:
+      gwcircular/control:
+        title: タイトル
+        sort_no: 並び順
+        commission_limit: 回覧人数制限
+        default_published: 回覧期限日初期値
+        upload_graphic_file_size_capacity: 画像の総容量制限
+        upload_document_file_size_capacity: 添付の総容量制限
+        upload_graphic_file_size_max: 画像ファイルのサイズ制限
+        upload_document_file_size_max: 添付ファイルのサイズ制限
+      gwcircular/custom_group:
+        state: ""
+        name: "名称"
+        readers_json: ""
+        sort_no: 並び順
+      gwcircular/doc:
+        state: ""
+        able_date: 開始日
+        expiry_date: 期限日
+        section_code: ""
+        title: ""
+        body: ""
+      gwcircular/file:
+        file: ファイル
+        filename: ファイル名

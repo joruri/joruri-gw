@@ -1,0 +1,94 @@
+<div class="piece prop schedulePiece index">
+<div class="pieceHeader">
+  <%= render '/gw/admin/schedules/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedules/schedule_bt_box', d: @st_date, mode: 'month' %>
+  <%# メニュー 置き場 %>
+</div>
+
+<%= render 'search' %>
+<div class="titleLine">
+  <span class="title">スケジュール一覧</span>
+  <span class="linkSpace">
+  <% if !@uid_equal %>
+    <%= "#{@list_group.display_name} #{@list_user.display_name}" %>
+  <% else %>
+    <% number = @items.blank? ? 0 : @items.length %>
+    出力件数：<%= number %> 件　<%= link_to "CSV (MS Outlook)形式エクスポート", "/gw/schedule_lists/csvput?s_year=#{@s_year}&s_month=#{@s_month}", class: "borderButton" if number > 0 %>
+    <%= link_to "iCal形式エクスポート", "/gw/schedule_lists/icalput?s_year=#{@s_year}&s_month=#{@s_month}", class: "borderButton" if number > 0 %>
+  <% end %>
+  </span>
+</div>
+
+<div class="pieceBodyBody">
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+  <%= form_for :item, url: "#{request.path_translated}user_select#{@params_set}", html: {id: "listForm", multipart: true, method: :post} do |f| %>
+    <% if action_name == 'index' -%>
+      <table>
+        <tr>
+          <td><%= submit_tag 'コピー', {:name =>:user_add} %></td>
+          <td><%= submit_tag '参加者から外す', {:name =>:user_delete} %></td>
+        </tr>
+      </table>
+    <% end -%>
+    <%= render 'list' %>
+    <% if action_name == 'index' -%>
+      <table>
+        <tr>
+          <td><%= submit_tag 'コピー', {:name =>:user_add} %></td>
+          <td><%= submit_tag '参加者から外す', {:name =>:user_delete} %></td>
+        </tr>
+      </table>
+    <% end %>
+  <% end -%>
+<% end %>
+
+<script type="text/javascript">
+//<![CDATA[
+var select_box_true_false = function () {
+  if ($('s_year').selectedIndex == 0) {
+    $('s_month').selectedIndex = 0;
+    $('s_month').value = "0";
+    $('s_month').disabled = true;
+  } else {
+    $('s_month').disabled = false;
+  }
+}
+
+var select_year = function () {
+  select_box_true_false();
+  search_submit();
+}
+var select_month = function () {
+  search_submit();
+}
+var search_submit = function () {
+  document.forms['search'].submit();
+}
+
+var my_load = function() {
+    select_box_true_false();
+}
+
+window.onload = my_load;
+
+var all_check = function(formId, itemId, obj) {
+  form = document.getElementById(formId);
+  for (var i = 0; i < form.elements.length; i++) {
+    pattern = new RegExp('^' + itemId + '\\[.*\\]');
+    if (form.elements[i].name.match(pattern)) {
+      form.elements[i].checked = obj.checked;
+    }
+  }
+}
+//]]>
+</script>
+
+</div>
+
+</div>
+</div>

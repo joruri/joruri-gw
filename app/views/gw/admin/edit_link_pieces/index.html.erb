@@ -1,0 +1,54 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+<%= render 'header_new_botton' %>
+<%= render 'header_navi' %>
+
+<% if @items.count == 0 %>
+<div class="notice">表示対象がありません。</div>
+<% else %>
+<table class="index">
+  <tr>
+  <th class="action"><%# 展開 %></th>
+  <th class="action"><%# 詳細 %></th>
+  <th class="state">公開</th>
+  <th class="state">状態</th>
+  <th class="sort" colspan="2" >並び順</th>
+  <th class="title">表示名</th>
+  <% if @parent.level_no >= 2 %>
+  <th class="url">リンク先URL</th>
+  <th class="ext">接続先区分</th>
+  <th class="sso">リンク種別</th>
+  <th class="mode">表示モード</th>
+  <% end %>
+  </tr>
+  <% @items.each_with_index do |item, idx| %>
+    <% 
+      uid = did = 0
+      uid = @items[idx-1].id if idx >= 1
+      did = @items[idx+1].id if idx <= @items.length-2
+    %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '展開', {action: :index, pid: item.id} if @parent.level_no != 3 %></td>
+      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+      <td><span class="<%= 'required' if item.published != 'opened' %>"><%= item.published_label %></span></td>
+      <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
+      <td class="up" ><%= link_to '▲', {action: :swap, id: item.id, sid: uid} if uid != 0 %></td>
+      <td class="down" ><%= link_to '▼', {action: :swap, id: item.id, sid: did} if did != 0 %></td>
+      <td><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=raw item.name %></span></td>
+      <% if @parent.level_no >= 2 %>
+      <td><%= item.link_url %></td>
+      <td><%= item.class_external_label %></td>
+      <td><%= item.class_sso_label %></td>
+      <td><%= item.mode_label %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+<% end %>
+
+</div>
+</div>

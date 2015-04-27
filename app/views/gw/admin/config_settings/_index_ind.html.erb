@@ -1,0 +1,87 @@
+<%# 個人設定 %>
+
+<div class="titleLine">
+  <p class="title">スケジューラー設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><a href="/gw/schedules/setting_ind_schedules" target="_blank">スケジューラ設定</a></span>
+  <span class="explanation">
+  週初めの変更（日曜日or月曜日）、場所の表示の有無、ポータル画面での表示の有無を設定できます。
+  </span>
+</li>
+<li>
+  <span class="function"><a href="/system/custom_groups" target="_blank">カスタムグループ設定</a></span>
+  <span class="explanation">
+  カスタムグループを設定できます。
+  </span>
+</li>
+<li>
+  <span class="function"><a href="/gw/schedule_settings/import" target="_blank">インポート</a></span>
+  <span class="explanation">
+  CSV (MS Outlook)形式、およびiCal形式のファイルをインポートできます。
+  </span>
+</li>
+</ul>
+<div class="titleLine">
+  <p class="title">ToDo設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to 'スケジュール表示設定', "/gw/todo_settings/schedule", :target => "_blank" %></span>
+  <span class="explanation">ToDoの期限日を、スケジュール上に表示する設定を行います。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'リマインダー表示設定', "/gw/todo_settings/reminder", :target => "_blank" %></span>
+  <span class="explanation">ポータルのリマインダーに表示するToDoの設定を行います。</span>
+</li>
+</ul>
+<div class="titleLine">
+  <p class="title">携帯アクセス設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '携帯アクセス設定', "/gw/mobile_settings?#{@qs}", :target => "_blank" %></span>
+  <span class="explanation">携帯からのログイン許可設定・携帯用パスワードを設定します。</span>
+</li>
+</ul>
+<div class="titleLine">
+  <p class="title">連絡メモ設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '携帯等メール転送設定', "/gw/memo_settings/forwarding", :target => "_blank" %></span>
+  <span class="explanation">連絡メモを携帯等のメールに転送します。</span>
+</li>
+<li>
+  <span class="function"><%= link_to 'リマインダー表示設定', "/gw/memo_settings/reminder", :target => "_blank" %></span>
+  <span class="explanation">ポータルのリマインダーに表示する連絡メモの設定を行います。</span>
+</li>
+</ul>
+<div class="titleLine">
+  <p class="title">回覧板設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '配信先カスタム設定', "/gwcircular/custom_groups", :target => "_blank" %></span>
+  <span class="explanation">個人毎に配信先の雛形が登録できます。</span>
+</li>
+</ul>
+<div class="titleLine">
+  <p class="title">照会回答設定</p>
+</div>
+<ul>
+<li>
+  <span class="function"><%= link_to '所属配信先グループカスタム設定', "/gwmonitor/custom_groups", :target => "_blank" %></span>
+  <span class="explanation">個人毎に所属配信先グループの雛形が登録できます。</span>
+</li>
+</ul>
+<div class="titleLine">
+ <p class="title">JoruriPlus+　リマインダー表示設定</p>
+</div>
+<ul>
+<li>
+<span class="function"><%= link_to 'JoruriPlus+　リマインダー表示設定' , "/gw/plus_update_settings"   ,:target=>"_blank" %></span>
+<span class="explanation">JoruriPlus+のプロジェクト更新情報の表示に関する設定を行います。</span>
+</li>
+</ul>

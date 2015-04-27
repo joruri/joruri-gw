@@ -1,0 +1,46 @@
+<div class="bbsDocList workflow">
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'filter' %>
+
+<table class="index">
+<tr class="headIndex">
+<th style="width:60px;">状態</th>
+<th class="docTitle">タイトル</th>
+<th style="width:120px;">状況</th>
+<th style="width:120px;">申請日時</th>
+<th style="width:120px;">期限日時</th>
+<th style="width:120px;">最終更新日時</th>
+</tr>
+<% @records.each do |record| %>
+  <tr class="<%= cycle 'article', 'article cycle' %><%= " expired" if record.expired_at &&  record.expired_at < DateTime.now %>">
+  <td style="width:60px;">
+  	<%= raw(record.state_str) %>
+  </td>
+  <td class="docTitle">
+  	<%=
+  	  if record.state.to_sym == :draft
+  	    link_to "[下書き]#{record.title}", "/gwworkflow/elaborate/#{record.id}"
+  	  else
+  	    link_to "#{record.title}", "/gwworkflow/#{ params[:cond] == 'processing' ? 'approve' : 'show'}/#{record.id}"
+  	  end
+    %>
+  </td>
+  <td style="width:60px;">
+    <%= raw(record.progress_str) %>
+  </td>
+  <td class="update"><%= (record.applied_at.blank? ? "未設定" : record.applied_at.strftime('%Y-%m-%d %H:%M')) %></td>
+  <td class="update"><%= (record.expired_at.blank? ? "未設定" : record.expired_at.strftime('%Y-%m-%d %H:%M')) %></td>
+  <td class="update"><%= (record.updated_at.blank? ? "未設定" : record.updated_at.strftime('%Y-%m-%d %H:%M')) %></td>
+  </tr>
+<% end %>
+</table>
+
+
+<%# TODO %>
+<%#= paginate @view_model.records %>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList workflow-->

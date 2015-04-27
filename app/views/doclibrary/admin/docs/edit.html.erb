@@ -1,0 +1,6 @@
+<%= render 'folder_name' %>
+<%= form_for :item, :url => doclibrary_doc_path(@item, {:title_id => @title.id}) + doclib_uri_params, :method => :put, :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render @title.doclib_form_name + 'form', f: f %>
+  <%= render 'form', f: f %>
+<% end %>

@@ -1,0 +1,137 @@
+@charset "UTF-8";
+
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwboard/gwdoc_standard.css
+========================================================= */
+
+/*掲示板一覧画面
+----------------------------------------------- */
+/*検索*/
+form.search {
+  background-color:#BEE1F6;
+}
+
+/*添付ファイルアイコン*/
+table.docList .Attach {
+  background-image:url(/_common/themes/gw/files/attached.jpg);
+  background-position:2px 7px;
+}
+/*一覧*/
+table.docList th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:6px 7px;
+}
+table.docList td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+
+/*掲示板詳細画面
+----------------------------------------------- */
+/*作成者*/
+table.docCreator {
+  margin: 0 0 10px;
+  width:80%;
+  text-align:left;
+  vertical-align:top;
+}
+table.docCreator th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.docCreator td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*区分・階層*/
+table.docImportance {
+  margin: 0 0 10px;
+  width:auto;
+  text-align:left;
+  vertical-align:top;
+}
+table.docImportance th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.docImportance td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*見出し一覧*/
+table.docFolder {
+  margin: 0 0 10px;
+  width: 100%;
+  text-align: left;
+  vertical-align: top;
+}
+table.docFolder th {
+  background-color: #3E7BA0;
+  color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  padding: 4px 7px;
+}
+table.docFolder td {
+  border: 1px solid #CCCCCC;
+  padding: 4px 7px;
+}
+
+/*タイトル*/
+table.docformTitle {
+  margin: 0 0 10px;
+  width: 100%;
+  text-align: left;
+  vertical-align: top;
+}
+table.docformTitle th {
+  background-color:#6182DA;
+  color: #FFFFFF;
+  border:1px solid #CCCCCC;
+  padding: 4px 7px;
+}
+table.docformTitle td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*記事*/
+table.docformBody {
+  margin: 0 0 10px;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.docformBody th {
+  background-color:#6182DA;
+  color: #FFFFFF;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.docformBody td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*添付ファイルリスト*/
+table.gwboardAttachlist {
+  margin: 0 0 10px;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.gwboardAttachlist th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.gwboardAttachlist td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}

@@ -1,0 +1,26 @@
+<%
+sdt = @s_time
+edt = @e_time
+sd_s = @s_day
+ed_s = @e_day
+uids = @uids
+all_day = @all_day
+
+href_params = "?st_date=#{sdt.strftime('%Y%m%d')}"
+href_params += "&st_time=#{sdt.strftime('%H:%M')}"
+href_params += "&ed_date=#{edt.strftime('%Y%m%d')}"
+href_params += "&ed_time=#{edt.strftime('%H:%M')}"
+href_params += "&uids=#{uids.join(':')}"
+href_params += "&allday=#{all_day}"
+href_params += "&st_day=#{sd_s.strftime('%Y%m%d')}"
+href_params += "&ed_day=#{ed_s.strftime('%Y%m%d')}"
+hrefs = {
+  :day => "/gw/schedule_search_blanks/show_day#{href_params}",
+  :week => "/gw/schedule_search_blanks/show_week#{href_params}",
+}
+%>
+
+<div class="btBox">
+<div class="btIndex dayLink nobr<%= (mode == 'day') ? ' current' : '' -%>" style = "border-left: 1px solid #AAAAAA;"><a href="<%= hrefs[:day] -%>"><%= @schedule_settings['dayview_button_caption'] -%></a></div>
+<div class="btIndex weekLink nobr<%= (mode == 'week') ? ' current' : '' -%>"><a href="<%= hrefs[:week] -%>"><%= @schedule_settings['weekview_button_caption'] -%></a></div>
+</div>

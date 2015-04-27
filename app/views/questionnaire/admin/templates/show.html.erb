@@ -1,0 +1,78 @@
+<%
+if @item.state == "public"
+  state_link = "close"
+  lnk_str    = "テンプレートを作成中に戻す"
+  icon_class = "btRevocationPublish"
+else
+  state_link = "open"
+  lnk_str    = "テンプレートを公開する"
+  icon_class = "btPublish"
+end
+
+%>
+<div class="bbsDocList circular">
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= Page.title %></h2>
+<div class="btsHeaderLeft">
+  <%= render 'header_button' %>
+</div>
+</div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+
+<div class="editingBox">
+  <% if @item.admin_setting== 1 %>
+    <% if @is_sysadm %>
+      <span class="btEdit"><%= link_to '編集', edit_questionnaire_template_path(@item) %></span>
+      <span class="btDestroy"><%= link_to '削除', questionnaire_template_path(@item), :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+      <span class="<%=icon_class%>"><%= link_to lnk_str, "/questionnaire/templates/#{@item.id}/#{state_link}" %></span>　
+      <span class="docLink"><%= link_to '設問登録 >>', questionnaire_template_form_fields_path(@item) %></span>
+    <% end %>
+  <% else %>
+    <span class="btEdit"><%= link_to '編集', edit_questionnaire_template_path(@item) %></span>
+    <span class="btDestroy"><%= link_to '削除', questionnaire_template_path(@item), :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+    <span class="<%= icon_class %>"><%= link_to lnk_str,"/questionnaire/templates/#{@item.id}/#{state_link}" %></span>　
+    <span class="docLink"><%= link_to '設問登録 >>', questionnaire_template_form_fields_path(@item) %></span>
+  <% end %>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= @item.state_name %></td>
+  </tr>
+  <% if false %>
+  <tr>
+    <th>種別</th>
+    <td><%= @item.admin_setting_status %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>タイトル</th>
+    <td><%= @item.manage_title %></td>
+  </tr>
+  <tr>
+    <th>概要説明</th>
+    <td><%= @item.title %></td>
+  </tr>
+</table>
+
+ <div align="center">
+ <table>
+   <tr>
+     <td><div class="btReturn"><%= link_to 'テンプレート一覧へ戻る', questionnaire_templates_path %></div></td>
+     <% if (@item.admin_setting== 1 && @is_sysadm) || @item.admin_setting == 0 %>
+       <% if false %>
+       <td>&nbsp;&nbsp;</td>
+       <td><div class="btReturn"><%= link_to lnk_str,"/questionnaire/templates/#{@item.id}/#{state_link}" %></div></td>
+       <% end %>
+       <td>&nbsp;&nbsp;</td>
+       <td><div class="btReturn"><%= link_to '設問登録へ進む >>', questionnaire_template_form_fields_path(@item) %></div></td>
+    <% end %>
+   </tr>
+ </table>
+ </div>
+
+</div>
+</div>

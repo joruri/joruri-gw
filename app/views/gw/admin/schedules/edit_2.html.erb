@@ -1,0 +1,39 @@
+<%
+text_style = 'width:30em;'
+%>
+
+<div class="piece schedulePiece form">
+<div class="pieceHeader">
+<%= show_notice %>
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyBody">
+<%= get_form_title_div params %>
+
+<% unless @reason.blank? %>
+<table class="show">
+  <tbody>
+    <tr>
+      <td colspan="2"><span style="color:red; font-weight: bold"><%= @reason %></span></td>
+    </tr>
+  </tbody>
+</table>
+<% end %>
+
+<%= form_for :item, :url => "/gw/schedules/#{@item.id}/edit_2#{@edit_params}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+  <%= f.hidden_field :st_at, :value => @item.st_at %>
+  <%= f.hidden_field :ed_at, :value => @item.ed_at %>
+  <% if @is_pm_admin %>
+    <table class="show">
+      <tr><th>管理者メモ</th><td>
+      <%= form_text_area f, :admin_memo %>
+      </td></tr>
+    </table>
+  <% end %>
+  <%= submit_for_update(f, :caption => "確定する" , :class=>:mockblock) %>
+<% end %>
+
+</div>
+</div>
+</div>

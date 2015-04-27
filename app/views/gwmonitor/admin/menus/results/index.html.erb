@@ -1,0 +1,16 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+<%= render 'gwmonitor/admin/menus/title_info', skip_action_menu: true %>
+
+<%= render "#{@title.gwmonitor_form_name}answer_index" %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', @title.builder_path %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--piece-->

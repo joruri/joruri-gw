@@ -1,0 +1,13 @@
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= @system_title %></h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%= link_to '新規作成', "/gwmonitor/builders/new" %></span>
+</div>
+<div class="btsHeadeRight">
+  <% if Core.user.has_role?('gwmonitor/admin') %>
+  <span class="btSetAdd"><a href="/gwmonitor/settings">管理者</a></span>
+  <% else %>
+  <span class="btSet"><a href="/gwmonitor/custom_groups">設定</a></span>
+  <% end %>
+</div>
+</div><!--pieceHeader-->

@@ -1,0 +1,16 @@
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_guides/menu' %>
+</div>
+<div class="pieceBody">
+<br/>
+<% @action = "create" %>
+<% @create_path = @public_uri %>
+<%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true, :class=>"leftSide"} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

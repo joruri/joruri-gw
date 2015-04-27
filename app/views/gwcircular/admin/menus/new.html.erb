@@ -1,0 +1,25 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header', hide_new_action: true %>
+<%= render 'piece_banner' %>
+
+<div class="pieceBody">
+<%= render 'gwcircular/admin/menus/tabbox' %>
+
+<%= form_for :item, :url => {action: :update, id: @item.id}, :html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <div class="formTitle new">新規作成</div>
+  <%= render 'form', f: f %>
+  <div class="submitters">
+  <div align="center">
+  <table>
+    <tr>
+      <td><%= submit_for_update f, js_submitter: "my_submit('public')", caption: '配信', id: 'item_submit' %></td>
+      <td><%= submit_for_update f, js_submitter: "my_submit('draft')", caption: '下書き', id: 'item_submit_draft' %></td>
+    </tr>
+  </table>
+  </div>
+  </div>
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

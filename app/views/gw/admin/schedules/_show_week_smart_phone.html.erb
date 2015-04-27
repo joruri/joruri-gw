@@ -1,0 +1,61 @@
+<% if @show_flg %>
+<%
+@format = "%Y年%m月%d日（%_wd）"
+@day_format = "%Y-%m-%d"
+link_params = "gid=#{params[:gid]}&uid=#{params[:uid].presence || Core.user.id}&cgid=#{params[:cgid]}&dis=#{@dis}"
+mode = 'week'
+%>
+<div class="pieceBodyBody">
+<table class="scheduleTable">
+<% 7.times do |i| %>
+  <%
+  week_add_day = @st_date + i
+  date_class = create_month_class(week_add_day, @st_date, @holidays, params)
+  date_schedules = @schedules.select{|s| s.date_between?(week_add_day) }
+  %>
+  <tr>
+    <th class="date <%= date_class %>">
+      <%= link_to date_format(@format, week_add_day), "/gw/schedules/#{week_add_day.strftime('%Y%m%d')}?#{link_params}&topdate=#{@topdate}" %>
+    </th>
+    <th class="new <%= date_class %>">
+      <%= link_to "/gw/schedules/new?s_date=#{week_add_day.strftime('%Y%m%d')}&#{link_params}&topdate=#{@topdate}" do %>
+        <%= image_tag '/_common/themes/gw/files/smartphone/other/ic_add.gif', border: '0', alt: '新規作成', title: '新規作成', class: 'menu_new' %>
+      <% end %>
+    </th>
+  </tr>
+  <% @users.each do |user| -%>
+    <% if params[:gid].present? -%>
+      <%= "#{user.name}（#{user.code}）" -%><br />
+    <% end -%>
+    <% schedules = date_schedules.select {|s| s.schedule_users.any? {|su| su.uid == user.id} } %>
+    <% schedules.each do |schedule| %>
+      <% if schedule.is_public_auth?(@is_gw_admin) %>
+        <tr>
+          <td class="scheduleCategory <%= schedule.display_category_class -%> <%= date_class -%>" colspan="2">
+            <%= link_to "#{schedule.display_time_for_mobile(week_add_day)}<br />#{schedule.title}".html_safe, "/gw/schedules/#{schedule.id}/show_one?#{link_params}&topdate=#{@topdate}" -%>
+          </td>
+        </tr>
+      <% else -%>
+        <tr>
+          <td class="category0 <%= date_class -%>" colspan="2">
+            <font style="color: #999999;">[非公開予定]</font>
+          </td>
+        </tr>
+      <% end -%>
+    <% end -%>
+  <% end -%>
+  <% @holidays.each do |holiday| %>
+    <% if holiday.st_at && holiday.st_at.to_date == week_add_day %>
+      <tr>
+        <td class="<%= date_class -%>" colspan="2">
+          <span class="textRed"><%= holiday.title %></span>
+        </td>
+      </tr>
+    <% end -%>
+  <% end -%>
+<% end %>
+</table>
+</div>
+<% else -%>
+表示する項目はありません。
+<% end -%>

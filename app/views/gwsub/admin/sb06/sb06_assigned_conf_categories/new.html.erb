@@ -1,0 +1,18 @@
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<!-- <h2>担当者名等管理</h2> -->
+<%= render 'gwsub/admin/sb06/sb0602_piece_header' %>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%#= render 'gwsub/admin/sb06/sb0602_submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_level3menu_header' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb06/sb06_assigned_conf_categories/display_name' %>
+<% @action = "create" %>
+<%= form_for :item, :url =>url_for({:action => :index}),:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

@@ -1,0 +1,15 @@
+<div class="piece AdminSetting">
+<div class="pieceHeader">
+<h2 class="pieceTitle">全庁幹部在庁表示管理</h2>
+</div><!--pieceHeader-->
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<%= form_tag url_for(action: :create), {method: :post, id: 'itemForm'} do %>
+  <%= unique_error_messages_for @items %>
+  <%= render 'form' %>
+  <div class="submitters"><%= submit_tag '保存' %></div>
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--piece-->

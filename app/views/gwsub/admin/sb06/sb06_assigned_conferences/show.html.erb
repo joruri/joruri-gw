@@ -1,0 +1,61 @@
+<%
+editables_options = {
+  :role=>@u_role,
+  :group_id => Core.user_group.id
+}
+editables = Gwsub::Sb06AssignedConference.editable_data(@item,editables_options)
+managers  = Gwsub::Sb06AssignedConference.managers?(@item,editables_options)
+form_no = @item.c_kind.conf_form_no
+#render_show_str = "/gwsub/admin/sb06/sb06_assigned_conferences/show#{form_no}"
+render_show_str = "/gwsub/admin/sb06/sb06_assigned_conferences/form#{form_no}/show#{form_no}"
+editable_fy = false
+current_fy = Gw::YearFiscalJp.get_record(Date.today)
+unless current_fy.blank?
+  editable_fy = true if current_fy.id == @item.fyear_id
+end
+%>
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<h2>担当者名等管理</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l3' unless (@help && @help=='admin') %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l4' unless @help %>
+</div>
+<div class="pieceBody">
+<div class="noprint">
+<table class="show">
+<tr><th>状況</th><td><%= Gwsub::Sb06AssignedConference.conference_state_show(@item.state) %></td></tr>
+<%= render 'gwsub/admin/sb06/sb0602_admin_group_show', is_manager: managers %>
+</table>
+</div>
+<div class="showMenu">
+<% if @show_mode == "main" and editables==true %>
+<%= link_to_edit    @item.id  if editable_fy == true  -%>
+<%= link_to_destroy @item.id   -%>
+<% end %>
+<% if @show_mode == "main" and managers==true %>
+<%= link_to '下書きに戻す',url_for("#{url_for({:action => :index})}/#{@item.id}/draft_on" )  if @item.state.to_i > 2   if editable_fy == true  -%>
+<%= link_to '確認済にする',url_for("#{url_for({:action => :index})}/#{@item.id}/check_on" )  if @item.state.to_i == 4   if editable_fy == true  -%>
+<%= link_to '確認前に戻す',url_for("#{url_for({:action => :index})}/#{@item.id}/check_off")  if @item.state.to_i == 5   if editable_fy == true  -%>
+<% end %>
+<%= link_to '印刷',url_for("/gwsub/sb06/sb06_assigned_conferences/#{@item.id}/show_print"), :target => "_blank" -%>
+</div>
+<%= render render_show_str %>
+<% if @show_mode == "recognize"%>
+  <% if @item.search_recognized_after(@rec_items) == true and search_recognize_user(@rec_items) == true -%>
+  <div class="showMenu">
+  <%= link_to '承認' ,url_for("#{url_for({:action => :index})}/#{@item.id}/recognized?mode=recognizer") -%>
+  <%= link_to '却下' ,url_for("#{url_for({:action => :index})}/#{@item.id}/rejected?mode=recognizer")  -%>
+  </div>
+  <% end -%>
+<% end -%>
+<div class="noprint">
+<%# 承認状況表示 -%>
+<% options = {  'table_name'=>'gwsub_sb06_recognizers',  :link_to_show=>0 } -%>
+<%= table_to_index2(@item.recognize_all, options).html_safe  unless @item.recognize_all.blank? -%>
+</div>
+</div>
+</div>

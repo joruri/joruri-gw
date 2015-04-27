@@ -1,0 +1,14 @@
+<table class="show">
+  <tr>
+    <th>表示 <%= required %></th>
+    <td><%= f.radio_buttons :state, @item.state_select %></td>
+  </tr>
+  <tr>
+    <th>表示順 <%= required %></th>
+    <td><%= f.text_field :sort_no, :size => 5, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>メッセージ <%= required %></th>
+    <td><%= f.text_area :body, :cols => 100, :rows => 8 %></td>
+  </tr>
+</table>

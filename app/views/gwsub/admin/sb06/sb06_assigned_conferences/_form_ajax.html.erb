@@ -1,0 +1,21 @@
+<script type="text/javascript">
+//<![CDATA[
+jQuery('#item_group_id').on('change', function() { get_manager_name(); });
+  function get_manager_name() {
+    // terminal_id
+    t_id = $("item_group_id").value
+    if (end_cnt == -1) {
+      document.body.style.cursor = 'wait';
+      end_cnt = 0;
+    }
+
+    new Ajax.Request("<%= url_for({:action => :index})%>/manager_name_field?t_id="+t_id, {method:'get', onComplete: function(x){
+      $('item_section_manager_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+//]]>
+</script>

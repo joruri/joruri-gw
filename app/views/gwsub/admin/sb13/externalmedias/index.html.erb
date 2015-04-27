@@ -1,0 +1,18 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>その他の外部記録媒体登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= render 'search' %>
+
+<%= render 'index01' if @t01_current == '01' %>
+<%= render 'index02' if @t01_current == '02' %>
+<%= render 'index03' if @t01_current == '03' %>
+
+<%= paginate @items %>
+
+</div>
+</div>

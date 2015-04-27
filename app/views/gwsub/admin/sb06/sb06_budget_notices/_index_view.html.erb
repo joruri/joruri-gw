@@ -1,0 +1,10 @@
+<%-
+options =  {
+  'table_name'      => 'gwsub_sb06_budget_notices',
+  'link_to_show'    => nz(link_to_show,0)
+}
+%>
+<!-- コード管理 -->
+<%= table_to_index2(@items,options).html_safe %>
+<br/>
+<%= paginate @items %>

@@ -1,0 +1,49 @@
+<%
+limits = Gw.limit_select
+fyears = Gw::YearFiscalJp.select_dd_markjp_id( 'all' , 5)
+if @fyear.to_i==0
+  groups = [['すべて',0]]
+else
+  fyear_base = Gw::YearFiscalJp.find_by_id(@fyear.to_i)
+  if fyear_base.blank?
+    groups = [['すべて',0]]
+  else
+    p_cond  = "level_no=2 "
+    p_cond  << " and sort_no < 90000"  if Core.user.code.size > 3 # ３桁ユーザーには、開発テスト用データも表示
+    p_cond  << " and (start_at <= '#{fyear_base.start_at.strftime('%Y-%m-%d 00:00:00')}' and (end_at is null or end_at >= '#{fyear_base.end_at.strftime('%Y-%m-%d 23:59:59')}') )"
+    p_order = "code"
+    parent_groups = System::GroupHistory.where(p_cond).order(p_order).all
+    groups = [['すべて',0]]
+    parent_groups.each do |g|
+      groups << [g.ou_name , g.id]
+    end
+  end
+end
+-%>
+<%= form_tag '', :method => :get, :class => 'search' do %>
+<%= hidden_field_tag 'pre_fyear_id' , @fyear.to_i %>
+<table>
+  <tr>
+    <td>表示行数</td>
+    <td>年度</td>
+    <td>部局</td>
+    <td>検索（所属名・所属長名）</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><%= select_tag('limit' , options_for_select( limits,@limit.to_i) ) %></td>
+    <td><%= select_tag('fyear_id' , options_for_select( fyears,@fyear.to_i) ) %></td>
+    <td><%= select_tag('p_gid' , options_for_select( groups,@p_gid.to_i) ) %></td>
+    <td><%= text_field_tag "s_keyword", params[:s_keyword] ,:size=>50 %></td>
+    <td></td>
+    <td class="submitters">
+    <%= submit_tag '検索',     :name => :search %>
+    <%= submit_tag 'リセット', :name => :reset  %>
+    </td>
+  </tr>
+</table>
+<% end %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>

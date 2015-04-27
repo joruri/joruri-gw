@@ -1,0 +1,138 @@
+<%
+editlending_flg = false
+
+schedule_props = 
+  if params[:sh] == "sh" && item.schedule_parent_id.present?
+    item.collect_readable_schedule_props
+  else
+    item.readable_schedule_props
+  end
+
+schedule_props.each do |sp|
+  prop_stat = sp.prop_stat
+  case sp.prop_type
+  when 'Gw::PropRentcar'
+    @renlinkflg = true
+    editlending_flg = true if !prop_stat.blank? && prop_stat > 1
+  when 'Gw::PropMeetingroom'
+    @meelinkflg = true
+    editlending_flg = true if prop_stat > 0 && !@is_pm_admin  # 管理者以外の時は、承認後の全編集は不可
+    editlending_flg = true if prop_stat > 1   # 管理者の時は、貸出後の全編集は不可
+  when 'Gw::PropOther'
+    @othlinkflg = true
+  end
+end
+%>
+<% pm_schedule_props = schedule_props.select(&:pm_related?) %>
+<% if pm_schedule_props.present? && params[:sh] != "sh" %>
+  <% pm_schedule_props.each do |sp| %>
+    <%
+    stat = sp.prop_stat.to_i
+    genre = sp.prop.genre_name if sp.prop
+    param = "?ref=show_one&sid=#{item.id}&s_genre=#{genre}&cls=pm"
+    %>
+    <table class="show">
+    <tr><th colspan="4">管財施設予約</th></tr>
+    <% if @is_pm_admin -%>
+      <tr><th>名称</th><td colspan="3"><%= sp.prop.name %></td></tr>
+      <tr><th>施設の状態</th><td colspan="3"><%= sp.prop_stat_s2 %></td></tr>
+      <% if sp.meetingroom_related? -%>
+        <tr>
+          <th>承認</th>
+          <% if stat == 0 %>
+            <td></td>
+            <td></td>
+            <td class="actionButton"><a class="btRecognize" href="/gw/prop_extras/<%=sp.id%>/confirm<%=param%>">承認</a></td>
+          <% elsif stat == 1 %>
+            <td><%=l sp.confirmed_at if sp.confirmed_at %></td>
+            <td><%= sp.confirmed_user.name if sp.confirmed_user %></td>
+            <td class="actionButton"><a class="btRevocationRecognize" href="/gw/prop_extras/<%=sp.id%>/confirm<%=param%>">承認取消</a></td>
+          <% elsif stat > 1 %>
+            <td><%=l sp.confirmed_at if sp.confirmed_at %></td>
+            <td><%= sp.confirmed_user.name if sp.confirmed_user %></td>
+            <td class="actionButton"></td>
+          <% end %>
+        </tr>
+      <% end %>
+      <tr>
+        <th>貸出</th>
+        <% if sp.meetingroom_related? && stat < 1 %>
+          <td></td><td></td><td></td>
+        <% elsif (sp.rentcar_related? && stat == 0) || (sp.meetingroom_related? && stat == 1) %>
+          <td></td>
+          <td></td>
+          <td class="actionButton"><a class="btRent" href="/gw/prop_extras/<%=sp.id%>/rent<%=param%>">貸出</a></td>
+        <% elsif stat == 2 %>
+          <td><%=l sp.rented_at if sp.rented_at %></td>
+          <td><%= sp.rented_user.name if sp.rented_user %></td>
+          <td class="actionButton"><a class="btRevocationRent" href="/gw/prop_extras/<%=sp.id%>/rent<%=param%>">貸出取消</a></td>
+        <% else %>
+          <td><%=l sp.rented_at if sp.rented_at %></td>
+          <td><%= sp.rented_user.name if sp.rented_user %></td>
+          <td class="actionButton"></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>返却</th>
+        <% if stat < 2 || stat >= 900 %>
+          <td></td><td></td><td></td>
+        <% elsif stat == 2 %>
+          <td></td>
+          <td></td>
+          <td class="actionButton"><a class="btReturn" href="/gw/prop_extras/<%=sp.id%>/return<%=param%>">返却</a></td>
+        <% elsif stat == 3 %>
+          <td><%=l sp.returned_at if sp.returned_at %></td>
+          <td><%= sp.returned_user.name if sp.returned_user %></td>
+          <td class="actionButton"><a class="btReturn" href="/gw/prop_extras/<%=sp.id%>/return<%=param%>">実績編集</a></td>
+        <% else %>
+          <%
+          actual_uri = if sp.rentcar_related?
+              "/gw/prop_extra_pm_rentcars/#{sp.prop_extra_pm_rentcar_actual.try(:id)}"
+            elsif sp.meetingroom_related?
+              "/gw/prop_extra_pm_meetingrooms/#{sp.prop_extra_pm_meetingroom_actual.try(:id)}"
+            end
+          %>
+          <td><%=l sp.returned_at if sp.returned_at %></td>
+          <td><%= sp.returned_user.name if sp.returned_user %></td>
+          <td class="actionButton"><a class="btReturn" href="<%=actual_uri%>"><%= stat == 4 ? "集計済" : "請求済" %></a></td>
+        <% end %>
+      </tr>
+    <% end %>
+    <% if (stat == 0 || stat == 1 || stat == 900) &&
+        ((@meelinkflg && (item.schedule_events.blank? || !item.schedule_events.approved_or_opened?) &&
+        item.guide_state.to_i <= 1) || @renlinkflg)
+      # 貸出前（承認前、承認後）で、
+      # さらに会議室予約の時は、行事予定と会議等開催表示で承認がされていない場合、キャンセルとキャンセル取消を許可する
+      cancel_str = stat == 900 ? "キャンセル取消" : "キャンセル"%>
+      <tr>
+        <th>キャンセル</th>
+        <td><%=l sp.cancelled_at if sp.cancelled_at %></td>
+        <td><%= sp.cancelled_user.name if sp.cancelled_user %></td>
+       <td><%= link_to cancel_str, "/gw/prop_extras/#{sp.id}/cancel#{param}", confirm: "#{cancel_str}します。よろしいでしょうか？" %></td>
+     </tr>
+    <% else %>
+      <%
+      reasons = []
+      if @meelinkflg
+        reasons << '広報行事予定の承認' if item.schedule_events && item.schedule_events.approved_or_opened?
+        reasons << '会議等開催表示の承認' if item.guide_state.to_i > 1
+      end
+      cancel_str = 'この予定は、'
+      cancel_str += reasons.join('、') + 'のため、' if reasons.present?
+      cancel_str += 'キャンセルできません。'
+      %>
+      <tr>
+        <th>キャンセル</th>
+        <td colspan="3"><%= Gw.required(cancel_str) %></td>
+      </tr>
+    <% end %>
+    <% if sp.rentcar_related? && sp.prop_extra_pm_rentcar_actual && params[:sh] != "sh" %>
+      <%= render '/gw/admin/schedule_props/actual_table', actual: sp.prop_extra_pm_rentcar_actual %>
+    <% end %>
+    </table>
+  <% end %>
+<% end %>
+
+<% if (@renlinkflg || @meelinkflg) && @is_pm_admin && params[:sh] != "sh" %>
+  <%= render 'prop_table', item: item %>
+<% end %>

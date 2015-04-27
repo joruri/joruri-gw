@@ -1,0 +1,9 @@
+<% if @is_gw_admin %>
+<%= form_tag url_for(action: :index), method: :get, class: 'search' do %>
+  <div class="indication">検索
+  <%= text_field_tag :keyword, params[:keyword], class: 'name', size: 20, maxlength: 20 %>
+  <%= submit_tag '検索', name: :search %>
+  <%= submit_tag 'リセット', name: :reset %>
+  </div>
+<% end %>
+<% end %>

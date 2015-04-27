@@ -1,0 +1,19 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04sections/display_name' %>
+<div class="showMenu">
+<%= link_to '詳細' ,"/gwsub/sb04/04/sb04sections/#{@item.id}?#{@qs}" %>
+</div>
+</div>
+<div class="pieceBody">
+<br/>
+<% @edit_path = "/gwsub/sb04/04/sb04sections/#{@item.id}?#{@qs}" %>
+<% @action = "edit" %>
+<%= form_for :item, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+</div>
+</div>

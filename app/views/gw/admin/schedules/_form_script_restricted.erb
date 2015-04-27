@@ -1,0 +1,656 @@
+<script type="text/javascript">
+//<![CDATA[
+function showItem(id){
+  var elementItem = $(id);
+  if (elementItem){
+    Element.show(id);
+  }
+}
+function hideItem(id){
+  var elementItem = $(id);
+  if (elementItem){
+    Element.hide(id);
+  }
+}
+
+var one_h_check = function() {
+  mode = $('init_repeat_mode').value;
+  switch (mode) {
+  case "2":
+    st_4i = $('item_repeat_st_time_at_4i').value;
+    st_4i-=0;
+    ed_4i = $('item_repeat_ed_time_at_4i').value;
+    ed_4i-=0;
+    st_5i = $('item_repeat_st_time_at_5i').value;
+    ed_5i = $('item_repeat_ed_time_at_5i').value;
+    flg = st_4i + 1 == ed_4i && st_5i == ed_5i
+
+    break;
+  default:
+    st_date = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+    ed_date = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+    st_4i = $('item_st_at_4i').value;
+    st_4i-=0;
+    ed_4i = $('item_ed_at_4i').value;
+    ed_4i-=0;
+    st_5i = $('item_st_at_5i').value;
+    ed_5i = $('item_ed_at_5i').value;
+    flg = st_4i + 1 == ed_4i && st_5i == ed_5i
+    break;
+  }
+  if (st_4i + 1 == ed_4i && st_5i == ed_5i) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var load_at_set = function() {
+  st_at_day = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+  st_at_time = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+  $('item_st_at').value = st_at_day + ' ' + st_at_time;
+  ed_at_day = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  ed_at_time = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  $('item_ed_at').value = ed_at_day + ' ' + ed_at_time;
+
+};
+
+var repeat_at_set = function() {
+};
+
+var switchRepeatClass = function() {
+};
+var switchRepeat = function(s) {
+  switch (mode_new) {
+  case 2:
+    // セレクトボックス設定
+    sty = $('item_ed_at_1i').value;
+    stm = $('item_ed_at_2i').value;
+    std = $('item_ed_at_3i').value;
+    sty-=0;
+    stm-=0;
+    std-=0;
+    sty = sty - <%= Date.today.year - 5 -%>;
+    stm = stm - 1;
+    std = std - 1;
+    sta = $('item_ed_at_4i').value;
+    sta-=0;
+    $('item_repeat_ed_time_at_4i').selectedIndex = sta;
+
+    var stb;
+    stb = $('item_ed_at_5i').value;
+    $('item_repeat_ed_time_at_5i').value = stb;
+    stb-=0;
+
+    var stb1;
+    stb1 = $('item_st_at_5i').value;
+    $('item_repeat_st_time_at_5i').value = stb1;
+    stb1-=0;
+
+    var stb2;
+    stb2 = $('item_ed_at_5i').value;
+    stb2-=0;
+
+    break;
+  default:
+
+    if (form_kind_id != 2) {
+
+    }
+    if ($('item_ed_at_1i').disabled == false ){
+
+    }
+  }
+};
+
+var event_week_onclick = function() {
+
+};
+
+var event_month_onclick = function() {
+
+};
+
+var guide_state_onclick = function(action) {
+
+  guide_state = $('item_guide_state');
+};
+
+var guide_place_set_true_or_false = function() {
+
+};
+
+var guide_place_get_props_add_buf_meetingroom_id = function() {
+
+  props = $('item_schedule_props_add_buf');
+  prop_id = '-1';
+  for (var i = 0; i < props.length; i = i + 1) {
+    if (props.options[i].title == "meetingroom" && prop_id == '-1') {
+      prop_id = props.options[i].value;
+    }
+  }
+  return prop_id;
+};
+
+var repeat_cancel = function() {
+
+};
+
+var allday_checkbox_select_disabled = function() {
+
+};
+
+var allday_check = function(obj) {
+
+};
+var repeat_allday_check = function(obj) {
+
+};
+
+var allday_radio_click = function() {
+
+};
+
+var repeat_allday_radio_click = function() {
+
+};
+
+var item_allday_radio_true_false = function(flg) {
+
+};
+
+var allday_check_true_false = function(flg) {
+
+};
+var item_repeat_time_disabled = function(flg) {
+  $('item_repeat_st_time_at_4i').disabled = flg;
+  $('item_repeat_st_time_at_5i').disabled = flg;
+  $('item_repeat_ed_time_at_4i').disabled = flg;
+  $('item_repeat_ed_time_at_5i').disabled = flg;
+};
+var item_time_disabled = function(flg) {
+  $('item_st_at_4i').disabled = flg;
+  $('item_st_at_5i').disabled = flg;
+  $('item_ed_at_4i').disabled = flg;
+  $('item_ed_at_5i').disabled = flg;
+};
+
+
+var item_st_at_all_disabled = function(flg) {
+  $('item_st_at_1i').disabled = flg;
+  $('item_st_at_2i').disabled = flg;
+  $('item_st_at_3i').disabled = flg;
+  $('item_st_at_4i').disabled = flg;
+  $('item_st_at_5i').disabled = flg;
+};
+var item_st_at_day_disabled = function(flg) {
+  $('item_st_at_1i').disabled = flg;
+  $('item_st_at_2i').disabled = flg;
+  $('item_st_at_3i').disabled = flg;
+};
+var item_st_at_time_disabled = function(flg) {
+  $('item_st_at_4i').disabled = flg;
+  $('item_st_at_5i').disabled = flg;
+};
+var item_ed_at_all_disabled = function(flg) {
+  $('item_ed_at_1i').disabled = flg;
+  $('item_ed_at_2i').disabled = flg;
+  $('item_ed_at_3i').disabled = flg;
+  $('item_ed_at_4i').disabled = flg;
+  $('item_ed_at_5i').disabled = flg;
+};
+var item_ed_at_day_disabled = function(flg) {
+  $('item_ed_at_1i').disabled = flg;
+  $('item_ed_at_2i').disabled = flg;
+  $('item_ed_at_3i').disabled = flg;
+};
+var item_ed_at_time_disabled = function(flg) {
+  $('item_ed_at_4i').disabled = flg;
+  $('item_ed_at_5i').disabled = flg;
+};
+
+var item_schedule_users_child_gid_true_false = function() {
+
+  var item = $('item_schedule_users_user_type_id');
+  var item_child_gid = $('item_schedule_users_child_gid');
+  if (item.options[item.selectedIndex].value == "all_group") {
+  }
+};
+
+var ed_at_123_true_false = function(flg) {
+  $('item_ed_at_1i').disabled = flg;
+  $('item_ed_at_2i').disabled = flg;
+  $('item_ed_at_3i').disabled = flg;
+};
+
+var st_at_ed_at_equal = function() {
+  ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value
+  hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  $('item_ed_at').value = ymd + ' ' + hn;
+  $('item_ed_at_1i').selectedIndex = $('item_st_at_1i').selectedIndex;
+  $('item_ed_at_2i').selectedIndex = $('item_st_at_2i').selectedIndex;
+  $('item_ed_at_3i').selectedIndex = $('item_st_at_3i').selectedIndex;
+};
+
+var form_kind_id_switch = function() {
+
+  idx = radio_selected('item[form_kind_id]');
+  repeat_mode = $('init_repeat_mode').value;
+
+  if (idx == 1) { // 設備予約
+    Element.show($('prop_items_table'));
+    is_title_category_show_hide(idx);
+    end_at_title_change(idx);
+    <% if %w(quote edit update).index(params[:action]).nil? %>
+    <% end %>
+    <% if %w(new create).index(params[:action]).present? && @firstaction != 'quote' %>
+    <% end %>
+    props_flg = props_item_selected();
+    institution_flg = institution_item_selected();
+    props_min_selectbox_change(props_flg);
+    props_item_change(institution_flg);
+
+    if ($('init_repeat_mode').value == '1') {
+
+    }
+    $('participant_title').innerHTML = '参加者';
+    $('title_title').innerHTML = '件名（用務名等）';
+    item_st_at_day_disabled(false); // 開始日時の復活
+    item_ed_at_day_disabled(false); // 終了日時の復活
+    guide_state_onclick("load");
+
+    if (repeat_mode == "1") {
+    }
+  } else if (idx == 0) { // 通常予約
+    props_min_selectbox_change(false);
+    props_item_change(false);
+    if ($('init_repeat_mode').value == '1') {
+    }
+    is_title_category_show_hide(idx);
+    end_at_title_change(idx);
+    <% if %w(quote edit update).index(params[:action]).nil? %>
+
+    <% end %>
+    $('participant_title').innerHTML = '参加者';
+    $('title_title').innerHTML = '件名（用務名等）';
+    item_st_at_day_disabled(false); // 開始日時の復活
+    item_ed_at_day_disabled(false); // 終了日時の復活
+    if (repeat_mode == "1") {
+    }
+  }  else if (idx == 2) { // Todo
+    props_min_selectbox_change(false);
+    props_item_change(false);
+  }
+
+};
+
+var todo_st_at_select_radio_click = function() {
+};
+
+var todo_ed_at_select_radio_click = function() {
+};
+
+var todo_repeat_time_select_radio_click = function() {
+
+};
+
+var todo_st_at_select_load = function() {
+
+};
+
+var todo_at_show_hide = function() {
+
+};
+
+var prop_status_item_table_show_hide = function() {
+
+};
+
+var prop_status_guide_table_show_hide = function() {
+
+};
+
+var event_table_show_hide = function() {
+
+};
+
+var owner_table_show_hide = function() {
+
+};
+
+var props_item_selected = function() {
+    //return props_flg;
+};
+
+var props_rentcar_selected = function() {
+    //return props_flg;
+};
+
+var props_meetingroom_selected = function() {
+
+  props_flg = false;
+  props = $('item_schedule_props_add_buf');
+  institution_flg = institution_item_selected();
+  if ( institution_flg ) {
+    for (var i = 0; i < props.length; i = i + 1) {
+      if (props.options[i].title == "meetingroom") {
+        props_flg = true;
+      }
+    }
+  }
+    return props_flg;
+}
+
+var institution_item_selected = function() {
+
+  props = $('item_schedule_props_add_buf');
+  if ( props.length > 0 ) {
+    institution_flg = true;
+  } else {
+    institution_flg = false;
+  }
+  return institution_flg;
+};
+
+var form_kind_id_0_or_1 = function(flg) {
+
+};
+
+
+var schedule_search_blanks_open = function() {
+
+};
+var schedule_search_blanks_button_show = function(flg) {
+};
+var add_participant = function() {
+  add_list('item_schedule_users_uid', 'item_schedule_users_add_buf');
+};
+var del_participant = function() {
+  del_list('item_schedule_users_add_buf');
+};
+var set_owner = function() {
+  var fr = $('item_schedule_users_uid');
+  var idxs = select_options_selected_indexes(fr);
+  $('item_owner_uid').value = fr[idxs[0]].value;
+  $('item_owner_udisplayname').value = fr[idxs[0]].innerHTML;
+};
+var add_prop = function() {
+
+};
+var del_prop = function() {
+
+};
+var add_list = function(fr_id, to_id) {
+  var fr = $(fr_id);
+  var idxs = select_options_selected_indexes(fr);
+  var to = $(to_id);
+  for (var i = 0; i < idxs.length; i++) {
+    select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  }
+
+};
+var del_list = function(fr_id) {
+  var fr = $(fr_id);
+  var vals = select_options_selected_values(fr);
+  for (var i = 0; i < vals.length; i++){
+    select_options_delete(fr, vals[i]);
+  }
+
+};
+
+var add_public_group = function() {
+
+};
+var del_public_group = function() {
+
+};
+
+var update_public_group_cand = function () {
+
+};
+
+var props_item_change = function(flg) {
+
+  if (flg) {
+
+    ed_at_123_true_false(true);
+    st_at_ed_at_equal();
+
+  } else {
+
+  }
+
+};
+
+var props_min_selectbox_change = function(flg) {
+  var items = new Array(4);
+  var item;
+  for(cnt = 0; cnt < 4; cnt++){
+
+    if (cnt == 0) {
+      item = $('item_st_at_5i');
+    }
+    else if (cnt == 1) {
+      item = $('item_ed_at_5i');
+    }
+    else if (cnt == 2) {
+      item = $('item_repeat_st_time_at_5i');
+    }
+    else if (cnt == 3) {
+      item = $('item_repeat_ed_time_at_5i');
+    }
+    options_cnt = 0;
+    v = item.value;
+    if (flg) {
+      for (var i=0; i <= 55; i = i+30){
+        $(item).length = 2
+        $(item).options[options_cnt].value = i;
+        $(item).options[options_cnt].text = i;
+        options_cnt++;
+      }
+
+      if ( v <= 15 || v >= 45 ) {
+        v = 0;
+      } else {
+        v = 30;
+      }
+    } else {
+
+      for (var i=0; i <= 55; i = i+5){
+        $(item).length = 12;
+        $(item).options[options_cnt].value = i;
+        $(item).options[options_cnt].text = i;
+        options_cnt++;
+      }
+      prop_status_guide_table_show_hide();
+
+    }
+    $(item).value = v;
+  }
+  load_at_set();
+
+};
+
+var my_load_core = function(mode) {
+  if (mode == 'user') {
+    var u = $('init_schedule_users_json');
+    var to = $('item_schedule_users_add_buf');
+  } else {
+    var u = $('init_schedule_props_json');
+    var to = $('item_schedule_props_add_buf');
+  }
+  if ( u != undefined && u.value != '') {
+    var users = eval(u.value);
+    for (var i = 0; i < users.length; i++) {
+      select_options_push(to, users[i][1], users[i][2], users[i][0]);
+    }
+  }
+  if (mode == 'user') {
+    if (to.options.length == 0) {
+
+    }
+  }
+  if (mode == 'prop') {
+    if (to.options.length == 0 && $('init_prop_id').value != '' && $('init_prop_cls').value != "other") {
+      select_options_push(to, $('init_prop_id').value, $('init_prop_name').value, $('init_prop_cls').value);
+    }
+    if (to.options.length == 0 && $('init_prop_id').value != '' && $('init_prop_cls').value == 'other') {
+      select_options_push(to, $('init_prop_id').value, "(" + $('init_prop_gcode').value + ")" + $('init_prop_name').value, $('init_prop_cls').value);
+
+    }
+  }
+};
+
+var load_cand_public_groups = function () {
+
+};
+
+var is_public_click = function () {
+  idx = radio_selected('item[is_public]');
+  kind_id = radio_selected('item[form_kind_id]');
+  props_flg = props_item_selected();
+  if (idx == 1 && (kind_id == 0 || props_flg == false)) {
+    showItem($('public_groups_table'));
+  } else {
+    hideItem($('public_groups_table'));
+  }
+};
+
+var repeat_start_time_show_hide = function (idx) {
+
+};
+
+var is_title_category_show_hide = function (idx) {
+
+};
+
+var is_public_select = function (idx) {
+
+};
+
+var end_at_title_change = function (idx) {
+
+  if (idx == 2) {
+
+  } else {
+    $('end_at_title').innerHTML = '終了日時';
+    Element.show($('end_at_message'));
+  }
+};
+
+var update_user_cand = function () {
+
+  var notice = $('notice_ajax_prop');
+  notice.update('');
+  mode = $('init_repeat_mode').value;
+  switch (mode) {
+  default:
+    var st_at = dbdate_to_format_date($('item_st_at').value, 'yyyy-MM-dd HH:mm');
+    var ed_at = dbdate_to_format_date($('item_ed_at').value, 'yyyy-MM-dd HH:mm');
+    var ed_at_to = ed_at;
+    break;
+  }
+  genre_str   = '<%= @genre.blank? ? "s_genre=other" : "s_genre=#{@genre}" %>' ;
+  type_id_str = '<%= @prop_type.blank? ? '' : "type_id=#{@prop_type.id}'" %>' ;
+  params_a = [genre_str , type_id_str , 'st_at=' + st_at , 'ed_at=' + ed_at, 'time_serial=' + time_serial()];
+  url = '/gw/schedule_users/getajax_restricted.json?' + params_a.join('&');
+  if (st_at >= ed_at_to) {
+    notice.update('終了日時は、開始日時より後の日時を入力してください。');
+    return;
+  }
+  var to = $('item_schedule_users_uid');
+
+  to.options.length = 0;
+  ajax_request(url, function( ){
+    if (xha['errors'] != undefined) {
+      notice.update(xha['errors']);
+    } else {
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[0], xh[1]);
+        to.options[i].title = 1;
+      }
+    }
+  });
+};
+var update_child_gid_cand = function () {
+};
+var update_user_select_options = function (fr) {
+};
+
+var update_prop_cand = function () {
+  var notice = $('notice_ajax_prop');
+  notice.update('');
+
+  mode = $('init_repeat_mode').value;
+  switch (mode) {
+  default:
+    var st_at = dbdate_to_format_date($('item_st_at').value, 'yyyy-MM-dd HH:mm');
+    var ed_at = dbdate_to_format_date($('item_ed_at').value, 'yyyy-MM-dd HH:mm');
+    var ed_at_to = ed_at;
+    break;
+  }
+  if (st_at >= ed_at_to) {
+    notice.update('終了日時は、開始日時より後の日時を入力してください。');
+    return;
+  }
+};
+
+var check_user_occupation = function() {
+  var fr = $('item_schedule_users_uid');
+  var idxs = select_options_selected_elems(fr);
+  st_at = encodeURI(rails_datetime_select_to_datetime_string('item_st_at'));
+  ed_at = encodeURI(rails_datetime_select_to_datetime_string('item_ed_at'));
+  if (st_at == '') { alert('開始日時を指定してください'); return; };
+  if (ed_at == '') { alert('終了日時を指定してください'); return; };
+
+  for (var i = 0; i < 1; i++) {
+    var genre = idxs[i].title;
+    var user_id = idxs[i].value;
+    url = '/gw/schedule_users/getajax_restricted.json?genre=' + genre + '&user_id=' + user_id + '&st_at=' + st_at + '&ed_at=' + ed_at + '&' + time_serial();
+    ajax_request(url, function(r){
+      var length = xha[0];
+      var items = xha[1];
+      if (length == 0) {
+        alert('空きがあります');
+      } else {
+        ret = "以下の予定が入っています";
+        for (var j=0; j<items.length; j++) {
+          ret += "\n" + items[j];
+        }
+        alert(ret);
+      }
+    });
+  }
+};
+
+  var check_prop_occupation = function() {
+  var fr = $('item_schedule_props_prop_id');
+  var idxs = select_options_selected_elems(fr);
+  st_at = encodeURI(rails_datetime_select_to_datetime_string('item_st_at'));
+  ed_at = encodeURI(rails_datetime_select_to_datetime_string('item_ed_at'));
+  if (st_at == '') { alert('開始日時を指定してください'); return; };
+  if (ed_at == '') { alert('終了日時を指定してください'); return; };
+  //for (var i = 0; i < idxs.length; i++) {
+  for (var i = 0; i < 1; i++) {
+    var genre = idxs[i].title;
+    var prop_id = idxs[i].value;
+    url = '/gw/schedule_props/check_occupation.json?genre=' + genre + '&prop_id=' + prop_id + '&st_at=' + st_at + '&ed_at=' + ed_at + '&' + time_serial();
+    ajax_request(url, function(r){
+      var length = xha[0];
+      var items = xha[1];
+      if (length == 0) {
+        alert('空きがあります');
+      } else {
+        ret = "以下の予定が入っています";
+        for (var j=0; j<items.length; j++) {
+          ret += "\n" + items[j];
+        }
+        alert(ret);
+      }
+    });
+  }
+};
+
+//]]>
+</script>

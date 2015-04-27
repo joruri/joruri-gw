@@ -1,0 +1,21 @@
+<%#
+@cabinet_title は、Doclibrary::Public::GroupFoldersController で初期化しています。
+%>
+<div class="piece docLibrary">
+<div class="pieceHeader">
+<h2><%= @cabinet_title %></h2>
+</div>
+<div class="pieceBody">
+<%= render 'folder_name' %>
+
+<%= form_for :item, :url => @item.update_path, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+
+  <%= f.error_messages %>
+
+  <%= render 'form', f: f %>
+
+  <%= submit_for(f,{:caption=>"編集する"}) %>
+
+<% end %>
+</div>
+</div>

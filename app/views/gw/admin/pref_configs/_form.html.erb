@@ -1,0 +1,8 @@
+<%= required_head %>
+<%= hidden_field_tag :mode, params[:mode] %>
+<table class="show">
+  <tr>
+    <th>表示文言<%= required('※') %></th>
+    <td><%= f.text_area :options, :cols => 100, :rows => 5 %></td>
+  </tr>
+</table>

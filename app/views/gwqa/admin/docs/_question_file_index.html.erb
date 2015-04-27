@@ -1,0 +1,6 @@
+<% if @title.content_id == 9 %>
+<!--用地保証Q&Aのみcontent_id == 9を設定-->
+  <%= render '/gwboard/admin/docs/library_index', files: @item.files unless @title.use_old_upload_system? %>
+<% else %>
+  <%= render '/gwboard/admin/docs/upload_index', files: @item.files if @title.use_old_upload_system? %>
+<% end %>

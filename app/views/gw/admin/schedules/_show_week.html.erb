@@ -1,0 +1,66 @@
+<%
+@format ||= @schedule_settings["#{@view}_view_dayhead_format"]
+@header_each ||= @schedule_settings[:header_each].to_i
+show_week_header = render '/gw/admin/schedules/show_week_header'
+%>
+<div class="piece schedulePiece weekview">
+<div class="pieceHeader">
+  <%= render '/gw/admin/schedules/piece_header', piece_head_title: @piece_head_title -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedules/schedule_header', d: @st_date, mode: 'week', show_flg: @show_flg -%>
+</div>
+
+<div class="pieceBodyBody">
+<% if @show_flg %>
+<table class="scheduleTable">
+  <tbody>
+    <% @users.each_with_index do |user, iuser| %>
+      <%= show_week_header if iuser == 0 || @header_each != 0 && iuser % @header_each == 0 -%>
+      <%
+      cg_user = params[:cgid].present? ? user.users_custom_groups.first : nil
+      user_schedules = @schedules.select {|s| s.schedule_users.any?{|su| su.uid == user.id} }
+      %>
+      <tr class="scheduleTableBody lineNo1">
+        <th class="scheduleUser">
+          <div class="leftHeader <%= "userIcon#{cg_user.icon}" if cg_user %>">
+            <% if cg_user.present? %>
+            <div class="title"><%= cg_user.title %></div>
+            <% end %>
+            <div class="username">
+              <span><%= user.name_and_code -%></span>
+              <% if @link_box %>
+              <span class="linkBox">
+                <a href="/gw/schedules/<%= @calendar_first_day.strftime("%Y%m%d") -%>?uid=<%= user.id -%>" class="dayLink">日表示</a>
+                <a href="/gw/schedules/show_month?s_date=<%= @calendar_first_day.strftime("%Y%m01") -%>&uid=<%= user.id -%>" class="monthLink">月表示</a>
+                <a href="/gw/schedule_lists/?uid=<%= user.id -%>&s_year=<%= @calendar_first_day.year -%>&s_month=<%= @calendar_first_day.month -%>" class="listsLink">一覧</a>
+              </span>
+              <% end %>
+            </div>
+          </div>
+        </th>
+        <% 7.times do |i| %>
+          <%
+          week_add_day = @calendar_first_day + i
+          schedules = user_schedules.select {|s| s.date_between?(week_add_day) }
+          %>
+          <td class="<%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
+            <%= render '/gw/admin/schedules/show_week_one', schedules: schedules, week_add_day: week_add_day, display_prop: nil if schedules.present? %>
+            <%= show_schedule_edit_icon(week_add_day, uid: user.id) if @edit -%>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    <%= show_week_header if @users.length > 1 -%>
+  </tbody>
+</table>
+<% else -%>
+  <%= show_notice -%>
+<% end %>
+</div>
+<div class="pieceBodyFooter">
+  <%= render '/gw/admin/schedules/schedule_footer', d: @st_date, mode: 'week', show_flg: @show_flg -%>
+</div>
+</div>
+</div>

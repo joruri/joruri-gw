@@ -1,0 +1,23 @@
+<%
+dislapy_view = Gw::PrefConfig.where(state: 'enabled', option_type: 'directors2', name: 'admin').exists?
+-%>
+<div class="menu">
+<%= link_to gw_pref_director_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'index' %>">一覧</span>
+<% end %>
+<%= link_to csvput_gw_pref_director_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvput' %>">CSV出力</span>
+<% end %>
+<%= link_to csvup_gw_pref_director_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvup' %>">CSV登録</span>
+<% end %>
+<%= link_to temp_pickup_gw_pref_director_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'temp_pickup' %>">対象者一括抽出</span>
+<% end if dislapy_view %>
+<%= link_to temp_index_gw_pref_director_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'temp_index' %>">仮一覧</span>
+<% end if dislapy_view %>
+<%= link_to temp_csv_gw_pref_director_admins_path, g_cat: nil do %>
+  <span class="<%= 'current_menu' if action_name == 'temp_csv' %>">仮一覧CSV出力</span>
+<% end if dislapy_view %>
+</div>

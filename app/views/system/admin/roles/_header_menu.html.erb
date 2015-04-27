@@ -1,0 +1,19 @@
+<% if @is_dev %>
+<div class="menu">
+<%= link_to system_roles_path do -%>
+  <span class="<%= 'current_menu' if params[:controller] =~ /roles/ %>">管理者権限設定</span>
+<%- end -%>
+<%= link_to system_role_names_path do -%>
+  <span class="<%= 'current_menu' if params[:controller] =~ /role_names/ %>">機能名設定</span>
+<%- end -%>
+<%= link_to system_priv_names_path do -%>
+  <span class="<%= 'current_menu' if params[:controller] =~ /priv_names/ %>">対象権限追加</span>
+<%- end -%>
+<%= link_to system_role_name_privs_path do -%>
+  <span class="<%= 'current_menu' if params[:controller] =~ /role_name_privs/ %>">機能権限設定</span>
+<%- end -%>
+<%= link_to system_role_developers_path do -%>
+  <span class="<%= 'current_menu' if params[:controller] =~ /role_developers/ %>">開発者権限設定</span>
+<%- end -%>
+</div>
+<% end %>

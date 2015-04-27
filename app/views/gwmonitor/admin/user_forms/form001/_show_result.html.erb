@@ -1,0 +1,45 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+<%= render 'gwmonitor/admin/menus/title_info', skip_action_menu: true %>
+
+<div class="editingBox">
+<span class="btEdit"><%= link_to '編集', @item.result_edit_path %></span>
+</div>
+
+<%= render 'board_config' %>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%=raw @item.status_name_show %></td>
+  </tr>
+  <tr>
+    <th>受信所属</th>
+    <td><%= "#{@item.target_user_name}#{@item.target_user_code}" %></td>
+  </tr>
+  <tr>
+    <th>回答者</th>
+    <td><%= @item.editor %></td>
+  </tr>
+  <tr>
+    <th>回答欄</th>
+    <td><%= @item.body %></td>
+  </tr>
+  <tr>
+    <th>最終更新日時</th>
+    <td><%= @item.display_editdate %></td>
+  </tr>
+</table>
+
+<%= render '/gwmonitor/admin/menus/results/library_index', files: @item.files %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', "#{@title.monitor_path}#{@item.already_state}" %>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,113 @@
+#contentHeader {
+  display: none;
+}
+
+.maintenances, .messages {
+  float: left;
+  width: 447px;
+  margin: 0px 10px 15px 0px;
+  border: 1px solid #aaa;
+}
+.maintenances p, .messages p {
+  padding: 3px 5px;
+  border-bottom: 1px solid #aaa;
+  background-color: #ffc;
+}
+.maintenances ul, .messages ul {
+  padding: 5px;
+  list-style-type: disc;
+}
+.maintenances li, .messages li {
+  margin: 2px 0px 2px 20px;
+  padding: 0px 0px 0px 0px;
+}
+
+#self .box {
+  position: relative;
+  float: left;
+  width: 140px;
+  height: 150px;
+  margin: 0px 10px 10px 0px;
+  border: 1px solid #aaa;
+  border-width: 1px 2px 2px 1px;
+}
+#self .box h3 {
+  padding: 5px 5px;
+  border-bottom: 1px solid #aaa;
+  background-color: #eee;
+  color: #000;
+  font-size: 90%;
+  font-weight: lighter;
+  text-align: center;
+}
+#self .box h3.willDelete {
+  background-color: #ecc;
+}
+#self .box h3.menued {
+  background-color: #cce;
+}
+#self .box h4 {
+  position: absolute;
+  bottom: 0px;
+  width: 98%;
+  color: #6a5;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: verdana;
+  text-align: right;
+}
+#self .box .menu {
+  margin: 3px 3px;
+  padding: 0px 3px;
+  b_ackground-image: url(/_common/themes/admin/images/box_back.gif);
+  line-height: 23px;
+}
+#self .box .menu a {
+  display: block;
+  text-indent: 2px;
+  width: 100%;
+  border-bottom: 1px dashed #bbb;
+  text-decoration: none;
+}
+#self .box .menu a:hover {
+  border-bottom: 1px dashed #f4c;
+}
+
+#self .clearfix {
+  clear: both;
+  height: 1px;
+  font-size: 1px;
+  line-height: 1px;
+}
+
+#self .calendar {
+  margin: 5px 0px 0px 6px;
+}
+#self .calendar .wday,
+#self .calendar .day {
+  display: inline-block;
+  width: 15px;
+  margin: 2px 0px;
+  font-size: 10px;
+  font-family: verndana;
+  text-align: center;
+}
+#self .calendar .wday {
+}
+#self .calendar .sun {
+  color: #d00;
+}
+#self .calendar .sat {
+  color: #00b;
+}
+#self .calendar .holiday {
+  color: #d00;
+}
+#self .calendar .prevMonth ,
+#self .calendar .nextMonth {
+  visibility: hidden;
+}
+
+.accesskey {
+  text-decoration:underline;
+}

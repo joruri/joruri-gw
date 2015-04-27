@@ -1,0 +1,20 @@
+<%= required_head %>
+<br />
+  <table class="show">
+    <tr>
+      <th>種別</th>
+      <td><%= @item.get_name -%></td>
+    </tr>
+    <tr>
+      <th>URL</th>
+      <td><%= f.text_field(:data, :class=>'data', :size=>"80") -%></td>
+    </tr>
+    <tr>
+      <th>更新日時</th>
+      <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+    </tr>
+  </table>
+
+  <div class="preserve">
+    <%= f.submit '保存' -%>
+  </div>

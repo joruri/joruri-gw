@@ -1,0 +1,35 @@
+<%
+t01 = %Q(<span>依頼登録</span>)
+t02 = %Q(<span>希望日順</span>)
+t03 = %Q(<span>依頼日順</span>)
+t04 = %Q(<span>未処理</span>)
+t05 = %Q(<span>未確認</span>)
+t06 = %Q(<span>CSV出力</span>)
+t07 = %Q(<span>CSV登録</span>)
+case @l2_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">依頼登録</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">希望日順</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">依頼日順</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">未処理</span>)
+when '05'
+  t05 = %Q(<span class="gwsub_current_menu">未確認</span>)
+when '06'
+  t06 = %Q(<span class="gwsub_current_menu">CSV出力</span>)
+when '07'
+  t07 = %Q(<span class="gwsub_current_menu">CSV登録</span>)
+else
+end
+%>
+<%= render 'gwsub/admin/sb05/sb05_function_menu' -%>
+<div class="menu">
+<!-- <p>依頼状況</p> -->
+<%= link_to t01.html_safe , url_for("#{@index_uri}new") -%>
+<%= link_to t02.html_safe , @index_uri  -%>
+<%= link_to t03.html_safe , url_for("#{@index_uri}index_created_dates" ) -%>
+<%= link_to t04.html_safe , url_for("#{@index_uri}index_before_publish" )  if @u_role==true -%>
+<%= link_to t05.html_safe , url_for("#{@index_uri}index_before_confirm" )  if @u_role==true -%>
+</div>

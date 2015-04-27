@@ -1,0 +1,59 @@
+<%# 特定機能の管理者・編集者用 切替タブ %>
+
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+case params[:c2].to_s
+when '1'
+  str_tab1_class = 'tab current'
+when '6'
+  str_tab2_class = 'tab current'
+when '5'
+  str_tab3_class = 'tab current'
+else
+  str_tab1_class = 'tab current'
+end
+%>
+<%
+role_pattern = [@portal_editor, @role_board2, @base_editor]
+#[0] portal(ポータル)
+#[1] board(掲示板等設定)
+#[2] base(基本設定)
+tabs = []
+role_pattern.each_with_index do |role, index|
+  unless role.nil?
+    tabs << index
+  end
+end
+number_of_tabs = tabs.size
+space_left = true
+%>
+
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+  <tr>
+  <% tabs.each_with_index do |value, index| %>
+    <% if space_left %>
+      <td class="spaceLeft"></td>
+      <% space_left = false %>
+    <% end %>
+    <% case value
+       when 0 %>
+         <td class="<%=str_tab1_class%>"><%=link_to "ポータル", gw_config_settings_path(:c1=>1,:c2=>1) %></td>
+    <% when 1 %>
+        <td class="<%=str_tab2_class%>"><%=link_to "掲示板等設定",gw_config_settings_path(:c1=>1,:c2=>6) %></td>
+    <% when 2 %>
+        <td class="<%=str_tab3_class%>"><%=link_to "基本設定", gw_config_settings_path(:c1=>1,:c2=>5) %></td>
+    <% end %>
+    <% unless number_of_tabs == index + 1 %>
+      <td class="spaceCenter"></td>
+    <% end %>
+  <% end %>
+  <td class="spaceRight"></td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<!--tabBox-->

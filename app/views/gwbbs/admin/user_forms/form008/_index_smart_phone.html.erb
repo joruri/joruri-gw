@@ -1,0 +1,10 @@
+<table class="index">
+<% @items.each do |item| %>
+  <tr class="article">
+    <td class="leftLine docTitle"><%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+  </tr>
+  <tr>
+    <td class="group leftLine"><span><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></span></td>
+  </tr>
+<% end %>
+</table>

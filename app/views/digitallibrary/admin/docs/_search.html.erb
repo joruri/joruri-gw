@@ -1,0 +1,21 @@
+<div class="pieceBodyHeader">
+<%= render '/digitallibrary/admin/docs/sort' %>
+<div class="search">
+<%= form_tag digitallibrary_docs_path({:title_id=>@title.id}), :method => :get, :class => 'search' do %>
+<table class="bbsSearch">
+  <tbody>
+  <tr>
+  <th>キーワード</th>
+  <td><%= text_field_tag 'kwd', params[:kwd], :style => 'width: 250px;' %></td>
+  <td class="submitters">
+    <%= submit_tag '検索',     :name => :search %>
+    <%= submit_tag 'リセット', :name => :reset %>
+  </td>
+  </tr>
+  </tbody>
+</table>
+<input type="hidden" name="state" value='<%= params[:state] %>' />
+<input type="hidden" name="title_id" value='<%= params[:title_id] %>' />
+<!-- end .search --><% end %>
+</div><!--bbsSearch-->
+</div><!--pieceBodyHeader-->

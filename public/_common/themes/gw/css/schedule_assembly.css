@@ -1,0 +1,1781 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/schedule.css
+========================================================= */
+/* .schedulePiece
+--------------------------------------*/
+*:first-child+html body {
+  height: auto;
+}
+.schedulePiece {
+  clear: both;
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/title/title-giinhikae.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece .pieceHeader {
+  position: relative;
+  height: 29px;
+  margin-left: 29px;
+  background-image: url(/_common/themes/gw/files/title/title_re.gif);
+  background-repeat: repeat-x;
+}
+.schedulePiece .pieceBody,
+.schedulePiece .pieceFooter {
+  border-bottom: solid 1px #1E3B8C;
+  border-left: solid 1px #1E3B8C;
+  border-right: solid 1px #1E3B8C;
+}
+.schedulePiece .pieceBody {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.pieceBodyHeader {
+  position: relative;
+  zoom: 100%;
+}
+.schedulePiece .pieceFooter {
+  margin-bottom: 40px;
+}
+.schedulePiece .pieceBody table {
+  clear: both;
+}
+.schedulePiece.dayview .pieceBody table,
+.schedulePiece.guardview .pieceBody table,
+.schedulePiece.weekview .pieceBody table,
+.schedulePiece.monthview .pieceBody table {
+  width: 100%;
+  margin-bottom: 5px;
+  border-right: 1px solid #CCCCCC;
+  table-layout: fixed;
+}
+
+span.att {
+  margin-left: 10px;
+  line-height: 1.7;
+  text-align: center;
+}
+span.att a {
+  background-image: none;
+}
+
+/* 注意書き
+--------------------------------------*/
+span.att a {
+  color: red;
+}
+
+/* pieceBodyHeader
+--------------------------------------*/
+.schedulePiece .btBox {
+  width: 90%;
+  width: auto;
+  height: 1%;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+*html .schedulePiece .btBox {
+  margin-left: 2px;
+}
+
+.schedulePiece .btBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .schedulePiece .btBox             { zoom: 1; }
+*:first-child+html .schedulePiece .btBox { zoom: 1; }
+
+.schedulePiece .pieceBodyHeader .btBox.bottom {
+  width: 90%;
+  border: none;
+}
+.btBox .btIndex {
+  width: 60px;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07off.gif);
+  background-position: right bottom;
+  border-top: 1px solid #aaa;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+.btBox .btIndex.current {
+  background-color: #FFF29E;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07on.gif);
+  background-position: right bottom;
+}
+#contentBody .piece .btBox .btIndex a {
+  white-space: nowrap;
+}
+.schedulePiece .btBox a {
+  line-height: 1.9;
+}
+.schedulePiece .btBox div {
+  float: left;
+  height: auto;
+  min-height: 25px;
+  margin-top: 0px;
+}
+.schedulePiece .btBox .schSelBox {
+  height: 20px;
+  min-height: 21px;
+  padding-top: 3px;
+  padding-right: 3px;
+  padding-bottom: 1px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #666;
+}
+#contentBody .schedulePiece .btBox .schSelBox select {
+  line-height: 1;
+}
+#contentBody .piece .btBox div.btHead {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#contentBody .piece .pieceBodyHeader .settingLink {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+#contentBody .piece .pieceBodyHeader .settingLink a {
+  display: inline-block;
+  padding: 2px;
+  border-color: #CCCCCC #999999 #999999 #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+}
+.btBox .btHead {
+  margin-left: 5px;
+  padding-left: 5px;
+  line-height: 1.9;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07off.gif);
+  background-position: right bottom;
+  background-repeat: no-repeat;
+}
+.btBox .btHead.currentHead {
+  border-right: none;
+  background-image: none;
+}
+*html .btBox .current {
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07on.gif);
+}
+*html .btBox .btIndex {
+  border-right: 1px solid #666;
+}
+*html .btBox .btHead,
+*html .btBox .btPerson,
+*html .btBox .btGroup {
+  background-color: #FFF;
+}
+
+.schedulePiece .btBox .btGroup {
+  margin-left: 5px;
+  padding-left: 40px;
+  padding-right: 5px;
+  background-image: url(/_common/themes/gw/files/schedule/switch-human_groupgif.gif);
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 1px solid #666;
+  line-height: 1.9;
+}
+.schedulePiece .btBox .btPerson {
+  margin-left: 5px;
+  padding-left: 25px;
+  padding-right: 5px;
+  background-image: url(/_common/themes/gw/files/schedule/switch-human_alone.gif);
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 1px solid #666;
+  line-height: 1.9;
+}
+.schedulePiece .btBox .btGroup,
+.schedulePiece .btBox .btPerson {
+  background-position: 6px center;
+}
+.schedulePiece .btBox .customLink {
+  width: auto;
+  padding: 0 10px;
+}
+.menu {
+  clear: both;
+  margin-left: 10px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.menu a {
+  padding: 0 8px 0 0;
+  border-right: none;
+}
+.menu a span {
+  padding-left: 10px;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05off.gif);
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+.menu a span.current_menu {
+  display: block;
+  line-height: 1.5;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #FFF29E;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05on.gif);
+  color: #000000;
+}
+
+/*
+----------------------------------------*/
+.linkLine {
+  clear: both;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  text-align: right;
+}
+.linkLine span {
+  margin-right: 10px;
+}
+.linkLine .subMenu {
+  display: inline-block;
+}
+.titleLine,
+.scheduleTableTitle {
+  clear: both;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #B1BEE3;
+}
+.titleLine .title,
+.scheduleTableTitle {
+  margin-left: 10px;
+  font-size: 130%;
+  font-weight: bold;
+  color: #1E3B8C;
+}
+.titleLine .linkSpace {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+*html .schedulePiece .titleLine .linkSpace {
+  right: 10px;
+}
+.titleLine .linkSpace span {
+  border:1px solid #CCCCCC;
+}
+.scheduleTableTitle {
+  margin-left: 0px;
+  padding-left: 10px;
+}
+.titleLine .linkSpace span {
+  display: inline-block;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.schedulePiece .lineBox {
+  clear: both;
+  width: 100%;
+}
+.schedulePiece .lineBox .dayInformation {
+  clear: both;
+  width: 100%;
+  height: 3px;
+  font-weight: bold;
+  font-size: 140%;
+  text-align: center;
+}
+.schedulePiece .lineBox .scheduleMove {
+  margin-right: 15px;
+  padding-bottom: 5px;
+  text-align: right;
+}
+*html .schedulePiece .pieceBodyHeader .lineBox .scheduleMove {
+  margin-top: -20px;
+}
+.schedulePiece .pieceBodyFooter .lineBox .scheduleMove {
+  padding-bottom: 0;
+}
+.schedulePiece .scheduleFooter .lineBox .scheduleMove {
+  margin-top: 0px;
+}
+*html .schedulePiece .lineBox .scheduleMove {
+  margin-right: 10px;
+}
+*:first-child+html .schedulePiece .lineBox .scheduleMove {
+  margin-right: 10px;
+}
+.pieceBodyHeader .lineBox .calendar_date_select_popup_icon {
+  margin-top: 0px;
+  vertical-align: bottom;
+}
+.pieceBodyFooter .lineBox .calendar_date_select_popup_icon {
+  margin-top: 0px;
+  vertical-align: top;
+}
+head~/* */body .schedulePiece .pieceBodyFooter {
+  margin-top: -25px;
+}
+*:first-child+html .schedulePiece .pieceBody .pieceBodyFooter {
+  margin-top: -12px;
+}
+html:not(:target) .schedulePiece .pieceBody .pieceBodyFooter {
+  margin-top: 0px;
+}
+.schedulePiece .lineBox .scheduleMove .last_month {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays00.gif");
+}
+.schedulePiece .lineBox .scheduleMove .last_week {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays01.gif");
+}
+.schedulePiece .lineBox .scheduleMove .yesterday {
+  width: 26px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays02.gif");
+}
+.schedulePiece .lineBox .scheduleMove .today {
+  width: 45px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays03.gif");
+}
+.schedulePiece .lineBox .scheduleMove .tomorrow {
+  width: 26px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays04.gif");
+}
+.schedulePiece .lineBox .scheduleMove .following_week {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays05.gif");
+}
+.schedulePiece .lineBox .scheduleMove .following_month {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followdays/bt_followdays06.gif");
+}
+#contentBody .lineBox .scheduleMove .last_year {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth01.gif");
+}
+#contentBody .monthview .lineBox .scheduleMove .last_month {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth02.gif");
+}
+#contentBody .lineBox .scheduleMove .this_month {
+  width: 45px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth03.gif");
+}
+#contentBody .monthview .lineBox .scheduleMove .following_month {
+  width: 27px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth04.gif");
+}
+#contentBody .lineBox .scheduleMove .following_year {
+  width: 34px;
+  background-image: url("/_common/themes/gw/files/icon/followmonth/bt_followmonth05.gif");
+}
+.schedulePiece .pieceBodyHeader .lineBox .scheduleMove form a,
+.schedulePiece .pieceBodyFooter .lineBox .scheduleMove form a {
+  display: inline-block;
+  overflow: hidden;
+  height: 0;
+  padding-top: 15px;
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  font-size: 0;
+}
+.schedulePiece .pieceBodyHeader .lineBox .scheduleMove a {
+  vertical-align: bottom;
+}
+.schedulePiece .pieceBodyFooter .lineBox .scheduleMove a {
+  vertical-align: top;
+}
+
+/* pieceBodyBody - common
+----------------------------------------------------*/
+.schedulePiece .formTitle {
+  width: 665px;
+  margin: 0 auto;
+  padding-left: 35px;
+  padding-top: 20px;
+}
+#contentBody .schedulePiece .pieceBody table.show {
+  clear: both;
+  margin-bottom: 10px;
+  border: 2px solid #C6D0E8;
+}
+.pieceBodyBody table#inputDatetimeRepeatNoprop,
+.pieceBodyBody table#inputDatetimeNormalNoprop {
+  margin-top: 0;
+}
+.schedulePiece .pieceBody table.show th{
+  background-color: #E3EFFF;
+}
+.schedulePiece .pieceBody #inputDatetimeNormal,
+.schedulePiece .pieceBody #inputDatetimeRepeat {
+  margin-top: 0;
+}
+.schedulePiece .pieceBody table td.day .timeSet {
+  float: left;
+  margin-right: 10px;
+}
+.schedulePiece .pieceBody table tr.close td.day .otherSelect {
+  text-align: left;
+}
+#page-gw-schedules-new table.show,
+#page-gw-maaSchedules-new table.show {
+  width: 105%;
+}
+*html #page-gw-schedules-new table.show{
+  width: 110%;
+}
+*:first-child+html #page-gw-schedules-new table.show {
+  width: 110%;
+}
+.schedulePiece div.submitters {
+  margin: 20px auto;
+  text-align: center;
+}
+.schedulePiece .pieceBodyBody {
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-bottom: 0px;
+}
+*:html .schedulePiece .pieceBodyBody {
+  margin-bottom: 0px;
+}
+*:first-child+html .schedulePiece .pieceBodyBody {
+  margin-bottom: 15px;
+}
+html>/**/body .schedulePiece .pieceBodyBody {
+  margin-bottom: 30px\9;
+}
+.schedulePiece table .scheduleTableHead th {
+  height: 15px;
+  text-align: center;
+}
+.schedulePiece table th.scheduleUser {
+  width: 15%;
+  background-color: #E3EFFF;
+}
+.schedulePiece table .scheduleTableHead th,
+.schedulePiece table .scheduleTableBody th,
+.schedulePiece table .scheduleTableBody td {
+  border: 1px solid #ccc;
+}
+.schedulePiece table td {
+  border: 1px solid #ccc;
+}
+.index table.index td {
+  overflow: hidden;
+}
+.schedulePiece.dayview table .scheduleTableHead th.scheduleData,
+.schedulePiece.dayview table .scheduleTableBody th.scheduleData,
+.schedulePiece.dayview table .scheduleTableBody td.scheduleData {
+  border-left: none;
+  border-right: none;
+}
+#page-gw-schedules-new table.tabtable td.tab {
+  width: 70px;
+  padding: 2px 10px;
+}
+#page-gw-schedules-eventWeek .schedulePiece table .leftHeader {
+  padding-top: 10px;
+  background-image: url(/_common/themes/gw/files/group.gif);
+}
+.schedulePiece table.officerSchedule .username,
+.schedulePiece table.xxxxxxxx .username  {
+  margin-left: 0;
+  padding-top: 0;
+  padding-left: 0;
+}
+.schedulePiece table.officerSchedule .username,
+.schedulePiece table.xxxxxxxx .username  {
+  background-image: none;
+}
+.schedulePiece table.officerSchedule .leftHeader,
+.schedulePiece table.scheduleTable .leftHeader  {
+  margin-left: 3px;
+  padding-left: 36px;
+}
+
+.schedulePiece table .username.meetingroom,
+.schedulePiece table .username.room,
+.schedulePiece table .username.rentcar,
+.schedulePiece table .username.car,
+.schedulePiece table .username.facility,
+.schedulePiece table .username.other {
+  height: auto;
+  min-height: 32px;
+  margin-top: 5px;
+  padding-left: 35px;
+  background-position: 0 0px;
+  text-align: left;
+}
+*html .schedulePiece table .username.meetingroom,
+*html .schedulePiece table .username.room,
+*html .schedulePiece table .username.rentcar,
+*html .schedulePiece table .username.car,
+*html .schedulePiece table .username.facility,
+*html .schedulePiece table .username.other {
+  background-position: 0 1px;
+}
+*:first-child+html .schedulePiece table .username.meetingroom,
+*:first-child+html .schedulePiece table .username.room,
+*:first-child+html .schedulePiece table .username.rentcar,
+*:first-child+html .schedulePiece table .username.car,
+*:first-child+html .schedulePiece table .username.facility,
+*:first-child+html .schedulePiece table .username.other {
+  background-position: 0 1px;
+}
+
+.schedulePiece table .username.meetingroom,
+.schedulePiece table .username.room {
+  background-image: url(/_common/themes/gw/files/ic_meetingroom.gif);
+}
+.schedulePiece table .username.rentcar,
+.schedulePiece table .username.car  {
+  background-image: url(/_common/themes/gw/files/ic_car.gif);
+}
+.schedulePiece table .username.facility {
+  background-image: url(/_common/themes/gw/files/ic_etc.gif);
+}
+.schedulePiece table .username.other {
+  background-image: url(/_common/themes/gw/files/ic_etc.gif);
+}
+.schedulePiece table .leftHeader,
+.schedulePiece table .left-header {
+  margin-top: 5px;
+  padding-left: 35px;
+}
+.schedulePiece table .leftHeader .title,
+.schedulePiece table .left-header .title {
+  margin-bottom: 3px;
+  line-height: 1;
+}
+.schedulePiece table .leftHeader .username,
+.schedulePiece table .left-header .username {
+
+}
+.schedulePiece table .leftHeader,
+.schedulePiece table .left-header,
+.schedulePiece table .userIcon1 {
+  min-height: 36px;
+  height: auto !important;  
+  height: 36px; 
+  background-image: url(/_common/themes/gw/files/ic_human_01.gif);
+  background-repeat: no-repeat;
+  background-position:0 0px;
+  text-align: left;
+}
+*:first-child+html .schedulePiece table .leftHeader,
+*:first-child+html .schedulePiece table .left-header,
+*:first-child+html .schedulePiece table .userIcon1 {
+  min-height: 37px;
+  height: auto !important;  
+  height: 37px; 
+  background-position:0 1px;
+}
+.schedulePiece table .governor,
+.schedulePiece table .deputyGovernor,
+.schedulePiece table .policySupervisor,
+.schedulePiece table .userIcon3 {
+  background-image: url(/_common/themes/gw/files/ic_human_03.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table .manager,
+.schedulePiece table .userIcon2 {
+  background-image: url(/_common/themes/gw/files/ic_human_02.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table .userIcon4 {
+  background-image: url(/_common/themes/gw/files/ic_human_04.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table .userIcon5 {
+  background-image: url(/_common/themes/gw/files/ic_human_05.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table .userIcon6 {
+  background-image: url(/_common/themes/gw/files/ic_human_06.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table.scheduleTable .prefecture,
+.schedulePiece table.scheduleTable .userIcon9 {
+  background-image: url(/_common/themes/gw/files/group_allpref.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table.scheduleTable .department,
+.schedulePiece table.scheduleTable .userIcon8 {
+  background-image: url(/_common/themes/gw/files/group_depa.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table.scheduleTable .section,
+.schedulePiece table.scheduleTable .userIcon7 {
+  background-image: url(/_common/themes/gw/files/group_unit.gif);
+  background-repeat: no-repeat;
+}
+.schedulePiece table .governor .title,
+.schedulePiece table .deputyGovernor .title,
+.schedulePiece table .policySupervisor .title,
+.schedulePiece table .manager .title {
+  text-align: left;
+}
+.schedulePiece table .scheduleUser .username span {
+  display: inline;
+  vertical-align: middle;
+  line-height: 1;
+}
+.schedulePiece table .scheduleUser .username span a {
+  line-height: 1;
+}
+.schedulePiece table .scheduleUser .username span.linkBox {
+  display: block;
+}
+.schedulePiece table .scheduleUser .username a.dayLink,
+.schedulePiece table .scheduleUser .username a.weekLink,
+.schedulePiece table .scheduleUser .username a.monthLink,
+.schedulePiece table .scheduleUser .username a.listsLink {
+  display: inline-block;
+  width: 12px;
+  height: 0;
+  margin-top: 1px;
+  margin-right: 3px;
+  padding-top: 12px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.schedulePiece table .scheduleUser .username a.dayLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-time.gif");
+}
+.schedulePiece table .scheduleUser .username a.weekLink {
+  width: 15px;
+  padding-top: 8px;
+  background-image: url("/_common/themes/gw/files/tab/ic-week.gif");
+}
+.schedulePiece table .scheduleUser .username a.monthLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-month.gif");
+}
+.schedulePiece table .scheduleUser .username a.listsLink {
+  background-image: url("/_common/themes/gw/files/tab/ic-schedule.gif");
+}
+.schedulePiece table .governor .username,
+.schedulePiece table .deputyGovernor .username,
+.schedulePiece table .policySupervisor .username,
+.schedulePiece table .manager .username,
+#page-gw-schedules-eventWeek .schedulePiece table .username {
+  margin-left: 0;
+  padding-left: 0;
+  padding-top: 0;
+  background-image: none;
+}
+.schedulePiece table.sectionSchedules .scheduleTableBody.lineNo3 td,
+.schedulePiece table.sectionSchedules .scheduleTableBody.lineNo3 th,
+.schedulePiece table.sectionSchedulesVer2 .scheduleTableBody.lineNo2 td,
+.schedulePiece table.sectionSchedulesVer2 .scheduleTableBody.lineNo2 th  {
+  border-bottom: 1px solid #1E3B8C;
+}
+.schedulePiece table.sectionSchedules .scheduleTableBody.lineNo4 td,
+.schedulePiece table.sectionSchedules .scheduleTableBody.lineNo4 th,
+.schedulePiece table.sectionSchedulesVer2 .scheduleTableBody.lineNo3 td,
+.schedulePiece table.sectionSchedulesVer2 .scheduleTableBody.lineNo3 th {
+  border-top: 1px solid #1E3B8C;
+}
+
+/*gyuojiyotei*/
+#page-gw-schedules-eventMonth table.index td.day {
+  padding: 3px 10px;
+}
+#page-gw-schedules-eventMonth th.day {
+  width: 70px;
+}
+#page-gw-schedules-eventMonth td {
+  vertical-align: top;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.day,
+#page-gw-schedules-eventMonth td.day {
+  background-color: #FFEDB3;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.saturday,
+#page-gw-schedules-eventMonth td.day.saturday {
+  background-color: #A6EFFF;
+}
+#page-gw-scheduleLists-index .schedulePiece table td.sunday,
+#page-gw-schedules-eventMonth td.day.sunday,
+#page-gw-scheduleLists-index .schedulePiece table td.holiday,
+#page-gw-schedules-eventMonth td.day.holiday {
+  background-color: #FFD4D9;
+}
+#page-gw-schedules-eventMonth tr.today td.event{
+  background-color: #FFEDB3;
+}
+#page-gw-schedules-eventMonth td.event {
+  padding: 0 7px;
+  border-top: none;
+  border-bottom: 1px dashed #ccc;
+}
+#page-gw-schedules-eventMonth td.event.end {
+  border-bottom: 1px solid #ccc;
+}
+#page-gw-schedules-eventMonth tr.today td.day,
+#page-gw-schedules-eventMonth tr.today td.event {
+  background-color: #FFFF99;
+}
+#page-gw-schedules-eventMonth td .allday{
+  display: inline-block;
+  vertical-align: top;
+  padding: 3px;
+  background-color: #2E67B5;
+  color: #FFFFFF;
+}
+#page-gw-schedules-eventMonth td .title,
+#page-gw-schedules-eventMonth td .time{
+  display: inline-block;
+  padding: 3px 0;
+}
+#page-gw-schedules-eventMonth td.event span {
+  display: inline-block;
+  vertical-align: middle;
+}
+#page-gw-schedules-eventMonth table.index {
+  margin-top: 0;
+}
+#page-gw-schedules-eventWeek .schedulePiece .scheduleTableBody .scheduleData {
+  padding: 0 0 5px;
+}
+#page-gw-schedules-eventWeek .schedulePiece .scheduleData div {
+  padding: 1px 5px 0;
+  border-top: 1px dashed #CCCCCC;
+}
+#page-gw-schedules-eventWeek .schedulePiece .scheduleData div.first {
+  border-top: none;
+}
+#page-gw-schedules-eventWeek .schedulePiece .ind a {
+  height: auto;
+}
+#page-gw-schedules-eventWeek .schedulePiece .scheduleTable span.title {
+  display: block;
+}
+#page-gw-schedules-eventWeek .schedulePiece .scheduleTable .scheduleTableBody .scheduleUser {
+  vertical-align: top;
+}
+table.scheduleTable span.allday {
+  display: inline-block;
+  padding: 1px 2px;
+  background-color: #2E67B5;
+  color: #FFFFFF;
+}
+
+/*----------------------------------------------------------*/
+.schedulePiece table .sunday,
+.schedulePiece table .holiday {
+  background-color: #FFF3F2;
+}
+.schedulePiece table .saturday {
+  background-color: #F1FCFF;
+}
+.schedulePiece table th.sunday,
+.schedulePiece table th.holiday {
+  background-color: #FFD4D9;
+}
+.schedulePiece table th.saturday {
+  background-color: #A6EFFF;
+}
+.schedulePiece table .scheduleTableBody .scheduleData {
+  background-color: #FFFFFF;
+  vertical-align: top;
+}
+.weekview table .scheduleTableBody .scheduleData {
+  padding: 5px;
+}
+.monthview table .scheduleTableBody .scheduleData {
+  padding: 0 5px 5px;
+}
+.schedulePiece .scheduleUser .link {
+  float: left;
+  width: 50px;
+  margin-top: 5px;
+  padding: 4px;
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  text-align: right;
+}
+.schedulePiece .scheduleUser .link.dayLink  {
+  background-image: url(/_common/themes/gw/files/tab/ic-time-blue.gif);
+  background-position: 2px 43%;
+}
+.schedulePiece .scheduleUser .link.weekLink {
+  background-image: url(/_common/themes/gw/files/tab/ic-week-blue.gif);
+  background-position: 2px 50%;
+}
+.schedulePiece .scheduleUser .link.monthLink {
+  background-image: url(/_common/themes/gw/files/tab/ic-month-blue.gif);
+  background-position: 2px 50%;
+}
+.schedulePiece .scheduleUser .link.current {
+  background-color: #FFF29e;
+}
+.monthview th.sunday span.nobr a, .monthview th.holiday span.nobr a, td.holiday .ind {
+  color: #D40D0B;
+}
+.monthview th.rangeOut span.nobr a {
+  color: #0033CC;
+}
+
+/* dayview
+----------------------------------------------------*/
+.schedulePiece.dayview .pieceBody table {
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+/* monthview
+----------------------------------------------------*/
+.schedulePiece.monthview tr.dayHead th {
+  padding-left: 5px;
+  background-color: #fff;
+  text-align: left;
+}
+.schedulePiece.monthview tr.dayHead th span.nobr {
+  font-weight: bold;
+}
+.schedulePiece.monthview tr.dayHead th span.nobr a {
+  font-size: 120%;
+}
+.schedulePiece table .scheduleTableBody td.sunday,
+.schedulePiece.monthview tr.dayHead th.sunday,
+.schedulePiece table .scheduleTableBody td.holiday,
+.schedulePiece table .scheduleTableBody td.holiday .ind,
+.schedulePiece.monthview tr.dayHead th.holiday {
+  background-color: #FFF3F2;
+}
+.schedulePiece.monthview tr.dayHead th.saturday {
+  background-color: #F1FCFF;
+}
+.schedulePiece.monthview tr.scheduleTableHead th {
+  border-bottom: none;
+}
+.schedulePiece.monthview tr.scheduleTableBody td {
+  height: 80px;
+  border-top: none;
+}
+.schedulePiece.dayview table .scheduleTableHead th.scheduleData,
+.schedulePiece.guardview table .scheduleTableHead th.scheduleData,
+.schedulePiece table .scheduleTableHead.weekdayHead th.weekday,
+.schedulePiece.weekview table .scheduleTableHead.dayHead th.weekday {
+  background-color: #FFEDB3;
+}
+.schedulePiece.weekview table .scheduleTableHead.dayHead th.sunday,
+.schedulePiece.weekview table .scheduleTableHead.dayHead th.holiday,
+.schedulePiece. table .scheduleTableBody td.sunday,
+.schedulePiece. table .scheduleTableBody td.holiday {
+  background-color: #FFF3F2;
+}
+.schedulePiece table .scheduleTableBody td.saturday {
+  background-color: #F1FCFF;
+}
+.schedulePiece.monthview table .scheduleTableHead.dayHead th.rangeOut, 
+.schedulePiece.monthview table .scheduleTableBody td.rangeOut,
+.schedulePiece.dayview table .scheduleTableBody td.rangeOut {
+  background-color: #EEEEEE;
+}
+.schedulePiece.monthview table .scheduleTableBody td.today,
+.schedulePiece.monthview table .scheduleTableHead th.today,
+.schedulePiece.weekview table .scheduleTableBody td.today {
+  background-color: #FFFF99;
+}
+.schedulePiece.monthview table .scheduleTableBody td.today {
+  border-bottom: solid 2px #FF0000;
+  border-left: solid 2px #FF0000;
+  border-right: solid 2px #FF0000;
+}
+.schedulePiece.monthview table .scheduleTableHead th.today {
+  border-top: solid 2px #FF0000;
+  border-left: solid 2px #FF0000;
+  border-right: solid 2px #FF0000;
+}
+
+/* showOne
+----------------------------------------------------*/
+.schedulePiece.showOne .pieceBody table.show.notConfirmed th {
+  background-color: #ecc;
+}
+
+/* form
+----------------------------------------------------*/
+.schedulePiece.form .tabtable {
+  margin-top: 10px;
+  background-color: #FFFCF0;
+}
+.schedulePiece.form .tabBox {
+  margin: 10px auto -1px;
+  padding-top: 10px;
+  background-color: #FFFFFF;
+}
+.schedulePiece.form .tabBox .spaceRight {
+  background-color: #FFFFFF;
+}
+.form .tabBox .spaceLeft {
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  background-color: #FFFFFF;
+}
+.form .tabBox .spaceCenter {
+  background-color: #FFFFFF;
+  border-top: none;
+  border-bottom: none;
+}
+#page-gw-schedules-new .form .tabBox .spaceRight,
+#page-gw-schedules .form .tabBox .spaceRight {
+  border: none;
+}
+.schedulePiece.form .pieceBodyBody {
+  clear: both;
+  width: 760px;
+  margin-top: 0;
+}
+
+/* categories
+-----------------------------------------*/
+.schedulePiece.dayview table tr.scheduleTableBody.categoryBorder td.scheduleData,
+.schedulePiece.guardview table tr.scheduleTableBody.categoryBorder td.scheduleData {
+  height: 15px;
+  border-top: none;
+  border-bottom: none;
+  text-indent: -9999px;
+}
+.schedulePiece.dayview table.rentcar tr.scheduleTableBody.categoryBorder td.scheduleData {
+  border-top: 1px solid #CCCCCC;
+}
+.schedulePiece.dayview table tr.scheduleTableBody.explanation td,
+.schedulePiece.guardview table tr.scheduleTableBody.explanation td {
+  border-top: none;
+  border-bottom: 1px dashed #CCCCCC;
+  border-left: none;
+  border-right: none;
+  vertical-align: top;
+  overflow: hidden;
+}
+.schedulePiece.dayview table tr.scheduleTableBody.explanation.end td,
+.schedulePiece.guardview table tr.scheduleTableBody.explanation.end td {
+  border-top: none;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: none;
+}
+.schedulePiece .ind a.title {
+  display: inline-block;
+}
+td.scheduleData {
+  overflow: hidden;
+}
+.schedulePiece.dayview tr.scheduleTableHead th.scheduleData {
+  border-left: solid 1px #CCCCCC;
+}
+th.scheduleUser a img {
+  margin-left: 5px;
+}
+.schedulePiece .pieceBodyBody table th.scheduleUser {
+  width: 175px;
+  padding: 5px;
+}
+.schedulePiece .pieceBodyBody table .scheduleTableHead th.scheduleUser {
+  height: 28px;
+  padding: 0 5px;
+}
+html:not(:nth-child(n)) .schedulePiece .pieceBodyBody table th.scheduleUser {
+  width: 186px;
+}
+#contentBody .schedulePiece .pieceBodyBody table th.scheduleUser, 
+x:not(:target):-moz-broken {
+  width: 175px;
+}
+.schedulePiece .meetingroom .ind a, 
+.schedulePiece .rentcar .ind a,
+.schedulePiece .maaPropBs .ind a{
+  white-space: nowrap;
+}
+.schedulePiece .scheduleData .ind  br {
+  display: none;
+}
+.schedulePiece.dayview .ind a,
+.schedulePiece.guardview .ind a {
+  margin-bottom: 0px;
+}
+
+/*-- color settei --*/
+.schedulePiece .ind a {
+  display: block;
+  margin-bottom: 2px;
+}
+.schedulePiece .ind {
+  background-color: #CCC;
+  word-break: break-all;
+}
+#page-gw-schedules-eventWeek .schedulePiece .ind {
+  background: none;
+}
+.schedulePiece .allday {
+  background-color: transparent;
+}
+.schedulePiece .ind a.category0,
+.schedulePiece .ind.allday a.category0,
+.schedulePiece .ind.allday a.category0 .square,
+.schedulePiece .ind.allday a.category0 span.allday {
+  background-color: #FF3399;
+  color: white;
+}
+.monthview .ind a.category0,
+.weekview .ind a.category0{
+  background-color: #fff;
+  color: #000;
+}
+.today .ind a.category0 {
+  background-color: #FFFF99;
+  color: #000;
+}
+.rangeOut .ind a.category0 {
+  background-color: #EEEEEE;
+  color: #000;
+}
+.saturday .ind a.category0 {
+  background-color: #F1FCFF;
+  color: #000;
+}
+.sunday .ind a.category0 {
+  background-color: #FFF3F2;
+  color: #000;
+}
+.schedulePiece .ind a.category1,
+.schedulePiece .ind.allday a.category1 .square,
+.schedulePiece .ind.allday a.category1 span.allday,
+.schedulePiece .ind a.category100,
+.schedulePiece .ind.allday a.category100 .square,
+.schedulePiece .ind.allday a.category100 span.allday {
+  background-color: #2283E5;
+  color: white;
+}
+.schedulePiece .ind a.category2,
+.schedulePiece .ind.allday a.category2 .square,
+.schedulePiece .ind.allday a.category2 span.allday {
+  background-color: #FF0000;
+  color: white;
+}
+.schedulePiece .ind a.category3,
+.schedulePiece .ind.allday a.category3 .square,
+.schedulePiece .ind.allday a.category3 span.allday,
+.schedulePiece .ind a.category200,
+.schedulePiece .ind.allday a.category200 .square,
+.schedulePiece .ind.allday a.category200 span.allday {
+  background-color: #009900;
+  color: white;
+}
+.schedulePiece .ind a.category4,
+.schedulePiece .ind.allday a.category4 .square,
+.schedulePiece .ind.allday a.category4 span.allday,
+.schedulePiece .ind a.category400,
+.schedulePiece .ind.allday a.category400 .square,
+.schedulePiece .ind.allday a.category400 span.allday {
+  background-color: #FF3F38;
+  color: white;
+}
+.schedulePiece .ind a.category5,
+.schedulePiece .ind.allday a.category5 .square,
+.schedulePiece .ind.allday a.category5 span.allday,
+.schedulePiece .ind a.category300,
+.schedulePiece .ind.allday a.category300 .square,
+.schedulePiece .ind.allday a.category300 span.allday {
+  background-color: #003300;
+  color: white;
+}
+.schedulePiece .ind a.category6,
+.schedulePiece .ind.allday a.category6 .square,
+.schedulePiece .ind.allday a.category6 span.allday {
+  background-color: #CC6600;
+  color: white;
+}
+.schedulePiece .ind a.category7,
+.schedulePiece .ind.allday a.category7 .square,
+.schedulePiece .ind.allday a.category7 span.allday,
+.schedulePiece .ind a.category500,
+.schedulePiece .ind.allday a.category500 .square,
+.schedulePiece .ind.allday a.category500 span.allday {
+  background-color: #000099;
+  color: white;
+}
+.schedulePiece .ind a.category8,
+.schedulePiece .ind.allday a.category8 .square,
+.schedulePiece .ind.allday a.category8 span.allday,
+.schedulePiece .ind a.category600,
+.schedulePiece .ind.allday a.category600 .square,
+.schedulePiece .ind.allday a.category600 span.allday {
+  background-color: #A17300;
+  color: white;
+}
+.schedulePiece .ind a.category9,
+.schedulePiece .ind.allday a.category9 .square,
+.schedulePiece .ind.allday a.category9 span.allday,
+.schedulePiece .ind a.category700,
+.schedulePiece .ind.allday a.category700 .square,
+.schedulePiece .ind.allday a.category700 span.allday {
+  background-color: #DC6500;
+  color: white;
+}
+.schedulePiece .ind a.category10,
+.schedulePiece .ind.allday a.category10 .square,
+.schedulePiece .ind.allday a.category10 span.allday,
+.schedulePiece .ind a.category800,
+.schedulePiece .ind.allday a.category800 .square,
+.schedulePiece .ind.allday a.category800 span.allday {
+  background-color: #FFC300;
+  color: #000;
+}
+.schedulePiece .ind a.category11,
+.schedulePiece .ind.allday a.category11 .square,
+.schedulePiece .ind.allday a.category11 span.allday,
+.schedulePiece .ind a.category900,
+.schedulePiece .ind.allday a.category900 .square,
+.schedulePiece .ind.allday a.category900 span.allday {
+  background-color: #8658B2;
+  color: white;
+}
+.schedulePiece .ind a.category950,
+.schedulePiece .ind.allday a.category950 .square,
+.schedulePiece .ind.allday a.category950 span.allday {
+  background-color: #FFF28F;
+  color: #000;
+}
+.schedulePiece .ind a.category12,
+.schedulePiece .ind.allday a.category12 .square,
+.schedulePiece .ind.allday a.category12 span.allday,
+.schedulePiece .ind a.category1000,
+.schedulePiece .ind.allday a.category1000 .square,
+.schedulePiece .ind.allday a.category1000 span.allday {
+  background-color: #777;
+  color: white;
+}
+.schedulePiece .ind a.category13,
+.schedulePiece .ind.allday a.category13 .square,
+.schedulePiece .ind.allday a.category13 span.allday,
+.schedulePiece .ind a.category1100,
+.schedulePiece .ind.allday a.category1100 .square,
+.schedulePiece .ind.allday a.category1100 span.allday {
+  background-color: #663333;
+  color: white;
+}
+.schedulePiece .ind a.category14,
+.schedulePiece .ind.allday a.category14 .square,
+.schedulePiece .ind.allday a.category14 span.allday,
+.schedulePiece .ind a.category1200,
+.schedulePiece .ind.allday a.category1200 .square,
+.schedulePiece .ind.allday a.category1200 span.allday {
+  background-color: #0A4F1E;
+  color: white;
+}
+
+/*-- rentcar,meetingroom --*/ 
+#page-gw-scheduleProps-showGuard .rentcar td.scheduleData,
+#page-gw-scheduleProps-showGuard .meetingroom td.scheduleData {
+  overflow: hidden;
+  border-left: none;
+  border-right: none;
+}
+#page-gw-scheduleProps-showGuard .schedulePiece.dayview table.rentcar tr.scheduleTableHead th.scheduleData,
+#page-gw-scheduleProps-showGuard .schedulePiece.dayview table.meetingroom tr.scheduleTableHead th.scheduleData {
+  border-left: solid 1px #CCCCCC;
+}
+#page-gw-scheduleProps-showGuard .schedulePiece .rentcar .ind a,
+#page-gw-scheduleProps-showGuard .schedulePiece .meetingroom .ind a {
+  white-space: nowrap;
+}
+.schedulePiece .rentcar .ind a,
+.schedulePiece .meetingroom .ind a {
+  display: block;
+  height: 15px;
+}
+.schedulePiece .meetingroom .ind a.category0 {
+  background-color: #35e1ff;
+  color: #000;
+}
+.schedulePiece .rentcar .ind a.category1,
+.schedulePiece .meetingroom .ind a.category1 {
+  background-color: #2e49b4;
+  color: white;
+}
+.schedulePiece .rentcar .ind a.category2,
+.schedulePiece .meetingroom .ind a.category2 {
+  background-color: #ff3f38;
+  color: white;
+}
+.schedulePiece .rentcar .ind a.category3,
+.schedulePiece .meetingroom .ind a.category3 {
+  background-color: #cfd0d2;
+  color: #000;
+}
+.schedulePiece .rentcar .ind a.category4,
+.schedulePiece .meetingroom .ind a.category4 {
+  background-color: #860000;
+  color: #fff;
+}
+.schedulePiece .rentcar .ind a.category5,
+.schedulePiece .meetingroom .ind a.category5 {
+  background-color: #FFC5FF;
+  color: #000;
+}
+.schedulePiece .rentcar .ind a.category900,
+.schedulePiece .meetingroom .ind a.category900 {
+  background-color: #008100;
+  color: #fff;
+}
+.schedulePiece.weekview .rentcar .ind a,
+.schedulePiece.monthview .rentcar .ind a,
+.schedulePiece.weekview .meetingroom .ind a,
+.schedulePiece.monthview .meetingroom .ind a,{
+  overflow: hidden;
+}
+#page-gw-scheduleProps-showGuard .schedulePiece .pieceBodyBody table th.scheduleUser {
+  width: 180px;
+  padding: 0px;
+}
+#page-gw-scheduleProps-showGuard .schedulePiece .pieceBodyBody .ind a {
+  white-space: normal;
+}
+table.rentcar td.scheduleData a.category2 {
+  padding-left: 19px;
+  background-image: url(/_common/themes/gw/files/car_key.gif);
+  background-position: 0 3px;
+  background-repeat: no-repeat;
+}
+
+/*-- gojokai --*/
+table.maaPropBs a.confirmed {
+  background-color: #2E49B4;
+  color: #fff;
+}
+.explainColor .confirmed .square {
+  color: #2E49B4;
+}
+table.maaPropBs a.cancelled {
+  background-color: #008100;
+  color: #fff;
+}
+.explainColor .cancelled .square {
+  color: #2B2B57;
+}
+table.maaPropBs a.rented {
+  background-color: #FF3F38;
+  color: #000;
+}
+.explainColor .rented .square {
+  color: #FF3F38;
+}
+table.maaPropBs a.returned {
+  background-color: #CFD0D2;
+  color: #000;
+}
+.explainColor .returned .square {
+  color: #CFD0D2;
+}
+table.maaPropBs a.received {
+  background-color: #BBFF00;
+  color: #000;
+}
+.explainColor .received .square {
+  color: #BBFF00;
+}
+table.maaPropBs a.temporary {
+  background-color: #35E1FF;
+  color: #000;
+}
+.explainColor .temporary .square {
+  color: #35E1FF;
+}
+
+/*-- syuujitsu --*/
+.schedulePiece .ind.allday a {
+  display: inline-block;
+  margin-right: 3px;
+  margin-bottom: 2px;
+  background-color: transparent;
+}
+.schedulePiece .ind.allday span.allday {
+  display: inline-block;
+  background-color: #2E67B5;
+}
+.schedulePiece .ind.allday a .square{
+  display: inline-block;
+  width: 30px;
+}
+
+/*-- hanrei --*/
+.explainColor {
+  clear: both;
+  padding-right: 30px;
+  border-top: solid 1px #ccc;
+  text-align: right;
+}
+.schedulePiece .explainColor.bottom {
+  width: auto;
+  margin-bottom: 5px;
+  border-top: none;
+  border-bottom: solid 1px #ccc;
+}
+.explainColor span {
+  vertical-align: middle;
+}
+.explainColor .text, .explainColor .title {
+  color: #444;
+}
+html>/* */body .explainColor .title {
+  position: relative;
+  top: 1px;
+}
+.pieceBody .explainColor .title, x:not(:target):-moz-broken {
+  position: relative;
+  top: 0px;
+}
+html:not([lang*=""]) .explainColor .text {
+  position: relative;
+  top: 1px;
+}
+html:not(:nth-child(n)) .explainColor .text {
+  position: relative;
+  top: 0px;
+}
+.explainColor .square {
+  font-size: 140%;
+}
+.explainColor .title,
+.explainColor .reserveNoCarry, .explainColor .reserveCarry,
+.explainColor .use, .explainColor .settled, .explainColor .reserve,
+.explainColor .cancelled,
+.explainColor .temporary, .explainColor .received,
+.explainColor .confirmed, .explainColor .rented, .explainColor .returned {
+  margin-right: 5px;
+  font-size: 90%;
+}
+.explainColor .reserve .square, .explainColor .reserveCarry .square {
+  color: #2E49B4;
+}
+.explainColor .reserveNoCarry .square {
+  color: #35E1FF;
+}
+.explainColor .use .square {
+  color: #FF3F38;
+}
+.explainColor .settled .square {
+  color: #CFD0D2;
+}
+.explainColor .cancelled .square {
+  color: #008100;
+}
+
+*html .schedulePiece.form .pieceBodyBody {
+  margin: 0 auto;
+}
+.showLink {
+  display: inline-block;
+  float: right;
+  text-align: right;
+}
+.showLink a {
+  width: 200px;
+}
+.schedulePiece.dayview .ind a {
+  white-space: normal;
+}
+
+/* Index
+----------------------------------------*/
+.index table.index {
+  table-layout: fixed;
+}
+.index table.index th {
+
+}
+.index table.index th.show {
+  width: 30px;
+}
+.index table.index th.day {
+  width: 105px;
+}
+.index table.index th.category {
+  width: 90px;
+}
+.index table.index th.st_at_day,
+.index table.index th.ed_at_day {
+  width: 105px;
+}
+.index table.index th.st_at_time,
+.index table.index th.ed_at_time {
+  width: 55px;
+}
+.index table.index th.body {
+  width: 11%;
+}
+.index table.index th.place {
+  width: 11%;
+}
+.index table.index th.users {
+  width: 22%;
+}
+
+/* button
+----------------------------------------*/
+.editingBox {
+  width: auto;
+  margin-left: 0px;
+  padding-bottom: 0;
+}
+.functionBox {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+.functionBox a {
+  display: inline-block;
+  width: 71px;
+  height: 0;
+  padding: 15px 0 0;
+  background-image: url(/_common/themes/gw/files/ic_act_csv.gif);
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* settings
+----------------------------------------*/
+.setting table.index th {
+  border-top: none;
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+}
+.setting table.index td {
+  border-left: none;
+  border-right: none;
+}
+#page-gw-holidays .setting table.index td {
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #CCC;
+}
+#page-gw-holidays .setting table.index .action {
+  width: 45px;
+}
+#content .setting .pieceBody .pieceBodyBody h4 {
+  background-color: #FFF;
+}
+.schedulePiece.setting .pieceBodyBody {
+  width: 95%;
+}
+.setting .pieceBodyBody ul {
+  clear: both;
+}
+
+/* 在庁表示
+-------------------------------------------*/
+.pageLink {
+  clear: both;
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  background-color: #1E3B8C;
+}
+.pageLink a {
+  margin-right: 15px;
+  padding-left: 11px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-pagelink.gif");
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  color: #FFF;
+}
+.pageLink a:link {
+  color: #FFF;
+}
+.pageLink a:visited {
+  color: #FFF;
+}
+
+.presentTime {
+  margin-left: 10px;
+  font-size: 80%;
+}
+.unit {
+  margin-bottom: 6px;
+}
+.unit:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .unit             { zoom: 1; }
+*:first-child+html .unit { zoom: 1; }
+
+div.scheduleUser {
+  float: left;
+  width: 23%;
+  margin-right: -1px;
+  margin-bottom: -1px;
+  padding: 5px;
+  background-color: #FFFB96;
+  border: solid 1px #B1BEE3;
+}
+*html div.scheduleUser {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+.unitHeader {
+  height: 20px;
+  line-height: 1.6;
+  padding-left: 10px;
+  background-color: #1E3B8C;
+  background-image: url("/_common/themes/gw/files/schedule/bg-tl-head.gif");
+  background-repeat: no-repeat;
+  color: #FFF;
+}
+div.scheduleUser .leftHeader {
+  min-height: 54px;
+  margin-left: 3px;
+  background-repeat: no-repeat;
+}
+div.scheduleUser .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-04.gif");
+}
+div.scheduleUser .userIcon1 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-01.gif");
+}
+div.scheduleUser .userIcon2 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-02.gif");
+}
+div.scheduleUser .userIcon3 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-03.gif");
+}
+div.off .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-human-not.gif");
+}
+div.off {
+  background-color: #F1F1F1;
+}
+div.scheduleUser .linkBox {
+  display: block;
+}
+div.scheduleUser .linkBox a {
+  display: inline-block;
+  height: 0;
+  margin-top: 5px;
+  margin-right: 3px;
+  padding-top: 12px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.schedulePiece div.scheduleUser a.dayLink {
+  width: 12px;
+  background-image: url("/_common/themes/gw/files/tab/ic-time.gif");
+  background-position: 0 0;
+}
+.schedulePiece div.scheduleUser a.weekLink {
+  width: 15px;
+  background-image: url("/_common/themes/gw/files/tab/ic-week.gif");
+  background-position: 0 3px;
+}
+.schedulePiece div.scheduleUser a.monthLink {
+  width: 12px;
+  background-image: url("/_common/themes/gw/files/tab/ic-month.gif");
+  background-position: 0 0;
+}
+div.scheduleUser a.userIcon,
+div.scheduleUser span.userIcon {
+  display: inline-block;
+  float: left;
+  width: 35px;
+  height: 0px;
+  margin-right: 5px;
+  padding-top: 54px;
+  overflow: hidden;
+}
+div.scheduleUser .title span {
+  font-size: 80%;
+}
+
+/* 在庁表示 議会
+-------------------------------------------*/
+#page-gw-prefOnlyAssembly .schedulePiece {
+  background-image: url(/_common/themes/gw/files/title/title-giinhikae.gif);
+}
+.assembly .pieceBodyHeader:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .assembly .pieceBodyHeader             { zoom: 1; }
+*:first-child+html .assembly .pieceBodyHeader { zoom: 1; }
+.assembly .pieceBodyHeader {
+  margin-bottom: 15px;
+}
+.assembly .btBox {
+  float: left;
+  margin-bottom: 15px;
+}
+.assembly .presentTime {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 90%;
+  font-weight: bold;
+  color: #3A5A97;
+}
+.assembly .pieceBodyBody {
+  clear: both;
+}
+#page-gw-prefExecutives .pieceBodyBody,
+#page-gw-prefDirectors .pieceBodyBody,
+#page-gw-prefAssembly .pieceBodyBody {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.unitBox {
+  margin-bottom: 5px;
+}
+.unitBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .unitBox             { zoom: 1; }
+*:first-child+html .unitBox { zoom: 1; }
+
+.unitBox .unit {
+  float: left;
+  margin-bottom: 0;
+}
+.assembly .unitHeader {
+  background-color: #140C00;
+  background-image: url("/_common/themes/gw/files/schedule/bg-tl-head-giin.gif");
+}
+.assembly .unitBox .unitHeader {
+  width: 166px;
+}
+.assembly .username {
+  padding-top: 2px;
+  font-size: 130%;
+}
+.assembly div.scheduleUser {
+  width: 165px;
+  height: 58px;
+  background-color: #FFFB96;
+  border: solid 1px #70685C;
+}
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser {
+  height: 30px;
+}
+.assembly div.off {
+  background-color: #F1F1F1;
+}
+.assembly div.scheduleUser .leftHeader {
+  height: auto !important;
+  height: 32px;
+  min-height: 30px;
+}
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser a.userIcon,
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser span.userIcon {
+  width: 25px;
+  padding-top: 50px;
+}
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser a.userIcon,
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser span.userIcon {
+  padding-top: 28px;
+}
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser .userIcon1 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-on.gif");
+}
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser .userIcon2 .userIcon,
+#page-gw-prefOnlyAssembly .assembly div.scheduleUser .userIcon3 .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-on02.gif");
+}
+#page-gw-prefOnlyAssembly .assembly div.off .leftHeader .userIcon {
+  background-image: url("/_common/themes/gw/files/schedule/ic-giin-off.gif");
+}
+
+/*tab syuseiban
+--------------------------------------------------------*/
+.btBox .btIndex {
+  width: 48px;
+}
+.schedulePiece .btBox .btGroup,
+.schedulePiece .btBox .btPerson,
+.schedulePiece .btBox .btZaichou,
+.schedulePiece .btBox .btTodo {
+  height: 0;
+  margin-left: 5px;
+  min-height: 0;
+  padding-left: 0;
+  padding-top: 27px;
+  padding-bottom: 2px;
+  border-top: 1px solid #AAA;
+  border-left: 1px solid #AAA;
+  border-bottom: 1px solid #666;
+  background-position: 6px 3px;
+  overflow: hidden;
+}
+*html .schedulePiece .btBox .btGroup,
+*html .schedulePiece .btBox .btPerson,
+*html .schedulePiece .btBox .btZaichou,
+*html .schedulePiece .btBox .btTodo {
+  padding-top: 26px;
+}
+.schedulePiece .btBox .btZaichou {
+  background-color: #FFF;
+}
+.schedulePiece .btBox .btGroup {
+  background-image: url("/_common/themes/gw/files/schedule/ic-group.gif");
+}
+.schedulePiece .btBox .btPerson {
+  background-image: url("/_common/themes/gw/files/schedule/ic-oneman.gif");
+}
+.schedulePiece .btBox .btZaichou {
+  background-image: url("/_common/themes/gw/files/schedule/ic-onpref.gif");
+}
+.schedulePiece .btBox .btTodo {
+  background-image: url("/_common/themes/gw/files/schedule/ic-todo.gif");
+}
+.btBox .btIndex {
+  padding-bottom: 2px;
+  padding-top: 2px;
+  background-image: url("/_common/themes/gw/files/schedule/ic-arrow01.gif");
+  text-align: center;
+}
+.schedulePiece .btBox .customLink {
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+.btBox .btIndex.current {
+  background-image: url("/_common/themes/gw/files/schedule/menu_tri_07on.gif");
+}
+.schedulePiece .btBox .schSelBox {
+  padding-top: 5px;
+  padding-bottom: 3px;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+<%= render 'header_navi' %>
+
+<%= form_for :item, :url => {action: :create}, :html => {method: :post, id: "itemForm", multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+<% end %>
+
+</div>
+</div>

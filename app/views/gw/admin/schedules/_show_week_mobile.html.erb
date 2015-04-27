@@ -1,0 +1,62 @@
+<% if @show_flg %>
+<%
+link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{@uid}", "cgid=#{params[:cgid]}","dis=#{@dis}"], {:no_entity => true})
+@format = "%Y年%m月%d日（%_wd）"
+@day_format= "%Y-%m-%d"
+%>
+<hr class="borderDash"/>
+<p class="mobileSchedule">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
+<%= link_to "新規作成", "/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, @st_date)}" %>
+</p>
+<%= render '/gw/admin/schedules/mobile_header' %>
+<% 7.times { |i| %>
+<%
+week_add_day = @st_date + i
+date_schedules = @schedules.select {|s| s.date_between?(week_add_day) }
+%>
+<%= link_to "■#{date_format(@format, week_add_day)}", "/gw/schedules/#{week_add_day.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}" %>
+<br/>
+<% @users.each do |user| %>
+<% if params[:gid].present? -%>
+  <%= user.display_name -%><br />
+<% end -%>
+<% schedules = date_schedules.select {|s| s.schedule_users.any? {|su| su.uid == user.id } } %>
+<% date_schedules.each do |schedule| %>
+<div class="scheduleCategory <%= schedule.display_category_class -%>">
+<p class="leftPad2">
+  <%= schedule.display_time_for_mobile(week_add_day) %>
+</p>
+<p class="leftPad1">
+  <% if schedule.is_public_auth?(@is_gw_admin) %>
+  &nbsp;&nbsp;<%= link_to schedule.title, "/gw/schedules/#{schedule.id}/show_one#{link_params}&topdate=#{@topdate}" -%>
+  <% else -%>
+  &nbsp;&nbsp;<font style="color: #999999;">[非公開予定]</font>
+  <% end -%>
+</p>
+</div>
+<% end -%><%# schedules.each %>
+
+<% @holidays.each do |holiday| %>
+<% if holiday.st_at && holiday.st_at.to_date == week_add_day %>
+<div>
+<p class="leftPad1">
+<span class="textRed">
+<%= holiday.title %><br />
+</span>
+</p>
+</div>
+<% end -%><%# if holiday.st_at %>
+<% end -%><%# @holidays.each %>
+<% end -%><%# @users.each %>
+<%}%>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%= link_to "<<次週", "/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, @st_date+7)}&dis=#{@dis}" %>
+</p>
+<p class="leftPad2">
+<%= link_to "先週>>", "/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, @st_date-7)}&dis=#{@dis}" %>
+</p>
+<% else -%>
+表示する項目はありません。
+<% end -%>

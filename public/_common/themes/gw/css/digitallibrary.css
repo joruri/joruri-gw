@@ -1,0 +1,67 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/digitallibrary.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+.digitalLibrary {
+  background-image: url(/_common/themes/gw/files/title/title_electronic-book.gif);
+}
+
+/* 紺色大枠
+------------------------------------------*/
+#content .digitalLibrary .pieceBody {
+  padding: 10px 10px 10px;
+}
+
+/* table index
+------------------------------------------*/
+table.index th {
+  border: none;
+}
+table.index td.libraryTitle {
+  width: 31%;
+}
+table.index td.manager {
+  width: 145px;
+}
+table.index td.update {
+  width: 120px;
+}
+#page-digitallibrary-cabinets table.index th {
+  border: none;
+}
+
+/* table cabinets(管理者ページ　一覧テーブル)
+------------------------------------------*/
+.digitalLibrary table.cabinets {
+  table-layout: fixed;
+}
+
+/* table show
+-------------------------------------------*/
+table.show {
+  width: 100%;
+}
+
+/* タブ周り
+-----------------------------------------*/
+#contentBody td.tab {
+  width: 160px;
+}
+#contentBody .tabBox td.current {
+  border-bottom: 1px solid #E3EFFF;
+}
+
+/* 機能ボタン
+-----------------------------------------*/
+.digitalLibrary .editingBox {
+  width:100%;
+}
+.digitalLibrary .editingBox a {
+  margin-left: 0;
+}
+.digitalLibrary .contentMenu {
+  margin-bottom: 10px;
+}

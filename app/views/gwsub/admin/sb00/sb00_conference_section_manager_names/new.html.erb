@@ -1,0 +1,20 @@
+<%
+@create_path = @index_uri
+-%>
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBanner">
+<%= render 'menu' %>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => @create_path do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+<%= submit_for(f, {:caption => '保存'})  %>
+
+<% end %>
+</div>
+</div>

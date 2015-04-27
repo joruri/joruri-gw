@@ -1,0 +1,29 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: development_jorurigw
+  pool: 5
+  username: joruri
+  password: pass
+  socket: /var/lib/mysql/mysql.sock
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: test_jorurigw
+  pool: 5
+  username: joruri
+  password: pass
+  socket: /var/lib/mysql/mysql.sock
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: production_jorurigw
+  pool: 5
+  username: joruri
+  password: pass
+  socket: /var/lib/mysql/mysql.sock

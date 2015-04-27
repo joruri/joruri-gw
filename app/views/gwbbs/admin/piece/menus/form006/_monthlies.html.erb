@@ -1,0 +1,11 @@
+<h3 class="iconSideMonth">通知日別
+  <span class="<%= 'current' if params[:state] == 'DATE'%>">
+    <%= link_to '通知日別', "#{@title.docs_path}&state=DATE" %>
+  </span>
+</h3>
+<ul>
+<% @monthlies.each do |monthly| %>
+  <% monthly_name = "#{monthly.inpfld_006w}(#{monthly.cnt})" %>
+  <li>・<%= link_to monthly_name, @title.docs_path + "&state=DATE&yyyy=#{URI.encode(monthly.inpfld_006w)}" %></li>
+<% end %>
+</ul>

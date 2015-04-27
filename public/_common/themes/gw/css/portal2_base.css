@@ -1,0 +1,577 @@
+@charset "UTF-8";
+@import "/_common/themes/gw/css/portal2_common_classes_gw.css";
+/* =========================================================
+   _common/themes/gw/css/portal2_base.css
+========================================================= */
+/* base style
+----------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1.3;
+}
+input, textarea {
+  font-size: 110%;
+  font-family: Arial,sans-serif;
+}
+blockquote {
+  margin: 10px 20px;
+}
+h1, h2, h3, h4, h5 {
+  font-size: 120%;
+  font-family: verdana;
+}
+img {
+  border-style: none;
+  text-decoration: none;
+}
+pre {
+  font-family: monospace, "ＭＳ ゴシック", "ヒラギノ角ゴ ProN W3", sans-serif;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  empty-cells: show;
+}
+ul {
+  list-style-position: outside;
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
+}
+a:link {
+  color: #36b;
+}
+a:visited {
+  color: #609;
+}
+a:hover {
+  text-decoration: underline;
+}
+a.ext {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/icon_external.png);
+  background-repeat: no-repeat;
+  background-position: left top;
+  text-decoration: none;
+}
+a:link.ext {
+  color: #36b;
+}
+a:visited.ext {
+  color: #609;
+}
+a:hover.ext {
+  text-decoration: underline;
+}
+.headerMenu a:visited,
+#schedule a:visited,
+#headLine a:visited,
+.copyright a:visited,
+#docTab a:visited {
+  color: #36b;
+}
+#reminder .expired,
+#schedule #index.action .expired {
+  color: red;
+}
+.nobr {
+  white-space: nowrap;
+}
+
+/* layout style
+----------------------------------------------- */
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  border: 0px none;
+  background-color: #ffffff;
+  font-size: 80%;
+}
+body, td, th, select, option {
+  font-weight: lighter;
+  font-family: "MS PGothic","ＭＳ Ｐゴシック",Arial,Verdana,Osaka,sans-serif;
+}
+br {
+  letter-spacing: normal;
+}
+#container {
+  width: 100%;
+  height: 100%;
+  margin: 0px auto;
+} 
+#header {
+  background-image: url(/layout/portal2/files/header_back.gif);
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+#headerBody {
+  height: 35px;
+  padding-bottom: 5px;
+}
+#banner {
+  clear: both;
+}
+#navi {
+  clear: both;
+}
+#navi2 {
+  clear: both;
+  width: 98%;
+  margin: 0px auto;
+}
+#main {
+  clear: both;
+  width: 98%;
+  margin: 10px auto 0px auto;
+}
+#wrapper {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+}
+#menuContainer {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+#links {
+  display: none;
+}
+#linksContainer {
+  display: none;
+}
+#footer {
+  clear: both;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 30px 0px 0px 0px;
+}
+#footerContainer {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+}
+#footerBody {
+  margin: 0px 0px 0px 0px;
+  padding-top:3px;
+  background: #011c75;
+}
+
+/* avoid output navigation on printing
+----------------------------------------------- */
+@media print {
+  #header, #headerBody, #banner, #bannerBody, #navi,
+  #naviBody, #menu, #menuContainer, #links, #linksContainer,
+  #footer, #footerContainer, #footerBody {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+  #content, #contentContainer {
+    margin: 0;
+  }
+}
+@media screen {
+}
+
+/* Header style
+----------------------------------------------- */
+#header h1 {
+  float: left;
+  height: 35px;
+  width: 155px;
+  background-image: url(/_common/themes/gw/files/header_joruri.gif);
+  background-repeat: no-repeat;
+  background-position: left top;
+  verticle-align: top;
+}
+#header h1 a {
+  overflow: hidden;
+  display: block;
+  width: 140px;
+  height: 0px !important;
+  height /**/: 35px; /* 互換モード用 */
+  padding-top: 35px;
+  verticle-align: top;
+  outline: 0;
+}
+#headerBody .piece {
+  float: left;
+  width: 45%;
+  color: #fff;
+  vertical-align :bottom;
+}
+#headerBody .personal {
+  line-height: 35px;
+}
+.headerSearch {
+  float: right;
+  padding: 5px;
+  text-align: right;
+}
+form.search {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+form.search th {
+  padding: 0 5px 0 0;
+}
+form.search td {
+  padding: 0 15px 0 0;
+}
+form.search td.submitters input {
+  width: 60px;
+  font-size: 80%;
+}
+
+/* Banner style menu
+----------------------------------------------- */
+.headerMenu {
+  border-bottom: 2px #999 solid;
+  zoom: 100%;
+}
+.headerMenu ul:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  content: ".";
+}
+.headerMenu li {
+  float: left;
+  width: 70px;
+  padding: 10px 5px 10px 5px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* navi style tab
+----------------------------------------------- */
+#docTab {
+  width: 100%;
+  margin-top: 10px;
+  padding: 0px 0px;
+  border-bottom: 1px solid #333;
+}
+#docTab .tabs {
+  padding-left: 10px;
+}
+.tabs:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0pt;
+  content: ".";
+}
+#docTab a {
+  display: block;
+  float: left;
+  width: 9%;
+  margin-right: 2px;
+  padding: 5px 0px;
+  border: 1px solid #999;
+  border-bottom: none;
+  background-color: #f2f2f2;
+  text-align: center;
+  white-space: nowrap;
+}
+* html #docTab .tabs a {
+  width: 10%;
+}
+#docTab a:hover {
+  border: 1px solid #333;
+  border-bottom: none;
+  background-color: #133995;
+  color: #fff;
+  text-align: center;
+}
+#docTab a.current {
+  border: 1px solid #333;
+  border-bottom: none;
+  background-color: #133995;
+  color: #fff;
+}
+#docTab a:visited.current {
+  border: 1px solid #333;
+  border-bottom: none;
+  background-color: #133995;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* main piece style
+----------------------------------------------- */
+#content .piece {
+  margin-bottom: 20px;
+  border: 1px solid #999;
+}
+#content .pieceHeader {
+  padding: 1px;
+  border-bottom: 1px solid #9eacd3;
+  background-color: #fff;
+}
+#content .pieceHeader h3 {
+  padding: 5px;
+  background-color: #e1e7ff;
+  color: #33c;
+  font-size: 100%;
+  font-weight: bold;
+}
+#content .pieceBody {
+  padding: 5px;
+}
+#content .pieceBody h4 {
+  padding: 5px 0px 5px 23px;
+  background-color: #ededed;
+  background-image: url(/_common/themes/gw/files/icon_bbs.gif);
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  color: #000;
+  font-size: 100%;
+  font-weight: bold;
+}
+
+/* footer style
+----------------------------------------------- */
+.copyright {
+  width: 100%;
+  padding: 5px 0px;
+  border-top: 1px solid #fff;
+  color: #fff;
+  text-align: center;
+}
+.copyright a {
+  color: #fff;
+}
+.copyright a:visited {
+  color: #fff;
+}
+
+/* below imported from /public/_common/themes/admin/common.css
+----------------------------------------------- */
+.notice {
+  margin: 10px 10px;
+  color: #080;
+}
+
+/* below imported from /public/_common/themes/admin/outline.css
+----------------------------------------------- */
+#contentBody .menu {
+  margin: 3px 0px 0px 0px;
+  padding: 0px 0px 3px 0px;
+  border-bottom: 1px dashed #bbb;
+  line-height: 1.5;
+}
+#contentBody .menu p {
+  float: left;
+  width: 140px;
+  padding: 0px 0px 0px 10px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  font-size: 100%;
+  font-weight: lighter;
+}
+#contentBody .menu a {
+  display: inline-block;
+  padding: 0px 15px;
+  border-right: 1px solid #ccc;
+  text-decoration: none;
+}
+
+/* below gw original
+   Logout.
+----------------------------------------------- */
+.logout {
+  vertical-align: middle;
+}
+a.logout {
+  color: white;
+  text-decoration: none;
+}
+a:visited.logout {
+  color: white;
+}
+a:hover.logout {
+  color: red;
+  text-decoration: underline;
+}
+
+/* bbs/rss
+----------------------------------------------- */
+.bbs table.index {
+  width: 100%;
+  border: 1px solid #ccc;
+}
+.bbs table.index th {
+  padding: 0px;
+  border: 1px solid #ccc;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+}
+.bbs table.index td {
+  padding: 2px 7px;
+  border: 1px solid #ccc;
+}
+.bbs table.index td.integer {
+  text-align: right;
+}
+.bbs table.index td.decimal {
+  text-align: right;
+}
+.bbs table.index td.float {
+  text-align: right;
+}
+.bbs table.index tr.cycle td {
+  background-color: #f4f7f7;
+}
+
+/* schedule
+----------------------------------------------- */
+#schedule {
+  border: none;
+}
+#schedule .pieceHeader table {
+  width: 100%;
+  margin: 20px 0px 10px 0px;
+  border: 1px solid #999;
+}
+#schedule .pieceHeader th {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #999;
+  background-color: #e1e7ff;
+  font-weight: bold;
+  text-align: left;
+}
+#schedule .pieceHeader td {
+  padding: 5px;
+  border-bottom: 1px solid #999;
+  white-space: nowrap;
+}
+#schedule .pieceHeader td.date-today {
+  text-align: center;
+}
+#schedule .pieceHeader td.date-change {
+  width: 15%;
+  text-align: center;
+}
+#schedule .pieceBody table {
+  width: 100%;
+  margin: 0px 0px 10px 0px;
+  border: 1px solid #999;
+}
+#schedule #index.action .pieceBody th {
+  width:12%;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  white-space: nowrap;
+}
+#schedule .pieceBody th.weekday {
+  background-color: #feffb3;
+}
+#schedule .pieceBody th.holiday {
+  background-color: #fbe1ec;
+}
+#schedule .pieceBody th.sunday {
+  background-color: #fbe1ec;
+}
+#schedule .pieceBody th.saturday {
+  background-color: #c8ebf1;
+}
+#schedule #index.action .pieceBody td {
+  width: auto;
+  height: 150px;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: left;
+  verticle-align: middle;
+}
+#schedule .pieceBody th.sche_user {
+  background-color: #ded;
+  text-align: center;
+}
+#schedule #show.action .pieceBody table {
+  margin: 20px 0px 10px 0px;
+}
+#schedule #index.action .pieceBody .dayview {
+  white-space: nowrap;
+}
+#schedule #index.action .pieceBody th.dayview {
+  background-color: #feffb3;
+}
+#schedule #index.action .pieceBody td.dayview {
+  height: auto;
+  verticle-align: top;
+}
+.mock {
+  color: red;
+}
+.mockblock {
+  border-color: red;
+}
+
+/* below imported from _common/themes/admin/scaffold.css
+----------------------------------------------- */
+.showMenu a {
+  display: inline-block;
+  width: 80px;
+  margin: 0 10px 0 0;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 2px 2px 1px;
+  background-color: #eee;
+  color: #800;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.7;
+}
+.showMenu a:hover {
+  border-color:#bbb;
+  text-decoration: underline;
+}
+
+/* below imported from _common/themes/admin/common.css
+----------------------------------------------- */
+.fieldWithErrors {
+  display: inline-block;
+  /display: inline;
+  padding: 1px;
+  border: 1px solid #f00;
+}
+#errorExplanation {
+  width: 500px;
+  margin: 15px 0px;
+  border: 2px solid #f00;
+}
+#errorExplanation h2 {
+  padding: 5px 10px;
+  background-color: #c00;
+  color: #ffffff;
+  font-size: 100%;
+}
+#errorExplanation p {
+  padding: 5px 10px;
+  color: #333;
+  font-weight: bold;
+}
+#errorExplanation ul {
+  padding: 0px 0px 10px 0px;
+  list-style-type: square;
+}
+#errorExplanation ul li {
+  margin-left: 30px;
+  padding-left: 0px;
+  font-size: 12px;
+}

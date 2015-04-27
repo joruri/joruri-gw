@@ -1,0 +1,134 @@
+<%
+copy_path = "/gwsub/sb04/04/sb04assignedjobs/year_copy_run?#{@qs}"
+origin_fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+origin_fyear_id = nz(@fyed_id, 0).to_i
+origin_fyear_id = origin_fyears[0][1] if origin_fyear_id == 0
+origin_section_id = 0
+
+if @u_role == true
+  destination_fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+else
+  destination_fyears = Gwsub::Sb04stafflistviewMaster.sb04_dev_fyear_select
+end
+destination_fyear_id = nz(destination_fyears[0][1], 0).to_i
+destination_section_id = 0
+
+unless params[:item].blank?
+  origin_fyear_id = params[:item][:origin_fyear_id].to_i
+  origin_section_id = params[:item][:origin_section_id].to_i
+  destination_fyear_id = params[:item][:destination_fyear_id].to_i
+  destination_section_id = params[:item][:destination_section_id].to_i
+else
+  now = Time.now
+  origin_fyear_last = Gw::YearFiscalJp.get_record(Time.local(now.year - 1, now.month, now.day, 0, 0, 0))
+  origin_fyear_id = origin_fyear_last.id unless origin_fyear_last.blank?
+end
+
+origin_sections = Gwsub::Sb04section.sb04_group_select(origin_fyear_id, 1)
+
+if @u_role == true
+  destination_sections = Gwsub::Sb04section.sb04_group_select(destination_fyear_id, 1)
+else
+  destination_sections = Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(destination_fyear_id.to_i)
+end
+
+%>
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
+</div>
+<div class="pieceBody">
+<%# unless @ret.blank? -%>
+  <%# if @ret[:result] == true -%>
+    <%#= Gw.div_notice(@ret[:msg][0]) %>
+  <%# else %>
+    <%#= Gw.error_div(@ret[:msg]) %>
+  <%# end %>
+<%# end %>
+<div style="margin-left:1em;">
+</div>
+<h4 style="margin-left:2em;">過去データコピー</h4>
+<div style="margin-left:3em;">
+コピー元とコピー先を指定してください。<br />
+コピー元の担当データをコピー先にコピーします。<br />
+<span style="color:red">
+従来のコピー先のデータは削除され、元には戻せません。ご注意ください。<br />
+また、担当のデータをコピーした場合、職員録全体の整合性を取るため、
+必ず「<a target="_blank" href="/gwsub/sb04/04/sb04stafflists/year_copy?<%= @qs -%>">職員データの過去データコピー</a>」も
+実施してください。<br /><br />
+</span>
+<br />
+<%= form_for :item, :url => copy_path, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= f.hidden_field(:copy, :value => 'copy') %>
+<table class="show">
+<tr>
+  <th>コピー元</th>
+  <td><%= f.select(:origin_fyear_id , options_for_select(origin_fyears ,  origin_fyear_id) ,{}, {:onchange=>'update_origin_sb04assignedjobs();'}) %></td>
+  <td><%= f.select(:origin_section_id , options_for_select(origin_sections ,  origin_section_id)) %></td>
+</tr>
+<tr>
+  <th>コピー先</th>
+  <td><%= f.select(:destination_fyear_id , options_for_select(destination_fyears ,  destination_fyear_id) ,{} ,{:onchange=>'update_destination_sb04assignedjobs();'}) %></td>
+  <td><%= f.select(:destination_section_id , options_for_select(destination_sections ,  destination_section_id)) %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= submit_for_update(f, :caption => "確定する" ,:js_submitter => 'my_submit()') %>
+
+</div>
+<% end %>
+</div>
+</div>
+</div>
+
+<script language = "JavaScript" type="text/javascript">
+<!--
+  var end_cnt = -1;
+  var ed_str = '';
+  function update_origin_sb04assignedjobs() {
+    fyear_id = $("item_origin_fyear_id").value
+    end_cnt = 0;
+    url = "/gwsub/sb04/04/sb04stafflists/section_fields?fyed_id=" + fyear_id;
+    new Ajax.Request(url, {method:'get', onComplete: function(x){
+      $('item_origin_section_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      ed_str = ed_str + 'section:';
+      if (end_cnt == 4) {
+      }
+    }})
+  }
+  function update_destination_sb04assignedjobs() {
+    fyear_id = $("item_destination_fyear_id").value
+    end_cnt = 0;
+    url = "/gwsub/sb04/01/sb04stafflistview_masters/section_fields_year_copy?fyed_id=" + fyear_id;
+    new Ajax.Request(url, {method:'get', onComplete: function(x){
+      $('item_destination_section_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      ed_str = ed_str + 'section:';
+      if (end_cnt == 4) {
+      }
+    }})
+  }
+
+  var my_submit = function() {
+    // アラート
+    var origin_fyear = $('item_origin_fyear_id').options[$('item_origin_fyear_id').selectedIndex].text;
+    var origin_section = $('item_origin_section_id').options[$('item_origin_section_id').selectedIndex].text;
+    var destination_fyear = $('item_destination_fyear_id').options[$('item_destination_fyear_id').selectedIndex].text;
+    var destination_section = $('item_destination_section_id').options[$('item_destination_section_id').selectedIndex].text;
+
+    confirm_str = '「' + origin_fyear + '年 ' + origin_section + '」のデータを' + '「' + destination_fyear + '年 ' + destination_section + '」'
+    confirm_str = confirm_str + 'にコピーします。よろしいですか？'
+    if(window.confirm(confirm_str)){// 「OK」時の処理終了
+    } else {
+      return false;
+    }
+
+    $('itemForm').submit(); // 送信
+
+  }
+-->
+</script>

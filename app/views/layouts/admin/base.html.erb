@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<link rel="icon" href="/favicon.ico" />
+<title><%= Core.title %></title>
+<%= stylesheet_link_tag '/_common/themes/admin/style' %>
+<%= javascript_include_tag '/javascripts/prototype' %>
+</head>
+<body>
+<div id="simpleContainer">
+
+<%= render 'layouts/admin/gw/notice' %>
+<%= yield  %>
+
+</div>
+</body>
+</html>

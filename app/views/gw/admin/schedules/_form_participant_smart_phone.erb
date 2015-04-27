@@ -1,0 +1,64 @@
+<%
+@users_json = [["1",Core.user.id,Core.user.display_name]].to_json if @users_json.blank?
+unless params[:item].blank?
+  users_json = []
+  if params[:item][:schedule_users].blank?
+    #
+  else
+    params[:item][:schedule_users].each do |u|
+      if u[1].to_i != 0
+        user_name = System::User.where(:id => u[1]).first
+        users_json << ["1",u[1],"#{user_name.name}"]
+      end
+    end
+    params[:item][:schedule_users_json] = users_json.to_json
+  end
+end
+%>
+<%= hidden_field_tag 'init[schedule_users_json]', (params[:item].nil? ? nz(@users_json) : params[:item][:schedule_users_json]) %>
+<%
+if params[:item].blank?
+ users_json = @users_json
+else
+ users_json = params[:item][:schedule_users_json]
+end
+selected_field = []
+
+if users_json.blank?
+10.times { |i|
+  selected_field  << ["選択なし",0]
+}
+else
+items = ::JSON.parse(users_json)
+limit = items.size - 1
+10.times { |i|
+  if i <= limit
+    selected_field  << [items[i][2],items[i][1]]
+  else
+    selected_field  << 0
+  end
+}
+end
+users = System::User.get_user_select(nil, nil, {:ldap => 1})
+users << ["選択なし",0]
+users = users.sort{|a,b|
+a[1] <=> b[1]
+}
+select_style ='width:200px;margin-top: 5px;'
+%>
+<table class="show">
+<tr>
+<th><div id="participant_title">参加者</div></th>
+</tr>
+<%10.times { |i|%>
+<%= hidden_field_tag "item[schedule_users][uid_#{i+1}]", (selected_field[i][1].to_i) %>
+<%user = System::User.where(:id =>selected_field[i][1]).first%>
+<%unless user.blank?%>
+<tr><td>
+・<%=user.display_name %><br />
+</td></tr>
+<%end%>
+<%#= select_tag("item[schedule_users][uid_#{i+1}]", options_for_select(users, selected_field[i][1].to_i), :style => select_style )%>
+<%}%>
+</table>
+<br />

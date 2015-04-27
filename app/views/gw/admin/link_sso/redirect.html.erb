@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>redirect</title>
+</head>
+<body onload="document.loginform.submit();">
+<%= "#{@params[:title]}へ接続しています..." if @params[:title].present? %>
+<form name="loginform" action="<%= @params[:url] %>" method="<%= @params[:method] %>" >
+  <input type="hidden" name="<%= @params[:account_field] %>" value="<%= Core.user.code %>">
+  <input type="hidden" name="<%= @params[:password_field] %>" value="<%= Core.user.password %>">
+</form>
+</body>
+</html>

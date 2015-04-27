@@ -1,0 +1,34 @@
+<div class="piece memo setting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+<span class="title">リマインダー表示設定</span>
+</div>
+</div>
+<div class="pieceBodyBody">
+
+<%= form_tag "/gw/memo_settings/edit_reminder", {:method => :put, :multipart => true} do %>
+  <%= error_messages_for @item %>
+  <table class="show">
+    <tr>
+      <th>既読</th>
+      <td><%= select_tag 'item[memos][read_memos_display]', options_for_select(@item.display_options, @item.read_memos_display) %></td>
+    </tr>
+    <tr>
+      <th>未読</th>
+      <td><%= select_tag 'item[memos][unread_memos_display]', options_for_select(@item.display_options, @item.unread_memos_display) %></td>
+    </tr>
+  </table>
+  <div class="submitters"><%= submit_tag('保存') %></div>
+<% end %>
+</div>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '連絡メモ設定へ戻る', "/gw/memo_settings" %>
+</div>
+
+</div>
+</div>

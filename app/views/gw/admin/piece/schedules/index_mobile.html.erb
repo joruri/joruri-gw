@@ -1,0 +1,17 @@
+<p class="mobileSchedule">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
+<%=l @st_date, format: :date_wday2_ja if @st_date %>の予定
+</p>
+<%= render 'gw/admin/schedules/show_day_mobile' %>
+<hr class="borderDash"/>
+<%
+sche_date = Time.now.strftime('%Y%m%d')
+cg_link = "/gw/schedules/?s_date=#{sche_date}&dis=group&cgid=" + (@first_custom_group.blank? ? "#{@cgid}" : "#{@first_custom_group.id}" )
+%>
+<p class="mobileSchedule">
+<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
+<%= link_to  "スケジュール" ,"/gw/mobile_schedules/ind_list" -%>
+</p>
+└&nbsp;<%= link_to "個人（週表示）", "/gw/schedules?s_date=#{sche_date}&dis=week" -%><br />
+└&nbsp;<%= link_to "グループ（日表示）", "/gw/schedules/?s_date=#{sche_date}&dis=group&gid=#{Core.user_group.id}" -%><br />
+└&nbsp;<%= link_to "カスタム（日表示）", cg_link -%><br />

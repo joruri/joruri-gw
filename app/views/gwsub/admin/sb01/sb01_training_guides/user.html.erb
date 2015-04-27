@@ -1,0 +1,27 @@
+<%
+options =  {
+  'table_name'      => 'gwsub_sb01_training_guides',
+  :action=>'bbs',
+  'link_to_show'    => 0
+}
+options['field_td_criteria'] = {
+  'title' => Proc.new{|item|
+      %Q(<a href="#{h item.bbs_url}" target="_blank" title="#{@bbs_link_title}" >#{item.title}</a>)
+    }
+}
+%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_level1_menu' %>
+<%= render 'gwsub/admin/sb01/sb01_training_entries/level2_menu_header' %>
+</div>
+<div class="pieceBody">
+<%= raw(table_to_index2(@items, options)) %>
+<br/>
+<%= paginate @items %>
+<br/>
+</div>
+</div>

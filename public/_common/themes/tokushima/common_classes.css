@@ -1,0 +1,465 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Common Classes
+========================================================= */
+
+/* blank to clear
+----------------------------------------------- */
+div.clearBlank {
+ clear: both;
+ height: 1px;
+ font-size: 1px;
+ line-height: 1px;
+}
+
+/* icon
+----------------------------------------------- */
+img.fileIcon {
+ position: relative;
+ margin-right: 3px;
+ vertical-align: middle;
+}
+
+/* Notices
+------------------------------------- */
+ul.notices {
+ margin: 0px 0px 15px 0px;
+ padding: 5px 10px;
+ background-color: #def;
+ border: 1px solid #bdf;
+}
+ul.notices li {
+ color: #35f;
+}
+
+/* Errors
+------------------------------------- */
+.formError {
+ margin: 15px 0px;
+ padding: 10px;
+ border: 1px solid #e00;
+ color: #e00;
+}
+.elementError {
+ margin: 3px 0px 0px 0px;
+ color: #e00;
+}
+
+/* Form relation
+------------------------------------- */
+div.submitters {
+ margin: 20px 10px;
+}
+div.submitters input, div.submitters a {
+ margin: 0px 10px;
+}
+div.submitters input {
+ width: 100px;
+}
+
+/* Table for list
+------------------------------------- */
+table.list {
+ width: 100%;
+ margin-top:20px;
+}
+
+* html table.list {
+ width: 720px;
+}
+
+table.list th {
+ padding: 6px 7px;
+ border: 1px solid #bbb;
+ background-color: #e4e4e4;
+ color: #000;
+ font-weight: lighter;
+ text-align: left;
+}
+table.list td {
+ padding: 6px 7px;
+ border: 1px solid #ccc;
+}
+table.list tr.cycle td {
+/* background-color: #f7f7f7; */
+ background-color: #000;
+}
+
+/* Table for form
+------------------------------------- */
+table.form {
+ width: 100%;
+ margin: 15px 0px;
+}
+table.form th {
+ width: 200px;
+ padding: 6px 7px;
+ border: 1px solid #bbb;
+ background-color: #e4e4e4;
+ color: #000;
+ font-weight: lighter;
+ text-align: left;
+}
+table.form td {
+ padding: 6px 7px;
+ border: 1px solid #ccc;
+}
+
+/* index's table 
+------------------------------------- */
+table.index {
+  width: 100%;
+}
+table.index th {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  color: #000;
+  font-weight: lighter;
+  text-align: left;
+}
+table.index td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+table.index tr.cycle td {
+  background-color: #fafafa;
+}
+
+/* show's table
+------------------------------------- */
+table.show {
+  width: 100%;
+  margin: 10px 0px 0px 0px;
+}
+table.show th {
+  width: 135px;
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  font-weight: lighter;
+  text-align: left;
+  vertical-align: top;
+}
+table.show td {
+  padding: 6px 7px;
+  border: 1px solid #ccc;
+}
+
+/* Form relation
+------------------------------------- */
+div.submitters {
+ margin: 20px 10px;
+}
+div.submitters input, div.submitters a {
+ margin: 0px 10px;
+}
+div.submitters input {
+ width: 100px;
+}
+
+/* Pagination.
+----------------------------------------------- */
+.pagination {
+ margin: 20px 0px;
+ text-align: center;
+}
+.pagination a,
+.pagination span.disabled,
+.pagination span.current {
+ padding: 5px 7px;
+ text-decoration: none;
+}
+.pagination a:hover {
+ background-color: #eee;
+}
+.pagination span.current {
+ font-weight: bold;
+}
+.pagination span.disabled {
+ color: #888;
+}
+.pagination span.separator {
+ color: #888;
+}
+
+/* Feed.
+----------------------------------------------- */
+
+a.more{
+display:block;
+float:left;
+}
+
+
+.more .feedRss {/*-----------topRSS-------------*/
+  display: block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height /**/:13px; /* 互換モード用 */
+  padding-top: 13px;
+  background-image: url(/_common/images/icons/feed_rss.gif);
+  position:absolute;
+  outline: 0;
+  vertical-align: middle;
+}
+
+* html .more .feedRss {/*-----------topRSS-------------*/
+  display: block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height /**/:13px; /* 互換モード用 */
+/*  padding-top: 13px;*/
+/*  margin-top:-13px;*/
+  background-image: url(/_common/images/icons/feed_rss.gif);
+  position:absolute;
+  outline: 0;
+  vertical-align: middle;
+}
+
+/*-----------bunyaRSS-------------*/
+/*
+.latest .feedRss {
+  display: block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height /**//*:13px; *//* 互換モード用 */
+/*  padding-top: 13px;
+  margin-top:-13px;
+  background-image: url(/_common/images/icons/feed_rss.gif);
+  position:absolute;
+  right:10px;
+  top:0.6em;
+  outline: 0;
+  vertical-align: middle;
+}*/
+
+
+/*-----------bunyaRSS-------------*/
+.latest .feedRss {
+  background-image: url(/_common/images/icons/feed_rss.gif);
+  display: block;
+  width: 40px;
+  height:13px;
+}
+
+
+
+
+
+
+
+* html .latest .feedRss {/*-----------bunyaRSS-------------*/
+  display: block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height /**/:13px; /* 互換モード用 */
+  padding-top: 13px;
+  margin-top:-13px;
+  background-image: url(/_common/images/icons/feed_rss.gif);
+  position:absolute;
+  right:10px;
+  top:0.8em;
+  outline: 0;
+  vertical-align: middle;
+}
+/*
+* html .feedRss{
+  display: block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height /**/:13px; /* 互換モード用 */
+/*  padding-top: 13px;*/
+/*  margin-top:-13px;*/
+/*  background-image: url(/_common/images/icons/feed_rss.gif);*/
+/*  position:absolute;
+  left:8.5em;
+  outline: 0;
+  vertical-align: middle;
+}*/
+
+.feedAtom {
+display:none;
+}
+
+/*
+.feedAtom {
+  display: inline-block;
+  overflow: hidden;
+  width: 40px;
+  height: 0px !important;
+  height:13px; /* 互換モード用 */
+/*
+  padding-top: 13px;
+  background-image: url(/_common/images/icons/feed_atom.gif);
+  outline: 0;
+  vertical-align: middle;
+}
+*/
+
+/* Icons.
+----------------------------------------------- */
+/*-- size big version
+.icon, .iconFile {
+  display: inline-block;
+  height: 40px;
+  padding: 0px 5px 0px 42px;
+  background-repeat: no-repeat;
+  background-image: url(/_common/images/icons/default.gif);
+  line-height: 2.8;
+}
+.iconBmp, .iconCsv, .iconDoc, .iconGif, .iconJpg, .iconJpe, .iconJpeg,
+.iconJtd, .iconLzh, .iconPdf, .iconPng, .iconPpt, .iconTxt, .iconXls , .iconZip, .iconVbs, .iconExe {
+  height:40px;
+  display:block;
+}
+
+.iconBmp { background-image: url(/_common/images/icons/bmp.gif); }
+.iconCsv { background-image: url(/_common/images/icons/csv.gif); }
+.iconDoc { background-image: url(/_common/images/icons/doc.gif); }
+.iconGif { background-image: url(/_common/images/icons/gif.gif); }
+.iconJpg { background-image: url(/_common/images/icons/jpg.gif); }
+.iconJpe { background-image: url(/_common/images/icons/jpg.gif); }
+.iconJpeg { background-image: url(/_common/images/icons/jpg.gif); }
+.iconJtd { background-image: url(/_common/images/icons/jtd.gif); }
+.iconLzh { background-image: url(/_common/images/icons/lzh.gif); }
+.iconPdf { background-image: url(/_common/images/icons/pdf.gif); }
+.iconPng { background-image: url(/_common/images/icons/png.gif); }
+.iconPpt { background-image: url(/_common/images/icons/ppt.gif); }
+.iconTxt { background-image: url(/_common/images/icons/txt.gif); }
+.iconXls { background-image: url(/_common/images/icons/xls.gif); }
+.iconZip { background-image: url(/_common/images/icons/zip.gif); }
+.iconVbs { background-image: url(/_common/images/icons/vbs.gif); }
+.iconExe { background-image: url(/_common/images/icons/exe.gif); }
+--*/
+
+
+.icon, .iconFile {
+  display: inline-block;
+  height: 24px;
+  padding: 0px 0px 0px 0px;
+  background-image: url(/_common/images/icons/icon24/default.png);
+  background-repeat: no-repeat;
+}
+td.attachIcon .icon, td.attachIcon .iconFile {
+  padding-top: 0;
+}
+p .iconFile, .icon, .iconFile {
+  line-height: 1.8;
+  margin-top: 5px;
+  margin-right: 10px;
+  padding-top: 18px;
+  padding-left: 0px;
+  background-position: center 0;
+}
+/*
+.iconBmp, .iconCsv, .iconDoc, .iconGif, .iconJpg, .iconJpe, .iconJpeg,
+.iconJtd, .iconLzh, .iconPdf, .iconPng, .iconPpt, .iconTxt, .iconXls , .iconZip, .iconVbs, .iconExe,
+.iconOdb, .iconOdf, .iconOdg, .iconOdp, .iconOds, .iconOdt, .iconMap {
+  height:24px;
+  padding: 18px 0px 0px 0px;
+  display: inline-block;
+}*/
+
+.iconBmp { background-image: url(/_common/images/icons/icon24/bmp.png); }
+.iconCsv { background-image: url(/_common/images/icons/icon24/csv.png); }
+.iconDoc { background-image: url(/_common/images/icons/icon24/doc.png); }
+.iconGif { background-image: url(/_common/images/icons/icon24/gif.png); }
+.iconJpg { background-image: url(/_common/images/icons/icon24/jpg.png); }
+.iconJpe { background-image: url(/_common/images/icons/icon24/jpg.png); }
+.iconJpeg { background-image: url(/_common/images/icons/icon24/jpg.png);}
+.iconJtd { background-image: url(/_common/images/icons/icon24/jtd.png); }
+.iconLzh { background-image: url(/_common/images/icons/icon24/lzh.png); }
+.iconPdf { background-image: url(/_common/images/icons/icon24/pdf.png); }
+.iconPng { background-image: url(/_common/images/icons/icon24/png.png); }
+.iconPpt { background-image: url(/_common/images/icons/icon24/ppt.png); }
+.iconTxt { background-image: url(/_common/images/icons/icon24/txt.png); }
+.iconXls { background-image: url(/_common/images/icons/icon24/xls.png); }
+.iconZip { background-image: url(/_common/images/icons/icon24/zip.png); }
+.iconVbs { background-image: url(/_common/images/icons/icon24/vbs.png); }
+.iconExe { background-image: url(/_common/images/icons/icon24/exe.png); }
+.iconOdb { background-image: url(/_common/images/icons/icon24/odb.gif); }
+.iconOdf { background-image: url(/_common/images/icons/icon24/odf.gif); }
+.iconOdg, .iconOtg { background-image: url(/_common/images/icons/icon24/odg.gif); }
+.iconOdp, .iconOtp { background-image: url(/_common/images/icons/icon24/odp.gif); }
+.iconOds, .iconOts { background-image: url(/_common/images/icons/icon24/ods.gif); }
+.iconOdt, .iconOtt { background-image: url(/_common/images/icons/icon24/odt.gif); }
+.iconMap { background-image: url(/_common/images/icons/icon24/map.png); }
+.iconPptx, .pptx { background-image: url(/_common/images/icons/icon24/pptx.png); }
+.iconXlsx, .xlsx { background-image: url(/_common/images/icons/icon24/xlsx.png); }
+.iconDocx, .docx { background-image: url(/_common/images/icons/icon24/docx.png); }
+
+/*SideMenu
+------------------------------------------------------------*/
+
+#menu ul {
+ margin:0px 0px 8px 5px;
+ padding-top: 4px;
+ padding-bottom: 5px;
+ list-style-type:none;
+}
+
+#menu li {
+  margin:0px;
+  padding-left:10px;
+  line-height: 1.7;
+}
+
+#menu p {
+ padding: 4px 0 0 5px;
+ font-weight:bold;
+}
+
+.leftmenu1-img img{
+padding-top:6px;
+padding-left:6px;
+}
+
+/*List
+-----------------------------------------------------------*/
+
+.siteList .pieceHeader {
+  margin: 0;
+  padding: 0;
+/*  background-color: #fff;*/
+}
+
+.siteList .pieceBody {
+/*  background-color: #fff;*/
+}
+
+.siteList ul {
+ padding: 5px 0px 0px 4px;
+ list-style-type: none;
+}
+
+.siteList li {
+ margin:0px;
+ padding-left: 8px;
+ line-height:1.7;
+}
+
+#chuumokuInfo{
+ background-color:#F4F2E6;
+ margin-bottom:10px;
+}
+
+#chuumokuInfo a{
+ display:block;
+ margin:5px 0;
+ padding-left:25px;
+ background-repeat:no-repeat;
+ background-position:5px 2px;
+ height:18px;
+}
+
+#chuumokuInfo p{
+ padding:0px 10px 7px;
+ border-bottom:1px dotted #999999;
+}

@@ -1,0 +1,24 @@
+<%
+link_str1 = %Q(<span>研修登録</span>)
+link_url1 = '/gwsub/sb01/sb01_training_plans/new'
+link_str2 = %Q(<span>研修一覧</span>)
+link_url2 = "/gwsub/sb01/sb01_training_plans"
+link_str3 = %Q(<span>企画者利用の手引き</span>)
+link_url3 = "/gwsub/sb01/sb01_training_guides/manager"
+case @l2_current
+when '01'
+  link_str1 = %Q(<span class="gwsub_current_menu">研修登録</span>)
+when '02'
+  link_str2 = %Q(<span class="gwsub_current_menu">研修一覧</span>)
+when '03'
+  link_str3 = %Q(<span class="gwsub_current_menu">企画者利用の手引き</span>)
+else
+end
+%>
+<% unless link_str1.blank? %>
+<div class="menu">
+<%= link_to raw(link_str1) , url_for(link_url1) %>
+<%= link_to raw(link_str2) , url_for(link_url2) %>
+<%= link_to raw(link_str3) , url_for(link_url3) %>
+</div>
+<% end %>

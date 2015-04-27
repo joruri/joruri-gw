@@ -1,0 +1,24 @@
+<div class="piece todo setting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+<span class="title">ToDo削除設定</span>
+</div>
+</div>
+
+<div class="pieceBodyBody">
+
+<%= form_tag "/gw/todo_settings/edit_admin_deletes", {:method => :put, :multipart => true} do %>
+<table class="show">
+  <tr>
+    <th>削除対象</th>
+    <td><%= select_tag 'item[todos][todos_admin_delete]', options_for_select(@item.admin_delete_options, @item.todos_admin_delete) %></td>
+  </tr>
+</table>
+<div class="submitters"><%= submit_tag "保存" %></div>
+<% end %>
+</div>
+
+</div>
+</div>

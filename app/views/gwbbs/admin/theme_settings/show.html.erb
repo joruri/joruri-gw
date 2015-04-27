@@ -1,0 +1,41 @@
+<%= render 'header' %>
+
+<div class="editingBox">
+ <span class="btEdit"><%=link_to('編集', "#{@item.edit_path}")%></span>
+ <span class="btDestroy"><%=link_to '削除', "#{@item.delete_path}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+</div>
+
+<table class="show">
+<tr>
+<th>掲示板名称</th>
+<td colspan="2"><%= @item.board.title unless @item.board.blank?%></td>
+</tr>
+<tr>
+<th>背景設定名称</th>
+<td colspan="2"><%= @item.theme.name  unless @item.theme.blank?%></td>
+</tr>
+<tr>
+<th>背景設定</th>
+<td style="width:36px;">
+ <%unless @item.theme.icon_pict.blank? %>
+  <%=image_tag(@item.theme.icon_pict.file_path, :size=>@item.theme.icon_pict.regulate_width(32), :alt=>@item.theme.icon_pict.memo) %>
+ <%end%>
+ </td>
+ <%
+  s_style = 'style="background-color:#FFFCF0"'
+  if @item.theme.bg_setup == 0
+    s_style = %Q[style="background-color:#{@item.theme.css}"]
+  else
+    s_style = %Q[style="background-image:url('#{@item.theme.wall_pict.file_path}');width:#{@item.theme.wall_pict.get_width(32)}px;height:32px;"] unless @item.theme.wallpaper_id == 0 unless @item.theme.wallpaper_id.blank?
+ end
+ %>
+ <td <%=s_style%>>
+ <span style="color:<%=@item.theme.font_color%>; font-size:larger;">タイトル文字</span>
+ </td>
+</tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to '掲示板設定一覧へ戻る', "/gwbbs/theme_settings" %>
+</div>

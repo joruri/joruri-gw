@@ -1,0 +1,19 @@
+<%
+options =  { 'table_name'=>'gwsub_sb06_budget_editable_dates' , 'link_to_show' => 1}
+-%>
+<!-- コード管理 -->
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<h2>予算担当登録</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb06_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb0605menu/sb06_budget_admin_submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_level3menu_header' %>
+</div>
+<div class="pieceBody">
+<%#= render 'gwsub/admin/sb06/search_with_fyear' %>
+<%= table_to_index2(@items,options).html_safe %>
+<%= paginate @items %>
+</div>
+</div>

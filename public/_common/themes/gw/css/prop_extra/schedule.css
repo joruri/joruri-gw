@@ -1,0 +1,366 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/schedule.css
+========================================================= */
+
+/* ミニアイコン設定・紺色外枠部分設定
+---------------------------------------------------------*/
+#contentBody .piece {
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/title/title_schedule.gif);
+}
+.pieceBodyHeader {
+  position: relative;
+  margin-left: -10px;
+  margin-right: -10px;
+  zoom: 100%
+}
+#contentBody .piece .pieceBody {
+  padding: 10px 10px 20px;
+}
+.prop_extra .pieceHeader .notice {
+  display: none;
+}
+#contentBody .piece.show .pieceBodyBody {
+  height: 1%;
+  padding: 20px 10% 20px 100px;
+}
+
+/* 表示選択ボタン
+---------------------------------------------------------*/
+.btBox {
+  float: left;
+  width: auto;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+}
+*html .btBox {
+  margin-left: 2px;
+}
+.btBox .btIndex {
+  width: 60px;
+  height: auto;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07off.gif);
+  background-position: right bottom;
+  border-top: 1px solid #CCC;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  text-align: center;
+}
+.btBox .btIndex a {
+  white-space: nowrap;
+}
+.btBox div {
+  float: left;
+  height: auto;
+  margin-top: 0;
+  min-height: 25px;
+  padding-bottom: 2px;
+  padding-top: 2px;
+}
+.btBox .btHead {
+  margin-left: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 1.9;
+  border-top: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_07off.gif);
+  background-position: right bottom;
+  background-repeat: no-repeat;
+}
+.btBox .btHead.currentHead {
+  border-right: none;
+  background-image: none;
+}
+.btBox a {
+  line-height: 1.9;
+}
+
+/* メニュー
+---------------------------------------------------------*/
+.menu a {
+  padding: 0 8px 0 0;
+}
+.menu a span {
+  padding-left: 10px;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05off.gif);
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+.menu a span.current_menu {
+  display: block;
+  line-height: 1.5;
+  padding-left: 10px;
+  padding-right: 5px;
+  background-color: #FFF29E;
+  background-image: url(/_common/themes/gw/files/schedule/menu_tri_05on.gif);
+  color: #000000;
+}
+
+/* ページタイトル周り
+---------------------------------------------------------*/
+.titleLine .linkSpace {
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+.titleLine .linkSpace span {
+  display: inline-block;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid #CCCCCC;
+}
+
+/* notice
+--------------------------------------------------------*/
+.notice {
+  margin-left: 10px;
+}
+
+/* table
+---------------------------------------------------------*/
+table {
+  clear: both;
+}
+
+/* メイン外枠(共通化のためタグ修正したほうがよい)
+---------------------------------------------------------*/
+.pieceHeader .title {
+  line-height: 1.9;
+  padding-left: 5px;
+  color: #fff;
+  font-size: 120%;
+  font-weight: bold;
+}
+.pm_meetingrooms .pieceHeader .title th,
+.pm_rentcars .pieceHeader .title th {
+  line-height: 1.9;
+  padding-left: 5px;
+  font-weight: bold;
+}
+.pm_meetingrooms .pieceHeader .title td,
+.pm_rentcars .pieceHeader .title td {
+  padding: 0 5px;
+  font-weight: bold;
+}
+
+/* 施設マスタ　詳細ページ
+---------------------------------------------------------*/
+.show .pieceBodyBody, 
+.form .pieceBodyBody {
+  width: auto;
+}
+.prop .pieceBodyBody {
+  margin: 0 auto;
+  padding: 0;
+}
+.tableBox {
+  height: 1%;
+  margin-left: 420px;
+}
+.tableBox table.show {
+  clear: none;
+  width: 100%;
+  margin: 0;
+}
+.imgBox {
+  float: left;
+  margin-right: 15px;
+}
+.imgBox img {
+  display: block;
+  width: 400px;
+  margin-bottom: 15px;
+  border: 1px solid #999999;
+}
+.imgBox2 {
+  text-align: center;
+}
+.imgBox2 img {
+  margin-top: 15px;
+}
+.noImage {
+  width: 350px;
+  height: 300px;
+  border: 1px solid #999999;
+}
+.clear {
+  clear: both;
+}
+#contentBody .from .pieceBodyBody hr,
+#page-gw-propMeetingrooms-1-upload .pieceBodyBody hr,
+#page-gw-propRentcars-1-upload .pieceBodyBody hr,
+#page-gw-propOthers-3-upload .pieceBodyBody hr,
+#page-gw-maaPropFacilities-1-upload .pieceBodyBody hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.settingLink {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.settingLink a {
+  display: inline-block;
+  padding: 2px;
+  border-color: #CCCCCC #999999 #999999 #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* 機能ボタン
+---------------------------------------------------------*/
+.editingBox {
+  width: 100%;
+}
+div.showMenu {
+  margin-bottom: 10px;
+}
+
+/* 予約一覧ページ
+---------------------------------------------------------*/
+.prop_extra .pieceBody {
+  font-size: 95%;
+}
+.prop_extra .date {
+  display: none;
+}
+#page-gw-propExtras .prop_extra .title {
+  margin-right: 10px;
+}
+.functionBox {
+  margin-bottom: 10px;
+  text-align: right;
+}
+.rightAlign {
+  text-align: right;
+}
+
+/* table index(設備管理)
+---------------------------------------------------------*/
+table.maaIndex th {
+  vertical-align: top;
+}
+table.index .action {
+  width: 43px;
+}
+*html table.index .action {
+  width: 28px;
+}
+*:first-child+html table.index .action {
+  width: 28px;
+}
+table.index.maaIndex .booked_at {
+  width: 80px;
+}
+*html table.index.maaIndex .booked_at {
+  width: 65px;
+}
+*:first-child+html table.index.maaIndex .booked_at {
+  width: 65px;
+}
+table.index.maaIndex .usage_fee {
+  width: 65px;
+}
+*html table.index.maaIndex .usage_fee {
+  width: 50px;
+}
+*:first-child+html table.index.maaIndex .usage_fee {
+  width: 50px;
+}
+table.index.maaIndex ._prop_stat {
+  width: 55px;
+}
+*html table.index.maaIndex ._prop_stat {
+  width: 40px;
+}
+*:first-child+html table.index.maaIndex ._prop_stat {
+  width: 40px;
+}
+table.index.maaIndex .st_at,
+table.index.maaIndex .ed_at {
+  width: 75px;
+}
+*html table.index.maaIndex .st_at,
+*html table.index.maaIndex .ed_at {
+  width: 60px;
+}
+*:first-child+html table.index.maaIndex .st_at,
+*:first-child+html table.index.maaIndex .ed_at {
+  width: 60px;
+}
+table.index.maaIndex ._nums {
+  width: 45px;
+}
+*html table.index.maaIndex ._nums {
+  width: 30px;
+}
+*:first-child+html table.index.maaIndex ._nums {
+  width: 30px;
+}
+#page-gw-maaPropExtras #contentBody .piece .pieceBody table.index .action {
+  width: 30px;
+}
+#page-gw-maaPropExtras .nums {
+  width: 30px;
+}
+#page-gw-maaPropExtras #contentBody .piece .pieceBody table.index.maaIndex .st_at, #page-gw-maaPropExtras #contentBody .piece .pieceBody table.index.maaIndex .ed_at {
+  width: 50px;
+}
+#page-gw-maaPropExtras .day {
+  width: 65px;
+}
+table.index.maaIndex a.detail,
+table.index.maaIndex a.apply,
+table.index.maaIndex a.rent,
+table.index.maaIndex a.return {
+  display: inline;
+}
+
+/* teble maaIndex
+----------------------------------------------------*/
+#contentBody .piece .pieceBody table.maaIndex {
+  margin: 10px 0;
+}
+
+/* table rentDetails
+---------------------------------------------------------*/
+table.rentDetails th{
+  width: 95px;
+}
+
+/* table rightTable
+---------------------------------------------------------*/
+.rightTable {
+  padding-left: 30px;
+}
+
+/* 互助会　予約一覧ページ
+---------------------------------------------------------*/
+a.print,
+a.printApplay,
+a.printClaim {
+  display: block;
+  height: 0;
+  width: 25px;
+  padding-top: 30px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+a.print {
+  width: 15px;
+  padding-top: 15px;
+  background-image: url(/_common/themes/gw/files/schedule/gojokai/print.gif);
+}
+a.printApplay {
+  background-image: url(/_common/themes/gw/files/schedule/gojokai/print_apply.gif);
+}
+a.printClaim {
+  background-image: url(/_common/themes/gw/files/schedule/gojokai/print_claim.gif);
+}
+

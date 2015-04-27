@@ -1,0 +1,35 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th class="blueIndex">承認機能</th>
+    <td><%= f.radio_buttons :recognize, @item.recognize_states_list %></td>
+  </tr>
+  <tr>
+    <th>一覧表示行数</th>
+    <td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>日付順一覧表示機能</th>
+    <td><%= f.radio_buttons :importance, @item.use_daily_states_list %></td>
+  </tr>
+  <tr>
+    <th class="blueIndex">初期表示</th>
+    <td><%= f.select :default_folder, @item.default_folder_mode , :class => 'select default_folder'%></td>
+  </tr>
+  <tr>
+    <th class="blueIndex">分類フォルダルート名<%= required('※') %></th>
+    <td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th class="blueIndex">利用説明<br />(HTML形式可)</th>
+    <td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption'%></td>
+  </tr>
+</table>
+
+<%= render '/gwboard/admin/adms/form' %>

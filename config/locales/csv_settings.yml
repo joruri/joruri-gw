@@ -1,0 +1,19 @@
+# this is csv importer setting file
+gw_pref_executive_csv:
+  model: Gwsub::PrefExecutive
+  fields:
+    並び順: u_order
+    職員番号: u_code
+    氏名: u_name
+    職名: title
+    Gwに表示: is_other_view
+    AIRに表示: is_governor_view
+gw_pref_directors_csv:
+  model: Gwsub::PrefExecutive
+  fields:
+    並び順: u_order
+    職員番号: u_code
+    氏名: u_name
+    職名: title
+    部局: parent_group
+    Gwに表示: is_other_view

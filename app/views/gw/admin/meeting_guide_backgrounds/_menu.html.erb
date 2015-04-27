@@ -1,0 +1,8 @@
+<div class="menu">
+<%= link_to url_for(action: :index) do %>
+  <span class="<%= 'current_menu' if action_name == 'index' %>">一覧</span>
+<% end %>
+<%= link_to url_for(action: :new) do -%>
+  <span class="<%= 'current_menu' if action_name.in?(%w(new create)) %>">登録</span>
+<% end %>
+</div>

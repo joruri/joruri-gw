@@ -1,0 +1,78 @@
+@charset "UTF-8";
+
+/* =============================================================================
+   Initializer
+============================================================================= */
+
+/* Elements
+----------------------------------------------- */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, checkbox {
+  margin: 0px;
+  padding: 0px;
+  border-style: none;
+  font-size: 100%;
+  font-weight: inherit;
+  font-family: inherit;
+  font-style: inherit;
+}
+html {
+  height: 100%;
+  margin-bottom: 1px;
+}
+body {
+  background-color: #ffffff;
+  font-size: 80%;
+  font-family: Osaka, "MS PGothic", sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: Verdana;
+  font-weight: normal;
+}
+input, textarea, select, option {
+  font-size: 100%;
+  font-family: Osaka, "MS PGothic", sans-serif;
+}
+input[type=checkbox], input[type=radio] {
+  float: left;
+  clear: left;
+  margin: 4px 4px 0px 4px;
+}
+html[xmlns] label {
+  display: -moz-inline-box;
+  display: inline-block;
+  clear: left;
+  margin: 4px 0px 0px 0px;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  empty-cells: show;
+}
+caption, th, td {
+  font-weight: 400;
+  text-align: left;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+}
+blockquote, q {
+  quotes: "" "";
+}
+ul, ol, dl {
+  margin: 0px 0px 0px 0px;
+}
+ul {
+  list-style-position: outside;
+}
+li{
+  margin-left: 20px;
+  line-height: 1.4;
+}
+hr {
+  height: 1px;
+  margin: 7px 0px;
+  _margin: 0px 0px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}

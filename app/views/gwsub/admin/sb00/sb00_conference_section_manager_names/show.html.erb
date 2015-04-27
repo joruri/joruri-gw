@@ -1,0 +1,31 @@
+<%
+options={
+  'table_name'=>'gwsub_sb00_conference_section_manager_names',
+  :action =>'show'
+  }
+options['field_td_criteria']={
+  'state' => Proc.new{|item|
+    if item.state=='enabled'
+      %Q(<span>#{Gwsub::Sb00ConferenceSectionManagerName.state_show(item.state)}</span>)
+    else
+      %Q(<span class=required>#{Gwsub::Sb00ConferenceSectionManagerName.state_show(item.state)}</span>)
+    end
+    }
+}
+-%>
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBanner">
+<%= render 'menu' %>
+</div>
+<div class="pieceBody">
+<div class="showMenu">
+<%= link_to '編集', url_for("#{@index_uri}#{@item.id}/edit?#{@qs}") -%>
+<%= link_to '削除', url_for("#{@index_uri}#{@item.id}?#{@qs}") ,:confirm=>"削除します。よろしいですか？" ,:method=>:delete -%>
+</div>
+<%= table_to_show2 @item,options %>
+<div class="btReturn">
+  <%=link_to '戻る', @index_uri+"?#{@qs}" %>
+</div>
+</div>
+</div>

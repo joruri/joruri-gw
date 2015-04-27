@@ -1,0 +1,89 @@
+<%
+str_seikyo_d = ''
+str_seikyo_d = Date.strptime(@item.inpfld_001, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_001.blank?
+
+str_tuya_d = ''
+str_tuya_d = Date.strptime(@item.inpfld_003, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_003.blank?
+str_tuya_t = ''
+str_tuya_t += "#{@item.inpfld_018}～" unless @item.inpfld_018.blank?
+str_tuya_t += "#{@item.inpfld_019}" unless @item.inpfld_018.blank?  unless @item.inpfld_019.blank?
+
+str_kokub_d = ''
+str_kokub_d = Date.strptime(@item.inpfld_006, "%Y-%m-%d").strftime('%Y年%m月%d日').to_s unless @item.inpfld_006.blank?
+str_kokub_t = ''
+str_kokub_t += "#{@item.inpfld_020}～" unless @item.inpfld_020.blank?
+str_kokub_t += "#{@item.inpfld_021}" unless @item.inpfld_021.blank?  unless @item.inpfld_020.blank?
+%>
+
+<table class="kokubetsuTitle" frame="void" rules="none">
+  <tr>
+    <td class="left"><hr /></td>
+    <td class="center"><span>告別式のお知らせ</span></td>
+    <td class="right"><hr /></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <td><div><%= System::Group.find_by(code: @item.inpfld_023).try(:name) %></div></td>
+    <td><div><%= @item.inpfld_012 %></div></td>
+    <% if @item.inpfld_024 == "家族" %>
+    <td><div><%= @item.inpfld_013 %> さんの</div></td>
+    <td><div><%= @item.inpfld_014 %></div></td>
+    <td><div><%= @item.inpfld_015 %>　様が</div></td>
+    <% else %>
+    <td><div><%= @item.inpfld_025 %> さんが</div></td>
+    <% end %>
+    <td><div><%= str_seikyo_d %>に亡くなられました。</div></td>
+  </tr>
+</table>
+
+<% unless @item.inpfld_022 == '1' %>
+<table class="show bbsText">
+  <tr><th colspan="2">通夜は、次のとおり執り行われます。</th></tr>
+  <tr>
+    <th style="width: 120px;">1 日時</th>
+    <td><div class="show"><%= str_tuya_d %>　<%= str_tuya_t %></div></td>
+  </tr>
+  <tr>
+    <th>2 場所</th>
+    <td><div class="show"><%= simple_format(@item.inpfld_004) %></div></td>
+  </tr>
+  <tr>
+    <th>　電話</th>
+    <td><div class="show"><%= @item.inpfld_005 %></div></td>
+  </tr>
+</table>
+<% end %>
+
+<table class="show bbsText">
+  <tr><th colspan="2">告別式は、次のとおり執り行われます。</th></tr>
+  <tr>
+    <th style="width: 120px;">1 日時</th>
+    <td><div class="show"><%= str_kokub_d %>　<%= str_kokub_t %></div></td>
+  </tr>
+    <tr><th style="width: 120px;">2 場所</th>
+    <td><div class="show"><%= simple_format(@item.inpfld_007) %></div></td>
+  </tr>
+  <tr>
+    <th style="width: 120px;">　電話</th>
+    <td><div class="show"><%= @item.inpfld_008 %></div></td>
+  </tr>
+  <tr>
+    <th style="width: 120px;">3 喪主</th>
+    <td><div class="show"><%= @item.inpfld_009 %></div></td>
+  </tr>
+  <tr>
+    <th style="width: 120px;">4 宗派</th>
+    <td><div class="show"><%= @item.inpfld_010 %></div></td>
+  </tr>
+  <tr>
+    <th style="width: 120px;">5 備考</th>
+    <td><div class="show"><%= simple_format(@item.inpfld_016) %></div></td>
+  </tr>
+</table>
+
+<table class="show bbsText">
+  <tr><th colspan="2">6 地図</th></tr>
+  <tr><td colspan="2"><div class="show"><%=raw @item.inpfld_011 %></div></td></tr>
+</table>

@@ -1,0 +1,60 @@
+<%
+  member_10501 = @members.select{|x| x.conf_item_sort_no == 10501}
+  member_10502 = @members.select{|x| x.conf_item_sort_no == 10502}
+-%>
+<div class="sb06_assigned_conference_form105">
+<div style="width:90%; margin-left:60px;">
+<div class="sb06_assigned_conference_date">
+  <%= Gwsub.fyear_to_namejp2(@item.conf_at) %>
+  <%= %Q(　　　　年　　　月　　　日) if @item.conf_at.blank?%>
+</div>
+<div class="sb06_assigned_conference_group_to"><%= @item.c_kind.conf_to_name + '　殿' unless @item.c_kind.conf_to_name.blank? %></div>
+<div class="sb06_assigned_conference_group_from"><%= @item.group_name %></div>
+<div class="sb06_assigned_conference_title"><%= @item.c_kind.conf_title %></div>
+<!-- table width="60%" align="center" border="1" -->
+<div class="left"><%= br @item.c_kind.conf_body %></div>
+
+<% unless member_10501.size==0 %>
+<br/>
+<table class="index">
+  <caption style="text-align:left;">共済互助会通知システム</caption>
+  <tr>
+    <th>氏名</th>
+    <th>連絡先</th>
+    <th>とりまとめ担当所属</th>
+  </tr>
+  <% member_10501.each do |item| %>
+  <tr>
+    <td><%= item.user_name %></td>
+    <td><%= item.extension %></td>
+    <td>
+      <% group = System::GroupHistory.where(:id => item.main_group_id).first %>
+      <%= group.name unless group.blank? %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+<br/>
+<% end %>
+<% unless member_10502.size==0 %>
+<table class="index">
+  <caption style="text-align:left;">各種検診申込システム</caption>
+  <tr>
+    <th>氏名</th>
+    <th>連絡先</th>
+    <th>とりまとめ担当所属</th>
+  </tr>
+  <% member_10502.each do |item| %>
+    <tr>
+      <td><%= item.user_name %></td>
+      <td><%= item.extension %></td>
+      <td>
+        <% group = System::GroupHistory.where(:id => item.main_group_id).first %>
+        <%= group.name unless group.blank? %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<% end %>
+</div>
+</div>

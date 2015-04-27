@@ -1,0 +1,63 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/option.css
+========================================================= */
+
+/* background-color
+#FFFCF0, #000000, _BGIMG_URL_, _ICON_URL_ の記述については
+プログラムで固定判別しているので変更しないでください。
+----------------------------------------------------------*/
+#content #contentBody .pieceBanner,
+#content #contentBody .doclibraryDocList .pieceBanner h3,
+#content #contentBody .DLDocList .pieceBanner h3,
+#content #contentBody .bbsDocList .tabBox .spaceLeft,
+#content #contentBody .bbsDocList .tabBox .spaceCenter,
+#content #contentBody .bbsDocList .tabBox .spaceRight,
+#content #contentBody .gwqaDocList .tabBox .spaceLeft,
+#content #contentBody .gwqaDocList .tabBox .spaceCenter,
+#content #contentBody .gwqaDocList .tabBox .spaceRight,
+#content #contentBody .gwfaqDocList .tabBox .spaceLeft,
+#content #contentBody .gwfaqDocList .tabBox .spaceCenter,
+#content #contentBody .gwfaqDocList .tabBox .spaceRight,
+#content #contentBody select option.red {
+  background-color: #FFFCF0;
+}
+#content #contentBody .bbsDocList .tabBox .spaceLeft,
+#content #contentBody .bbsDocList .tabBox .spaceCenter,
+#content #contentBody .bbsDocList .tabBox .spaceRight,
+#content #contentBody .gwqaDocList .tabBox .spaceLeft,
+#content #contentBody .gwqaDocList .tabBox .spaceCenter,
+#content #contentBody .gwqaDocList .tabBox .spaceRight,
+#content #contentBody .gwfaqDocList .tabBox .spaceLeft,
+#content #contentBody .gwfaqDocList .tabBox .spaceCenter,
+#content #contentBody .gwfaqDocList .tabBox .spaceRight {
+  border-top: solid 1px #FFFCF0;
+}
+#content #contentBody .pieceBanner h3,
+#content #contentBody .pieceBanner .helpBox {
+  color: #000000;
+}
+
+/* background-image
+------------------------------------------------------*/
+#content #contentBody .pieceBanner,
+#content #contentBody .doclibraryDocList .pieceBanner h3,
+#content #contentBody .DLDocList .pieceBanner h3 {
+  background-image: url(_BGIMG_URL_);
+  background-repeat: repeat-x;
+}
+
+/* icon
+-----------------------------------------------------*/
+#content #contentBody .pieceBanner h3 {
+  padding-left: 47px;
+  background-image: url(_ICON_URL_);
+  background-repeat: no-repeat;
+  background-position: 10px 11px;
+}
+
+
+
+
+
+

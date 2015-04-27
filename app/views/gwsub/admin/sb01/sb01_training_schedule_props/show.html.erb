@@ -1,0 +1,86 @@
+<%
+  # 会議室予約情報のリンクチェック
+  props_link  = Gwsub::Sb01TrainingScheduleProp.schedule_props_link_check(@item.schedule_id , @item.prop_id,@item.prop_kind)
+%>
+<%
+# 研修詳細
+options1 ={ 'table_name' => 'gwsub_sb01_trainings' ,  :action=>'bbs_show' }
+options1['field_td_criteria'] = {
+  #'state' => Proc.new{|item|
+    #if props_link==false
+      #%Q(受付停止中)
+    #else
+      #%Q(#{Gwsub::Sb01Training.state_show(item.state)})
+    #end
+  #},
+  'title' => Proc.new{|item|
+    %Q(#{item.title})
+    }
+}
+# 開催日詳細
+options ={  'table_name' => 'gwsub_sb01_training_schedule_props',  :action=>'show'}
+options['field_td_criteria'] = {
+  'state' => Proc.new{|item|
+    props_link  = Gwsub::Sb01TrainingScheduleProp.schedule_props_link_check(item.schedule_id , item.prop_id,item.prop_kind)
+    if props_link==false
+      %Q(受付停止中)
+    else
+      %Q(#{Gwsub::Sb01TrainingScheduleProp.state_show(item.state)})
+    end
+  }
+}
+
+editor_role = Gwsub::Sb01Training.is_editor?(@item.updated_group.slice(0,6),Core.user_group.group_code)
+docs_editor = editor_role || @u_role
+preparable = false
+preparable = true if @item.members_current.to_i==0
+
+limit  = false
+limit  = true if @item.members_max == @item.members_current
+
+if @top_menu == 'entries'
+show_path = "/gwsub/sb01/sb01_training_entries/#{@item1.id}?t_menu=#{@top_menu}&v=#{@v}"
+else
+show_path = "/gwsub/sb01/sb01_training_plans/#{@item1.id}?t_menu=#{@top_menu}&v=#{@v}"
+end
+member_new  = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{@t_id}&p_id=#{@item.id}&t_menu=#{@top_menu}"
+prop_close  = "/gwsub/sb01/sb01_training_schedule_props/#{@item.id}/closed?t_id=#{@t_id}&t_menu=#{@top_menu}"
+prop_prepare  = "/gwsub/sb01/sb01_training_schedule_props/#{@item.id}/prepared?t_id=#{@t_id}&t_menu=#{@top_menu}"
+
+members = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id=#{@item.id}")
+# 受講者情報
+options2 ={  'table_name' => 'gwsub_sb01_training_schedule_members',  :action=>'index','link_to_show'=>0}
+options2['field_td_criteria'] = {
+  'id' => Proc.new{|item|
+    %Q(<a href="/gwsub/sb01/sb01_training_schedule_members/#{item.id}?t_id=#{@t_id}&p_id=#{@item.id}&t_menu=#{@top_menu}">詳細</a>)
+  }
+}
+-%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+</div>
+<div class="pieceBody">
+<br />
+<%= raw(table_to_show2(@item1,options1)) %>
+<div class="editingBox">
+<%= link_to '開催日一覧' ,url_for(show_path) %>
+  <% if @top_menu=='entries' -%>
+  <%= link_to '申し込む' , url_for(member_new) if limit==false and @item.state=='2' and props_link==true -%>
+  <%= "会議室情報がみつからないため、申し込みできません" if props_link==false -%>
+  <% else -%>
+  <%= link_to '受付開始'      , url_for(prop_prepare) ,:confirm=>"この開催日の受付を開始します。よろしいですか？"    if docs_editor and @item.state=='1' -%>
+  <%= link_to '準備中に戻す'  , url_for(prop_prepare) ,:confirm=>"この開催日を準備中に戻します。よろしいですか？"    if docs_editor and  @item.state=='2' and preparable==true -%>
+  <%= link_to '締切'          , url_for(prop_close)   ,:confirm=>"この開催日の受付を締め切ります。よろしいですか？"  if docs_editor and @item.state=='2' -%>
+  <%= link_to '締切解除'      , url_for(prop_close)   ,:confirm=>"この開催日を受付中に戻します。よろしいですか？"    if docs_editor and @item.state=='3' -%>
+<% end -%>
+</div>
+<%= raw(table_to_show2(@item,options)) %>
+<br />
+<div>申し込み状況</div>
+<%= raw(table_to_index2(members,options2)) %>
+</div>
+</div>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>redirect</title>
+</head>
+<body onLoad="document.loginform.submit();">
+電子決済システムへ接続しています...
+<form name="loginform" action="<%= @url %>" method="post" >
+  <input type="hidden" name="confirmdocno" value="<%= @confirmdocno %>">
+  <input type="hidden" name="routetype" value="<%= @routetype %>">
+  <input type="hidden" name="deptno" value="<%= @deptno %>">
+  <input type="hidden" name="systemid" value="<%= @systemid %>">
+  <input type="hidden" name="systempass" value="<%= @systempasswd %>">
+</form>
+</body>
+</html>

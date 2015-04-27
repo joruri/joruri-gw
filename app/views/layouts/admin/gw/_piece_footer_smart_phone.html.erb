@@ -1,0 +1,18 @@
+<ul>
+<li>
+<span class="menu_todo">
+<%= link_to  image_tag('/_common/themes/gw/files/smartphone/menu/ic_home.gif', { :border => '0', :alt => 'ポータル', :title => 'ポータル'}),
+  "/" -%>
+</span>
+  <br /><%= link_to  "ポータル","/" -%>
+</li>
+</ul>
+
+<div class="personal">
+<% if Core.user %>
+前回ログイン日時　<%= Core.user.previous_login_date ?
+       Core.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+       '---' -%>
+<% end %>
+</div>
+<p class="leftPad2"><%= link_to  "> ログアウト" ,"/_admin/logout" -%></p>

@@ -1,0 +1,38 @@
+<div class="piece AdminSetting">
+<%= render 'header' %>
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<div class="titleLine">
+<span class="title">ＣＳＶ登録</span>
+</div>
+
+<div class="explain">
+登録対象ＣＳＶファイルを指定して実行してください
+</div>
+
+<%= form_for :item, url: {action: :csvup}, html: {method: :post, multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+    <tr>
+      <th>対象ファイル</th>
+      <td><%= f.file_field :file, size: 80, accept: 'text/csv' %></td>
+    </tr>
+  </table>
+  <br />
+  <div class="preserve">
+    <div class="submitters">
+      <%= f.submit 'CSV登録' %>
+    </div>
+  </div>
+<% end %>
+<br />
+
+</div>
+</div>

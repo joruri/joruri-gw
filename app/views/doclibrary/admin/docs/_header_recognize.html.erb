@@ -1,0 +1,47 @@
+<%
+params[:state] = @title.default_folder.to_s if params[:state].blank?#フォルダ表示初期値
+
+strparam = ""
+strcat = strparam
+strparam  = "&state=#{params[:state]}#{strparam}" unless params[:state] == 'DRAFT' unless params[:state].blank?
+strparam += "&gcd=#{params[:gcd]}" unless params[:gcd].blank?
+strparam += "&cat=#{params[:cat]}" unless params[:cat].blank?
+strparam  = "?title_id=#{params[:title_id]}#{strparam}"
+str_state = "&state=#{@title.default_folder.to_s}"
+str_state = "&state=#{params[:state]}" if params[:state] == 'DATE'
+str_state = "&state=#{params[:state]}" if params[:state] == 'GROUP'
+str_state = "&state=#{params[:state]}" if params[:state] == 'CATEGORY'
+
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+
+str_tab1_class += ' current' if params[:state].blank?
+str_tab1_class += ' current' if params[:state] == 'DATE'
+str_tab1_class += ' current' if params[:state] == 'GROUP'
+str_tab1_class += ' current' if params[:state] == 'CATEGORY'
+str_tab2_class += ' current' if params[:state] == 'DRAFT'
+str_tab3_class += ' current' if params[:state] == 'RECOGNIZE'
+str_tab4_class += ' current' if params[:state] == 'PUBLISH'
+%>
+
+<% if @title.is_writable? %>
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+  <tr>
+    <td class="spaceLeft"></td>
+    <td class="<%= str_tab1_class %>"><%= link_to "内容一覧", "#{doclibrary_docs_path(title_id: @title.id)}#{str_state}#{strcat}" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab2_class %>"><%= link_to "下書一覧", "#{doclibrary_docs_path(title_id: @title.id)}&state=DRAFT#{strcat}" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab3_class %>"><%= link_to "承認待ち", doclibrary_docs_path(title_id: @title.id) + "&state=RECOGNIZE" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab4_class %>"><%= link_to "承認済み", doclibrary_docs_path(title_id: @title.id) + "&state=PUBLISH" %></td>
+    <td class="spaceRight"></td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<% end %>

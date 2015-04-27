@@ -1,0 +1,58 @@
+<h4><%=@title.title%></h4>
+<table class="show">
+  <tr>
+    <th>件名</th>
+  </tr>
+  <tr>
+    <td><div class="show"><%=@doc.title%></div></td>
+  </tr>
+</table>
+
+<p>この記事にファイルを添付します。※ファイル添付後【公開】で保存すると記事は公開されます。</p>
+<%= form_for(:item, :url => "#{Site.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
+  <p>
+    <label for="item">ファイル指定:</label>
+    <%= file_field :upload, 'file' %><%= submit_tag 'ファイルを追加する' %>
+  </p>
+  <p>
+    <label for="item">ファイル備考:</label>
+    <%= f.text_field :memo, :size=>'60'%>
+  </p>
+<% end -%>
+
+<%unless @items.blank?%>
+  <hr />
+  <table class="list">
+    <tr>
+      <th  style="width: 24px; text-align: center;"></th>
+      <th style="text-align: left;">ファイル名</th>
+      <th style="width: 220px; text-align: left;">備考</th>
+      <th style="width: 70px; text-align: center;">サイズ</th>
+      <th style="width: 40px; text-align: center;">削除</th>
+    </tr>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= link_to('',"/_admin/gwbbs/receipts/#{item.id}/download_object?title_id=#{item.title_id}",:class => item.icon_type ) %></td>
+        <td><%= link_to(item.filename,"/_admin/gwbbs/receipts/#{item.id}/download_object?title_id=#{item.title_id}") %></td>
+        <td style="text-align: left;"><%=item.memo%></td>
+        <td style="text-align: right;"><%=item.eng_unit %></td>
+        <td style="width: 30px; text-align: center;">
+          <%=link_to '削除', item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<%end%>
+<input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
+<input type="hidden" name="p_id" value='<%="#{params[:p_id]}"%>' />
+
+<br />
+<hr />
+<p>この記事を保存します</p>
+<%= form_for :doc, :url => "#{Site.current_node.public_uri}update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
+  <div class="submitters">
+    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
+    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
+    <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+  </div>
+<% end %>

@@ -1,0 +1,26 @@
+ja:
+  activerecord:
+    attributes:
+      gwqa/control:
+        title: QAタイトル
+        adms_json: 管理者設定
+        sueditors_json: 編集者設定
+        sureaders_json: 閲覧者設定
+        upload_graphic_file_size_capacity: 画像の総容量制限
+        upload_document_file_size_capacity: 添付の総容量制限
+        upload_graphic_file_size_max: 画像ファイルのサイズ制限
+        upload_document_file_size_max: 添付ファイルのサイズ制限
+        monthly_view_line: 月別件数行数
+      gwqa/category:
+        sort_no: 並び順
+        name: 名称
+      gwqa/doc:
+        state: 状態
+        title: タイトル
+        category1_id: 分類
+      gwqa/file:
+        file: ファイル
+        filename: ファイル名
+      gwqa/image:
+        file: ファイル
+        filename: ファイル名

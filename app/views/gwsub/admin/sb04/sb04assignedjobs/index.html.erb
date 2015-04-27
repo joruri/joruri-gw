@@ -1,0 +1,43 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb04/search_with_fyear' %>
+
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+<table class="index">
+  <tr>
+    <th></th>
+    <th>年度</th>
+    <th>所属コード</th>
+    <th>所属名称</th>
+    <th>担当コード</th>
+    <th>担当名称</th>
+    <th>担当電話</th>
+    <th>担当住所・電話</th>
+    <th>備考</th>
+  </tr>
+  <% @items.each do |item|  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細' , "/gwsub/sb04/04/sb04assignedjobs/#{item.id}?#{@qs}" %></td>
+    <td><%= item.fyear_markjp %></td>
+    <td><%= item.section_code %></td>
+    <td><%= item.section_name %></td>
+    <td><%= item.code %></td>
+    <td><%= item.name %></td>
+    <td><%= item.tel %></td>
+    <td><%= item.address %></td>
+    <td><%= item.remarks %></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>
+<%= paginate @items %>
+</div>
+</div>

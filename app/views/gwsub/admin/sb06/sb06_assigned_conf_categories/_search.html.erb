@@ -1,0 +1,23 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb06/sb06_assigned_conf_groups/search.html.erb</p>%>
+<%
+limits  = Gw.limit_select
+%>
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch') do %>
+<table>
+<tr>
+<td>表示行数</td>
+<td><%= select_tag( 'limit',options_for_select( limits , @limit.to_i ) ) %></td>
+<td></td><td></td>
+<td>検索</td>
+<td><%= text_field_tag "s_keyword", params[:s_keyword] ,:size=>40 %></td>
+<td class="submitters">
+<%= submit_tag '検索',     :name => :search %>
+<%= submit_tag 'リセット', :name => :reset  %>
+</td>
+</tr>
+</table>
+<!-- end form -->
+<%end%>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>

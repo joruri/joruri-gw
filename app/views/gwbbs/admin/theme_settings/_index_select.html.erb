@@ -1,0 +1,61 @@
+<table class="index">
+<th> </th>
+<th> </th>
+<th class="name">名称</th>
+<th class="name" colspan="2">背景設定</th>
+<%unless @item.theme.blank?%>
+<tr class="<%= cycle '', 'cycle' %>">
+ <td style="width:36px;">
+  <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='prev_<%=@item.theme.id%>';"  type="submit" value="プレビュー" />
+ </td>
+ <td style="width:36px;">
+  <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='public_<%=@item.theme.id%>';" type="submit" value="登録" />
+ </td>
+ <td class="name"><%=@item.theme.name %></td>
+ <td style="width:36px;">
+ <%unless @item.theme.icon_pict.blank? %>
+  <%=image_tag(@item.theme.icon_pict.file_path, :size=>@item.theme.icon_pict.regulate_width(32), :alt=>@item.theme.icon_pict.memo) %>
+ <%end%>
+ </td>
+ <%
+  s_style = 'style="background-color:#FFFCF0"'
+  if @item.theme.bg_setup == 0
+    s_style = %Q[style="background-color:#{@item.theme.css}"]
+  else
+    s_style = %Q[style="background-image:url('#{@item.theme.wall_pict.file_path}');width:#{@item.theme.wall_pict.get_width(32)}px;height:32px;"] unless @item.theme.wallpaper_id == 0 unless @item.theme.wallpaper_id.blank?
+ end
+ %>
+ <td <%=s_style%>>
+ <span style="color:<%=@item.theme.font_color%>; font-size:larger;">タイトル文字</span>
+ </td>
+</tr>
+<%end%>
+<% for item in @themes %>
+ <tr class="<%= cycle '', 'cycle' %>">
+ <td style="width:36px;">
+  <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='prev_<%=item.id%>';"  type="submit" value="プレビュー" />
+ </td>
+ <td style="width:36px;">
+  <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='public_<%=item.id%>';" type="submit" value="登録" />
+ </td>
+ <td class="name"><%=item.name %></td>
+ <td style="width:36px;">
+ <%unless item.icon_pict.blank? %>
+  <%=image_tag(item.icon_pict.file_path, :size=>item.icon_pict.regulate_width(32), :alt=>item.icon_pict.memo) %>
+ <%end%>
+ </td>
+ <%
+  s_style = 'style="background-color:#FFFCF0"'
+  if item.bg_setup == 0
+    s_style = %Q[style="background-color:#{item.css}"]
+  else
+    s_style = %Q[style="background-image:url('#{item.wall_pict.file_path}');width:#{item.wall_pict.get_width(32)}px;height:32px;"] unless item.wallpaper_id == 0 unless item.wallpaper_id.blank?
+ end
+ %>
+ <td <%=s_style%>>
+ <span style="color:<%=item.font_color%>; font-size:larger;">タイトル文字</span>
+ </td>
+</tr>
+<% end %>
+
+</table>

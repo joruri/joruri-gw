@@ -1,0 +1,20 @@
+<%
+  if @is_dev
+    roles = System::RoleName.all.order(:sort_no)
+  else
+    roles = System::RoleName.where.not(:table_name => "gwsub").order(:sort_no)
+  end
+  privs = System::PrivName.where(:state => "public").order(:sort_no)
+%>
+
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>機能名<%= required %></th>
+    <td><%= f.collection_select :role_id, roles, :id, :display_name, {:selected => nz(@item.role_id, @role_id).to_i } %></td>
+  </tr>
+  <tr>
+    <th>権限名<%= required %></th>
+    <td><%= f.collection_select :priv_id, privs, :id, :display_name, {:selected => nz(@item.priv_id, 0).to_i } %></td>
+  </tr>
+</table>

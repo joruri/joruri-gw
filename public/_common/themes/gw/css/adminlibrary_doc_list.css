@@ -1,0 +1,73 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/adminlibrary_doc_list.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+#content .doclibraryDocList {
+  background-image: url(/_common/themes/gw/files/title/title_library.gif);
+}
+
+/* バナータイトル部分
+------------------------------------------*/
+#contentBody .doclibraryDocList .pieceBanner {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 20px;
+  background-color: #FFFFFF;
+}
+.doclibraryDocList .pieceBanner h3 {
+  clear: both;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-top: 5px;
+  background-color:#C9DCFF;
+  font-size: 110%;
+}
+
+/* 右カラム　大枠
+------------------------------------------*/
+.doclibraryDocList .inner {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 98%;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+/* ヘルプボックス
+-------------------------------------------*/
+.helpBox {
+  float: none;
+  margin-top: 10px;
+}
+
+/* 機能ボタン
+-------------------------------------------*/
+.editingBox {
+  width: 100%;
+}
+
+/* タブ周り
+------------------------------------------*/
+#contentBody .doclibraryDocList .tabBox {
+  margin-left: -10px;
+}
+
+/* サイドメニュー　ツリー
+------------------------------------------*/
+#contentBody .pieceBody .sideMenu {
+  width: 230px;
+  margin-left: 15px;
+}
+*html #contentBody .pieceBody .sideMenu {
+  margin-left: 7.5px;
+}
+
+/* サイドメニュー　トップへのリンク
+------------------------------------------*/
+.adminlibrary_top {
+  margin-left: 20px;
+}
+

@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Layout 1 Columns
+========================================================= */
+
+/* body
+----------------------------------------------- */
+body {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  width: 100%;
+}
+
+/* container
+----------------------------------------------- */
+#container {
+  max-width:1200px;
+  min-width:1000px;
+  margin:0 auto;
+}
+
+* html #container { /*--------------IE6—p---------------*/
+  width : expression(document.body.clientWidth < 1000? "1000px" : document.body.clientWidth > 1200? "1200px" : "auto"); /* IE6 */ 
+  }
+
+
+/* header
+----------------------------------------------- */
+#header {
+  clear: both;
+}
+
+/* banner
+----------------------------------------------- */
+#banner {
+  clear: both;
+}
+#bannerContainer {
+  margin: 0px 10px;
+}
+
+/* navi
+----------------------------------------------- */
+#navi {
+  clear: both;
+  margin-top: 10px;
+}
+#naviContainer {
+  margin: 0px 10px;
+}
+
+/* main
+----------------------------------------------- */
+#main {
+  margin-top: 10px;
+}
+
+/* wrapper
+----------------------------------------------- */
+#wrapper {
+}
+
+/* content
+----------------------------------------------- */
+#content {
+  margin: 0px 20px;
+}
+
+/* menu
+----------------------------------------------- */
+#menu {
+}
+
+/* links
+----------------------------------------------- */
+#links {
+}
+
+/* footer
+----------------------------------------------- */
+#footer {
+  clear: both;
+  width: 100%;
+}
+#footerHeader {
+  height: 20px;
+}
+
+/* min-width
+----------------------------------------------- */
+#header, #banner, #main, #footer {
+  width: expression(document.body.clientWidth < 1002? "1000px" : "auto");
+  min-width: 1000px;
+}
+
+/* pieces
+----------------------------------------------- */
+#main .pieceSeparator {
+  margin: 10px 0px;
+}

@@ -1,0 +1,78 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doclibrary_standard.css
+========================================================= */
+
+/* 詳細ページ　作成者欄
+----------------------------------------------- */
+table.docCreator {
+  width:80%;
+  border: solid 2px #C6D1E8;
+  margin-bottom: 10px;
+}
+table.docCreator th {
+  background-color: #E3EFFF;
+  border:1px solid #C6D1E8;
+  padding:4px 7px;
+}
+table.docCreator td {
+  border:1px solid #C6D1E8;
+  padding:4px 7px;
+}
+
+/* 詳細ページ　フォルダ一覧テーブル
+----------------------------------------------- */
+table.docFolder th {
+  padding:4px 7px;
+  background-color: #E3EFFF;
+}
+table.docFolder td {
+  padding:4px 7px;
+  border:1px solid #C6D1E8;
+}
+
+/* 詳細ページ　ファイル一覧テーブル
+----------------------------------------------- */
+table.docformTitle th {
+  padding:4px 7px;
+  background-color: #E3EFFF;
+}
+table.docformTitle td {
+  padding:4px 7px;
+  border:1px solid #C6D1E8;
+}
+
+/* 詳細ページ　本文欄
+----------------------------------------------- */
+table.docformBody {
+  margin: 0 0 10px;
+  border: 2px solid #C6D1E8;
+  text-align:left;
+  vertical-align:top;
+}
+table.docformBody th {
+  padding:4px 7px;
+  background-color: #E3EFFF;
+}
+table.docformBody td {
+  padding:4px 7px;
+  border:1px solid #C6D1E8;
+}
+
+/* 詳細ページ　添付リスト
+----------------------------------------------- */
+table.gwboardAttachlist {
+  margin-bottom: 10px;
+  border: 2px solid #C6D1E8;
+  text-align:left;
+  vertical-align:top;
+}
+table.gwboardAttachlist th {
+  padding:4px 7px;
+  background-color: #E3EFFF;
+}
+table.gwboardAttachlist td {
+  padding:4px 7px;
+  border:1px solid #C6D1E8;
+}
+

@@ -1,0 +1,35 @@
+<%
+mode = ''
+mode = 'date' unless @title.categoey_view
+mode = 'date' if @title.category == 0
+brk_key = nil
+%>    
+<table class="index">
+  <% @items.each do |item| %>
+    <% if brk_key != item.section_code %>
+    <tr class="subIndex">
+      <th colspan="<%= @title.importance == 1 ? 2 : 1 %>" class="docTitle"><%= item.section_name %></th>
+    </tr>
+    <% end %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <% if @title.importance == 1 %>
+        <td class="bbsImportant leftLine" style="text-align: center;" rowspan="2"><%=raw retstr_important_span(item.importance) %></td>
+      <% else %>
+        <% title_class = "leftLine" %>
+      <% end %>
+      <td class="docTitle <%= title_class %>">
+        <%= link_to item.show_path  + gwbbs_params_set do %>
+          <%=hbr item.title %><%=raw '<span class="new">new</span>' if @title.id == 1 && item.new_mark_flg %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <% if mode.blank? %>
+        <td class="category group <%= title_class %>"><span><%= gwbd_category_name(@d_categories, item.category1_id) %></span></td>
+      <% else %>
+        <td class="update group <%= title_class %>"><span><%=l item.created_at if item.created_at %></span></td>
+      <% end %>
+    </tr>
+    <% brk_key = item.section_code %>
+  <% end %>
+</table>

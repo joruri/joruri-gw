@@ -1,0 +1,22 @@
+<%
+if @title.form_name == 'form002'
+  update_memo_path = "/_admin/gwboard/#{@item.id}/attaches/#{@file.id}/update_file_memo?system=#{@file.system_name}&title_id=#{@file.title_id}"+doclib_params_set
+else
+  update_memo_path = "/_admin/gwboard/#{@file.parent_id}/attaches/#{@file.id}/update_file_memo?system=#{@file.system_name}&title_id=#{@file.title_id}"+doclib_params_set
+end
+%>
+<%= render 'show_doc' %>
+
+<%= form_for :file, :url => update_memo_path, :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render '/gwboard/admin/docs/file_memo_form', f: f %>
+  <%= render 'hidden_form', f: f %>
+  <div class="submitters">
+    <input id="<%= f.object_name %>_submit" name="commit"  type="submit" value="保存" />
+  </div>
+<% end %>
+
+<div class="btReturn">
+  <%= link_to '詳細へ戻る', @file.item_doc_path(@title,@item) + doclib_params_set %>
+  <%= link_to '一覧へ戻る', @title.docs_path + doclib_params_set %>
+</div>

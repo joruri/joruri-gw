@@ -1,0 +1,27 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= f.radio_buttons :state, Gw::EditLinkPieceCss.state_select %></td>
+  </tr>
+  <tr>
+    <th>css表示名 <%= required %></th>
+    <td><%= f.text_field :css_name, :size => 50 %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= f.text_field :css_sort_no, :size => 50, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>cssクラス <%= required %></th>
+    <td><%= f.text_field :css_class, :size => 50, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>css種別</th>
+    <td><%= f.radio_buttons :css_type, Gw::EditLinkPieceCss.css_type_select %></td>
+  </tr>
+</table>
+
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>

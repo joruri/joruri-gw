@@ -1,0 +1,28 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<%= form_for :item, :url => {action: :update}, :html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters">
+  <% if @item.state_was == 'public' || @item.state_was == 'closed' %>
+    <%= submit_for_update f, js_submitter: "my_submit('public')", caption: '保存' -%>
+    <span style="color:red;">既に配信されている所属に対しては，記事の内容が変更されるのみとなり，<br />再配信（メール通知及びリマインダー表示）は行われません。</span>
+  <% else %>
+    <div align="center">
+    <table>
+      <tr>
+        <td><%= submit_for_update f, js_submitter: "my_submit('public')", caption: '配信' -%></td>
+        <td><%= submit_for_update f, js_submitter: "my_submit('draft')", caption: '下書き' %></td>
+      </tr>
+    </table>
+    </div>
+  <% end %>
+  </div>
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--piece-->

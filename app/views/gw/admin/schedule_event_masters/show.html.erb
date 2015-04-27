@@ -1,0 +1,70 @@
+<div class="piece scheduleEventPiece show">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'menu' -%>
+<div class="titleLine">
+  <span class="title">詳細</span>
+  <span class="linkSpace"></span><!--linkSpace-->
+</div>
+</div>
+<div class="pieceBodyBody">
+
+<div class="editingBox">
+  <div class="btEdit">
+    <%= link_to '編集する', "/gw/schedule_event_masters/#{@item.id}/edit#{@params_set}" -%>
+  </div>
+  <div class="btDestroy">
+    <%= link_to_destroy @item.id, nil, :confirm => '削除してよろしいですか？', :qs => @qs -%>
+  </div>
+</div>
+
+<table class="show">
+  <tr>
+    <th>主管課担当者 所属部</th>
+    <td><%= safe{@item.r_dept1.name} %></td>
+  </tr>
+  <tr>
+    <th>主管課担当者 所属課</th>
+    <td><%= safe{@item.r_sect1.name} %></td>
+  </tr>
+  <tr>
+    <th>主管課担当者</th>
+    <td><%= safe{@item.r_user.name} %></td>
+  </tr>
+  <tr>
+    <th>承認権限</th>
+    <td><%= @item.edit_auth == 1 ? '付与する' : "付与しない" %></td>
+  </tr>
+  <tr>
+    <th>範囲</th>
+    <td><%= @item.range_class_id == 1 ? '部局' : "所属" %></td>
+  </tr>
+  <tr>
+    <th>部局</th>
+    <td><%= safe{@item.r_dept2.name} %></td>
+  </tr>
+  <tr>
+    <th>所属</th>
+    <td><%= safe{@item.r_sect2.name} %></td>
+  </tr>
+  <tr>
+    <th>作成日</th>
+    <td><%= @item.created_at.strftime('%Y-%m-%d %H:%M') if @item.created_at %></td>
+  </tr>
+  <tr>
+    <th>更新日</th>
+    <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') if @item.updated_at %></td>
+  </tr>
+</table>
+
+</div>
+
+<div class="btReturn">
+  <%= link_to '戻る', url_for(action: :index) + @params_set -%>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,69 @@
+<%
+today = Time.now
+options =  {  'table_name'      => 'gwsub_sb01_trainings',  :action=>'index',  'link_to_show'    => 1}
+options['field_td_criteria'] = {
+  'title' => Proc.new{|item|
+     %Q(#{h item.title})
+    },
+  'state' => Proc.new{|item|
+    str = safe{item.state_label}
+    if item.state == '3'
+      %Q(#{str})
+    else
+      t_skd = Gwsub::Sb01TrainingSchedule.where('training_id = ?',item.id).order('IF( ISNULL( from_start ) , 1, 0 ) ASC , from_start DESC ').first
+      if t_skd.blank?
+        safe{%Q(#{str})}
+      else
+        if t_skd.from_start.blank? || today.blank?
+          safe{%Q(#{str})}
+        else
+          if t_skd.from_start < today
+            safe{%Q(<span class="required">#{str}</span>)}
+          else
+            safe{%Q(#{str})}
+          end
+        end
+      end
+    end
+    },
+  '_last_date' => Proc.new{|item|
+    t_skd = Gwsub::Sb01TrainingSchedule.where('training_id = ?',item.id).order('IF( ISNULL( from_start ) , 1, 0 ) ASC , from_start DESC ').first
+    if t_skd.blank?
+      ""
+    else
+      if t_skd.from_start.blank? || today.blank?
+        ""
+      else
+        if t_skd.from_start < today
+            if t_skd.from_start.blank?
+              ""
+            else
+              %Q(<span class="required">#{t_skd.from_start.strftime("%Y-%m-%d")} (#{Gw.weekday(t_skd.from_start.wday)})</span>)
+            end
+        else
+            if t_skd.from_start.blank?
+              ""
+            else
+              %Q(#{t_skd.from_start.strftime("%Y-%m-%d")} (#{Gw.weekday(t_skd.from_start.wday)}))
+            end
+        end
+      end
+    end
+  }
+}
+
+%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_trainings/menu' %>
+</div>
+<div class="pieceBody">
+<%= raw(table_to_index2(@items, options)) %>
+<br/>
+<%= paginate @items %>
+<br/>
+</div>
+</div>

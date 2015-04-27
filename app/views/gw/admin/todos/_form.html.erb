@@ -1,0 +1,20 @@
+<%=raw get_form_title_div params %>
+<span class="required">※は必須項目です。</span>
+<table class="show">
+  <tr>
+    <th>期限</th>
+    <td><%= f.datepicker :ed_at %></td>
+  </tr>
+  <tr>
+    <th>内容 <span class="required">※</span></th>
+    <td><%= f.text_field :title, :style => "width:30em;" %></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td>
+      <%= f.text_area :body, :rows => 5, :style => "width: 30em; ime-mode: active;" %>
+    </td>
+  </tr>
+</table>
+
+

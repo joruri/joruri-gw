@@ -1,0 +1,16 @@
+<table class="show bbsText">
+<tr><th colspan="3" class="titleTop">決裁ルート<%=raw(required('※'))%></th></tr>
+<tr>
+  <td class="userChange" width=50%>
+    <%= render '/gwworkflow/share/custom_route_selector' %>
+  </td>
+  <td class="userChange" rowspan=2 valign="top">
+    <%= render '/gwworkflow/share/route_editor' %>
+  </td>
+</tr>
+<tr>
+  <td class="userChange" width=50%>
+    <%= render '/gwworkflow/share/user_selector' %>
+  </td>
+</tr>
+</table>

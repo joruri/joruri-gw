@@ -1,0 +1,60 @@
+<table class="form">
+  <tr>
+    <th style="width: 50px; text-align: left;">作成者</th>
+    <td style="width: 150px; text-align: left;"><%= @item.createdate %></td>
+    <td style="text-align: left;"><%= @item.createrdivision %></td>
+    <td style="width: 150px; text-align: left;"><%= @item.creater %></td>
+  </tr>
+  <tr>
+    <th style="width: 50px; text-align: left;">編集者</th>
+    <td style="width: 150px; text-align: left;"><%= @item.editdate %></td>
+    <td style="text-align: left;"><%= @item.editordivision %></td>
+    <td style="width: 150px; text-align: left;"><%= @item.editor %></td>
+  </tr>
+</table>
+
+<div class="menu">
+  <%if @previous.blank? and @next.blank?%>
+  <%else%>
+    <% unless @previous.blank? %>
+      <%=link_to '前ページ', @previous.show_path + "&pp=#{@prev_page}" + gwbbs_params_set %>
+    <% else %>
+      先頭ページです
+    <% end %>
+
+    <% unless @next.blank? %>
+      <%=link_to '次ページ', @next.show_path + "&pp=#{@next_page}" + gwbbs_params_set %>
+    <% else %>
+      最終ページです
+    <% end %>
+  <%end%>
+
+  <%=link_to('コメント', @item.new_comment_path + gwbbs_params_set) if @item.one_line_note == 1 %>
+  <%=link_to '一覧', @title.docs_path + gwbbs_params_set %>
+  <%=link_to '編集', @item.edit_path %>
+  <%=link_to '削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+</div>
+
+<%if @title.importance == 1 or @title.category == 1 %>
+  <table class="show">
+    <tr>
+      <%if @title.importance == 1 %>
+        <th style="width: 80px; text-align: left;">重要度 : <%=@item.importance_name%></th>
+      <%end%>
+      <th>
+      <%if @title.category == 1 %>
+        <%= @title.category1_name + ' : ' unless @title.category1_name.blank? %>
+        <%= @category_name unless @category_name.blank? %>
+      <% end %>
+    </th>
+    </tr>
+  </table>
+<% end %>
+
+<%= render @title.gwbbs_form_name + 'show' %>
+
+<%= render 'gwbbs/public/docs/upload_index', files: @item.files %>
+
+<% if @item.one_line_note == 1 %>
+<%= render 'gwbbs/public/docs/comment_index', files: @item.files %>
+<% end %>

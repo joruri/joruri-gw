@@ -1,0 +1,211 @@
+/* =========================================================
+   _common/themes/gw/css/doc_2column.css
+@charset "UTF-8";
+========================================================= */
+#content {
+  border-right: 1px solid #1E3B8C;
+}
+#content {
+  border-right: 1px solid #1E3B8C;
+}
+#contentBody .pieceBanner {
+  clear: both;
+  border-left: 1px solid #1E3B8C;
+  background-color: #FFFCF0;
+}
+#contentBody .pieceBody {
+  overflow: hidden;
+  border-left: 1px solid #1E3B8C;
+  border-bottom: 1px solid #1E3B8C;
+}
+
+#contentBody .pieceBody:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html #contentBody .pieceBody             { zoom: 1; }
+*:first-child+html #contentBody .pieceBody { zoom: 1; }
+
+/* ポータルタブ
+----------------------------------------------------*/
+#docTab {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-bottom: 1px solid #333;
+}
+.tabs:after {
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0pt;
+  content: ".";
+}
+* html .tabs             { zoom: 1; }
+*:first-child+html .tabs { zoom: 1; }
+#docTab a {
+  display: block;
+  float: left;
+  height: 23px;
+  width: 99px;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-image: url(/_common/themes/gw/files/tab/tab-02_off.gif);
+  background-color: #fff;
+  text-align: center;
+}
+* html #docTab .tabs a {
+  margin-bottom: -3px;
+}
+#docTab a:hover {
+  color: #133995;
+}
+#docTab a.tab1 {
+  background-image: url(/_common/themes/gw/files/tab/tab-01_off.gif);
+}
+#docTab a.endTab {
+  background-image: url(/_common/themes/gw/files/tab/tab-03_off.gif);
+}
+#docTab a.current {
+  width: 111px;
+  background-image: url(/_common/themes/gw/files/tab/tab-02_on.gif);
+  font-weight: bold;
+  color: #FFFFFF;
+}
+#docTab a.tab1.current {
+  background-image: url(/_common/themes/gw/files/tab/tab-01_on.gif);
+}
+#docTab a.end {
+  width: 6px;
+  background-image: url(/_common/themes/gw/files/tab/tab-shadow.gif);
+}
+.pieceBanner h3 {
+  padding: 10px;
+  font-size: 200%;
+}
+.pieceBanner .btNew {
+  display: block;
+  overflow: hidden;
+  width: 70px;
+  height: 15px;
+  margin-left: 10px;
+  background-image: url(/_common/themes/gw/files/icon/ic_act_add.gif);
+  text-indent: -9999px;
+}
+.outer {
+  margin-left: 245px;
+}
+* html .outer {
+  float: left;
+  margin-left: 0;
+}
+table.docformTitle {
+  width: 99%;
+}
+.docBody {
+  padding-top: 10px;
+}
+#contentBody .sideMenu {
+  float: left;
+  width: 245px;
+  margin: 0 0 -32768px 0;
+  padding-bottom: 32768px;
+  padding-top: 5px;
+  border-bottom: none;
+  display:block;
+}
+#contentBody .pieceBody .sideMenu .sideMenuBody {
+  margin: 0 10px;
+}
+#contentBody .sideMenu #sideList {
+  display: block;
+  margin-right: 5px;
+}
+#contentBody #menuBody{
+  width: 170px;
+}
+#contentBody .sideMenu li {
+  border-right: none;
+}
+#contentBody .sideMenu a {
+  padding: 0px;
+  border-right: none;
+}
+#contentBody .sideMenu h3 {
+  margin-left: 10px;
+  font-size: 100%;
+}
+#contentBody .sideMenu h4 {
+ background-color: #F2F2F2;
+}
+#contentBody .sideMenu a img {
+  margin-right: 6px;
+}
+.iconSideToday {
+  padding-left: 18px;
+  background-image: url(/_common/themes/gw/files/icon/ic_today-article.gif);
+  background-repeat: no-repeat;
+}
+.iconSideMonth {
+  padding-left: 18px;
+  background-image: url(/_common/themes/gw/files/icon/ic_month-article.gif);
+  background-repeat: no-repeat;
+}
+.iconSideCategory {
+  padding-left: 18px;
+  background-image: url(/_common/themes/gw/files/icon/ic_class-article.gif);
+  background-repeat: no-repeat;
+}
+#content .pieceBody h4.iconSideKey {
+  margin-left: 0;
+  padding-top: 0;
+  padding-left: 10px;
+  background-image: url(/_common/themes/gw/files/icon/ic_search-article.gif);
+  background-repeat: no-repeat;
+  background-position: -4px center;
+}
+#contentBody .sideMenu ul {
+  margin: 0 0 0 15px;
+  padding-bottom: 0;
+}
+* html #contentBody .sideMenu ul li {
+  zoom: 100%;
+}
+*:first-child+html .sideMenu ul li {
+  zoom: 100%;
+} 
+#contentBody .sideMenu .search {
+  margin-bottom: 15px;
+}
+#contentBody .sideMenu .submitters {
+  margin: 0;
+}
+#contentBody .sideMenu .submitters a {
+  margin: 0;
+}
+#contentBody .sideMenu input#kwd {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+#contentBody .sideMenu input#kwd a {
+  margin: 0px;
+}
+#contentBody .sideMenu .submitters input {
+  width: 60px;
+  margin-left: 10px;
+  margin-right: 0;
+  font-size: 80%;
+}
+#contentBody .sideMenu .favorite {
+  text-align: right;
+}
+
+

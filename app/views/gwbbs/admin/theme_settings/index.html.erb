@@ -1,0 +1,16 @@
+<%= render 'header' %>
+
+<table class="index">
+  <tr>
+    <th class="name">掲示板名称</th>
+    <th class="name">背景設定名称</th>
+    <th class="update">最終更新日</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td class="name"><%=link_to(item.board.title,item.show_path) unless item.board.blank?%></td>
+    <td class="name"><%=item.theme.name  unless item.theme.blank?%></td>
+    <td class="update"> </td>
+  </tr>
+  <% end %>
+</table>

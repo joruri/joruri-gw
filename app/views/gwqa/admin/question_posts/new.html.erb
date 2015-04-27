@@ -1,0 +1,8 @@
+<h3 class="gwfaq_post_title">
+  <%= "<font color='red'>QAタイトル番号を指定してください</font> " if @title.blank? %>
+  <%= @title.title unless @title.blank? %>
+</h3>
+<%= form_for :item, :url => gwqa_question_posts_path({:title=>params[:title],:parent_id=>params[:parent_id]}), :html => {:method => :post} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+<% end %>

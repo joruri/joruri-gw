@@ -1,0 +1,27 @@
+<div class="piece AdminMessage">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+<%= render 'temp_tree_str' %>
+  <span>抽出状況：<%=@status_item.progress_state_label%></span>　<%=link_to "再読み込み", "javascript:void();", :onclick=>"reloadPage()" if params[:g_cat].blank?%><br />
+  <span>件数：<%=@count_item.options%>件</span>
+<% if @items.length == 0 || @status_item.options != 'finish'-%>
+<% else -%>
+  <% if params[:g_cat].blank? %>
+    <%= render 'temp_index_group' %>
+  <% else %>
+    <%= render 'temp_index' %>
+  <% end %>
+  <%= paginate @items %>
+<% end -%>
+<script type="text/javascript">
+//<![CDATA[
+
+function reloadPage(){
+  window.location.reload();
+}
+
+//]]>
+</script>
+</div>
+</div>

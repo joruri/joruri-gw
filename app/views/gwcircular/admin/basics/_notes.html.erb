@@ -1,0 +1,61 @@
+<%
+help_select = [['表示する','0'],['表示しない','1']]
+%>
+<script type="text/javascript">
+//<![CDATA[
+function notesForm(obj,changeObjId) {
+var display = document.getElementById(changeObjId).style.display;
+if (display == 'none') {
+obj.innerHTML = '閉じる▲';
+} else if (display == '') {
+obj.innerHTML = '開く▼';
+}
+Element.toggle($(changeObjId));
+}
+//]]>
+</script>
+
+<table class="show">
+<tr>
+<th>拡張項目</th>
+<td>
+<a href="#" onclick="notesForm(this,'notes_field_form');return false;">開く▼</a>
+</td>
+</tr>
+</table>
+
+<table id="notes_field_form" border="0" class="show" style="display: none;">
+<tr>
+  <th>ヘルプリンク</th>
+  <td><%= f.select:help_display, options_for_select(help_select,@item.help_display) %></td>
+</tr>
+<tr>
+  <th>ヘルプ　URL</th>
+  <td><%= f.text_field :help_url, :size => '80' %></td>
+</tr>
+<tr>
+  <th>管理者ヘルプ　URL</th>
+  <td><%= f.text_field :help_admin_url, :size => '80' %></td>
+</tr>
+<tr>
+  <th>他シス連携指定<br />(HTML形式)</th>
+  <td><%= f.text_area :other_system_link, :cols => 84, :rows => 2, :class => 'string other_system_link' %></td>
+</tr>
+<tr>
+  <th>左リスト表示<br />(通常は表示する)</th>
+  <td><%= f.select :left_index_use, @item.index_view_name %></td>
+</tr>
+<tr>
+  <th>記事本文利用サイズ<br /><%= required('障害時のみ編集') %></th>
+  <td class="IMEoff"><%= f.text_field :doc_body_size_currently, :size => 13 %></td>
+</tr>
+<tr>
+  <th>画像 現在の利用サイズ<br /><%= required('障害時のみ編集') %></th>
+  <td class="IMEoff"><%= f.text_field :upload_graphic_file_size_currently, :size => 13 %></td>
+</tr>
+<tr>
+  <th>添付 現在の利用サイズ<br /><%= required('障害時のみ編集') %></th>
+  <td class="IMEoff"><%= f.text_field :upload_document_file_size_currently, :size => 13 %></td>
+</tr>
+
+</table>

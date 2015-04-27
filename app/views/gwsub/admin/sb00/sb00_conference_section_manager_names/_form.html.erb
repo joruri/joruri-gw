@@ -1,0 +1,44 @@
+<%
+status = Gwsub::Sb00ConferenceSectionManagerName.state
+g_cond  = "state='enabled' and level_no=3 and end_at is NULL "
+g_cond  << " and parent_id=#{@item.parent_gid}" unless @item.parent_gid.to_i==0
+g_cond  << " and sort_no < 90000"  if Core.user.code.size > 3 # ３桁ユーザーには、開発テスト用データも表示
+g_order = "sort_no"
+groups1 = System::Group.where(g_cond).order(g_order).all
+groups = []
+groups1.each do |g|
+  groups << [g.ou_name , g.id]
+end
+-%>
+<%= hidden_field_tag 'fyear_id',@fyear %>
+<%= hidden_field_tag 'pre_fyear_id',@fyear %>
+<%= hidden_field_tag 'p_gid',@p_gid %>
+<%= hidden_field_tag 'limit',@limit %>
+<%= hidden_field_tag 's_keyword',@s_keyword %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>年度</th>
+    <td><%= @item.markjp %></td>
+  </tr>
+  <tr>
+    <th>状況<%= required %></th>
+    <td><%= f.radio_buttons :state, status %></td>
+  </tr>
+  <% if params[:action]=='new' %>
+  <tr>
+    <th>所属<%= required %></th>
+    <td><%= f.select :gid ,options_for_select(groups ,@item.gid) ,:include_blank=>false %></td>
+  </tr>
+  <% else %>
+  <tr>
+    <%= hidden_field :gid ,@item.gid %>
+    <th>所属</th>
+    <td><%= @item.g_code %><%= @item.g_name %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>所属長名<%= required %></th>
+    <td><%= f.text_field :manager_name, :class => 'string name', :size=>80 %></td>
+  </tr>
+</table>

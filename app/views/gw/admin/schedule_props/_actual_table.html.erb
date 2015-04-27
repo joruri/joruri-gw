@@ -1,0 +1,13 @@
+<tr><th colspan="4">実績</th></tr>
+<tr><th>出発時メーター</th><td colspan="3"><%= actual_print actual.start_meter, ' km' %></td></tr>
+<tr><th>帰着時メーター</th><td colspan="3"><%= actual_print actual.end_meter, ' km' %></td></tr>
+<tr><th>利用開始日時</th><td colspan="3"><%=l actual.start_at if actual.start_at %></td></tr>
+<tr><th>利用終了日時</th><td colspan="3"><%=l actual.end_at if actual.end_at %></td></tr>
+<tr><th>請求先担当者</th><td colspan="3"><%= "#{actual.driver_user_name} (#{actual.driver_user_code})" %></td></tr>
+<tr><th>請求先所属</th><td colspan="3"><%= actual.driver_group_name %></td></tr>
+<tr><th>利用者</th><td colspan="3"><%= actual.user_uname %></td></tr>
+<tr><th>利用者所属</th><td colspan="3"><%= actual.user_gname %></td></tr>
+<tr><th>通行料</th><td colspan="3"><%= actual_print actual.toll_fee, ' 円' %></td></tr>
+<tr><th>ガソリン補給量</th><td colspan="3"><%= actual_print actual.refuel_amount, ' リットル' %></td></tr>
+<tr><th>行き先</th><td colspan="3"><%= safe{schedule_to_go(actual.to_go)} %></td></tr>
+<tr><th>使用目的</th><td colspan="3"><%= actual.title %></td></tr>

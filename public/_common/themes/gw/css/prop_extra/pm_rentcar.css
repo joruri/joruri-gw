@@ -1,0 +1,15 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/prop_extra/pm_rentcar.css
+========================================================= */
+
+/* 施設管理→予約一覧テーブル
+----------------------------------------------- */
+table.index th {
+  border: 1px solid #CCCCCC;
+}
+a.detail, a.apply, a.rent, a.return {
+  display: block;
+  width: 30px;
+}
+

@@ -1,0 +1,35 @@
+<div class="gwsub sb04">
+<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render 'gwsub/admin/sb04/sb04officialtitles/display_name' %>
+<%= render 'gwsub/admin/sb04/sb04_index_csv_confirm' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb04/search_check_view' %>
+<% if @items.blank? %>
+  <%= show_notice -%>
+<% else %>
+  <table class="index">
+    <tr>
+      <th></th>
+      <th>年度</th>
+      <th>職名コード</th>
+      <th>職名</th>
+      <th>備考</th>
+    </tr>
+    <% @items.each do |item|  %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細' , "#{@csv_base_url}/#{item.id}/show_csv?#{@qs}" %></td>
+      <td><%= item.fyear_markjp %></td>
+      <td><%= item.code %></td>
+      <td><%= item.name %></td>
+      <td><%= item.remarks %></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>
+<%= paginate @items %>
+</div>
+</div>

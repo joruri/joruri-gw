@@ -1,0 +1,35 @@
+<table class="show">
+  <tr>
+    <td class="checkBox"><%= f.check_box :gwbbs_check, :class => 'check_box' %></td>
+    <td class="text">掲示板</td>
+  </tr>
+  <tr>
+    <td class="checkBox"><%= f.check_box :gwfaq_check, :class => 'check_box' %></td>
+    <td class="text">質問管理（FAQ）</td>
+  </tr>
+  <tr>
+    <td class="checkBox"><%= f.check_box :gwqa_check, :class => 'check_box' %></td>
+    <td class="text">質問管理（Q&amp;A）</td>
+  </tr>
+  <tr>
+    <td class="checkBox"><%= f.check_box :doclib_check, :class => 'check_box' %></td>
+    <td class="text">書庫</td>
+  </tr>
+  <tr>
+    <td class="checkBox"><%= f.check_box :digitallib_check, :class => 'check_box' %></td>
+    <td class="text">電子図書</td>
+  </tr>
+  <tr>
+    <td class="checkBox"><%= f.submit "保存" %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="2">※　各設定情報で、記事更新時連絡機能を「使用する」設定のものを対象とします。</td>
+  </tr>
+  <tr>
+    <td colspan="2">　　全庁掲示板は、別途新着表示をおこなっているので、記事更新時連絡機能は「使用しない」としてください。</td>
+  </tr>
+  <tr>
+    <td colspan="2">※　それぞれのユーザーについて、閲覧権限があるものが表示対象となります。</td>
+  </tr>
+</table>

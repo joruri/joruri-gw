@@ -1,0 +1,52 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>掲示板</h2>
+</div><!--pieceHeader-->
+<div class="pieceBody">
+
+<%unless @title.blank?%>
+既に<%=Core.user_group.name%>の掲示板は既に作成されています。
+<br />追加の掲示板を作成する時は、システム管理者にご連絡ください。
+<br /><br /><%=link_to('掲示板一覧へ戻る','/gwbbs')%>
+<%else%>
+ <%= form_tag('/gwbbs/builders',{:method=>:post}) do %>
+ <table class="show">
+ <tr>
+ <th style="width: 50px; text-align: left;">作成者</th>
+ <td style="width: 150px; text-align: left;"><%= Core.user_group.name %></td>
+ <td style="text-align: left;"><%= Core.user.name %></td>
+ </tr>
+ </table>
+ <table class="show">
+ <tr>
+ <th>作成される掲示板</th>
+ <td>
+ <%= Core.user_group.name %>の掲示板を作成します。
+ </td>
+ </tr>
+ <tr>
+ <th>
+同時に作成される分類<br /><br />
+・分類の内容を編集する事が可能です。<br />
+・不要な分類は内容を削除してください。<br />
+ </th>
+ <td>
+ 01.　お知らせ<br />
+ 02.　<%= text_field_tag :cat02, '研修案内' ,:size => '40' %><br />
+ 03.　<%= text_field_tag :cat03, '行事予定（イベント案内）' ,:size => '40' %><br />
+ 04.　<%= text_field_tag :cat04, '通知' ,:size => '40' %><br />
+ 05.　<%= text_field_tag :cat05, '調査・照会' ,:size => '40' %><br />
+ 06.　<%= text_field_tag :cat06, '福利厚生関係' ,:size => '40' %><br />
+ 07.　<%= text_field_tag :cat07, 'その他１' ,:size => '40' %><br />
+ 08.　<%= text_field_tag :cat08, 'その他２' ,:size => '40' %>
+ </td>
+ </tr>
+ </table>
+ <%= hidden_field_tag(:board_group, Core.user_group.id) %>
+ <%= hidden_field_tag(:cat01, 'お知らせ') %>
+ <%= submit_tag "掲示板を作成します",:onclick => "return confirm('掲示板が自動作成されます。よろしいですか？')" %>
+ <%end%>
+<%end%>
+
+</div><!--pieceBody-->
+</div><!--piece-->

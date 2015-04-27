@@ -1,0 +1,25 @@
+<%
+options1 =  {  'table_name'      => 'gwsub_sb01_trainings' , :action=>'bbs',  'link_to_show'    => 1}
+options1['field_td_criteria'] = {
+  'title' => Proc.new{|item|
+    %Q(#{item.title})
+    }
+}
+options =  {  'table_name'      => 'gwsub_sb01_training_members' , :action=>'index',  'link_to_show'    => 1}
+%>
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+</div>
+<div class="pieceBody">
+<br />
+<%= raw(table_to_show2(@item1,options1)) %>
+<%= raw(table_to_index2(@items,options)) %>
+<br/>
+<%= paginate @items %>
+<br/>
+</div>
+</div>

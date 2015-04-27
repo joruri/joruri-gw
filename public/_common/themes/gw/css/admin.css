@@ -1,0 +1,286 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/admin.css
+========================================================= */
+/*ミニアイコン
+---------------------------------------------------------*/
+#content .piece {
+  background-image: url(/_common/themes/gw/files/title/title_system.gif);
+}
+#content .piece.soumuMessage {
+  background-image: url("/_common/themes/gw/files/title/title_general.gif");
+}
+#content .piece.rss {
+  background-image: url("/_common/themes/gw/files/title/title_rss.gif");
+}
+#content .piece .pieceBody {
+  padding: 10px;
+  zoom: 100%;
+}
+#page-gw-configSettings .piece .pieceBody,
+#page-gw-configSettings-indSettings .piece .pieceBody {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* table index
+--------------------------------------------------------*/
+.piece table.index tr.items td,
+table.index th.blueIndex,
+table.show th.blueIndex {
+  border: none;
+  background-color: #E3EFFF;
+}
+table.show th.blueIndex {
+  border-top: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+}
+.piece table.index td.libraryTitle {
+  width: 22%;
+  border-left: none;
+}
+.piece table.index td.update {
+  border-right: none;
+}
+table.index td.manager {
+  width: 145px;
+}
+table.index td.update {
+  width: 120px;
+}
+
+/* 機能ボタン
+--------------------------------------------------------*/
+.editingBox {
+  width: 100%;
+}
+.navi {
+  margin-bottom: 10px;
+}
+.docLink {
+  float: right;
+}
+
+/* settings
+--------------------------------------------------------*/
+.AdminSetting table.index th {
+  border-top: none;
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+}
+.AdminSetting table.index td {
+  border-left: none;
+  border-right: none;
+}
+.schedulePiece.AdminSetting .pieceBodyBody {
+  width: auto;
+  margin-left: 20px;
+  _margin-left: 0px;
+}
+
+/* sucheduler humanIcon
+--------------------------------------------------------*/
+table#schedule_users_table td select {
+  vertical-align: middle;
+}
+table#schedule_users_table td .userIcon1,
+table#schedule_users_table td .userIcon2,
+table#schedule_users_table td .userIcon3,
+table#schedule_users_table td .userIcon4,
+table#schedule_users_table td .userIcon5,
+table#schedule_users_table td .userIcon6,
+table#schedule_users_table td .userIcon7,
+table#schedule_users_table td .userIcon8,
+table#schedule_users_table td .userIcon9 {
+  display:inline-block;
+  vertical-align: middle;
+  width:32px;
+  height:36px;
+  margin-left: 5px;
+  background-repeat: no-repeat;
+}
+table#schedule_users_table td .userIcon1 {
+  background-image: url(/_common/themes/gw/files/ic_human_01.gif);
+}
+table#schedule_users_table td .userIcon2 {
+  background-image: url(/_common/themes/gw/files/ic_human_02.gif);
+}
+table#schedule_users_table td .userIcon3 {
+  background-image: url(/_common/themes/gw/files/ic_human_03.gif);
+}
+table#schedule_users_table td .userIcon4 {
+  background-image: url(/_common/themes/gw/files/ic_human_04.gif);
+}
+table#schedule_users_table td .userIcon5 {
+  background-image: url(/_common/themes/gw/files/ic_human_05.gif);
+}
+table#schedule_users_table td .userIcon6 {
+  background-image: url(/_common/themes/gw/files/ic_human_06.gif);
+}
+table#schedule_users_table td .userIcon7 {
+  background-image: url(/_common/themes/gw/files/group_unit.gif);
+}
+table#schedule_users_table td .userIcon8 {
+  background-image: url(/_common/themes/gw/files/group_depa.gif);
+}
+table#schedule_users_table td .userIcon9 {
+  background-image: url(/_common/themes/gw/files/group_allpref.gif);
+}
+
+/* table
+--------------------------------------------------------*/
+table.index .sort_id {
+  width: 95px;
+}
+table.index .action {
+  width: 55px;
+}
+table.index th.action,
+table.index td.action,
+table.index th.state,
+table.index td.state,
+table.index th.max,
+table.index td.max,
+table.index th.interval,
+table.index td.interval {
+  width: 30px;
+}
+table.index .pre {
+  width: 100px;
+}
+table.show td.roleChange,
+table.show td.userChange {
+  width: 300px;
+}
+th.published_at,
+td.published_at,
+td.fetched_at {
+  width: 120px;
+}
+table.show th.uri,
+table.show td.uri {
+  width: 30%;
+}
+table.show th.title {
+  width: auto;
+}
+
+/* タブ編集
+--------------------------------------------------------*/
+#page-gw-editTabs  table.index th.state,
+#page-gw-editTabs-list table.index th.state {
+  width: 40px;
+}
+#page-gw-editTabs table.index th.level,
+#page-gw-editTabs-list table.index th.level {
+  width: 60px;
+}
+#page-gw-editTabs table.index th.sort,
+#page-gw-editTabs-list table.index th.order {
+  width: 60px;
+  text-align: center;
+}
+#page-gw-editTabs table.index td.up,
+#page-gw-editTabs table.index td.down {
+  width: 30px;
+  text-align: center;
+}
+#page-gw-editTabs-list table.index th.ext {
+  width: 70px;
+}
+#page-gw-editTabs-list table.index th.sso {
+  width: 70px;
+}
+#page-gw-editTabs .AdminSetting table.index th,
+#page-gw-editTabs-list .AdminSetting table.index th,
+#page-gw-editTabs .AdminSetting table.index td,
+#page-gw-editTabs-list .AdminSetting table.index td,
+#page-gw-rssReaders .AdminSetting table.index td {
+  border-right: 1px solid #C6D1E8;
+}
+.AdminSetting .navi span.Menu a {
+  margin-left: 9px;
+  padding: 2px 5px;
+  border-top: 1px solid #CCC;
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+#page-system-users .action,
+#page-system-users .state {
+  width: 45px;
+}
+#page-system-users .ldap {
+  width: 55px;
+}
+.show_cal_bt {
+  vertical-align: top;
+  margin-top: 3px;
+  margin-left: 2px;
+}
+
+/* ページ上部メニュー
+-----------------------------------------------------*/
+.menu {
+  margin-bottom: 15px;
+}
+.menu a {
+  padding: 0 10px;
+  border-right: 1px solid #999999;
+  display: inline-block;
+}
+.menu a span {
+  padding: 0 5px;
+}
+.menu a span.current_menu {
+  background-color: #ffffff;
+  color: #ff0000;
+}
+
+
+/* Navi
+--------------------------------------------------------- */
+.AdminUsersGroups .navi, .AdminGroups .navi {
+  margin: 10px 0px 10px 0px;
+  padding: 6px;
+  border: 1px solid #ddd;
+  background-color: #f4f4f4;
+  line-height: 2.0;
+}
+.AdminUsersGroups .navi a, .AdminGroups .navi a {
+  display: inline-block;
+  padding: 0px 8px;
+  text-decoration: none;
+}
+
+.indexTabs {
+  left: 0;
+  position: relative;
+  top: -8px;
+}
+
+.indexTabs a,
+.indexTabs span {
+  margin-top: 10px;
+  border: 1px solid #CCCCCC;
+  color: #999999;
+  display: inline-block;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  width: 100px;
+}
+
+.indexTabs span {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+}
+
+.user_explanation {
+    color: blue;
+    margin: 20px 10px;
+}
+.user_attention {
+    color: red;
+}

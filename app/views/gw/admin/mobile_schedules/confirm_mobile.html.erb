@@ -1,0 +1,44 @@
+<%
+u = Core.user
+uid = u.id
+link_params = "?gid=#{params[:gid]}&uid=#{uid}&cgid=#{params[:cgid]}&dis=#{@dis}"
+%>
+<%@items.each do |item|%>
+<%
+if params[:is_repeat] == "true"
+delete_path = "/gw/mobile_schedules/#{item.id}/delete_repeat#{link_params}"
+delete_str  = "繰返一括削除"
+else
+delete_path = "/gw/mobile_schedules/#{item.id}/delete#{link_params}"
+delete_str  = "削除"
+end
+
+if params[:gid].blank?
+  link_str = %Q(/gw/schedules/#{item.id}/show_one#{link_params}&topdate=#{@topdate})
+  cansel_path   = %Q(/gw/schedules/#{item.id}/show_one#{link_params}&topdate=#{@topdate})
+else
+  link_str = %Q(/gw/schedules/#{item.id}/show_one#{link_params}&topdate=#{@topdate})
+  cansel_path   = %Q(/gw/schedules/#{item.id}/show_one#{link_params}&topdate=#{@topdate})
+end
+
+destroy_confirm_s  = '削除してよろしいですか？'
+destroy_confirm_s  = "この予定は、複数の参加者が登録されています。この予定は、参加者全員のスケジューラーからも削除されます。<br />#{destroy_confirm_s}" if item.schedule_users.collect{|x|[x.class_id, x.uid]}.reject{|x| x[0] == 1 && x[1] == u.id }.length > 0
+destroy_confirm_s += "<br />なお、繰り返し期間に属している場合、その繰り返しに属する全ての予定が削除されますので、ご注意ください。" if params[:is_repeat] == "true"
+%>
+<p class="mobileScheduleCurrent">スケジュール</p>
+<p class="bgAsh"><%=raw(delete_str)%></p>
+<p class="leftPad2">
+<%=raw(destroy_confirm_s)%><br />
+<%= link_to "[はい]" , delete_path %>　
+<%=link_to "[いいえ]", cansel_path%><br />
+</p>
+<hr class="borderDash"/>
+
+<p class="leftPad2"><%=link_to("<戻る", link_str)%></p>
+<%if @dis=="week"%>
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%=link_to("<<週表示へ", %Q(/gw/schedules/#{link_params}&st_date=#{@topdate}))%>
+</p>
+<%end%>
+<%end%>

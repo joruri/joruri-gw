@@ -1,0 +1,68 @@
+<br />
+公開<span class="textRed">※</span><br />
+<%= f.radio_button :is_public, 1, :class => 'state'%><label for="item_is_public_1">公開（誰でも閲覧可）</label><br />
+<%= f.radio_button :is_public, 2, :class => 'state'%><label for="item_is_public_2">所属内（参加者の所属および公開所属）</label><br />
+<%= f.radio_button :is_public, 3, :class => 'state'%><label for="item_is_public_3">非公開（参加者のみ）</label><br />
+
+<%
+@public_groups_json = [["1",Core.user_group.id,Core.user_group.name]].to_json if @public_groups_json.blank?
+unless params[:item].blank?
+  groups_json = []
+  if params[:item][:public_groups].blank?
+    #
+  else
+    params[:item][:public_groups].each do |u|
+      if u[1].to_i != 0
+        group_name = System::Group.where(:id => u[1]).first
+        groups_json << ["1",u[1],"#{group_name}"]
+      end
+    end
+    params[:item][:public_groups_json] = groups_json.to_json
+  end
+end
+%>
+<%= hidden_field_tag 'init[public_groups_json]', (params[:item].nil? ? nz(@public_groups_json) : params[:item][:public_groups_json]) %>
+<%
+if params[:item].blank?
+ groups_json = @public_groups_json
+else
+ groups_json =  params[:item][:public_groups_json]
+end
+selected_field = []
+
+if groups_json.blank?
+5.times { |i|
+  selected_field  << ["選択なし",0]
+}
+else
+items = ::JSON.parse(groups_json)
+limit = items.size - 1
+5.times { |i|
+  if i <= limit
+    selected_field  << [items[i][2],items[i][1]]
+  else
+    selected_field  << 0
+  end
+}
+end
+
+group_cond    = "state='enabled'"
+c_group_cond = group_cond + " AND level_no = 3"
+group_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
+c_groups = System::Group.where(c_group_cond).order(group_order)
+groups = [["選択なし",0]]
+c_groups.each{|x|
+  groups << ["(#{x.code})#{x.name}", x.id]
+}
+
+select_style ='width:200px;margin-top: 5px;'
+%>
+<br />
+公開所属<br />
+<span class="textRed">公開所属の選択は公開範囲が「所属内」の場合のみ有効です。</span><br />
+<%5.times { |i|%>
+<%= select_tag("item[public_groups][gid_#{i+1}]",options_for_select(groups, selected_field[i][1].to_i), :style => select_style )%>
+<%}%>
+<br />
+<br />
+<br />

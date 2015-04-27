@@ -1,0 +1,9 @@
+<div class="navi">
+<% if @parent %>
+  <% mark_f = '' %>
+  <% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+    <%= link_to "#{mark_f}#{c.name}", url_for(c.link_list_path) %>
+    <% mark_f = '> '%>
+  <% end %>
+<% end %>
+</div>

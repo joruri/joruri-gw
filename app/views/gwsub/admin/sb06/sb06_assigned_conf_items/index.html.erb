@@ -1,0 +1,43 @@
+<%
+link_to_action = nil
+link_to_show = 1
+path_index = request.path
+options =  {
+  'sort_link_options' => {
+  'sort_keys' => @sort_keys,
+  'path_index' => path_index,
+  'other_query_string' => @qs
+  },
+  'link_to_edit'    => link_to_action,
+  'link_to_destroy' => link_to_action,
+  'link_to_show'    => nz(link_to_show,0),
+
+}
+options[:'field_td_criteria']={
+  'show'=>Proc.new{ |item|
+      %Q(<a href="#{url_for({:action => :index})}/#{item.id}?#{@qs}">詳細</a>)
+  },
+  'conf_kind_id'=>Proc.new{ |item|
+      %Q(#{safe{item.c_kind1.conf_kind_name}})
+  }
+}
+%>
+<!-- コード管理 -->
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<!-- <h2>担当者名等管理</h2> -->
+<%= render 'gwsub/admin/sb06/sb0602_piece_header' %>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_l2_menu' %>
+<%= render 'gwsub/admin/sb06/sb06_level3menu_header' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb06/sb06_assigned_conf_items/display_name' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conf_items/search' %>
+
+<%= table_to_index2(@items,options).html_safe %>
+<%= paginate @items %>
+</div>
+</div>

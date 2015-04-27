@@ -1,0 +1,31 @@
+<div class="piece todo setting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+<span class="title">リマインダー表示設定</span>
+</div>
+</div>
+
+<div class="pieceBodyBody">
+
+<%= form_tag "/gw/todo_settings/edit_reminder", {:method => :put, :multipart => true} do %>
+<table class="show">
+  <tr>
+    <th>完了</th>
+    <td><%= select_tag 'item[todos][finish_todos_display]', options_for_select(@item.display_options, @item.finish_todos_display) %></td>
+  </tr>
+  <tr>
+    <th>未完了</th>
+    <td>
+      <%= select_tag 'item[todos][unfinish_todos_display_start]', options_for_select(@item.display_start_options, @item.unfinish_todos_display_start) %>
+      <%= select_tag 'item[todos][unfinish_todos_display_end]', options_for_select(@item.display_end_options, @item.unfinish_todos_display_end) %>
+    </td>
+  </tr>
+</table>
+<div class="submitters"><%= submit_tag "保存" %></div>
+<% end %>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,110 @@
+ja:
+  enum:
+    gw/schedule:
+      repeat_class_id:
+        1: 毎日
+        2: 毎日(土日除く)
+        3: 毎週
+      repeat_weekday_id:
+        0: 日曜日
+        1: 月曜日
+        2: 火曜日
+        3: 水曜日
+        4: 木曜日
+        5: 金曜日
+        6: 土曜日
+      allday_radio_id:
+        1: 未定
+        2: 終日
+      title_category_id:
+        100: 会議
+        200: 出張
+        300: 研修
+        400: 休暇
+        500: 仕事集中タイム
+        600: 来客対応
+        700: 重要イベント
+        800: 期限日
+        900: 注意
+        950: 議会関係
+        1000: 予定あり
+        1100: その他１
+        1200: その他２
+    gw/prop_other:
+      state:
+        public: 公開中
+        closed: 非公開
+      edit_state:
+        1: 許可
+        0: 不可
+    gw/prop_rentcar:
+      type_id:
+        1: 乗用
+        2: 貨物
+      delete_state:
+        0: 未
+        1: 済
+    gw/prop_meetingroom:
+      type_id:
+        1: 共用
+        2: 西分
+        3: 当日
+        4: 特別
+      delete_state:
+        0: 未
+        1: 済
+    gw/prop_extra_pm_common:
+      prop_state:
+        0: 未承認
+        1: 承認済
+        2: 貸出中
+        3: 返却済
+        4: 集計済
+        5: 請求済
+    gw/prop_extra_pm_rentcar_actual:
+      bill_state:
+        1: 請求済
+        2: 未了
+    gw/prop_extra_pm_message:
+      state:
+        1: する
+        2: しない
+      prop_class_id:
+        1: 会議室
+        2: レンタカー
+    gw/prop_extra_pm_remark:
+      prop_class_id:
+        1: 会議室
+        2: レンタカー
+    gw/memo:
+      category:
+        1: 電話してください。電話番号：
+        2: また電話して下さるそうです。
+        3: 電話があったことをお伝えします。
+    gw/section_admin_master:
+      range_class_id:
+        1: 部局
+        2: 所属
+      edit_auth:
+        0: 付与しない
+        1: 付与する
+    gw/property/schedule_admin_delete:
+      delete_options:
+        #0: 削除しない
+        #1: ６ヶ月
+        2: １年
+        3: １年６ヶ月
+        4: ２年
+        5: ２年６ヶ月
+        6: ３年
+        7: ３年６ヶ月
+    gw/property/todo_admin_delete:
+      admin_delete_options:
+        #0: 削除しない
+        1: ６ヶ月
+        2: １年
+        3: １年６ヶ月
+        4: ２年
+        5: ２年６ヶ月
+        6: ３年
+        7: ３年６ヶ月

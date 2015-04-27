@@ -1,0 +1,36 @@
+ja:
+  activerecord:
+    attributes:
+      digitallibrary/control:
+        title: 図書名タイトル
+        sort_no: 並び順
+        category1_name: 見出しルート名
+        separator_str1: 見出し区切り文字
+        separator_str2: 見出しと記事の区切り文字
+        categoey_view_line: 分類件数表示行数
+        monthly_view_line: 月別件数表示行数
+        default_published: 掲載期間の初期値
+        upload_graphic_file_size_capacity: 画像の総容量制限
+        upload_document_file_size_capacity: 添付の総容量制限
+        upload_graphic_file_size_max: 画像ファイルのサイズ制限
+        upload_document_file_size_max: 添付ファイルのサイズ制限
+        adms_json: 管理者設定
+        sueditors_json: 編集者設定
+        sureaders_json: 閲覧者設定
+      digitallibrary/doc:
+        state: 状態
+        title: タイトル
+        chg_parent_id: ""
+        seq_no: ""
+        recognizers: 承認者
+      digitallibrary/folder:
+        state: 状態
+        title: 見出し
+        chg_parent_id: ""
+        seq_no: ""
+      digitallibrary/file:
+        file: ファイル
+        filename: ファイル名
+      digitallibrary/image:
+        file: ファイル
+        filename: ファイル名

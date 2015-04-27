@@ -1,0 +1,40 @@
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <div class="pieceBanner">
+    <%# コード管理メニュー %>
+    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+    <%= render 'gwsub/admin/sb04/sb04_seating_lists/display_name' -%>
+    <div class="showMenu">
+      <%= link_to '編集' , "/gwsub/sb04/04/sb04_seating_lists/#{@item.id}/edit?#{@qs}" %>
+      <%= link_to '削除' , "/gwsub/sb04/04/sb04_seating_lists/#{@item.id}?#{@qs}",:method=>:delete,:confirm=>'座席表URLの登録を削除します。掲示板は削除されません。よろしいですか？'   if @u_role==true %>
+      <%= link_to '記事一括登録',url_for("/gwsub/sb04/04/sb04_seating_lists/#{@item.id}?docs=create"), {:confirm=>'座席表掲示板を初期化します。よろしいですか？', :style => "width:100px;"}  if @u_role==true %>
+      <%= link_to '記事一括取得',url_for("/gwsub/sb04/04/sb04_seating_lists/#{@item.id}?docs=geturl"), {:confirm=>'座席表記事の所属別urlを再取得します。よろしいですか？', :style => "width:100px;"}  if @u_role==true %>
+    </div>
+  </div>
+  <div class="pieceBody">
+    <table class="show">
+      <tbody>
+        <tr>
+          <th>年度</th>
+          <td><%= @item.fyear_markjp -%></td>
+        </tr>
+        <tr>
+          <th>タイトル</th>
+          <td><%= @item.title -%></td>
+        </tr>
+        <tr>
+          <th>座席表掲示板URL</th>
+          <td><%= @item.bbs_url -%></td>
+        </tr>
+        <tr>
+          <th>備考</th>
+          <td><%= @item.remarks -%></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="btReturn">
+     <%= link_to '一覧に戻る',"/gwsub/sb04/04/sb04_seating_lists?#{@qs}" %>
+    </div>
+  </div>
+</div>

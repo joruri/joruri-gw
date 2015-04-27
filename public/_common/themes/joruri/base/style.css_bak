@@ -1,0 +1,75 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Base
+========================================================= */
+
+/* elements
+----------------------------------------------- */
+* {
+  margin: 0px;
+  padding: 0px;
+  font-size: 1.0em;
+  font-size: 100%;
+  font-style: normal;
+}
+html {
+  height: 100%;
+  font-size: 16px;
+}
+body {
+  height: 100%;
+  border: 0px;
+  background-color: #fff;
+  font-size: 80%;
+}
+body, td, th, select, option {
+  font-family: "MS PGothic", "ＭＳ Ｐゴシック", Arial, Verdana, Osaka, sans-serif;
+  font-weight: lighter;
+}
+input, textarea {
+  font-size: 110%;
+  _font-size: 100%;
+  font-family: Arial, sans-serif;
+}
+blockquote {
+  margin: 10px 20px 10px 20px;
+}
+h1, h2, h3, h4, h5 {
+  font-size: 120%;
+  font-family: verdana;
+}
+img {
+  border-style: none;
+}
+pre {
+  font-family: SimHei, "ＭＳ ゴシック", monospace;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  empty-cells: show;
+}
+ul {
+  list-style-type: none;
+  list-style-position: outside;
+}
+rp, rt {
+  font-size: 80%;
+  text-decoration: none;
+}
+a {
+  color: #003399;
+/* text-decoration: none; */
+}
+a:visited {
+  color: #663399;
+}
+a:hover {
+  color: #CC3300;
+  text-decoration: underline;
+}
+
+
+
+

@@ -1,0 +1,45 @@
+<div class="bbsDocList circular setting">
+<%= render 'piece_header' %>
+
+<!--カラム用タグ-->
+<div class="pieceBanner">
+</div>
+<div class="pieceBody">
+
+<%= form_for :item, :url => "/gwmonitor/custom_user_groups/sort_update", :html => {method: :put} do |f| %>
+  <%= f.error_messages %>
+  <table class="index">
+    <colgroup style="width:100px;"></colgroup>
+    <colgroup class="name"></colgroup>
+    <colgroup style="width:200px;"></colgroup>
+    <colgroup style="width:100px;"></colgroup>
+    <colgroup style="width:80px;"></colgroup>
+    <colgroup style="width:80px;"></colgroup>
+    <tr>
+      <th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+      <th>名称</th>
+      <th>最終更新日時</th>
+      <th>状態</th>
+      <th></th>
+      <th></th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr>
+      <td><%= item.sort_prefix %>&nbsp;<%= f.text_field "sort_no_#{item.id}", value: item.sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+      <td><%= item.name %></td>
+      <td><%=l item.updated_at if item.updated_at %></td>
+      <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+      <td><%= link_to_edit item.id %></td>
+      <td><%= link_to_destroy item.id %></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>
+
+<%= paginate @items %>
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to "#{@system_title}一覧へ戻る", "/gwmonitor/builders" %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->

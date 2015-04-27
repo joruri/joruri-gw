@@ -1,0 +1,181 @@
+<%
+raise ArgumentError, 'piece_header 呼び出し前に d/@st_date を設定してください。' if d.nil?
+today = Date.today
+class_str = "dateShow"
+
+case mode
+when 'day', 'week'
+  class_str.concat " today" if d == today
+  date_format_name = 'week'
+  if @schedule_move_url_directive.blank?
+    @schedule_move_url_directive = %Q(#{request.path_translated}#{mode == 'day' ? '%d?%q' :
+      @sp_mode == :schedule ? '?s_date=%d&%q' :
+      @sp_mode == :event ? 'event_week?s_date=%d' : 
+      @sp_mode == :meetings ? 'guide?s_date=%d&%q' : 'show_week?s_date=%d&%q'})
+
+    @schedule_move_ab = if @sp_mode == :event
+      [
+        [@st_date.months_ago(1), '前月'],
+        [@st_date - 7, '前週'],
+        [Date.today, '今日'],
+        [@st_date + 7, '翌週'],
+        [@st_date.months_since(1), '翌月']
+      ]
+    else
+      [
+        [d.months_ago(1), '前月'],
+        [d-7, '前週'],
+        [d-1, '前日'],
+        [Date.today, '今日'],
+        [d+1, '翌日'],
+        [d+7, '翌週'],
+        [d.months_since(1), '翌月']
+      ]
+    end
+  end
+
+when 'month'
+  raise ArgumentError, 'piece_header 呼び出し前に params[:prop_id] を設定してください。' if @sp_mode == :prop && params[:prop_id].nil?
+  class_str.concat " today" if d.year == today.year && d.month == today.month
+  date_format_name = 'month'
+  if @schedule_move_url_directive.blank?
+    @schedule_move_url_directive = %Q(#{request.path_info}?s_date=%d&%q)
+
+    @schedule_move_ab = if @sp_mode == :event
+      [
+        [Date::new(@st_date.year - 1, @st_date.month, 1), '前年'],
+        [@st_date.month == 1 ? Date::new(@st_date.year - 1, 12, 1) : Date::new(@st_date.year, @st_date.month - 1, 1), '前月'],
+        [today, '今月'],
+        [@st_date.month == 12 ? Date::new(@st_date.year + 1, 1, 1) : Date::new(@st_date.year, @st_date.month + 1, 1), '翌月'],
+        [Date::new(@st_date.year + 1, @st_date.month, 1), '翌年']
+      ]
+    else
+      [
+        [Date::new(d.year - 1, d.month, 1), '前年'],
+        [d.month == 1 ? Date::new(d.year - 1, 12, 1) : Date::new(d.year, d.month - 1, 1), '前月'],
+        [today, '今月'],
+        [d.month == 12 ? Date::new(d.year + 1, 1, 1) : Date::new(d.year, d.month + 1, 1), '翌月'],
+        [Date::new(d.year + 1, d.month, 1), '翌年']
+      ]
+    end
+  end
+
+  case @sp_mode
+  when :schedule
+    unless @uid == Core.user.id
+      user_name_s = Gw::Model::Schedule.get_uname(:uid=>@uid)
+      user_name_s = %Q(<span class="nobr"> - #{user_name_s}</span>)
+    end
+  when :prop
+    if @prop
+      prop_id = @prop.id
+      user_name_s = %Q(<span class="nobr"> - #{@prop.name}</span>)
+    else
+      prop_id = Gw::Model::Schedule.get_prop_ids(params)[0]
+      user_name_s = Gw::Model::Schedule.get_prop(prop_id, params).name
+      user_name_s = %Q(<span class="nobr"> - #{user_name_s}</span>)
+    end
+  end
+
+when 'guard'
+  class_str += " today" if d == today
+  date_format_name = 'week'
+  if @schedule_move_url_directive.blank?
+    @schedule_move_url_directive = %Q(#{request.path_info}?s_date=%d&%q)
+
+    @schedule_move_ab = [ [d.months_ago(1), '前月'],
+      [d-7, '前週'],
+      [d-1, '前日'],
+      [Date.today, '今日'],
+      [d+1, '翌日'],
+      [d+7, '翌週'],
+      [d.months_since(1), '翌月']
+    ]
+  end
+
+end
+
+if @sp_mode == :prop
+  prop_id_str = "&prop_id=#{params[:prop_id]}" if !params[:prop_id].blank?
+  type_id_str = "&type_id=#{params[:type_id]}" if !params[:type_id].blank?
+  other_admin_gid_str = "&s_other_admin_gid=#{params[:s_other_admin_gid]}" if !params[:s_other_admin_gid].blank?
+  @schedule_move_url_directive.concat "#{prop_id_str}#{type_id_str}#{other_admin_gid_str}"
+end
+
+### main
+# 通常スケジューラーの個人スケジューラーの場合、下部のリンクは出さないようにする。
+%>
+<div class="lineBox">
+  <% if @sp_mode == :schedule && move_mode != :header && mode == "month" && @schedule_move_url_directive && @st_date %>
+  <span class="month">
+  <%
+  ago6   = @st_date.months_ago(6)
+  ago5   = @st_date.months_ago(5)
+  ago4   = @st_date.months_ago(4)
+  ago3   = @st_date.months_ago(3)
+  ago2   = @st_date.months_ago(2)
+  ago1   = @st_date.months_ago(1)
+
+  since1 = @st_date.months_since(1)
+  since2 = @st_date.months_since(2)
+  since3 = @st_date.months_since(3)
+  since4 = @st_date.months_since(4)
+  since5 = @st_date.months_since(5)
+  since6 = @st_date.months_since(6)
+  %>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago6.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago6.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago5.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago5.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago4.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago4.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago3.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago3.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago2.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago2.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{ago1.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{ago1.month}月</a>)) -%>
+  <span>表示月</span>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since1.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since1.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since2.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since2.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since3.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since3.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since4.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since4.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since5.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since5.month}月</a>)) -%>
+  <%= raw(%Q(<a href="#{@schedule_move_url_directive.sub('%d', "#{since6.strftime('%Y%m%d')}").sub('%q', "#{@schedule_move_qs}")}" class="">#{since6.month}月</a>)) -%>
+  </span>
+  <% end %>
+  <% if move_mode != :header -%>
+  <% else -%>
+    <%=todo_display_link(@sp_mode, mode, params[:action])%>
+    <script type="text/javascript">
+    //<![CDATA[
+      function toggleTodo(e) {
+        //e.stop();
+        new Ajax.Request($('toggleTodoBtn').href, {method:'get', onComplete: function(x){
+        document.body.style.cursor = 'default';
+        var res = x.responseText;
+        window.location.reload();
+      }});
+    }
+    //]]>
+    </script>
+
+    <div class="dayInformation <%= class_str -%>">
+      <%= date_format(@schedule_settings["#{date_format_name}_view_piecehead_format"], d) -%>
+      <%= raw(user_name_s) -%>
+    </div>
+  <% end -%>
+
+  <div class="scheduleMove">
+    <%= form_for :item, :url => '', :html => {:multipart => true, :id => "schedule_#{move_mode}"} do |f| -%>
+    <%= raw(Gw::Model::Schedule.show_schedule_move_core(@schedule_move_ab, @schedule_move_url_directive, @schedule_move_qs)) -%>
+    <input type="hidden" class="datepicker_for_redirect" />
+    <% end -%>
+  </div>
+</div>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('input.datepicker_for_redirect').datepicker({
+      onSelect: function(dateText) {
+        location.href = $('#my_url').val().replace(/%d/, dateText.replace(/-/g, ''));
+      }
+    });
+  });
+})(jQuery);
+</script>

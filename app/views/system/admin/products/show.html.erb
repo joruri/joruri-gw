@@ -1,0 +1,48 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', action: :edit if @item.editable? %></span>
+  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除してよろしいですか？', method: :delete if @item.deletable? %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale :name %></th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :product_type %></th>
+    <td><%= @item.product_type %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :product_synchro %></th>
+    <td><%= @item.product_synchro_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sso %></th>
+    <td><%= @item.sso_label %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sso_url %></th>
+    <td><%= @item.sso_url %></td>
+  </tr>
+  <tr>
+    <th><%= @item.locale :sso_url_mobile %></th>
+    <td><%= @item.sso_url_mobile %></td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', action: :index %>
+</div>
+
+</div>
+</div>

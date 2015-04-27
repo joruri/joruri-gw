@@ -1,0 +1,56 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/qa_standard.css
+========================================================= */
+
+/* table show
+----------------------------------------------------*/
+.gwqaDocList table.show {
+  width: 98%;
+  margin: 10px 10px 0;
+}
+table.show th {
+  width: auto;
+}
+
+/* table docManage(記事作成ページ　記事管理課欄)
+----------------------------------------------------*/
+table.docManage th {
+  width: 135px;
+}
+
+/* table docState(記事作成ページ　解決状況欄)
+----------------------------------------------------*/
+table.docState th {
+  width: 135px;
+}
+
+/* table bbsUserformBody(詳細ページ　回答欄)
+----------------------------------------------------*/
+#contentBody .docsInnerBox .bbsUserformBody th {
+  width: 100%;
+  padding: 5px;
+  background-color: #FFFFB5;
+  text-align: right;
+  font-size: 120%;
+}
+table.bbsUserformBody td {
+  padding: 4px 7px;
+}
+
+/* table gwboardAttachlist(詳細ページ　添付ファイル欄)
+----------------------------------------------------*/
+table.gwboardAttachlist {
+  margin-bottom: 25px;
+  background-color: #FFFFFF;
+  text-align: left;
+}
+table.gwboardAttachlist th {
+  padding: 4px 7px;
+}
+table.gwboardAttachlist td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+}
+
+

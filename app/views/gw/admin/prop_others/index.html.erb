@@ -1,0 +1,42 @@
+<div class="piece prop index">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render 'prop_master_menu' %>
+  <%= render 'titleline' %>
+</div>
+<div class="pieceBodyBody">
+<%=  render 'search' -%>
+<% if @items.blank? -%>
+  <%= show_notice -%>
+<% else -%>
+<table class="index">
+  <tr>
+    <th class="action"></th>
+    <th>予約</th>
+    <th>種別</th>
+    <th>名称</th>
+    <th>施設管理所属</th>
+    <th>予約可能所属</th>
+    <th>照会可能所属</th>
+  </tr>
+  <% @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' -%>">
+    <td><%= link_to '詳細', {action: :show, id: item.id} -%></td>
+    <td><%= item.reserved_state_label -%></td>
+    <td><%= safe{item.prop_type.name} -%></td>
+    <td><%= item.name -%></td>
+    <td><%=br item.admin_role_corrected_group_names.join('<br />') -%></td>
+    <td><%=br item.edit_role_corrected_group_names.join('<br />') -%></td>
+    <td><%=br item.read_role_corrected_group_names.join('<br />') -%></td>
+  </tr>
+  <% end %>
+</table>
+<% end -%>
+</div>
+<%= paginate @items %>
+
+</div>
+</div>

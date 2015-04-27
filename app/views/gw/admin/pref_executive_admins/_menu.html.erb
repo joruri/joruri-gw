@@ -1,0 +1,11 @@
+<div class="menu">
+<%= link_to gw_pref_executive_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'index' %>">一覧</span>
+<% end %>
+<%= link_to csvput_gw_pref_executive_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvput' %>">CSV出力</span>
+<% end %>
+<%= link_to csvup_gw_pref_executive_admins_path do %>
+  <span class="<%= 'current_menu' if action_name == 'csvup' %>">CSV登録</span>
+<% end %>
+</div>

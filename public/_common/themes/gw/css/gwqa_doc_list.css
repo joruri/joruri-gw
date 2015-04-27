@@ -1,0 +1,147 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/gwqa_doc_list.css
+========================================================= */
+
+/* ミニアイコン設定
+-------------------------------------------------*/
+#content .gwqaDocList {
+  background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+}
+
+/* table index
+-------------------------------------------------*/
+table.index {
+  width: 98%;
+  margin: 0 auto 10px;
+}
+table.index td.docTitle a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-repeat: no-repeat;
+  background-position: 0 4px;
+}
+#contentBody .gwqaDocList th {
+  border: none;
+}
+table.index th.item {
+  padding: 6px 3px;
+}
+table.index th.group {
+  width: 145px;
+}
+table.index th.category {
+  width: 145px;
+}
+table.index td.qaAnswer  {
+  width: 40px;
+  padding: 6px 3px;
+  text-align: center;
+}
+td.qaAnswer span {
+  height:16px;
+  padding-left:20px;
+  background-image:url(/_common/themes/gw/files/gwqa/answer_number.gif);
+}
+table.index td.qaSettled   {
+  width: 50px;
+  text-align: center;
+}
+table.index td.update   {
+  width: 120px;
+}
+
+/* 新規作成ページ　右カラム上部ライン
+-------------------------------------------------*/
+#page-gwqa-docs-new .gwfaqDocList .right form {
+  padding-top: 10px;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* QAタイトル部分
+-------------------------------------------------*/
+.gwqaDocList .pieceBanner h3 {
+  clear: both;
+  padding: 10px;
+  font-size: 200%;
+}
+
+/* タブ周り
+-------------------------------------------------*/
+#contentBody .gwqaDocList .tabBox {
+  margin-bottom: 15px;
+}
+
+/* 詳細ページ　質問欄
+-------------------------------------------------*/
+.questionArea {
+  margin-bottom: 25px;
+}
+.questionArea th {
+  padding: 5px;
+  background-color: #002B94;
+  text-align: left;
+  text-align: right;
+  font-size: 120%;
+  color: #fff;
+}
+.questionArea th span {
+  float: left;
+}
+.questionArea th a {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 80%;
+  color: #FFF;
+}
+.questionArea td {
+  padding: 10px;
+  background-color: #fff;
+}
+.questionArea td.questionTitle {
+  font-size: 1.3em;
+}
+.questionArea td.solution {
+  padding-top: 0;
+  text-align: right;
+}
+.questionArea td.solution a {
+  display: inline-block;
+  width: 86px;
+  height: 0;
+  margin-top: 0;
+  padding-top: 16px;
+  background-image: url(/_common/themes/gw/files/bt_solution.gif);
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+/* 詳細ページ　回答並び替えボタン
+-------------------------------------------------*/
+.docsInnerBox .answerSort {
+  margin-right: 5px;
+  text-align: right;
+}
+.docsInnerBox .answerSort a span {
+  margin-left: 5px;
+}
+
+/* 詳細ページ　回答欄
+-------------------------------------------------*/
+.answerTitle span {
+  float: left;
+}
+.answerTitle a {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 80%;
+}
+
+/* 機能ボタン
+-------------------------------------------------*/
+.editingBox {
+  margin-left: 10px;
+}
+
+

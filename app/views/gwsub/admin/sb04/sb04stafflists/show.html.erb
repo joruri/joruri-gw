@@ -1,0 +1,126 @@
+<%
+
+multi_sections = Gw.yaml_to_array_for_select("gwsub_sb04stafflists_multi_sections_flg")
+_multi_section = multi_sections.rassoc(@item.multi_section_flg)
+if _multi_section.present?
+  multi_section = _multi_section[0]
+else
+  multi_section == ""
+end
+
+
+personal_states = Gw.yaml_to_array_for_select("gwsub_sb04_personal_state")
+_personal_state = personal_states.rassoc(@item.personal_state)
+if _personal_state.present?
+  personal_state = _personal_state[0]
+else
+  personal_state == ""
+end
+
+
+display_states = Gw.yaml_to_array_for_select("gwsub_sb04_duties_state")
+_display_state = display_states.rassoc(nz(@item.multi_section_flg, 1).to_s)
+if _display_state.present?
+  display_state = _display_state[0]
+else
+  display_state == ""
+end
+
+edit_link = link_to('編集' , "/gwsub/sb04/04/sb04stafflists/#{@item.id}/edit?#{@qs}")
+delete_link = link_to('削除'  ,"/gwsub/sb04/04/sb04stafflists/#{@item.id}?#{@qs}" ,:confirm=>"削除してよろしいですか？" ,:method=>:delete)
+-%>
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <div class="pieceBanner">
+    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+    <%= render 'gwsub/admin/sb04/sb04stafflists/display_name' %>
+    <div class="showMenu">
+    <% if @role_sb04_dev && Gwsub::Sb04stafflistviewMaster.is_sb04_dev_group_role(@item.fyear_id, @item.section_code) %>
+      <%= edit_link %>
+      <%= delete_link %>
+    <% elsif @u_role %>
+      <%= edit_link %>
+      <%= delete_link if @role_admin==true or @role_developer==true %>
+    <% end %>
+    </div>
+  </div>
+  <div class="pieceBody">
+    <table class="show">
+      <tbody>
+        <tr>
+          <th>年度</th>
+          <td><%= @item.fyear_markjp -%></td>
+        </tr>
+        <tr>
+          <th>職員番号</th>
+          <td><%= @item.staff_no -%></td>
+        </tr>
+        <tr>
+          <th>兼務</th>
+          <td><%= multi_section -%></td>
+        </tr>
+        <tr>
+          <th>氏名（変換後）</th>
+          <td><%= @item.name -%></td>
+        </tr>
+        <tr>
+          <th>カナ氏名</th>
+          <td><%= @item.kana -%></td>
+        </tr>
+        <tr>
+          <th>所属</th>
+          <td><%= @item.section_code -%></td>
+        </tr>
+        <tr>
+          <th>所属名称</th>
+          <td><%= @item.section_name -%></td>
+        </tr>
+        <tr>
+          <th>担当名称</th>
+          <td><%= @item.assignedjobs_name -%></td>
+        </tr>
+        <tr>
+          <th>並び順</th>
+          <td><%= @item.divide_duties_order -%></td>
+        </tr>
+        <tr>
+          <th>職名</th>
+          <td><%= @item.official_title_name -%></td>
+        </tr>
+        <tr>
+          <th>個人内線</th>
+          <td><%= @item.extension -%></td>
+        </tr>
+        <tr>
+          <th>担当連絡先</th>
+          <td><%= @item.assignedjobs_tel -%></td>
+        </tr>
+        <tr>
+          <th>担当住所・電話</th>
+          <td><%= @item.assignedjobs_address -%></td>
+        </tr>
+        <tr>
+          <th>事務分掌</th>
+          <td><%= @item.divide_duties -%></td>
+        </tr>
+        <tr>
+          <th>備考</th>
+          <td><%= @item.remarks -%></td>
+        </tr>
+        <tr>
+          <th>職員録表示</th>
+          <td><%= personal_state -%></td>
+        </tr>
+        <tr>
+          <th>事務分掌表示</th>
+          <td><%= display_state -%></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="btReturn">
+      <%= link_to '一覧に戻る',"/gwsub/sb04/04/sb04stafflists?#{@qs}" %>
+    </div>
+  </div>
+</div>

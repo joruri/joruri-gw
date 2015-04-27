@@ -1,0 +1,49 @@
+<style type="text/css">
+.dep   {margin: 10px 0px 0px 0px; padding: 5px 5px; background-color: #bbb;}
+.sec   {margin: 0px 0px 5px 0px; padding: 5px 5px; background-color: #ddd;}
+.users {margin: 5px 5px; padding: 5px; border: 0px solid #ccc; font-size: 90%;}
+.user  {display: inline-block; margin: 0px 0.2em 0px 0px;}
+a.sync {display: inline-block; width: 100px; padding: 5px; border: 1px solid #777; background-color: #eee;}
+</style>
+
+<div class="piece AdminSetting AdminUsers">
+<%= render 'header' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<%# 同期：適用開始日における差分の反映：同期対象はフラグのみ更新、LDAPのみのデータは追加 %>
+
+<div style="text-align: center;">
+  <%= link_to '同期処理', '?do=synchro', :class => 'sync', :confirm => '同期処理を開始します' %>
+</div>
+<div style="margin: 10px 0px; font-size: 90%; font-family: 'MS Gothic';">
+  <% @groups.each do |d| %>
+  <% next unless d.synchro_target? %>
+  <div class="dep">
+    <%= d.code %>,
+    <%= d.name %>
+  </div>
+  <div class="secs">
+    <% d.children.each do |s| %>
+    <div class="sec">
+      <%= s.code %>,
+      <%= s.name %>,
+      <%= s.name_en %>,
+      <%= s.email %>
+    </div>
+    <div class="users">
+      <% s.users.each do |u| %>
+      <% next unless u.synchro_target? %>
+      <span class="user">
+        <%= u.name %>/ 
+      </span>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+</div>
+
+</div>
+</div>

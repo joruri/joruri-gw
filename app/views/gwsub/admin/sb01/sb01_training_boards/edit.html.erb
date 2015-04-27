@@ -1,0 +1,17 @@
+<div class="gwsub sb01">
+<div class="pieceHeader">
+<h2>研修申込・受付</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb01/sb01_training_boards/menu' %>
+</div>
+<div class="pieceBody">
+
+<%= form_for :item, :url => {:action => :update, :id => @item.id}, :html => {:multipart => true, :method => :put} do |f| %>
+<%= render 'form', f: f %>
+<% end %>
+<div class="btReturn">
+  <%= link_to '詳細に戻る' , url_for({:action => :show, :id => @item.id}) -%>
+</div>
+</div>
+</div>

@@ -1,0 +1,20 @@
+<div class="contentMenu faq">
+  <span class="btNew "><%= link_to 'FAQを作成する', '/gwfaq/makers/new/' if Gwfaq::Control.is_sysadm? %></span>
+</div>
+
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+    <tr>
+      <td class="spaceLeft"></td>
+      <td class="tab<%= ' current' unless params[:state] == 'HIDE'%>"><%= link_to '管理可能FAQ', '/gwfaq/controls' %></td>
+      <td class="spaceCenter"></td>
+      <td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%= link_to '管理可能FAQ（非表示）', '/gwfaq/controls?state=HIDE' %></td>
+      <td class="spaceCenter"></td>
+      <td class="tab"><%= link_to 'FAQ一覧', '/gwfaq' %></td>
+      <td class="spaceRight"></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+

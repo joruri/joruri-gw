@@ -1,0 +1,11 @@
+<table class="show">
+  <tr><th colspan="2">アンケート作成</th></tr>
+  <tr><th>形式選択</th><td><%= text_field_tag 'item[0][]', @item.options_value[0][0], :size => '100' %></td></tr>
+  <tr><th>記事管理設定</th><td><%= text_field_tag 'item[1][]', @item.options_value[1][0], :size => '100' %></td></tr>
+  <tr><th>一覧に表示</th><td><%= text_field_tag 'item[2][]', @item.options_value[2][0], :size => '100' %></td></tr>
+  <tr><th>注意事項　表示</th><td><%= text_field_tag 'item[5][]', @item.options_value[5][0], :size => '100' %></td></tr>
+  <tr><th>配信先設定</th><td><%= text_field_tag 'item[6][]', @item.options_value[6][0], :size => '100' %></td></tr>
+  <tr><th colspan="2">設問登録</th></tr>
+  <tr><th>設問形式</th><td><%= text_field_tag 'item[3][]', @item.options_value[3][0], :size => '100' %></td></tr>
+  <tr><th>投稿許可設定 </th><td><%= text_field_tag 'item[4][]', @item.options_value[4][0], :size => '100' %></td></tr>
+</table>

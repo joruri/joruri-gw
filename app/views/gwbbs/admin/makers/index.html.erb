@@ -1,0 +1,59 @@
+<%
+str_state = ''
+str_state = "?state=#{params[:state]}" unless params[:state].blank?
+%>
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>掲示板</h2>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index">
+  <tr>
+    <th style="width: 60px; text-align: right;">管理番号</th>
+    <th>タイトル</th>
+    <th style="width: 60px; text-align: center;">　</th>
+    <th style="width: 80px; text-align: center;">　</th>
+    <th style="width: 80px; text-align: center;">更新日</th>
+    <th style="width: 40px; text-align: center;">並び順</th>
+    <th style="width: 80px; text-align: center;">ステータス</th>
+    <th style="width: 80px; text-align: center;">　</th>
+  </tr>
+  <% @items.each do |item| %>
+  <%
+    body_size_capacity = 0
+    body_size_currently = 0
+    body_size_capacity = item.doc_body_size_capacity unless item.doc_body_size_capacity.blank?
+    body_size_currently = item.doc_body_size_currently unless item.doc_body_size_currently.blank?
+    usage = 0
+    usage = body_size_currently.to_f / body_size_capacity.megabytes.to_f unless body_size_capacity.megabytes == 0
+    usage = usage * 100
+    s_color = ''
+    s_color = 'color:red;' if 90 < usage
+  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;<%=s_color%>">
+    <%if item.preview_mode%>
+      <%= link_to "#{item.title} 公開デザイン確認 >>", "#{item.docs_path}&preview=true", :target => "_blank" %>
+    <%else%>
+      <%= item.title %>
+    <%end%>
+    </td>
+    <td style="text-align: center;"><%= link_to '詳細確認', "#{gwbbs_maker_path(item)}#{str_state}" %></td>
+    <% if item.category == 1 %>
+      <td style="text-align: center;"><%= link_to '分類編集', item.categorys_path %></td>
+    <% else %>
+      <td></td>
+    <% end %>
+    <td style="text-align: center;"><%=item.updated_at.strftime('%Y-%m-%d').to_s %></td>
+    <td style="text-align: center;"><%=item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_show %></td>
+    <td style="text-align: center;"><%= link_to '公開画面 >> ', item.docs_path %></td>
+  </tr>
+  <% end %>
+</table>
+<br />
+<%= paginate @items %>
+</div>
+</div><!--piece gwbbs-->

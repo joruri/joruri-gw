@@ -1,0 +1,223 @@
+ja:
+  activerecord:
+    models:
+      gw/admin_message: 管理者メッセージ
+      gw/pref_soumu_message: タブメッセージ
+      gw/reminder: リマインダー表示設定
+      gw/portal_add: 広告アイコン
+      gw/portal_add_pattern: 広告アイコングループ設定
+      gw/admin_check_extension: 警告拡張子
+      gw/prop_other: 一般施設
+      gw/prop_rentcar: レンタカー
+      gw/prop_meetingroom: 会議室
+    attributes:
+      gw/todo:
+        ed_at: 期限
+        title: 内容
+      gw/memo:
+        ed_at: 時刻
+        title: 伝言
+        fr_user: 担当者
+        body: 内容
+        memo_user: 送り先
+      gw/property/memo_mobile_mail:
+        kmail: 携帯メールアドレス
+      gw/schedule:
+        st_at: 開始日時
+        ed_at: 終了日時
+        title: 件名（用務名等）
+        repeat_st_date_at: 開始日
+        repeat_ed_date_at: 終了日
+        repeat_st_time_at: 開始時刻
+        repeat_ed_time_at: 終了時刻
+        repeat_class_id: 規則
+        repeat_weekday_ids: 繰り返す曜日
+        is_public: 公開
+        participant_nums_inner: 参加人数(庁内)
+        participant_nums_outer: 参加人数(庁外)
+        check_30_over : 通知文書
+        inquire_to: 連絡先電話番号
+        guide_start_time: 公開時間の開始時間
+        guide_end_time: 公開時間の終了時間
+        place: 場所
+        to_go: 行き先（最遠地）
+        schedule_users_add_buf: 参加者
+        schedule_props_add_buf: 設備予約
+        allday: 終日
+        repeat_allday: 終日
+        guide_place: 会議等案内表示（場所）
+        guide_place_id: 会議等案内表示（場所）
+        owner_udisplayname: 利用責任者
+      gw/prop_other:
+        name: 名称
+        sort_no: 表示順
+        type_id: 種別
+      gw/prop_other_limit:
+        limit: 制限数
+      gw/prop_other_image:
+        file: ファイル
+        note: 備考
+      gw/prop_type:
+        name: カテゴリ名
+        sort_no: 並び順
+      gw/prop_types_message:
+        sort_no: 並び順
+        body: メッセージ
+      gw/holiday:
+        st_at: 年月日
+        title: 休日名
+      gw/admin_message:
+        mode: 表示モード
+        state: 表示
+        sort_no: 表示順
+        body: メッセージ
+      gw/pref_soumu_message:
+        state: 表示
+        tab_keys: タブキー
+        sort_no: 表示順
+        body: メッセージ
+      gw/edit_tab:
+        name: 表示名
+        field_account: アカウント項目名
+        field_pass: パスワード項目名
+        role_name_id: 対象機能
+        display_auth: 関数
+        link_url: リンク先URL
+        is_public: 公開区分
+        tab_keys: タブキー
+        other_controller_url: 個別割当のURL
+      gw/edit_link_piece:
+        name: 表示名
+        mode: 表示モード
+        field_account: アカウント項目名
+        field_pass: パスワード項目名
+        role_name_id: 対象機能
+        display_auth: 対象権限
+        link_url: リンク先URL
+        ssoid: SSO選択
+        parent_id: 保存先
+        tab_keys: タブキー
+      gw/edit_link_piece_css:
+        css_name: css表示名
+        css_class: cssクラス
+        role_name_id: 対象機能
+        display_auth: 対象権限
+        link_url: リンク先URL
+      gw/year_mark_jp:
+        name: 年号
+        mark: 記号
+        start_at: 開始日（西暦）
+      gw/year_fiscal_jp:
+        fyear: 西暦年度
+        namejp: 年号年度
+        markjp: 記号年度
+        start_at: 開始日（西暦）
+      gw/pref_assembly_member:
+        g_name: 会派
+        g_order: 会派表示順
+        u_lname: 姓
+        u_name: 名
+        u_order: 議員表示順
+        state: 状態
+      gw/pref_director: &pref_director
+        title: タイトル
+        u_order: 並び順
+      gw/pref_director/group_directors:
+        <<: *pref_director
+      gw/pref_executive:
+        title: タイトル
+        u_order: 並び順
+      gw/reminder:
+        state: 状態
+        sort_no: 並び順
+        title: 表示名
+        name: モデル名
+        css_name: CSSクラス名
+      gw/portal_add:
+        published: 公開状況
+        state: 状態
+        sort_no: 並び順
+        file_path: ファイルパス
+        file: 画像ファイル
+        background_color: 背景色
+        title: 広告タイトル
+        url: リンク先URL
+        publish_start_at: 掲載開始日
+        publish_end_at: 掲載終了日
+        field_account: アカウント項目名
+        field_pass: パスワード項目名
+      gw/portal_add_pattern:
+        sort_no: 並び順
+        group_id: グループ表示順
+        title: 管理用タイトル
+        pattern: 表示形式
+        place: 表示場所
+      gw/property/portal_add_disp_limit:
+        left_limit: ポータル左上の表示設定
+        right_limit: リマインダー部分の表示件数
+        bottom_limit: ポータル下部の表示件数
+      gw/admin_check_extension:
+        state: 状態
+        sort_no: 並び順
+        extension: 拡張子
+      gw/section_admin_master_func_name:
+        func_name: 機能名
+        name: 表示名
+        sort_no: 並び順
+      gw/section_admin_master:
+        management_gid: 主管課担当者 所属
+        management_uid: 主管課担当者
+        range_class_id: 範囲
+        division_parent_gid: 部局
+        division_gid: 所属
+        edit_auth: 承認権限
+      gw/meeting_guide_background:
+        caption: キャプション
+        file: ファイル
+      gw/meeting_guide_notice:
+        title: 件名
+      gw/meeting_guide_place:
+        place: 表示名
+      gw/meeting_monitor_manager:
+        manager_user_addr: 通知先メールアドレス
+      gw/meeting_monitor_setting:
+        mail_from: 通知元メールアドレス
+        mail_title: 件名
+        mail_body: 本文
+        name: 名称／設置場所
+        ip_address: IPアドレス
+      gw/prop_meetingroom_image:
+        file: ファイル
+        note: 備考
+      gw/prop_rentcar:
+        car_model: 車名
+        name: 号車
+        type_id: 車種
+        register_no: 登録番号
+        year_type: 年式
+        comment: 備考
+        exhaust: 排気量
+      gw/prop_rentcar_image:
+        file: ファイル
+        note: 備考
+      gw/prop_extra_pm_message:
+        prop_class_id: 種別
+        state: 表示
+        sort_no: 表示順
+        body: メッセージ
+      gw/prop_extra_pm_remark:
+        state: 表示
+        sort_no: 表示順
+        title: タイトル
+        url: URL
+      gw/prop_extra_pm_rentcar_actual:
+        start_meter: 出発時メーター
+        end_meter: 帰着時メーター
+        start_at: 出発日時
+        end_at: 帰着日時
+      gw/prop_extra_pm_meetingroom_actual:
+        start_at: 貸出日時
+        end_at: 返却日時
+      gw/prop_extra_pm_rentcar:
+        start_meter: 出発時メーター
+        end_meter: 帰着時メーター

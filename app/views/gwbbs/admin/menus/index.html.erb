@@ -1,0 +1,38 @@
+<%= render 'header' %>
+<div class="piece bbs">
+<div class="pieceHeader">
+  <h2>掲示板</h2>
+  <% unless Gwbbs::Control.find_by(create_section: Core.user_group.code) %>
+    <div class="btsHeaderLeft">
+      <span class="btSectionNew"><%= link_to '自所属掲示板の新規作成', '/gwbbs/builders/' %></span>
+    </div>
+  <% end %>
+  <% if Gwbbs::Control.is_admin? %>
+    <div class="btsHeadeRight">
+      <span class="btManager"><%= link_to "管理者", gwbbs_makers_path %></span>
+    </div>
+  <% end %>
+</div>
+<div class="pieceBody">
+
+<table class="index">
+  <tr class="items">
+    <td class="bbstitle">掲示板</td>
+    <td class="explanation">説明</td>
+    <td class="manager">管理所属</td>
+    <td class="update">更新日時</td>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td class="bbstitle"><%= link_to item.title, gwbbs_docs_path(title_id: item.id) %></td>
+    <td class="explanation"><%= raw(item.caption) %></td>
+    <td class="manager"><%= item.display_first_admin_name %></td>
+    <td class="update"><%= item.docslast_updated_at.to_datetime.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>
+
+</div>
+</div>
+

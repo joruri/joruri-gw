@@ -1,0 +1,30 @@
+<table class="show bbsText">
+  <tr>
+    <th>タイトル</th>
+  </tr>
+  <tr>
+    <td><%= f.text_field :title, :style => 'width:99%;' %></td>
+  </tr>
+  <tr>
+    <th>回答</th>
+  </tr>
+  <tr>
+    <td><%= f.text_area :body, :style => 'width:99%; height:100px' %></td>
+  </tr>
+</table>
+
+<%= render 'gwmonitor/admin/tool/attachments/form', f: f, item: @item %>
+
+<script type="text/javascript">
+//<![CDATA[
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>

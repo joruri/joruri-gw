@@ -1,0 +1,8 @@
+<div class="menu">
+<%= link_to system_product_synchros_path do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /product_synchros/ %>">同期データ</span>
+<% end %>
+<%= link_to system_product_synchro_plans_path do %>
+  <span class="<%= 'current_menu' if params[:controller] =~ /product_synchro_plans/ %>">同期予定</span>
+<% end %>
+</div>

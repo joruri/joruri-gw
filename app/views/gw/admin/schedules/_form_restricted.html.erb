@@ -1,0 +1,387 @@
+<%
+text_style = 'width:30em;'
+visible_type = 'hidden'
+display_type = 'none'
+
+@inquire_to_err_flg = false
+if !@item.errors.blank?
+  @inquire_to_err_flg = @item.errors.include?("inquire_to")
+end
+
+# 各フォームの初期値
+repeat_class_id = 0
+repeat_allday_radio_id = allday_radio_id = 1
+todo_ed_at_id = 1
+todo_st_at_id = 2
+todo_repeat_time_id = 1
+event_week = event_month = "0"
+event_word = ""
+@inquire_to = ""
+
+#form_kind_id = 0 # フォーム切り替え用変数
+form_kind_id = 1 # フォーム切り替え用変数
+if !params[:item].blank?
+  repeat_class_id = params[:item][:repeat_class_id].to_i
+  allday_radio_id = params[:item][:allday_radio_id].to_i
+  repeat_allday_radio_id = params[:item][:repeat_allday_radio_id].to_i
+  todo_st_at_id = params[:item][:todo_st_at_id].to_i
+  todo_ed_at_id = params[:item][:todo_ed_at_id].to_i
+  todo_repeat_time_id = params[:item][:todo_repeat_time_id].to_i
+
+  event_week = params[:item][:event_week]
+  event_month = params[:item][:event_month]
+  event_word = params[:item][:event_word]
+  form_kind_id = params[:item][:form_kind_id].to_i
+  @inquire_to = params[:item][:inquire_to]
+end
+repeat_mode = get_repeat_mode params # 通常：1、繰り返し：2
+creator_uid = Core.user.id
+creator_uname = Core.user.name
+creator_ucode = Core.user.code
+creator_gid = Core.user_group.id
+created_at = 'now()'
+
+@firstaction = nz(params[:firstaction], params[:action])
+
+d_load_st, d_load_ed = case params[:action]
+when 'edit', 'quote'
+  # 引用時、会議等開催表示の承認済まで引っ張ってくるため、修正
+  if params[:action] == 'quote' && @item.guide_state == 2
+    @item.guide_state = 1
+  end
+  if !@item.schedule_events.blank?
+    event_week = @item.schedule_events.event_week
+    event_month = @item.schedule_events.event_month
+    event_word = @item.schedule_events.event_word
+  end
+  allday_radio_id = repeat_allday_radio_id = nz(@item.allday, 1).to_i
+  if !@item.schedule_todo.blank?
+    todo_st_at_id = nz(@item.schedule_todo.todo_st_at_id, 0).to_i
+    todo_ed_at_id = nz(@item.schedule_todo.todo_ed_at_id, 0).to_i
+    todo_repeat_time_id = nz(@item.schedule_todo.todo_repeat_time_id, 0).to_i
+  end
+  if params[:action] == 'quote'
+    creator_uid = Core.user.id
+    creator_uname = Core.user.name
+    creator_ucode = Core.user.code
+    creator_gid = Core.user_group.id
+    created_at = 'now()'
+    @inquire_to = ""
+  else
+    created_at   = @item.created_at
+    creator_uid  = @item.creator_uid
+    creator_uname = @item.creator_uname
+    creator_ucode = @item.creator_ucode
+    creator_gid  = @item.creator_gid
+    @inquire_to  = @item.inquire_to
+  end
+  if !@item.schedule_props.blank?
+    form_kind_id = 1
+  end
+  if nz(@item.todo, 0) == 1
+    form_kind_id = 2
+  end
+
+  if repeat_mode == 1
+    [@item.st_at, @item.ed_at]
+  else
+    raise "呼び出しが不正です(repeat_mode=#{repeat_mode})" if @item.repeat.nil?
+    # edit 時の値ロードのため手抜き
+    params[:item] ={}
+    repeat_class_id = @item.repeat.class_id
+    @item.repeat.attributes.reject{|k,v| /_at$/ =~ k || 'id' == k}.each{|k,v|
+      params[:item]["repeat_#{k}".to_sym] = v
+    }
+    # main return value for d_loat_st/ed
+    [Gw.datetime_merge(@item.repeat.st_date_at, @item.repeat.st_time_at),
+      Gw.datetime_merge(@item.repeat.ed_date_at, @item.repeat.ed_time_at)]
+  end
+when 'new'
+  dd = Gw.date8_to_date(params[:s_date], :default=>'')
+  form_kind_id = 2 if params[:link] == 'todo'
+
+  now = Time.now
+  hour = now.hour # 時間
+  if now.min > 55 && hour <= 22 # 時間繰り上がり用
+    hour = hour + 1
+  end
+  if now.min > 55
+    min = 0
+  else
+    divmod = now.min.divmod(5)
+    if divmod[1] > 0 # 分（5分刻み用）
+      min = (divmod[0] + 1) * 5
+    else
+      min = now.min
+    end
+  end
+
+  _wrk_st = !dd.blank? ? Gw.date_to_time(dd) : Time.local(now.year, now.month, now.day, hour, min, 0)
+  [_wrk_st, _wrk_st + 60*60]
+when 'create', 'update'
+  creator_uid = params[:item][:creator_uid]
+  creator_uname = params[:item][:creator_uname]
+  creator_ucode = params[:item][:creator_ucode]
+  creator_gid = params[:item][:creator_gid]
+  created_at = params[:item][:created_at]
+  form_kind_id = params[:item][:form_kind_id].to_i
+  allday_radio_id = repeat_allday_radio_id = params[:item][:allday_radio_id].to_i
+  todo_st_at_id = params[:item][:todo_st_at_id].to_i
+  todo_ed_at_id = params[:item][:todo_ed_at_id].to_i
+  todo_repeat_time_id = params[:item][:todo_repeat_time_id].to_i
+  if repeat_mode == 1
+    [Gw.to_time(params[:item][:st_at]), Gw.to_time(params[:item][:ed_at])]
+  else
+    [Gw.datetime_merge(params[:item][:repeat_st_date_at], params[:item][:repeat_st_time_at]),
+      Gw.datetime_merge(params[:item][:repeat_ed_date_at], params[:item][:repeat_ed_time_at])]
+  end
+else
+  raise "呼び出しが不正です(action=#{params[:action]})"
+end
+@d_load_st, @d_load_ed = d_load_st, d_load_ed # => for _form_prop initialization
+
+weekday_selected_s = Gw.checkbox_to_string(params[:item].blank? ? '' : params[:item][:repeat_weekday_ids])
+# 通常/繰り返しによる差異がある部分
+repeat_radio_a = radio(f, 'repeat_class_id', I18n.a('enum.gw/schedule.repeat_class_id'), :selected=> nz(repeat_class_id, 0).to_i, :force_tag=>1, :return_array=>1, :onclick=>'switchRepeatClass();')
+repeat_radio_a_w = []
+#repeat_weekday_ids = check_boxes2(f, 'repeat_weekday_ids', I18n.a('enum.gw/schedule.repeat_weekday_id'), :selected_str => '1:2:3')
+# edit用ロード値設定
+repeat_weekday_ids = check_boxes(f, 'repeat_weekday_ids', I18n.a('enum.gw/schedule.repeat_weekday_id'),
+  :selected_str => weekday_selected_s)
+repeat_weekday_ids = %Q(<table id="repeat_weekday_ids_table" style="border: none; display: inline;"><tr><td>繰り返す曜日をチェックしてください<br/>#{repeat_weekday_ids}</td></tr></table>)
+repeat_radio_a.each_with_index{|x, i| repeat_radio_a_w.push %Q(<tr>#{i != 0 ? '' : %Q(<th rowspan="#{repeat_radio_a.length}">規則#{required}</th>)}<td>#{x}#{i != 2 ? '' : repeat_weekday_ids}</td></tr>)}
+repeat_radio_s = repeat_radio_a_w.join
+
+form_kind_radio_str = radio(f, 'form_kind_id', Gw::PropType.gw_restricted_form_kind,
+  :selected=> nz(form_kind_id, 0).to_i, :force_tag=>1, :onclick=>'form_kind_id_switch();')
+%>
+
+<%= get_form_title_div params %>
+<%#= required_head %>
+
+<% if action_name.in?(%w(new create)) && @firstaction != 'quote' %>
+<%= render 'form_tabbox', tab_captions: [%Q(<a onclick="switchRepeat(1);">通常</a>)], 
+  selected_tab: !params[:repeat].nil? ? 2 : 1, form_kind_radio_str: form_kind_radio_str %>
+<% end %>
+
+<% if action_name.in?(%w(quote edit update)) || @firstaction == 'quote' && action_name == "create" %>
+<%=raw form_kind_radio_str -%>
+<% end %>
+
+<%= hidden_field_tag 'init[repeat_mode]', "#{repeat_mode}" %>
+<%= hidden_field_tag :firstaction, @firstaction %>
+<table class="show" id="inputDatetimeNormal">
+  <tr class="start" id="start_tr">
+    <th>開始日時<%= required %></th>
+    <td class="day">
+      <div class="timeSet">
+        <%= date_picker_prop f, 'st_at', :errors=>@item.errors, :mode=>:datetime, :value=>d_load_st, :minute_interval=>'5' %>
+      </div>
+      <div class="otherSelect" id="todo_st_at_select" style="visibility:<%= visible_type %>">
+        <%= radio f, 'todo_st_at_id', Gw::ScheduleTodo.gw_schedules_form_todo_st_at_ids, :selected=> nz(todo_st_at_id, 0).to_i, :force_tag=>1, :onclick=>'todo_st_at_select_radio_click();' %>
+      </div>
+    </td>
+  </tr>
+  <tr class="close">
+    <th><span id="end_at_title">終了日時</span><%= required %></th>
+    <td class="day">
+      <div class="timeSet">
+        <%= date_picker_prop f, 'ed_at', :errors=>@item.errors, :mode=>:datetime, :value=>d_load_ed, :minute_interval=>'5' %><br />
+        <span id="end_at_message"><%= required '保存前に、終了時刻を確認してください' %></span>
+        <%= hidden_field_tag 'item[creator_uid]', "#{creator_uid}" %>
+        <%= hidden_field_tag 'item[creator_uname]', "#{creator_uname}" %>
+        <%= hidden_field_tag 'item[creator_ucode]', "#{creator_ucode}" %>
+        <%= hidden_field_tag 'item[creator_gid]', "#{creator_gid}" %>
+        <%= hidden_field_tag 'item[created_at]', "#{created_at}" %>
+      </div>
+      <div style="display:none">
+        <div class="otherSelect" id="allday_select"  style="visibility:<%= visible_type %>" >時間未定：<%= f.check_box("allday", {:checked => @item.allday.present?, :onclick => 'allday_check(this)'}, "1", nil) %><br />
+          <%= radio f, 'allday_radio_id', I18n.a('enum.gw/schedule.allday_radio_id'), :selected=> nz(allday_radio_id, 0).to_i, :force_tag=>1, :onclick=>'allday_radio_click();' %>
+        </div>
+      </div>
+      <div style="display:none">
+        <div class="otherSelect" id="todo_ed_at_select"  style="visibility:<%= visible_type %>" >
+          <%= radio f, 'todo_ed_at_id', Gw::ScheduleTodo.gw_schedules_form_todo_ed_at_ids, :selected=> nz(todo_ed_at_id, 0).to_i, :force_tag=>1, :onclick=>'todo_ed_at_select_radio_click();' %>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div style="display: none">
+<table class="show" id="inputDatetimeRepeat" style="visibility:<%= visible_type %>" >
+  <tr>
+    <th>繰り返し期間<%= required %></th>
+    <td>
+      <%= date_picker_prop f, 'repeat_st_date_at', :errors=>@item.errors, :mode=>:date, :value=>d_load_st %>～
+      <%= date_picker_prop f, 'repeat_ed_date_at', :errors=>@item.errors, :mode=>:date, :value=>d_load_ed %>
+    </td>
+  </tr>
+  <%= repeat_radio_s %>
+  <tr>
+    <th><span id="end_repeat_time_title">時間</span><%= required %></th>
+    <td><span id="repeat_start_time">
+      <%= date_picker_prop f, 'repeat_st_time_at', :errors=>@item.errors, :mode=>:time, :value=>d_load_st, :minute_interval=>'5' %>～</span>
+      <%= date_picker_prop f, 'repeat_ed_time_at', :errors=>@item.errors, :mode=>:time, :value=>d_load_ed, :minute_interval=>'5' %>
+      <span class="otherSelect" id="allday_select_repeat">時間未定：<%= check_box_tag("item[repeat_allday]", value = "1", checked = false, :onClick => 'repeat_allday_check(this)') %>
+        <%= radio f, 'repeat_allday_radio_id', I18n.a('enum.gw/schedule.allday_radio_id'), :selected=> nz(repeat_allday_radio_id, 0).to_i, :force_tag=>1, :onclick=>'repeat_allday_radio_click();' %>
+      </span>
+      <span class="otherSelect" id="todo_repeat_time_select">
+        <%= radio f, 'todo_repeat_time_id', Gw::ScheduleTodo.gw_schedules_form_todo_repeat_time_ids, :selected=> nz(todo_repeat_time_id, 0).to_i, :force_tag=>1, :onclick=>'todo_repeat_time_select_radio_click();' %>
+      </span>
+      <span id="end_repeat_time_message"><br /><%= required '保存前に、終了時刻を確認してください' %></span>
+    </td>
+  </tr>
+  </table>
+</div>
+<%= render 'form_at_script_restricted' %>
+
+<table class="show">
+  <tr>
+    <th id="title_title">件名（用務名等）</th>
+    <td>
+      <span id="title_category"><%= f.select :title_category_id, options_for_select(@item.title_category_options, @item.title_category_id), include_blank: '---' %></span>
+      <span id="title_category_todo" style="visibility:<%= visible_type %>" >TODO</span><br />
+      <%= f.text_field :title, :style => text_style %><%= required %>
+    </td>
+  </tr>
+  <tr>
+    <th>場所</th>
+    <td><%= f.text_field :place, :style => text_style %></td>
+  </tr>
+  <tr>
+    <th>メモ</th>
+    <td><%= form_text_area f, :memo %></td>
+  </tr>
+</table>
+
+<%
+help_links = Gw::Property::ScheduleHelpConfig.first_or_new.help_links
+%>
+<div style="display: none; visibility: hidden" >
+<table id="event_table" class="show">
+  <tr>
+    <th>広報行事予定表示 <span class="help"><%=raw help_links[0] %><br /><%= required '（報道機関に行事予定として提供します）' -%></span></th>
+    <td>
+      <%= check_box_tag "item[event_week]", "1", event_week.to_s == "1", :onclick=>'event_week_onclick();' %>広報週間行事予定に入れる　　
+      <%= check_box_tag "item[event_month]", "1", event_month.to_s == "1", :onclick=>'event_month_onclick();' %>広報月間行事予定に入れる　<br />
+      <%= text_field_tag "item[event_word]", event_word, :style => 'width:20em;' %>　<%= required '※備考' -%>
+    </td>
+  </tr>
+</table>
+</div>
+
+<%
+if !params[:prop_id].blank? && params[:s_genre] == 'meetingroom'
+  _meeting_place = Gw::MeetingGuidePlace.find_by_prop_id(params[:prop_id])
+  select_index = _meeting_place.blank? ? -1 : _meeting_place.id
+else
+  select_index = -1
+end
+%>
+<div style="display: none; visibility: hidden">
+<table id="guide_table" class="show" >
+  <tr>
+    <th>会議等案内表示 <span class="help"><%=raw help_links[1] %></span><br /><%= required '（本庁舎1階モニターに表示）' %></th>
+    <td>
+      <%= f.check_box :guide_state, {:onclick=>'guide_state_onclick("click");'}, '1', '0' %>会議等案内システムに表示する<br />
+      <span>開催場所選択：<%= f.select :guide_place_id, Gw::MeetingGuidePlace.place_for_select(nz(@item.guide_place_id, select_index).to_i) %></span>
+      <%= f.check_box :guide_ed_at, {}, '1', '0' %>終了時間を表示しない
+    </td>
+  </tr>
+</table>
+</div>
+<%= render '/gw/admin/schedules/form_participant_restricted', f: f %>
+<%= render '/gw/admin/schedules/form_prop_restricted', f: f %>
+
+<div style="display: none; visibility: hidden">
+<table class="show" id="prop_status_item_table">
+  <tr>
+    <th>行き先（最遠地）</th>
+    <td><%= f.select :to_go, options_for_select(I18n.a("enum.common.municipality_code"), @item.to_go || 1), include_blank: '---' %>　<%= required '※レンタカー(管財課)を利用の場合必須' %></td>
+  </tr>
+  <tr>
+    <th>利用人数</th>
+    <td>
+      <span>庁内</span> <%= f.text_field :participant_nums_inner, :class =>"IMEoff", :style => 'width:3em;' %>　
+      <span>庁外</span> <%= f.text_field :participant_nums_outer, :class =>"IMEoff", :style => 'width:3em;' %>　<%= required '※会議室等(管財課)を利用の場合必須' %><br />
+      <div>会議室(管財課)を予約する時、庁外の人数が30人を超える場合，通知文書を衛視室に提出してください。</div>
+      <%= f.check_box :check_30_over, {:style => 'margin:5px;'}, "1", nil %> 了解チェック
+    </td>
+  </tr>
+  <% if @is_pm_admin  %>
+  <tr>
+    <th>管理者メモ</th>
+    <td><%= form_text_area f, :admin_memo %></td>
+  </tr>
+  <% end %>
+</table>
+</div>
+
+<table class="show" id="is_public_show">
+  <tr>
+    <th>公開<%= required %></th>
+    <td><%= radio f, 'is_public', Gw::PropType.is_public_select, :selected => 1, :onclick=>'is_public_click();' %></td>
+  </tr>
+</table>
+
+<%= render 'form_public', f: f %>
+<%= render 'form_script_restricted' %>
+
+<script type="text/javascript">
+//<![CDATA[
+
+var my_submit = function() {
+  load_at_set();
+  // 「キャンセル」時の処理終了
+  var fr = $('item_schedule_users_add_buf');
+  if (fr.options.length == 0) {
+    alert('参加者が選択されていません。');
+    return false;
+  }
+
+  // 開始、終了の差が1時間で、管財を登録している場合、アラートを発生させる。
+  one_h = one_h_check();
+  props_flg = props_item_selected();
+
+
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_schedule_users_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+  // prop
+  var fr = $('item_schedule_props_add_buf');
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_schedule_props_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+
+    //public_groups
+  var fr = $('item_public_groups_add_buf');
+  var ary = [];
+  for (var i = 0; i < fr.options.length; i++)
+    ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+  var to = $('item_public_groups_json');
+  to.value = Object.toJSON(ary);
+  fr.selectedIndex = -1; // fr の送信を抑止
+
+  $('itemForm').submit(); // 送信
+
+};
+
+var my_load = function() {
+  load_at_set();
+  <% if params[:action] == 'new' %>
+  <% end %>
+  my_load_core('user');
+  my_load_core('prop');
+  is_public_click();
+};
+
+window.onload = my_load;
+//]]>
+</script>

@@ -1,0 +1,73 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<div class="editingBox">
+  <span class="btEdit">
+  <%= link_to '編集', {action: :edit} %>
+  </span>
+  <span class="btDestroy">
+  <%= link_to '削除', {action: :destroy}, method: :delete, confirm: "削除してよろしいですか？" %>
+  </span>
+</div>
+<table class="show">
+  <tr>
+    <th>監視状況</th>
+    <td>
+      <%= @item.state_label %>
+      <% if @item.state == 'on' %>
+        [<%= link_to '停止', {action: :switch_monitor, id: @item.id, state: 'off'}, confirm: "#{@item.monitor_type_label}：#{@item.name}の監視を停止します。よろしいですか？" %>]
+      <% else %>
+        [<%= link_to '開始', {action: :switch_monitor, id: @item.id, state: 'on'}, confirm: "#{@item.monitor_type_label}：#{@item.name}の監視を開始します。よろしいですか？" %>]
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>監視対象</th>
+    <td><span style="<%= 'color:red;' if @item.conditions != 'enabled' %>"><%= @item.conditions_label %></span></td>
+  </tr>
+  <tr>
+    <th>種別</th>
+    <td><%= @item.monitor_type_label %></td>
+  </tr>
+  <tr>
+    <th>平日通知</th>
+    <td><%= @item.weekday_notice_label %></td>
+  </tr>
+  <tr>
+    <th>休日通知</th>
+    <td><%= @item.holiday_notice_label %></td>
+  </tr>
+  <tr>
+    <th>名称／設置場所</th>
+    <td><%= @item.name %></td>
+  </tr>
+  <tr>
+    <th>IPアドレス</th>
+    <td><%= @item.ip_address %></td>
+  </tr>
+  <tr>
+    <th>通知元メールアドレス</th>
+    <td><%= @item.mail_from %></td>
+  </tr>
+  <tr>
+    <th>件名</th>
+    <td><%= @item.mail_title %></td>
+  </tr>
+  <tr>
+    <th>本文<br />(30分以上アクセスがない場合に通知するメールの本文)</th>
+    <td><%=hbr @item.mail_body %></td>
+  </tr>
+  <tr>
+    <th>未開始通知本文<br />(8:30になっても監視が開始されていない場合に通知するメールの本文)</th>
+    <td><%=hbr @item.notice_body %></td>
+  </tr>
+</table>
+
+<div class="btReturn">
+  <%= link_to '戻る', {action: :index} -%>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,36 @@
+<%
+if @item.is_finished.blank?
+  finish_str = '完了する'
+  finish_class = "btFinish"
+else
+  finish_str = '未完了に戻す'
+  finish_class = "btUnfinish"
+end
+%>
+<div class="piece memo index">
+<div class="pieceHeader">
+<%= render '/gw/admin/todos/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+
+<div class="editingBox">
+ <span class="btEdit"><%= link_to '編集', "/gw/todos/#{@item.id}/edit" if @item.is_finished != 1 -%></span>
+ <span class="btQuote"><%= link_to '引用作成', "/gw/todos/#{@item.id}/quote" -%></span>
+ <span class="<%=finish_class%>"><%= link_to finish_str, "/gw/todos/#{@item.id}/finish" -%></span>
+ <span class="btDestroy"><%= link_to_destroy @item.id %></span>
+</div>
+<table class="show">
+  <tr><th>状態</th><td><%= Gw::Todo.finished_show(@item.is_finished) -%></td></tr>
+  <tr><th>期限日</th><td><%= @item.ed_at.strftime('%Y-%m-%d %H:%M') unless @item.ed_at.blank?%></td></tr>
+  <tr><th>内容</th><td><%= @item.title%></td></tr>
+  <tr><th>備考</th><td><%= @item.body%></td></tr>
+</table>
+
+<p class="leftPad2">
+<%=link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}"%></p>
+
+</div>
+<div class="pieceBodyBody"></div>
+</div>
+</div>

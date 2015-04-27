@@ -1,0 +1,19 @@
+<tr class="scheduleTableHead dayHead">
+  <% if @hide_user_col.nil? %>
+  <th class="scheduleUser"><span class="nobr">所属</span></th>
+  <% end %>
+  <% 7.times do |i| %>
+    <%
+    day = d + i
+    class_strs = [Gw.weekday_s(day, mode: :eh, no_weekday: 1, holidays: @holidays)]
+    class_strs << 'rangeOut' if day.year != d.year || day.month != d.month
+    class_strs << 'today' if day == Date.today
+    class_strs << 'selectDay' if day == nz(params[:s_date], Date.today.to_s).to_date
+    %>
+    <th class="scheduleData <%= class_strs.join(' ') %>">
+      <span class="nobr">
+        <%= "#{day.month}/#{day.strftime('%d')}(#{Gw.weekday(day.wday)})" %>
+      </span>
+    </th>
+  <% end %>
+</tr>

@@ -1,0 +1,68 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+<%= render 'gwmonitor/admin/menus/title_info' %>
+<%= render 'board_config' %>
+
+<table class="index">
+  <tr class="headIndex">
+    <th style="width:70px;">状態</th>
+    <th class="group">受信所属</th>
+    <th style="width: 100px;">回答者</th>
+    <th class="docTitle">回答欄</th>
+    <th style="width: 30px;">添付</th>
+    <th style="width:120px;">最終更新日時</th>
+  </tr>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td><%=raw @item.status_name %></td>
+    <td class="group"><%= "#{@item.target_user_name}#{@item.target_user_code}" %></td>
+    <td>
+      <% if @item.state == 'draft' %>
+        <%= link_to "受け取る", @item.editing_path, :class => 'btText' %>
+      <% else %>
+        <%= @item.editor %>
+      <% end %>
+    </td>
+    <% if @item.body.blank? %>
+      <td>
+      <% case @title.state %>
+      <% when 'closed' %>
+        <%= link_to "回答を確認する", @item.edit_path, :class => 'btText' %>
+      <% when 'public' %>
+        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+      <% when 'editing' %>
+        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+      <% when 'qNA' %>
+        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+      <% when 'editing' %>
+        <%= link_to "受取待ちに戻す", @item.draft_path, :class => 'btText' %>
+      <% end %>
+      </td>
+    <% else %>
+      <td class="docTitle"><%= link_to @item.body, @item.edit_path %></td>
+    <% end %>
+    <td class="bbsAttach"><%=raw @item.str_attache_span if @item.str_attache_span.present? %></td>
+    <td class="update"><%= @item.display_editdate %></td>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:65px;"><%=raw item.status_name %></td>
+    <td class="group"><%= "#{item.target_user_name}#{item.target_user_code}" %></td>
+    <td><%= item.editor %></td>
+    <td class="docTitle"></td>
+    <td class="bbsAttach"></td>
+    <td class="update"><%= item.display_editdate %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', "#{@title.monitor_path}#{@item.already_state}" %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece-->

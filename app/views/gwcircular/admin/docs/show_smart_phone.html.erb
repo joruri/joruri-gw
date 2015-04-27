@@ -1,0 +1,86 @@
+<%
+  s_cond = ''
+  s_cond = '?cond=unread' if params[:cond] == 'unread'
+  s_cond = '?cond=already' if params[:cond] == 'already'
+  if @item.state == "unread" or @item.state == "mobile"
+    form_state = "mobile"
+  else
+    form_state = "already"
+  end
+%>
+<div class="piece circular index">
+<div class="pieceHeader">
+<h2 class="pieceTitle">回覧板</h2>
+</div>
+
+<div class="pieceBody">
+<div class="bbsUserform">
+
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%=hbr(@parent.title)%></span></td></tr>
+<tr>
+  <td class="bbsExpirydate">
+    <span>回覧期限日時 : <%=l @parent.expiry_date if @parent.expiry_date %></span>
+  </td>
+</tr>
+<tr>
+  <% if @parent.wiki_enabled? -%>
+    <td class="wiki"><%= convert_for_mobile_body(wiki_show(@parent.body), params[:_jgw_session]) -%></td>
+  <% else -%>
+    <td><%= convert_for_mobile_body(@parent.body, params[:_jgw_session]) -%></td>
+  <% end -%>
+</tr>
+</table>
+</div>
+
+<% if @item.state == 'unread' %>
+ <div class="centerText"><%= link_to "回覧内容について、確認しました", @item.doc_state_already_update, class: 'btConfirmed' %></div>
+<% end %>
+
+<table class="index">
+  <tr>
+    <th colspan="3">受信者一覧</th>
+  </tr>
+  <tr class="headIndex">
+    <th style="width:40px;">状態</th>
+    <th class="group" colspan="2">受信者名</th>
+  </tr>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td class="state"><%= @item.status_name_mobile.html_safe %></td>
+    <td class="group"><%= "#{@item.target_user_name}(#{@item.target_user_code})" %></td>
+  </tr>
+  <% @commissions.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:65px;" class="state"><%= item.status_name_mobile.html_safe %></td>
+    <td class="group"><%= "#{item.target_user_name}(#{item.target_user_code})" %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @commissions %>
+
+<%= form_for :item, :url => url_for(action: :show, id: @item.id), :html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <table class="show bbsText">
+    <tr>
+      <th>返信欄</th>
+    </tr>
+    <tr>
+      <td>
+        <%= f.text_area :body, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px'%>
+        <div class="submitters replyRead">
+          <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='<%=form_state%>';" type="submit" value="返信・既読" />
+          <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+        </div>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '回覧板一覧へ戻る', "#{@title.menus_path}#{s_cond}" %>
+</div>
+
+</div>
+</div>

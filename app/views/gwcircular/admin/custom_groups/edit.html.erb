@@ -1,0 +1,19 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header', hide_new_action: true %>
+<%= render 'piece_banner' %>
+
+<div class="pieceBody">
+
+<%= form_for :item, :url => "/gwcircular/custom_groups/#{@item.id}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+<%= render 'form', f: f %>
+
+<div class="submitters">
+<%= raw(submit_for_update(f, :js_submitter => "my_submit()",:caption => '登録する')) %>
+</div>
+
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

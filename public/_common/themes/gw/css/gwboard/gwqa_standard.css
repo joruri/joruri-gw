@@ -1,0 +1,153 @@
+@charset "UTF-8";
+
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwboard/gwbbs_standard.css
+========================================================= */
+
+/*掲示板一覧画面
+----------------------------------------------- */
+/*検索                                           */
+form.search {
+  background-color:#BEE1F6;
+}
+
+/*重要アイコン                                     */
+table.bbsList .bbsImportant {
+  background-image:url(/_common/themes/gw/files/important.png);
+  background-position:2px 7px;
+}
+
+/*添付ファイルアイコン                               */
+table.bbsList .bbsAttach {
+  background-image:url(/_common/themes/gw/files/attached.jpg);
+  background-position:2px 7px;
+}
+
+/*１行コメントアイコン                               */
+table.bbsList .bbsBalloon {
+  background-image:url(/_common/themes/gw/files/balloon.png);
+  background-position:2px 7px;
+}
+
+/*一覧                                           */
+table.bbsList th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:6px 7px;
+}
+table.bbsList td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+
+/*掲示板詳細画面
+----------------------------------------------- */
+/*作成者                                         */
+table.bbsCreator {
+  margin:10px 0 0;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.bbsCreator th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.bbsCreator td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*重要度・分類                                      */
+table.bbsImportance {
+  margin:10px 0 0;
+  width:auto;
+  text-align:left;
+  vertical-align:top;
+}
+table.bbsImportance th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.bbsImportance td {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+
+/*タイトル                                        */
+table.bbsUserformTitle {
+  margin:10px 0 0;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.bbsUserformTitle th {
+  background-color:#6182DA;
+  color: #FFFFFF;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.bbsUserformTitle td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+  font-size: 12pt;
+}
+
+/*記事                                        */
+table.bbsUserformBody {
+  margin:10px 0 0;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.bbsUserformBody th {
+  background-color:#6182DA;
+  color: #FFFFFF;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.bbsUserformBody td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+
+/*添付ファイルリスト                              */
+table.gwboardAttachlist {
+  margin:10px 0 0;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.gwboardAttachlist th {
+  background-color:#BEE1F6;
+  border:3px solid #0000FF;
+  padding:4px 7px;
+}
+table.gwboardAttachlist td {
+  border:3px solid #0000FF;
+  padding:4px 7px;
+}
+
+/*1行コメントリスト                              */
+table.bbsCommentlist {
+  margin:10px 0 0;
+  width:100%;
+  text-align:left;
+  vertical-align:top;
+}
+table.bbsCommentlist th {
+  background-color:#BEE1F6;
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+table.bbsCommentlist td {
+  border:1px solid #CCCCCC;
+  padding:4px 7px;
+}
+

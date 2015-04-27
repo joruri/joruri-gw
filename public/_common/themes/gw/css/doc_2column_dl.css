@@ -1,0 +1,278 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doc_2column_dl.css
+========================================================= */
+
+/* 全体大枠
+---------------------------------------------*/
+#content {
+  border-right: 1px solid #1E3B8C;
+}
+
+/* 書庫名ライン
+---------------------------------------------*/
+.pieceBanner {
+  clear: both;
+  border-left: 1px solid #1E3B8C;
+}
+.pieceBanner h3 {
+  padding: 10px 10px 10px 20px;
+  background-color: #C9DCFF;
+  font-size: 150%;
+}
+
+/* カラム関係設定
+---------------------------------------------*/
+#contentBody .pieceBody {
+  overflow: hidden;
+}
+#contentBody .pieceBody:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html #contentBody .pieceBody             { zoom: 1; }
+*:first-child+html #contentBody .pieceBody { zoom: 1; }
+.outer {
+  margin-left: 245px;
+}
+
+/* tabel docFolder
+----------------------------------------------------*/
+table.docFolder {
+  border-left: 2px solid #FFFFFF;
+  border-right: 2px solid #FFFFFF;
+  table-layout: fixed;
+  margin-bottom: 10px;
+}
+
+/* table docformTitle(一覧テーブル)
+----------------------------------------------------*/
+table.docformTitle {
+  width: 100%;
+  border-left: 2px solid #FFFFFF;
+  border-right: 2px solid #FFFFFF;
+  table-layout: fixed;
+  margin-bottom: 10px;
+}
+
+/* サイドメニュー　カラム設定
+----------------------------------------------------*/
+#contentBody .sideMenu {
+  float: left;
+  width: 245px;
+  margin: 0 0 -32768px 0;
+  padding-bottom: 32768px;
+  padding-top: 5px;
+  border-bottom: none;
+  background-color: #E3EFFF;
+  display:block;
+}
+#contentBody .sideMenu #sideList {
+  margin-right: 5px;
+  padding-bottom: 20px;
+}
+
+/* サイドメニュー　検索ボックス
+----------------------------------------------------*/
+#content .pieceBody h4.iconSideKey {
+  margin-left: 5px;
+  padding-left: 25px;
+  background-image: url(/_common/themes/gw/files/icon/ic_search-article.gif);
+  background-repeat: no-repeat;
+}
+#contentBody .sideMenu .search {
+  margin-bottom: 15px;
+}
+#contentBody .sideMenu .submitters {
+  margin: 0;
+  padding-left: 10px;
+}
+#contentBody .sideMenu input#kwd {
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
+#contentBody .sideMenu .submitters input {
+  width: 60px;
+  margin-left: 10px;
+  margin-right: 0;
+  font-size: 80%;
+}
+
+/* サイドメニュー　ツリー
+----------------------------------------------------*/
+*html #contentBody .sideMenu ul li {
+  zoom: 100%;
+}
+*:first-child+html .sideMenu ul li {
+  zoom: 100%;
+}
+#contentBody .sideMenu  li.current a {
+  padding-left: 1px;
+  padding-right: 3px;
+  background-color: #3266BB;
+  color: #fff;
+}
+.sideMenu #sideList .folder {
+  padding-left: 15px;
+}
+.sideMenu #sideList .level2 li {
+  padding-left: 10px;
+  border-left: solid 1px #999;
+}
+#contentBody .sideMenu #sideList ul.level1 {
+  margin-left: 10px;
+}
+#contentBody .sideMenu #sideList ul li {
+  margin-left: 5px;
+}
+#contentBody .sideMenu #sideList ul li a {
+  display: inline-block;
+}
+.sideMenu #sideList li.bottomFolder,
+.sideMenu #sideList li.openBottomFolder,
+.sideMenu #sideList li.bottomFile,
+.sideMenu #sideList li.bottom {
+  border-left: none;
+}
+.sideMenu #sideList .level1 li.openBottomFolder {
+  padding-left: 15px;
+}
+.sideMenu #sideList ul.level2 {
+  margin-left: 2px;
+}
+.sideMenu .level2 li a {
+  margin-left: 15px;
+}
+li.root{
+  padding-left: 15px;
+}
+li.open, li.f_plus, li.folder, li.doc {
+  background-position: 0 0;
+}
+li.draft {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/digitallibrary/check.gif);
+}
+li.f_plus {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/digitallibrary/folder_close.gif);
+}
+li.doc {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/digitallibrary/file.gif);
+}
+li.open {
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/digitallibrary/folder_open.gif);
+}
+.level1 li.open,
+.level1 li.root,
+.level1 li.openBottomFolder  {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_02.gif)
+}
+.level1 li.folder {
+  background-image: url("/_common/themes/gw/files/digitallibrary/folder_close_01.gif");
+}
+.level2 li.f_plus {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_close_02.gif)
+}
+.level2 li.f_plus.bottomFolder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_close_03.gif)
+}
+.level2 li.open {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_05.gif)
+}
+.level2 li.open.noneFolder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_03.gif)
+}
+.level2 li.folder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_close_02.gif)
+}
+.level2 li.openBottomFolder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_06.gif)
+}
+.level2 li.noneFolder.openBottomFolder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_04.gif)
+}
+.level2 li.folder.bottomFolder {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_close_03.gif)
+}
+.level2 li.doc {
+  background-image:url(/_common/themes/gw/files/digitallibrary/file_01.gif)
+}
+.level2 li.doc.bottomFile {
+  background-image:url(/_common/themes/gw/files/digitallibrary/file_02.gif)
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+   table bbsFile(入力ページ　添付ファイル欄)
+-----------------------------------------------------------*/
+table.bbsImage,
+table.bbsFile {
+  margin: 0 auto;
+  border: 2px solid #C5D1E7;
+}
+table.bbsImage th,
+table.bbsFile th {
+  width: 110px;
+  padding: 6px 7px;
+  background-color: #E3EFFF;
+}
+table.bbsImage td,
+table.bbsFile td {
+  padding: 6px 7px;
+  border-left: 1px solid #CCCCCC;
+}
+
+/* table bbsImage(入力ページ　画像貼付欄)
+-----------------------------------------------------------*/
+table.bbsImage {
+  border-top: none;
+}
+table#image_form {
+  margin-top: -2px;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* table bbsFile(入力ページ　添付ファイル欄)
+-----------------------------------------------------------*/
+table.bbsFile {
+  margin-top: 20px;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+table#attach_form {
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* 添付ファイルリスト
+-----------------------------------------------------------*/
+table.gwboardAttachlist td.attachIcon a.iconFile {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}
+
+/* 入力ページ　submitボタン
+-----------------------------------------------------------*/
+.right .submitters {
+  text-align: center;
+}
+*html .right div.submitters {
+  margin-bottom: 50px;
+}
+
+/* 一覧へ戻るボタン
+---------------------------------------------------*/
+.btReturn {
+  clear: none;
+}

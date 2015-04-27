@@ -1,0 +1,36 @@
+<div class="bbsDocList circular">
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', edit_gwcircular_basic_path %></span>
+  <span class="docLink"><%= link_to '公開画面へ >>', "/gwcircular/" %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= @item.states[@item.state] %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>回覧板タイトル</th>
+    <td><%= @item.title%></td>
+  </tr>
+  <tr>
+    <th>一覧表示行数</th>
+    <td><%= @item.default_limit %></td>
+  </tr>
+</table>
+
+<%= render '/gwboard/admin/adms/show' %>
+
+<div class="btReturn">
+  <%= link_to '回覧板一覧へ戻る', "/gwcircular/" %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->
+

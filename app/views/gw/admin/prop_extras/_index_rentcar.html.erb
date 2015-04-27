@@ -1,0 +1,52 @@
+<% if @items.present? -%>
+<table class="index">
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>設備の状態</th>
+    <th>号車</th>
+    <th>利用責任者所属</th>
+    <th>開始日</th>
+    <th>終了日</th>
+  </tr>
+  <% @items.each do |item|
+
+  prop_stat = nz(item.prop_stat, "0").to_i
+  rent_url = "/gw/prop_extras/#{item.id}/rent" + @prop_params
+  return_url = "/gw/prop_extras/#{item.id}/return" + @prop_params
+
+  st_at = item.st_at.to_datetime
+  ed_at = item.ed_at.to_datetime
+
+  case prop_stat
+  when 0
+    rent_str = "貸出"
+    return_str = ""
+  when 1
+    confirmed_str = ""
+    rent_str = "貸出"
+    return_str = ""
+  when 2
+    rent_str = "貸出<br />取消"
+    return_str = "返却"
+  when 3
+    rent_str = ""
+    return_str = "返却"
+  when 4, 5
+    rent_str = ""
+    return_str = ""
+  end -%>
+  <tr class="<%= cycle '', 'cycle' -%>">
+    <td><a href="/gw/schedules/<%=item.schedule_id-%>/show_one">詳細</a></td>
+    <td><%= link_to(rent_str.html_safe, "#{rent_url}") if !rent_str.blank? -%></td>
+    <td><%= link_to(return_str.html_safe, "#{return_url}") if !return_str.blank? -%></td>
+    <td><%= item.prop_stat_s -%></td>
+    <td><%= item.prop.name -%></td>
+    <td><%= item.schedule.owner_gname -%></td>
+    <td><%= st_at.strftime('%Y-%m-%d') + ' （' + @wdays[st_at.wday] + '） ' + st_at.strftime('%H:%M') -%></td>
+    <td><%= ed_at.strftime('%Y-%m-%d') + ' （' + @wdays[ed_at.wday] + '） ' + ed_at.strftime('%H:%M') -%></td>
+  </tr>
+  <% end %>
+</table>
+<% end %>

@@ -1,0 +1,40 @@
+<%
+td_s = d.strftime("%Y%m%d")
+td_s = params[:s_date] if !params[:s_date].blank?
+td1 = Date.new(d.year, d.month, 1)
+td1_s = td1.strftime("%Y%m%d")
+c_group = System::CustomGroup.get_my_view({:first=>1, :is_default=>1})
+if c_group.blank?
+g_link = nil
+else
+g_link = %Q(&dis=group&cgid=#{c_group.id})
+end
+if params[:uid].blank?
+  link_uid = Core.user.id
+else
+  link_uid = params[:uid].to_i
+end
+hrefs =   {:group => {
+    :day => "/gw/schedules/#{td_s}?" + (params[:gid].blank? ? "cgid=#{@cgid}" : "gid=#{@gid}" ),
+    #:week => "/gw/schedules/?s_date=#{td_s}&" + (params[:gid].blank? ? "gid=#{Core.user_group.id}" : "gid=#{@gid}" )
+    :week => "/gw/schedules/?s_date=#{td_s}#{g_link}"
+  }, :user => {
+    :day => "/gw/schedules/#{td_s}?uid=#{link_uid}",
+    :week => "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}",
+    :month => "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}",
+  :custom => "/gw/schedules/?s_date=#{td_s}&cgid=" + (@first_custom_group.blank? ? "#{@cgid}" : "#{@first_custom_group.id}" ),
+  :list => "/gw/schedule_lists/?s_year=#{d.year}&s_month=#{d.month}",
+    :executives=> "/gw/pref_executives",
+    :directors=> "/gw/pref_directors",
+    :assembly=> "/gw/pref_assembly"
+  }}
+%>
+<!--<div class="btGroup">グループ日表示</div>
+<div class="schSelBox">
+<%#={show_group_link_mobile 'item[btbox][user_type_id]', :onchange=>"select_group_link('item_btbox_user_type_id',#{Gw.date8_str(d)});", :selected=>@group_selected}%></div>
+</div> -->
+<div class="btBox">
+<div class="btIndex weekLink nobr"><%= link_to  "個人（週表示）" ,hrefs[:user][:week] -%></div>
+<div class="btIndex dayLink nobr"><%= link_to  "グループ（日表示）" ,hrefs[:group][:week] -%></div>
+<div class="btIndex customLink nobr"><%= link_to  "カスタム（日表示）" ,hrefs[:user][:custom] -%></div>
+</div>

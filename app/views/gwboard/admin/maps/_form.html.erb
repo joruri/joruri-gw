@@ -1,0 +1,17 @@
+・緯度・経度の入力があれば、緯度・経度の情報を優先して地図が作成されます。<br />
+・地図の基準は住所のみでも可能ですが、表示が正確で無い場合があります。<br />
+・メモ欄に登録した内容が、地図上に吹き出し形式で表示されます。<br />
+<table class="show">
+<tr>
+<th>住所</th>
+<td><%=f.text_field :address, :class => 'string adress'%></td>
+</tr>
+<tr>
+<th>緯度・経度</th>
+<td><%=f.text_field :latitude, :size=>'12'%> , <%=f.text_field :longitude, :size=>'12'%></td>
+</tr>
+<tr>
+<th>メモ</th>
+<td><%=f.text_field :memo, :class => 'string memo'%></td>
+</tr>
+</table>

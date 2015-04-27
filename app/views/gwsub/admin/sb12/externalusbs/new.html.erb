@@ -1,0 +1,20 @@
+<div class="gwsub sb09">
+<div class="pieceHeader">
+<h2>USBメモリ登録管理台帳</h2>
+</div>
+<div class="pieceBanner">
+<%= render 'header' %>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => {action: :create} ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render 'form_admin', f: f %>
+
+  <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
+  <%= hidden_field_tag(:sort, params[:sort]) unless params[:sort].blank? %>
+  <%= hidden_field_tag(:usage, params[:usage]) unless params[:usage].blank? %>
+  <%= hidden_field_tag(:scn, params[:scn]) unless params[:scn].blank? %>
+  <%= hidden_field_tag(:s_keyword, params[:s_keyword]) unless params[:s_keyword].blank? %>
+  <%= hidden_field_tag(:limit, params[:limit]) unless params[:limit].blank? %>
+<% end %>
+</div>
+</div>

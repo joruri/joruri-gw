@@ -1,0 +1,16 @@
+<% if @genre == 'meetingroom' %>
+<div class="explainColor <%= position if defined?(position) %>">
+<span class="title">凡例 ：</span>
+<span class="reserveNoCarry"><span class="square">■</span><span class="text">未承認</span></span>
+<span class="reserveCarry"><span class="square">■</span><span class="text">承認済み</span></span>
+<span class="use"><span class="square">■</span><span class="text">貸出中</span></span>
+<span class="settled"><span class="square">■</span><span class="text">返却済</span></span>
+</div>
+<% elsif @genre == 'rentcar'  %>
+<div class="explainColor <%= position if defined?(position) %>">
+<span class="title">凡例 ：</span>
+<span class="reserve"><span class="square">■</span><span class="text">予約中</span></span>
+<span class="use"><span class="square">■</span><span class="text">貸出中</span></span>
+<span class="settled"><span class="square">■</span><span class="text">返却済</span></span>
+</div>
+<% end %>

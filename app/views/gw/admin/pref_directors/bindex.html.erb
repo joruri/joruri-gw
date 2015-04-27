@@ -1,0 +1,108 @@
+<%
+  title_str = "所属幹部在庁表示"
+  fyear = Gw::YearFiscalJp.get_record(Time.now)
+  display_time  = '(' + fyear.namejp.to_s + '年' + Time.now.strftime('%m月%d日 %H:%M 現在') + ')'
+  # スケジュラーメニューのパラメーター
+  d=Time.now
+  @st_date=Time.now.strftime('%Y%m%%d')
+  mode='directors'
+%>
+<div class="piece schedulePiece">
+<div class="pieceHeader"><h2 class="pieceTitle">スケジュール</h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><a href="/gw/schedules/new">新規作成</a></span>
+</div>
+</div>
+<div class="pieceBody">
+
+<div class="pieceBodyHeader">
+<%= render "gw/admin/schedules/schedule_bt_box",  d: d, mode: mode %>
+<div class="scheduleTableTitle"><%= title_str %><span class="presentTime"><%= display_time %></span></div>
+<div class="pageLink">
+<% @item_links.each do |l| %>
+<a href="#<%= l.parent_g_code %>"><%= l.parent_g_name %></a>
+<% end %>
+</div>
+
+</div><!--pieceBodyHeader-->
+
+<div class="pieceBodyBody">
+<% if @items.size > 0 %>
+  <%
+    dept_in   = @items[0].parent_g_code
+    icon_class=' userIcon3 '
+  %>
+  <div class="unit">
+  <div id="<%= @items[0].parent_g_code %>" class="unitHeader"><%= @items[0].parent_g_name.to_s %></div>
+  <% @items.each do |item| %>
+    <% if item.parent_g_code != dept_in %>
+    <%
+      dept_in = item.parent_g_code
+      icon_class=' userIcon3 '
+    %>
+    <%# 部が変わったら、unit end %>
+    </div><!--unit-->
+    <div class="unit">
+    <div id="<%= item.parent_g_code %>" class="unitHeader"><%= item.parent_g_name.to_s %></div>
+    <% end %>
+<%
+swith_enable = false
+swith_enable = true if @u_role == true
+swith_enable = true if Core.user_group.id == item.gid
+%>
+    <div class="scheduleUser <%= item.state if item.state=='off'%> ">
+    <!--
+    <%# if item.u_lname.blank? %>
+      <%#*<div class="leftHeader userIcon2  <%= 'sectionUser' if swith_enable==true %> ">%>
+    <%# else %>
+      <%#*<div class="leftHeader userIcon3  <%= 'sectionUser' if swith_enable==true %> ">%>
+    <%# end %>
+    -->
+    <div class="leftHeader <%= icon_class %>  <%= 'sectionUser' if swith_enable==true %> ">
+    <%if swith_enable == true%>
+      <a class="userIcon" href="<%= %Q(#{@public_uri}/#{item.uid}/state_change?p_state=#{item.state}&locate=#{item.parent_g_code}) %>">
+      <%=Gw::PrefDirector.state_show(item.state)%>
+      </a>
+    <%else%>
+    <span class="userIcon"><%=Gw::PrefDirector.state_show(item.state)%></span>
+    <%end%>
+    <%
+      if item.parent_g_code == dept_in
+        icon_class=' userIcon2 '
+      end
+    %>
+    <%
+      if item.title.split(//u).size > 13
+        title_str = %Q(<span>#{item.title}</span>)
+      else
+        title_str = %Q(#{item.title})
+      end
+    %>
+    <div class="title"><%= title_str %></div>
+    <div class="username">
+    <span><%= item.u_name %></span>
+<%
+  td_s = d.strftime("%Y%m%d")
+  td_s = params[:s_date] if !params[:s_date].blank?
+  td1 = Date.new(d.year, d.month, 1)
+  td1_s = td1.strftime("%Y%m%d")
+  link_uid = item.uid
+  day   = "/gw/schedules/#{td_s}?uid=#{link_uid}"
+  week  = "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}"
+  month = "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}"
+%>
+    <span class="linkBox">
+<a href="<%= day %>" class="dayLink">日表示</a>
+<a href="<%= week %>" class="weekLink">週表示</a>
+<a href="<%= month %>" class="monthLink">月表示</a>
+    </span>
+    </div><!--username-->
+    </div><!--leftHeader-->
+    </div><!--scheduleUser-->
+  <% end %>
+  <%# データの終わりで　unit end %>
+  </div><!--unit-->
+<% end %>
+</div><!--pieceBodyBody-->
+</div><!--pieceBody-->
+</div><!--schedulePiece-->

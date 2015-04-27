@@ -1,0 +1,95 @@
+<%
+################
+##### 表示する予定表の「最初の時刻」と「最後の時刻」の範囲を決定
+prop_schedules = Hash::new
+@props.each do |prop|
+  key = "prop_#{prop.id}"
+  prop_schedules[key] = Hash::new
+  prop_schedules[key][:schedules] = Array.new
+  prop_schedules[key][:allday_flg] = false
+  prop_schedules[key][:allday_cnt] = 0
+
+  @schedule_props.each do |sp|
+    if sp.prop_id == prop.id && sp.prop_type == prop.class.name
+      prop_schedules[key][:schedules] << sp.schedule
+      if sp.schedule.allday == 1 || sp.schedule.allday == 2
+        prop_schedules[key][:allday_flg] = true
+        prop_schedules[key][:allday_cnt] += 1
+      end
+    end
+  end
+
+  prop_schedules[key][:schedule_len] = prop_schedules[key][:schedules].length
+
+  if prop_schedules[key][:schedule_len] == 0
+    prop_schedules[key][:trc] = "scheduleTableBody"
+    prop_schedules[key][:row] = 1
+  else
+    if prop_schedules[key][:allday_flg] == true
+      prop_schedules[key][:trc] = "alldayLine"
+      prop_schedules[key][:row] = (prop_schedules[key][:schedule_len] * 2) - ((prop_schedules[key][:allday_cnt] * 2) - 1)
+    else
+      prop_schedules[key][:trc] = "scheduleTableBody categoryBorder"
+      prop_schedules[key][:row] = prop_schedules[key][:schedule_len] * 2
+    end
+  end
+end
+show_day_header = render '/gw/admin/schedules/show_day_header'
+%>
+
+<div class="piece schedulePiece dayview">
+<div class="pieceHeader">
+  <%= render '/gw/admin/schedules/piece_header', d: @st_date, mode: 'day' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedules/schedule_header', d: @st_date, mode: 'guard', show_flg: @show_flg -%>
+  <%#= render '/gw/admin/schedule_props/other_group_select' -%>
+</div>
+
+<div class="pieceBodyBody">
+<% if @show_flg %>
+<table summary="スケジュール詳細" class="scheduleTable <%=@genre%>">
+  <tbody>
+    <% @props.each_with_index do |prop, iprop| %>
+      <%
+      schedule_data = prop_schedules["prop_#{prop.id}"]
+      %>
+      <%= show_day_header if iprop == 0 || @header_each != 0 && iprop % @header_each == 0 -%>
+      <tr class="<%= schedule_data[:trc] -%>">
+        <th rowspan="<%= schedule_data[:row] -%>" class="scheduleUser">
+          <div class="username <%= prop.get_type_class -%>">
+            <span>
+              <a href="/gw/prop_<%= prop.genre_name.pluralize %>/<%= prop.id -%>"><%= prop.display_prop_name -%></a>
+            </span>
+          </div>
+        </th>
+        <% if schedule_data[:schedule_len] == 0 %>
+          <% (@calendar_end_time - @calendar_first_time + 1).times do %>
+            <td colspan="2" class="scheduleData"><!-- 予定無し --></td>
+          <% end %>
+        <% else %>
+          <%= render '/gw/admin/schedules/show_day_one', schedule_data: schedule_data, display_prop: prop -%>
+        <% end %>
+      </tr>
+    <% end %>
+    <%= show_day_header -%>
+  </tbody>
+</table>
+<% else %>
+  <%= show_notice -%>
+<% end %>
+</div>
+
+<div class="pieceBodyFooter">
+  <%= render '/gw/admin/schedules/schedule_footer', d: @st_date, mode: 'guard', show_flg: @show_flg -%>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+  // 5分毎に再読込
+  setTimeout("location.reload()",300000);
+//]]>
+</script>

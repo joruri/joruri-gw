@@ -1,0 +1,39 @@
+<%
+  remind = []
+  reminders = Gw::Reminder.where(:state => 'enabled').order('sort_no').all
+  icon_clses = reminders.map{|x| [x.name, x.css_name]}
+  reminders.each do |reminder|
+    next if reminder.name =~ /hcs/
+    begin
+      remind += eval("Gw::Model::#{reminder.name.capitalize}.remind.collect{|x| x[:c]='#{reminder.name}'; x}")
+    rescue => e
+      dump e
+    end
+  end
+
+  begin
+    remind += Gw::Model::ReminderExternal.remind
+    items = Gw::ReminderExternalSystem.order(:id).all
+    icon_clses += items.map{|item| [item.code, item.css_name]}
+  rescue => e
+    dump e
+  end
+%>
+<% if remind.length > 0 %>
+<%
+cols = %w(date_ste cls title)
+cols.each{|col| concat raw %Q(<colgroup class="#{col}"></colgroup>)}
+remind.sort{|a, b| b[:date_d] <=> a[:date_d]}.each do |x|
+  c_s_a = []
+  c_s_a.push cycle('', 'cycle')
+  c_s_a.push 'expired' if x[:delay]
+  c_s_a.push x[:c]
+  c_s_a.push x[:css_class] if !x[:css_class].blank?
+  c_s = Gw.join(c_s_a, ' ')
+  c_s = %Q( class="#{c_s}") if !c_s.blank?
+  icon_cls  = icon_clses.assoc(x[:c])
+  icon_cls1 = icon_cls.blank? ? nil:icon_cls[1]
+  concat raw %Q(<tr#{c_s}><td class="date_ste">#{x[:date_str]}</td><td class="cls #{icon_cls1}"><span>#{x[:cls]}　：　</span></td><td class="title">#{x[:title]}</td></tr>)
+end
+%>
+<% end %>

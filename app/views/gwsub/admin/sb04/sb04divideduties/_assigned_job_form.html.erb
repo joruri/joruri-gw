@@ -1,0 +1,29 @@
+<%= hidden_field_tag 'pre_fyear', @fyed_id %>
+<%= hidden_field_tag 'fyed_id', @fyed_id %>
+<%= hidden_field_tag 'grped_id'   , @grped_id %>
+<%= hidden_field_tag 'limit', @limits %>
+<%= hidden_field_tag 's_keyword'  , @s_keyword %>
+
+<%= f.error_messages %>
+<%= f.hidden_field :fyear_id %>
+<%= f.hidden_field :section_id %>
+<%= f.hidden_field :code %>
+<%= f.hidden_field :remarks %>
+<%#= required_head %>
+<table class="show">
+<tr>
+<th>所属</th>
+<td ><%= @assigned_job.section_name %></td>
+<th>担当名</th>
+<td ><%= @assigned_job.name %></td>
+</tr>
+<tr>
+<th>住所/<br />電話</th>
+<td><%= f.text_area :address ,:rows=>5 ,:cols=>50 %></td>
+<th>担当<br />電話</th>
+<td><%= f.text_area :tel ,:rows=>5 ,:cols=>50  %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>

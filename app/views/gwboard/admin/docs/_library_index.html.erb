@@ -1,0 +1,15 @@
+<% nfiles = files.select {|f| !f.is_image} %>
+<% if nfiles.present? %>
+<div class="docsInnerBox2">
+<table class="gwboardAttachlist">
+  <tr><th colspan="2">添付ファイル名</th></tr>
+  <% nfiles.each do |file| %>
+    <% download_url = "#{file.file_uri(file.system_name)}" %>
+    <tr>
+      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
+      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
+    </tr>
+  <% end %>
+</table>
+</div>
+<% end %>

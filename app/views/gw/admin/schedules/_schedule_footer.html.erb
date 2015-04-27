@@ -1,0 +1,9 @@
+<%= render 'gw/admin/schedule_props/pm_legends', position: 'bottom' %>
+<% if @show_flg %>
+<% if @line_box.present? && @schedule_move_url_directive %>
+<%= raw(hidden_field_tag('my_url', @schedule_move_url_directive.sub('%q', "#{@schedule_move_qs}"))) %>
+<% end %>
+<% if @line_box.present? %>
+<%= render '/gw/admin/schedules/schedule_line_box', d: d, mode: mode, move_mode: :footer %>
+<% end %>
+<% end %>

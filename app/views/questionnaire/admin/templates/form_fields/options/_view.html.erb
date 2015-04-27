@@ -1,0 +1,24 @@
+<%
+return '' if item.options.size == 0
+
+ret = true
+for option in item.options
+  ret = false unless option.title.blank?
+end
+return '' if ret
+%>
+<br />
+<table class="index">
+  <tr>
+    <th style="text-align: center; width:30px;">値</th>
+    <th style="text-align: center;">ラベル</th>
+  </tr>
+  <% for option in item.options %>
+    <% if option.title.present? %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td style="text-align: left;"><%= option.value %></td>
+        <td style="text-align: left;"><%= option.title %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

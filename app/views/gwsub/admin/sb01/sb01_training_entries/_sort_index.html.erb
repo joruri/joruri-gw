@@ -1,0 +1,23 @@
+<% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <%
+    schedule_check = Gwsub::Sb01TrainingSchedule.schedule_link_check(item.schedule_id)
+    if schedule_check == true
+      skd_link = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{item.training_id}&p_id=#{item.id.to_s}&t_menu=entries"
+      entry_link = %Q(<a href="#{skd_link}">申込む</a>)
+    else
+      entry_link = "申込む"
+    end
+    %>
+    <td><a href="/gwsub/sb01/sb01_training_schedules/<%=item.id%>?t_id=<%=item.training_id%>&t_menu=entries">詳細</a></td>
+    <td><%=entry_link%></td>
+    <td><%= item.training.title %></td>
+    <td><%= safe{item.from_start.strftime('%Y-%m-%d')} %></td>
+    <td><%= safe{item.from_start.strftime('%H:%M')} %></td>
+    <td><%= safe{item.from_end.strftime('%H:%M')} %></td>
+    <td><%= item.members_max %></td>
+    <td><%= item.members_current %></td>
+    <td><%= item.training.group_name %></td>
+    <td><%= safe{item.updated_at.strftime('%Y-%m-%d')}%></td>
+  </tr>
+<% end %>

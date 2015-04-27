@@ -1,0 +1,13 @@
+<div class="editingBox">
+  <span class="btNew">
+    <%= link_to '新規登録', {action: :new} %>
+  </span>
+<% if params[:action] == 'show' %>
+  <span class="btEdit">
+    <%= link_to '編集', {action: :edit} %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' %>
+  </span>
+<% end %>
+</div>

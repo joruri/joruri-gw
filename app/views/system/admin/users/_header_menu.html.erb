@@ -1,0 +1,13 @@
+<%
+  current_no = @current_no.blank? ? 0 : @current_no
+  if current_no == 1 && params[:action].index("csv").present?
+	current_no = 3
+  end
+%>
+<div class="menu">
+<a href="<%= system_users_path -%>"><span class="<%= "current_menu" if current_no == 1 -%>">ユーザー管理</span></a>
+<% if @role_admin %>
+<a href="<%= system_groups_path(0) -%>"><span class="<%= "current_menu" if current_no == 2 -%>">グループ管理</span></a>
+<a href="<%= csvget_system_users_groups_csvdatas_path -%>"><span class="<%= "current_menu" if current_no == 3 -%>">CSV管理</span></a>
+<% end %>
+</div>

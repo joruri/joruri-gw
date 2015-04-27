@@ -1,0 +1,17 @@
+<div class="piece gwfaq">
+<div class="pieceHeader">
+<h2>質問管理</h2>
+</div>
+<div class="pieceBody">
+<%= form_for :item, :url => gwfaq_maker_path(@item),:method=>:put, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+<%= submit_for(f,{:caption=>'編集する', :js_submitter => "my_submit('draft')"}) %>
+
+<% end %>
+ </div>
+</div><!--piece gwfaq-->
+

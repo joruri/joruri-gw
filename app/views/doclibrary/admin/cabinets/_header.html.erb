@@ -1,0 +1,17 @@
+<div class="contentMenu">
+  <span class="btNew"><%= link_to '書庫を作成する', action: :new if Doclibrary::Control.is_sysadm? %></span>
+</div>
+
+<div class="tabBox">
+<table class="tabtable">
+  <tbody>
+    <tr>
+      <td class="spaceLeft"></td>
+      <td class="tab<%= ' current' unless params[:state] == 'HIDE' %>"><%= link_to '管理可能書庫', doclibrary_cabinets_path %></td>
+      <td class="spaceCenter"></td>
+      <td class="tab<%= ' current' if params[:state] == 'HIDE' %>"><%= link_to '管理可能書庫（非表示）', doclibrary_cabinets_path(state: "HIDE") %></td>
+      <td class="spaceRight"></td>
+    </tr>
+  </tbody>
+</table>
+</div>

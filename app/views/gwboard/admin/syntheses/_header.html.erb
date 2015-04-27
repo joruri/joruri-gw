@@ -1,0 +1,34 @@
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+str_tab5_class = 'tab'
+
+str_tab1_class += ' current' if params[:system] == 'gwbbs'
+str_tab2_class += ' current' if params[:system] == 'gwfaq'
+str_tab3_class += ' current' if params[:system] == 'gwqa'
+str_tab4_class += ' current' if params[:system] == 'doclibrary'
+str_tab5_class += ' current' if params[:system] == 'digitallibrary'
+
+%>
+<!--掲示板タブ-->
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+  <tr>
+    <td class="spaceLeft"></td>
+    <td class="<%= str_tab1_class %>"><%= link_to "掲示板", "/syntheses?system=gwbbs" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab2_class %>"><%= link_to "ＦＡＱ", "/syntheses?system=gwfaq" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab3_class %>"><%= link_to "Ｑ＆Ａ", "/syntheses?system=gwqa" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab4_class %>"><%= link_to "書庫", "/syntheses?system=doclibrary" %></td>
+    <td class="spaceCenter"></td>
+    <td class="<%= str_tab5_class %>"><%= link_to "電子図書", "/syntheses?system=digitallibrary" %></td>
+    <td class="spaceRight"></td>
+  </tr>
+</tbody>
+</table>
+</div><!--tabBox-->

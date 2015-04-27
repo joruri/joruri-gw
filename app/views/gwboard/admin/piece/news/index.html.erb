@@ -1,0 +1,36 @@
+<div class="piece gadget bbs <%= 'emergency' if @portal_mode.disaster_mode? && @portal_disaster_bbs && @title.id == @portal_disaster_bbs.options.to_i %>">
+<div class="pieceHeader">
+  <h3><%= @title.title %>新着情報
+    <% if @title.is_writable? %>
+      <span class="btNew"><%= link_to '新規作成', "/gwbbs/docs/new?title_id=#{@title.id}" %></span>
+    <% end %>
+  </h3>
+</div>
+<div class="pieceBody">
+<% if @items.length > 0 %>
+  <table class="index">
+  <% @items.each_with_index do |item, idx| %>
+    <% if idx == 0 || item.latest_updated_at.to_date != @items[idx-1].latest_updated_at.to_date %>
+    <tr>
+      <th colspan="5"><h4><%=l item.latest_updated_at.to_date %></h4></th>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="bbsImportant"><%=raw '<span></span>' if item.importance == 0 %></td>
+      <td class="title"><%= link_to hbr(item.title), item.portal_show_path + gwbbs_params_set %><%=raw '<span class="new">new</span>' if item.new_mark_flg %></td>
+      <td class="bbsAttach"><%=raw "<span>#{item.attachmentfile}</span>" if item.attachmentfile != 0 %></td>
+      <td class="bbsBalloon"><%=raw "<span>#{item.comments_only_id.size == 0 ? '&nbsp;' : item.comments_only_id.size}</span>" if item.one_line_note == 1 %></td>
+      <td class="group"><%= link_to item.section_name, item.portal_index_path + gwbbs_params_set + "&state=GROUP&grp=#{item.section_code}" %></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <div style="color: #080;">表示する内容はありません。</div>
+<% end %>
+<% if @items.total_entries > @limit_portal -%>
+  <div class="bbsContinue">
+  <%= link_to '続き・・・', @items.first.portal_index_path %>
+  </div>
+<% end -%>
+</div>
+</div>

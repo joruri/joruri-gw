@@ -1,0 +1,6 @@
+<p class="bgYellow">【名称】</p>
+<p class="leftPad1"><%= @item.title %></p>
+<p class="bgAsh">【対象となるOS】</p>
+<p class="leftPad1"><%= @item.inpfld_002 %></p>
+<p class="bgAsh">【概要】</p>
+<p class="leftPad1"><%= convert_for_mobile_body(@item.body, params[:_jgw_session]) %></p>

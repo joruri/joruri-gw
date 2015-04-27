@@ -1,0 +1,36 @@
+<div class="piece AdminMessage">
+<%= render 'header' %>
+<div class="pieceBody">
+<%= render 'system/admin/roles/header_menu' %>
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to "編集", "/system/role_names/#{@item.id}/edit" if @item.editable? %></span>
+  <span class="btDestroy"><%= link_to "削除", "/system/role_names/#{@item.id}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>機能名</th>
+    <td><%= @item.display_name %></td>
+  </tr>
+  <tr>
+    <th>機能コード</th>
+    <td><%= @item.table_name %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>割り当て権限名</th>
+    <td><%= Gw.join [System::RoleNamePriv.get_priv_names(@item.id)], '、' %></td>
+  </tr>
+</table>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to '戻る', "/system/role_names?#{@qs}"  %>
+</div>
+
+</div>
+</div>

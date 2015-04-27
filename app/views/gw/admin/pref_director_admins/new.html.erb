@@ -1,0 +1,13 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+
+<%= form_for @item, :as => :item, :url => {action: :create}, :html => {method: :post, id: "itemForm", multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+  <div class="submitters"><%= f.submit '保存' %></div>
+<% end %>
+
+</div>
+</div>

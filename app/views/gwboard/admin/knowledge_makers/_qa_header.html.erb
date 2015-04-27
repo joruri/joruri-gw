@@ -1,0 +1,16 @@
+<div class="contentMenu qa">
+  <span class="btNew "><%= link_to 'QAを作成する', new_gwqa_maker_path if Gwqa::Control.is_sysadm? %></span>
+</div>
+<div class="tabBox">
+<table class="tabtable">
+  <tr>
+    <td class="spaceLeft"></td>
+    <td class="tab<%= ' current' unless params[:state] == 'HIDE'%>"><%= link_to '管理可能QA', '/gwqa/controls' %></td>
+    <td class="spaceCenter"></td>
+    <td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%= link_to '管理可能QA（非表示）', '/gwqa/controls?state=HIDE' %></td>
+    <td class="spaceCenter"></td>
+    <td class="tab"><%= link_to 'QA一覧', '/gwqa' %></td>
+    <td class="spaceRight"></td>
+  </tr>
+</table>
+</div>

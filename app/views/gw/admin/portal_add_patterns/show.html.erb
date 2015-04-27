@@ -1,0 +1,68 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'gw/admin/portal_adds/menu' %>
+
+<div class="editingBox">
+  <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
+  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' %></span>
+</div>
+
+<div class="">
+  <%= link_to "全一覧", {action: :index} %>
+  <span>＞</span>
+  <%= link_to @item.title, {action: :show} %>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= @item.state_show %></td>
+  </tr>
+  <tr>
+    <th>管理用タイトル</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>グループ表示順</th>
+    <td><%= @item.group_id %></td>
+  </tr>
+  <tr>
+    <th>表示形式</th>
+    <td><%= @item.pattern_show %></td>
+  </tr>
+  <tr>
+    <th>表示場所</th>
+    <td><%= @item.place_show if @item.pattern.to_i != 4 %></td>
+  </tr>
+</table>
+
+<div class="titleLine">
+<span class="title">選択済み広告一覧</span>
+</div>
+
+<%= form_for :item, :url => {action: :sort_update}, :html => {method: :put} do |f| %>
+  <table class="index">
+    <tr>
+      <th style="width: 80px;">並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+      <th>状態</th>
+      <th>公開日</th>
+      <th>広告アイコン</th>
+      <th>URL</th>
+    </tr>
+    <% @item.group_patterns.each_with_index do |item, cnt| -%>
+      <% next unless item.add %>
+      <%= error_messages_for item %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= f.text_field "#{item.id}", :value => item.sort_no, :class => 'string sort_no', :style => 'width: 40px;', :size => 5 , :maxlength => 4 %></td>
+        <td><span style="<%= item.add.published_display_style %>"><%= item.add.published_label %></span></td>
+        <td><%= item.add.publish_start_at.strftime('%Y年%m月%d日') %>　～　<%= item.add.publish_end_at.strftime('%Y年%m月%d日') %></td>
+        <td><%= image_tag("#{item.add.file_path}?#{item.add.updated_at.to_i}", :alt => item.add.body, :title => item.add.body) %></td>
+        <td><%= item.add.url %></td>
+      </tr>
+    <% end -%>
+  </table>
+<% end %>
+
+</div>
+</div>

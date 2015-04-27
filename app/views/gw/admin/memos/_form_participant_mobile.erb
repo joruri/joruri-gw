@@ -1,0 +1,7 @@
+<%
+@item.selected_receiver_uids ||= @item.memo_users.map(&:uid)
+%>
+<span class="textRed">10人まで</span><br />
+<% Gw::Memo.receiver_options(@item.selected_receiver_uids, with_image_class: true).each do |option| %>
+・<%= option[0] %><%= hidden_field_tag 'item[selected_receiver_uids][]', option[1] %><br />
+<% end %>

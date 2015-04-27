@@ -1,0 +1,4 @@
+<p class="mobileBbs">掲示板</p>
+<% @items.each do |item| %>
+└ <%= link_to item.title, "/gwbbs/docs?title_id=#{item.id}&limit=10" %></br />
+<% end %>

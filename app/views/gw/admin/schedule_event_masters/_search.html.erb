@@ -1,0 +1,17 @@
+<%
+javascript_fname = 'search_submit();'
+grouplist = Gwsub.grouplist4(nil, 'all', true ,nil , nil, :return_pattern => 2)
+%>
+<%= form_tag '', :method => :get, :class => 'search', :name => 'search' do %>
+<table>
+  <tr>
+    <% if @is_ev_admin %>
+    <td>主管課担当 <%= select_tag :s_m_gid, options_for_select(grouplist, params[:s_m_gid]), :onchange => javascript_fname %></td>
+    <% end %>
+    <td>部局・所属 
+      <%= select_tag :s_d_gid, options_for_select(grouplist, params[:s_d_gid]), :onchange => javascript_fname %>
+      <%= hidden_field_tag :sort_keys, params[:sort_keys] if params[:sort_keys].present? %>
+    </td>
+  </tr>
+</table>
+<% end %>

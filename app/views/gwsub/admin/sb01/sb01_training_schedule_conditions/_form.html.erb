@@ -1,0 +1,111 @@
+<%
+times_st   = Gwsub::Sb01TrainingScheduleCondition.select_times
+times_ed   = Gwsub::Sb01TrainingScheduleCondition.select_times_end
+times_min  = Gwsub::Sb01TrainingScheduleCondition.select_times_min
+prop_kinds = Gwsub::Sb01TrainingScheduleCondition.prop_kind_select
+%>
+<%= hidden_field_tag 'limit', @limits %>
+<%= f.hidden_field :training_id , :value=>@item.training_id %>
+<%= f.hidden_field :title       , :value=>@item.title %>
+<%= f.hidden_field :state       , :value=>@item.state %>
+<%= f.hidden_field :member_id ,   :value=>@item1.member_id %>
+<%= f.hidden_field :group_id ,   :value=>@item1.group_id %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>繰り返し<%= required %></th>
+    <td><%= f.radio_buttons :repeat_flg, Gwsub::Sb01TrainingScheduleCondition.repeat_flgs, {}, {onclick: 'sel_class1()'} %></td>
+  </tr>
+  <tr>
+    <th>開催日<%= required %></th>
+    <td>
+      <%= f.datepicker :from_at %> から<br />
+      <div id="repeat_date"><%= f.datepicker :to_at %> まで</div>
+    </td>
+  </tr>
+  <tr>
+    <th>開催時刻<%= required %></th>
+    <td>
+      <%= f.select :from_start ,options_for_select(times_st,@item.from_start.to_s) %>　：
+      <%= f.select :from_start_min ,options_for_select(times_min,@item.from_start_min.to_s) %>　～　
+      <%= f.select :from_end ,options_for_select(times_ed,@item.from_end.to_s) %>　：
+      <span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
+      <%= f.select :from_end_min ,options_for_select(times_min,@item.from_end_min.to_s) %>
+      </span>
+    </td>
+  </tr>
+  <tr id = "repeat_rule">
+    <th>繰返し設定<%= required %></th>
+    <td>
+      <%= f.radio_buttons :repeat_class_id, Gwsub::Sb01TrainingScheduleCondition.repeat_rules, {}, {onclick: 'sel_class2()'} %>
+      <table id="repeat_condition"  style="border: medium none; width: 600px;">
+        <tr>
+          <td>繰り返す曜日をチェックしてください。<br />
+          <% @item.repeat_weekday = @item.repeat_weekday.to_s.split(',') %>
+          <%= f.check_boxes :repeat_weekday, Gw.yaml_to_array_for_select('gwsub_sb01_training_schedule_repeat_weekday_checkboxes') %>
+          <br />
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <th>場所<%= required %></th>
+    <td><%= f.text_field :prop_name,:size=>80 %></td>
+  </tr>
+  <tr>
+    <th>定員<%= required %></th>
+    <td><%= f.text_field :members_max ,:size=>30 %>人</td>
+  </tr>
+</table>
+<div class="preserve">
+<%= f.submit '確定' %>
+</div>
+
+<script language = "JavaScript" type="text/javascript">
+<!--
+// 結果理由
+  var sel_class1 = function() {
+    idx =  radio_selected('item[repeat_flg]')
+    r_idx =  radio_selected('item[repeat_class_id]')
+    switch (idx) {
+    case 1:
+      Element.hide($('repeat_date'))
+      Element.hide($('repeat_rule'))
+      Element.hide($('repeat_condition'))
+      break;
+    case 2:
+      Element.show($('repeat_date'))
+      Element.show($('repeat_rule'))
+      if (r_idx == 2){
+        Element.show($('repeat_condition'))
+      }else{
+        Element.hide($('repeat_condition'))
+      }
+      break;
+    }
+  }
+  sel_class1();
+
+  var sel_class2 = function() {
+    idx =  radio_selected('item[repeat_class_id]')
+    switch (idx) {
+    case 1:
+      Element.hide($('repeat_condition'))
+      break;
+    case 2:
+      //$('repeat_condition').setStyle("display : none;");
+      Element.hide($('repeat_condition'))
+      break;
+    case 3:
+      //$('repeat_condition').setStyle("display : inline;");
+      Element.show($('repeat_condition'))
+      break;
+    }
+  }
+  sel_class2();
+
+-->
+</script>

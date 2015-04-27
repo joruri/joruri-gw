@@ -1,0 +1,19 @@
+<%
+link_str1 = %Q(<span>一覧</span>)
+link_str2 = %Q(<span>期限切れ一覧</span>)
+link_url1 = @public_uri
+link_url2 = "#{@public_uri}/index_over"
+case @l3_current
+when '01'
+  link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+when '02'
+  link_str2 = %Q(<span class="gwsub_current_menu">期限切れ一覧</span>)
+else
+end
+%>
+<% unless link_str1.blank? %>
+<div class="menu">
+<%= link_to link_str1 , url_for(link_url1) %>
+<%= link_to link_str2 , url_for(link_url2) if @u_role == true %>
+</div>
+<% end %>

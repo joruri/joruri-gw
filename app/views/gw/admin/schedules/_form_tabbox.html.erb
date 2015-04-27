@@ -1,0 +1,14 @@
+<div class="tabBox">
+<table class="tabtable">
+  <tr>
+    <td id="spaceLeft" class="spaceLeft"></td>
+    <% tab_captions.each_with_index do |caption, idx| %>
+      <td class="tab <%= 'current' if idx == selected_tab - 1 %>" id="<%= Gw.idize("tabBox[#{idx+1}]") %>"><%=raw caption %></td>
+      <% if idx != tab_captions.length - 1 %>
+        <td id="spaceCenter" class="spaceCenter"></td>
+      <% end %>
+    <% end %>
+    <td id="spaceRight" class="spaceRight"><%=raw form_kind_radio_str %></td>
+  </tr>
+</table>
+</div>

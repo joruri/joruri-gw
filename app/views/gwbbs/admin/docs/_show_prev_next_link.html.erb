@@ -1,0 +1,19 @@
+<% if @previous.present? || @next.present? %>
+<%#ページ移動データあり -------------------------------------------------------------------------------------- -%>
+<div class="docsPageMove">
+  <% unless @title.use_other_system? %>
+    <%#他シスリンクなし%>
+    <% if @previous.present? %>
+      <span class="left"><%= link_to '< 前のページ', "#{@previous.show_path}#{gwbbs_params_set}" %></span>
+    <% else %>
+      <span class="left">先頭ページ</span>
+    <% end %>
+    <span class="center">|</span>
+    <% if @next.present? %>
+      <span class="right"><%= link_to "次のページ >", "#{@next.show_path}#{gwbbs_params_set}" %></span>
+    <% else %>
+      <span class="right">最終ページ</span>
+    <% end %>
+  <% end %>
+</div>
+<% end %>

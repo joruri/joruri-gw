@@ -1,0 +1,124 @@
+<%
+if @is_dev
+  roles = System::RoleName.all.order(:sort_no)
+else
+  roles = System::RoleName.where('table_name != "gwsub"').order(:sort_no)
+end
+role_select = nz(@item.role_name_id,@role_id.to_i)
+
+_privs = System::RoleNamePriv.get_priv_items(role_select)
+privs = Array.new
+_privs.each do |_priv|
+  privs << [_priv.priv.display_name, _priv.priv_id ]
+end
+
+user_id = Core.user.id
+group_id = Core.user_group.id
+if @item.class_id.to_i == 1
+  unless @item.uid.blank?
+    user_id = @item.uid
+    if @item.group_id.blank?
+      user_group = System::UsersGroup.where(:user_id=>@item.uid).first
+      group_id = user_group.group_id
+    else
+      group_id = @item.group_id
+    end
+  end
+elsif @item.class_id.to_i == 2
+  unless @item.uid.blank?
+    user_id = nil
+    group_id = @item.uid
+  end
+end
+users = System::User.get_user_select(group_id)
+groups = System::Group.where(:state => 'enabled', :level_no => 3).order(:level_no, :code)
+
+%>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>機能名<%= required %></th>
+    <td>
+      <%= f.collection_select :role_name_id, roles, :id, :display_name, {:include_blank => true, :selected => role_select}, {:onchange => "update_priv_select_options();"} %>
+    </td>
+  </tr>
+  <tr>
+    <th>対象権限<%= required %></th>
+    <td>
+      <%= f.select(:priv_user_id , options_for_select(privs, nz(@item.priv_user_id, 0).to_i), {:include_blank => true}) %>
+    </td>
+  </tr>
+  <tr>
+    <th>優先順位<%= required %></th>
+    <td><%= f.text_field :idx, :class => 'num', :style => 'width: 200px;', :class => "IMEoff" %></td>
+  </tr>
+  <tr>
+    <th>種別<%= required %></th>
+    <td><%= f.radio_buttons :class_id, @item.class_id_no, {}, {onclick: 'sel_class();'} %></td>
+  </tr>
+  <tr>
+    <th>グループ</th>
+    <td><%= select_tag "item[gid_raw]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, group_id), :onchange => 'get_user();' %></td>
+  </tr>
+  <tr>
+    <th>ユーザ</th>
+    <td>
+    <%= select_tag "item[uid_raw]", Gw.options_for_select(users, user_id) %></td>
+  </tr>
+  <tr>
+    <th>許可<%= required %></th>
+    <td><%= f.radio_buttons :priv, @item.priv_no %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  var ed_str = '';
+  function get_user() {
+    g_id = $("item_gid_raw").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("/system/roles/user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+      $('item_uid_raw').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+  var sel_class = function() {
+    idx = arguments.length == 1 ? arguments[0] : radio_selected('item[class_id]')
+    switch (idx) {
+    case 1:
+      $('item_uid_raw').disabled = true;
+      $('item_gid_raw').disabled = true;
+      break;
+    case 2:
+      $('item_uid_raw').disabled = false;
+      $('item_gid_raw').disabled = false;
+      break;
+    case 3:
+      $('item_uid_raw').disabled = true;
+      $('item_gid_raw').disabled = false;
+      break;
+    }
+  }
+  sel_class();
+
+  var update_priv_select_options = function () {
+    var fr = $('item_role_name_id');
+    var id = fr.options[fr.selectedIndex].value;
+    url = '/system/role_name_privs/getajax.json?role_id=' + id + '&amp;' + time_serial();
+    var to = $('item_priv_user_id');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+      }
+    });
+  }
+
+//]]>
+</script>

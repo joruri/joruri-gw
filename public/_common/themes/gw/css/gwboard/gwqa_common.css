@@ -1,0 +1,272 @@
+
+/* =========================================================
+
+========================================================= */
+
+table {
+  margin-bottom: 0px;
+}
+
+/*
+------------------------------------------*/
+
+#header {
+  margin: 0 10px;
+}
+
+#qaHeader {
+  height: 65px;
+  background-image: url(/_common/themes/gw/files/gwqa/header_k_QA_1px.gif);
+  background-repeat: repeat-x;
+}
+
+#qaHeadBody {
+  height: 65px;
+  background-image: url(/_common/themes/gw/files/gwqa/header_k_QA.gif);
+  background-repeat: no-repeat;
+  color: #fff;
+}
+
+#qaHeadBody h1 {
+  display: block;
+  height: 66px;
+  padding-top: 15px;
+  padding-left: 15px; 
+  color: #fff;
+  font-size: 190%;
+  text-decoration: none;
+}
+
+/*
+--------------------------------------------*/
+
+#contentBody {
+  position: relative;
+}
+
+/*
+-----------------------------------------*/
+
+#makeQuestion {
+  display: inline-block;
+  margin-bottom: 5px;
+  padding: 5px 10px;
+}
+
+/*
+-----------------------------------------*/
+
+#orderNew, #orderNo, #orderAnswer {
+  display: inline;
+  margin-right: 20px;
+}
+
+#selectOrder {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  margin-bottom: 5px;
+  padding: 5px 25px;
+}
+
+
+/*
+-----------------------------------------*/
+
+#questionList {
+  margin-bottom: 5px;
+  border: solid 1px #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table#questionList {
+  width: 100%;
+}
+
+table#questionList td{
+  padding: 5px;
+}
+
+tr.listHead{
+  background-color: #e3e3ff;
+}
+
+td.listNo{
+  width: 50px;
+}
+
+td.listDay, td.listLastDay{
+  width: 120px;
+}
+
+td.listNo{
+  background-color: #e3e3ff;
+}
+
+.listLine td{
+  border-top: solid 1px #999;
+}
+
+td.listQuestion, td.listPerson, td.listDay, td.listLastDay{
+  border-left: solid 1px #999;
+}
+
+table#questionList .listLine td.listNo{
+  padding-left: 10px;
+}
+
+/*
+----------------------------------------------*/
+
+.pagination{
+  clear: both;
+  margin: 0px 0 -20px 0;
+  padding: 5px;
+}
+
+.prev {
+  margin-left: 20px;
+}
+
+/*
+----------------------------------------------*/
+
+.questonBox {
+  margin: 30px 0 5px 0;
+  padding: 10px;
+  border: solid 1px #ccdbff;
+  background-color: #e3effd;
+}
+
+.questionNo {
+  position: relative;
+  float: left;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  font-size: 1.5em;
+  z-index: 2;
+}
+
+.questionInner {
+  position: relative;
+  margin-bottom: 15px;
+  z-index: 1;
+}
+
+.questionTitle {
+  margin-left: 70px;
+}
+
+.questionTitle a {
+  font-size: 1.5em;
+}
+
+.questionPerson {
+  clear: both;
+  padding: 3px 7px;
+  text-align: right;
+}
+
+.questionPerson a {
+  margin-right: 15px;
+}
+
+.questionDay {
+
+}
+
+.questionContent {
+  padding: 20px 10px;
+  border: solid 1px #ccdbff;
+  background-color: #fff;
+}
+
+.questionAnswer {
+  text-align: center;
+}
+
+.questionAnswer a {
+  display: inline-block;
+  width: 205px;
+  height: 23px;
+  background-image: url(/_common/themes/gw/files/gwqa/btn_k_QA.gif);
+  background-repeat: no-repeat;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+/*
+--------------------------------------------------*/
+
+.answerArea {
+  margin: 0 0 30px 0;
+  padding: 10px 10px 0 10px;
+  border: solid 1px #ffca61;
+  background-color: #ffeecd;
+}
+
+.answerBox {
+  margin-bottom: 10px;
+}
+
+.answerhead {
+  position: relative;
+  padding: 5px;
+  background-color: #ffeecd;
+}
+
+.answerTitle {
+  padding-left: 15px;
+  font-size: 1.5em;
+}
+
+.answerPerson {
+  position: absolute;
+  right: 140px;
+  padding-top: 4px;
+}
+
+* html .answerPerson {
+  position: absolute;
+  right: 170px;
+  padding-top: 4px;
+}
+
+.answerDay {
+  position: absolute;
+  right: 10px;
+  padding-top: 4px;
+}
+
+* html .answerDay {
+  position: absolute;
+  right: 40px;
+  padding-top: 4px;
+}
+
+.answerContent {
+  padding: 20px 10px;
+  border: solid 1px #ffca61;
+  background-color: #fff;
+}
+
+/*
+--------------------------------------------------------*/
+#pageLink{
+
+}
+
+.back {
+  background-color: #eee;
+  border: 3px double #666;
+  display: block;
+  line-height: 1.4;
+  margin:38px auto;
+  text-align: center;
+  width: 140px;
+  color: #00f;
+}

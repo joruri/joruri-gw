@@ -1,0 +1,19 @@
+<%
+selected_read_group_options = @item.selected_read_group_options
+%>
+<table border="0">
+  <tr>
+    <td class="userChange">
+      <%= select_tag :read_groups, options_for_select(System::Group.get_group_select('', '', :add_conditions=>"level_no = 3"), Core.user_group.id), size: 10, style: 'width:300px;', multiple: true -%>
+    </td>
+    <td>
+      <%= button_tag '追加 →', type: :button, id: 'add_read_groups' -%><br /><br />
+      <%= button_tag '← 削除', type: :button, id: 'del_read_groups' -%>
+    </td>
+    <td>
+      <br />
+      <%= select_tag :selected_read_groups, options_for_select(selected_read_group_options), size: 10, style: 'width:300px;', multiple: true -%>
+      <%= f.select :selected_read_group_ids, options_for_select(selected_read_group_options, selected_read_group_options.map{|o| o[1]}), {}, {multiple: true, style: 'display: none;'} -%>
+    </td>
+  </tr>
+</table>

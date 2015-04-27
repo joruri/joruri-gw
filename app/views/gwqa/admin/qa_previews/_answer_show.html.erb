@@ -1,0 +1,33 @@
+<%
+  if @item.unid
+    mce_base_url = cms_files_path(@item.unid) + "/"
+  else
+    mce_base_url = cms_tmp_files_path(@item.tmp_id) + "/"
+  end
+%>
+<%= tool_tiny_mce mce_base_url, {:view_mode=>true} %>
+
+<div class="showMenu">
+  <%=link_to '編集', @item.gwqa_edit_path if @item.state != 'public' %>
+  <%=link_to '公開', @item.publish_path if @item.publishable? %>
+  <%=link_to '編集中一覧', @item.gwqa_preview_index_path unless @item.publishable? %>
+  <%=link_to 'Q&A', @item.gwqa_doc_index_path unless @item.publishable? %>
+</div>
+
+<h5><FONT color="#ff0000">※ 表示を確認後、よろしければ ［公開］を選択してください。</FONT></h5>
+<div class="answerArea">
+  <div class="answerBox">
+    <div class="answerhead">
+      <div>
+        <span class="answerTitle">回答</span>
+        <span class="answerPerson"><a Href="#">回答者 : <%= @item.creater %>  <%= @item.createrdivision %></a></span>
+        <span class="answerDay"><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+      </div>
+    </div>
+    <div class="answerContent">
+      <div class="mceEditor">
+        <%= text_area_tag 'viewBody', @item.body, :class => 'mceEditor', :style => 'width:100%;height:350px;' %>
+      </div>
+    </div>
+  </div>
+</div>

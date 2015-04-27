@@ -1,0 +1,34 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<% if @items.length == 0 -%>
+  <%= show_notice -%>
+<% else -%>
+  <table class="index">
+    <tr>
+      <th class="action"></th>
+      <th class="state">状態</th>
+      <th class="sort" colspan="2" >並び順</th>
+      <th class="place">表示名</th>
+      <th class="place_master">マスタ表示名</th>
+      <th class="master_place">マスタ場所名</th>
+    </tr>
+    <% @items.each_with_index do |item, idx| -%>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+        <td><span style="<%= 'color:red;' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
+        <td class="up"><%= link_to '▲', {action: :updown, id: item.id, order: "up"} if @items.offset + idx >= 1 %></td>
+        <td class="down"><%= link_to '▼', {action: :updown, id: item.id, order: "down"} if @items.offset + idx < @items.total_entries - 1 %></td>
+        <td><%= item.place %></td>
+        <td><%= item.place_master %></td>
+        <td><%= item.meeting.position if item.meeting %></td>
+      </tr>
+    <% end -%>
+  </table>
+  <%= paginate @items %>
+<% end -%>
+
+</div>
+</div>

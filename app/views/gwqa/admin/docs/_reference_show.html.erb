@@ -1,0 +1,78 @@
+<div class="docsInnerBox">
+<div class="questionDivision">
+<div>
+<% if @title.category == 1 %>
+  <%= @title.category1_name + ' : ' unless @title.category1_name.blank? %>
+  <%= gwbd_category_name(@d_categories, @item.question.category1_id) %>
+<% end %>
+</div>
+</div>
+
+<div class="questionPerson">
+ <div>
+ 質問者 : <%= @item.question.editordivision || @item.question.createrdivision %> <%= @item.question.editor || @item.question.creater %>
+ <span class="questionDay"><%= @item.question.latest_updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+ </div>
+</div>
+
+<table class="questionArea">
+  <tbody>
+    <tr>
+      <th>
+        <span><%= @item.question.content_state != "resolved" ? "質問　" : "【解決しました】" %></span>
+        <span>質問者 : <%= @item.question.editordivision || @item.question.createrdivision %> <%= @item.question.editor || @item.question.creater %></span>
+      </th>
+    </tr>
+    <tr><td class="questionTitle"><%= @item.question.title %></td></tr>
+    <tr>
+      <% if @item.question.wiki_enabled? -%>
+        <td class="questionText wiki" ><%= raw(wiki_show @item.question.body) -%></td>
+      <% else -%>
+        <td class="questionText" ><%=raw @item.question.body -%></td>
+      <% end -%>
+    </tr>
+  </tbody>
+</table>
+<%= render 'question_file_index' %>
+
+<div class="questionAnswer">
+</div>
+
+<% if @item.question.public_answers.present? %>
+<div class="answerSort"></div>
+<div class="answerArea">
+<% @item.question.public_answers.each do |answer| %>
+  <div class="answerBox">
+  <div class="answerhead">
+    <div>
+      <span class="answerPerson"></span>
+      <span class="answerDay"><%= answer.updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+    </div>
+  </div>
+  <table class="bbsUserformBody">
+    <tbody>
+      <tr>
+        <th>
+          <div class="answerTitle">
+            <span>回答　</span>
+            <span>回答者 : <%= answer.editordivision || answer.createrdivision %> <%= answer.editor || answer.creater %></span>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td class="answerText">
+          <% if answer.wiki_enabled? -%>
+            <%= raw(wiki_show answer.body) -%>
+          <% else -%>
+            <%=raw answer.body -%>
+          <% end -%>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <%#= render 'answer_file_index', answer: answer if @title.content_id == 9 %>
+<% end %>
+</div>
+<% end %>
+</div>

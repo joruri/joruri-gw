@@ -1,0 +1,165 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/doclibrary_doc_list.css
+========================================================= */
+
+/* ミニアイコン設定
+------------------------------------------*/
+#content .doclibraryDocList {
+  background-image: url(/_common/themes/gw/files/title/title_library.gif);
+}
+
+/* 書庫名
+------------------------------------------*/
+.doclibraryDocList .pieceBanner h3 {
+  padding-left: 20px;
+  background-color: #C9DCFF;
+  font-size: 150%;
+}
+
+/* 右カラム　大枠
+------------------------------------------*/
+.doclibraryDocList .inner {
+  width: 98%;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+/* ヘルプボックス
+------------------------------------------*/
+.helpBox {
+  margin-top: -40px;
+}
+
+/* タブ周り
+------------------------------------------*/
+#contentBody .doclibraryDocList .tabBox {
+  margin-bottom: 15px;
+  margin-left: -10px;
+
+}
+
+/* 所属、分類選択ボックス
+------------------------------------------*/
+.selectFormBox {
+  margin-bottom: 10px;
+}
+.selectFormBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .selectFormBox { zoom: 1; }
+*:first-child+html .selectFormBox { zoom: 1; }
+form.changeCategory,
+form.changeGroup {
+  float: left;
+  margin-right: 20px;
+}
+
+/* 機能ボタン周り
+------------------------------------------*/
+.editingBox {
+  width: 100%;
+}
+
+/* フォルダ一覧テーブル
+------------------------------------------*/
+.inner table.docFolder {
+  width: 100%;
+  margin-bottom: 10px;
+  border-left: 2px solid #FFFFFF;
+  border-right: 2px solid #FFFFFF;
+}
+.bbsUserformTitle,
+.bbsUserformBody {
+  background-color: #fff;
+}
+
+/* パンくず
+------------------------------------------*/
+.doclibraryDocList .navi {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* 詳細ページ　本文欄
+------------------------------------------*/
+.doclibDocform {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+/* 検索ボックス周り
+------------------------------------------*/
+.sideMenu #sideList .search {
+  margin-top: 15px;
+}
+
+/* 分類・所属・日付順選択ボタン
+------------------------------------------*/
+.btBox {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+.btBox:after {
+  content: ".";
+  display: block;
+  visibility: hidden;
+  height: 0.1px;
+  font-size: 0.1em;
+  line-height: 0;
+  clear: both;
+}
+* html .btBox             { zoom: 1; }
+*:first-child+html .btBox { zoom: 1; }
+.btBox .btIndex {
+  float: left;
+  width: 53px;
+  height: 19px;
+  margin-top: 0;
+  background-image: url(/_common/themes/gw/files/switch/switch_mini01_onoff.gif);
+  overflow: hidden;
+  text-align: center;
+}
+.btBox div.current {
+  background-position: 0 -19px;
+}
+.btBox .btIndex a {
+  line-height: 1.8;
+  margin-right: 4px;
+  font-size: 90%;
+  vertical-align: middle;
+}
+
+/* サイドメニュー　所属順選択時
+------------------------------------------*/
+#contentBody .sideMenu #sideList ul.section {
+  margin-left: 15px;
+}
+#sideList ul.section li {
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_close_01.gif);
+  background-repeat: no-repeat;
+}
+#sideList ul.section li.current {
+  background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_01.gif);
+}
+
+/* docListFunctions
+------------------------------------------*/
+.right .docListFunctions {
+  padding-right: 5px;
+  text-align: right;
+}
+.right .docListFunctions div {
+  display: inline;
+  margin-left: 10px;
+  margin-right: 0;
+}

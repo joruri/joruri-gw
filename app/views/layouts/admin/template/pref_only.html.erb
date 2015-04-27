@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<link rel="stylesheet" type="text/css" href="/layout/schedule/style.css" />
+<link rel="stylesheet" type="text/css" href="/_common/themes/gw/css/print_schedule.css" media="print"/>
+<%= render 'layouts/admin/gw/header_tag' %>
+</head>
+<body <%= Page.body_id -%>>
+<div id="container">
+<%= render 'layouts/admin/gw/piece_header_pref_only' %>
+<!--ここからバナー-->
+<div id="banner">
+<div id="bannerBody">
+</div>
+</div>
+<!--ここまでバナー-->
+
+<!--ここからナビ-->
+<div id="navi">
+<div id="naviBody">
+</div>
+</div>
+<!--ここまでナビ-->
+
+<!--ここからナビ2-->
+<div id="navi2">
+<div id="navi2Body">
+<%= render 'layouts/admin/gw/notice' %>
+</div>
+</div>
+<!--ここまでナビ-->
+<!--ここからメインコンテンツ-->
+<div id="main">
+<div id="wrapper">
+<!--ここからコンテンツ-->
+<div id="content">
+<div id="contentContainer">
+<div id="contentHeader"></div>
+<div id="contentBody">
+<%= yield %>
+</div>
+<div id="contentFooter"></div>
+</div>
+</div>
+<!--ここまでコンテンツ-->
+<!--ここから左サイド-->
+<div id="menu">
+<div id="menuContainer">
+<div id="menuHeader"></div>
+<div id="menuBody">
+</div>
+<div id="menuFooter"></div>
+</div>
+</div>
+<!--ここまで左サイド-->
+</div>
+<!--ここから右サイド-->
+<div id="links">
+<div id="linksContainer">
+<div id="linksHeader"></div>
+<div id="linksBody">右サイド</div>
+<div id="linksFooter"></div>
+</div>
+</div>
+<!--ここまで右サイド-->
+</div>
+<!--ここまでメインコンテンツ-->
+<%= render 'layouts/admin/gw/piece_footer' %>
+</div>
+</body>
+</html>

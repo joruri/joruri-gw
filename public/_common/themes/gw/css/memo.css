@@ -1,0 +1,98 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/memo.css
+========================================================= */
+
+/* ミニアイコン設定
+--------------------------------------------------*/
+.memo {
+  height: 1%;
+  background-image: url(/_common/themes/gw/files/level_2/title_memo.gif);
+}
+
+/* タブ周り
+--------------------------------------------------*/
+.memo .tabBox {
+  margin-bottom: 10px;
+  padding-top: 10px;
+  background-color: #FFFCF0;
+}
+
+/* 検索フォーム
+--------------------------------------------------*/
+table.batchProcess {
+  margin: 0 10px 10px;
+}
+table.batchProcess td input{
+  width: 75px;
+  margin-right: 2px;
+}
+table.batchProcess a:visited{
+  color: #00345C;
+}
+
+/* table index
+--------------------------------------------------*/
+table.index th {
+  border: none;
+}
+.memo .pieceBody table.index {
+  width: 99%;
+  margin: 0 auto 10px;
+}
+table.index td {
+    height: 1em;
+}
+table.index td.unRead {
+  color: #FF0000;
+}
+table.index td.read {
+  color: #00345C;
+}
+
+/* table show
+--------------------------------------------------*/
+.memo .pieceBody table.show {
+  margin: 0px auto 15px;;
+}
+.memo .pieceBody table .mobileOn {
+  margin-left: 5px;
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/ic-keitai.gif);
+  background-repeat: no-repeat;
+  background-position: 0 1px;
+}
+.memo .pieceBody table .mobileOff {
+  margin-left: 5px;
+  padding-left: 15px;
+}
+
+/* 検索フォーム
+--------------------------------------------------*/
+.memo .pieceBody form.search {
+  margin: 0px;
+  padding: 5px 0;
+  text-align: center;
+}
+.memo .indication {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.memo .state,
+.memo .listform { 
+  display: inline;
+  margin-right: 5px;
+}
+
+/* 設定画面
+--------------------------------------------------*/
+.setting .titleLine {
+  margin-top: 0;
+  padding-top: 20px;
+}
+
+/* 設定処理成功画面画面
+--------------------------------------------------*/
+.notice {
+  padding: 10px;
+}

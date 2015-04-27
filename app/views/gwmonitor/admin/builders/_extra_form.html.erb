@@ -1,0 +1,52 @@
+<%
+label=["","","","","","","","","",""]
+enable  =["","","","","","","","","",""]
+main_title = ["",""]
+remark_title = "備考"
+unless @item.form_configs.blank?
+  configs = JSON.parse(@item.form_configs)
+  main_title = configs[0]
+  enable = configs[1]
+  label = configs[2]
+end
+if params[:form_config]
+  main_title = params[:form_config][:main_title] unless params[:form_config][:main_title].blank?
+  label = params[:form_config][:label] unless params[:form_config][:label].blank?
+  unless params[:form_config][:enable].blank?
+    10.times{ |n|
+    enable[n] = params[:form_config][:enable][n.to_s]
+    }
+  end
+end
+remark_title = main_title[1] unless main_title[1].blank?
+%>
+
+
+
+<table class="show">
+  <tr>
+    <th style="text-align: center;">表示／非表示</th>
+    <th>見出し</th>
+    <th><%=text_field_tag "form_config[main_title][]", main_title[0], :style => 'width: 250px;' %></th>
+    <th><%=text_field_tag "form_config[main_title][]", remark_title, :style => 'width: 250px;' %></th>
+  </tr>
+<%10.times { |i|%>
+  <tr>
+    <td style="text-align: center;">
+      <%= hidden_field_tag "form_config[enable][#{i}]", "disabled" %>
+      <%= check_box_tag "form_config[enable][#{i}]" , "enabled" , enable[i] == "enabled" ? true:false %>
+    </td>
+    <td>
+      <%=text_field_tag "form_config[label][]", label[i], :style => 'width: 250px;' %>
+    </td>
+  <td>
+    <%=text_field_tag "dummy_answer[]","", {:style => 'width: 250px;readonly: true; background:#cccccc;', :disabled=>true }%>
+  </td>
+  <td>
+    <%=text_field_tag "dummy_remark[]","" , {:style => 'width: 250px;readonly: true; background:#cccccc;', :disabled=>true } %>
+  </td>
+  </tr>
+<%}%>
+</table>
+
+

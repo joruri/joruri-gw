@@ -1,0 +1,67 @@
+<%
+todos = []
+memos = []
+circulars = []
+%w(memo circular schedule_todo).each do |mod|
+  if mod == "schedule_todo"
+    todos += eval("Gw::Model::#{mod.capitalize}.remind.map{|x| x[:c]='#{mod}'; x}")
+  elsif mod == "memo"
+    memos += eval("Gw::Model::#{mod.capitalize}.remind.map{|x| x[:c]='#{mod}'; x}")
+  elsif mod == "circular"
+    circulars += eval("Gw::Model::#{mod.capitalize}.remind(Core.user.id, mobile: true).map{|x| x[:c]='#{mod}'; x}")
+  end
+end
+%>
+<p class="mobileRem"><img src="/_common/themes/gw/files/mobile/ic-mobile-rem.gif"> リマインダー</p>
+<hr class="borderDash"/>
+
+<% if todos.blank? %>
+<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">
+<%= link_to "Todo", "/gw/schedule_todos" -%></p>
+<p class="leftPad1">表示する内容はありません。</p>
+<% else %>
+<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">
+<%= link_to "Todo（#{todos.size}件）", "/gw/schedule_todos" -%></p>
+<% todos.each do |todo| %>
+<%
+uri   = todo[:title].gsub(/<a .*?href="(.*?)".*?>.*?<\/a>/iom, '\1')
+label = todo[:title].sub(/(<a .*?href=".*?".*?>)(.*?)(<\/a>)/i, '\2')
+%>
+<p class="leftPad2">・<%= link_to label, uri -%></p>
+<% end %>
+<% end %>
+
+
+<% if memos.blank? %>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
+<%= link_to "連絡メモ", "/gw/memos" -%></p>
+<p class="leftPad1">表示する内容はありません。</p>
+<% else %>
+<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
+<%= link_to  "連絡メモ（#{memos.size}件）", "/gw/memos" -%></p>
+<% memos.each do |memo| %>
+<%
+uri   = memo[:title].gsub(/<a .*?href="(.*?)".*?>.*?<\/a>/iom, '\1')
+label = memo[:title].sub(/(<a .*?href=".*?".*?>)(.*?)(<\/a>)/i, '\2')
+%>
+<p class="leftPad2">・<%= link_to label, uri -%></p>
+<% end %>
+<% end %>
+
+
+<% if circulars.blank? %>
+<p class="mobilecircular"><img src="/_common/themes/gw/files/mobile/ic-rem-circulation.gif">
+<%= link_to "回覧板", "/gwcircular" -%></p>
+<p class="leftPad1">表示する内容はありません。</p>
+<% else %>
+<p class="mobilecircular"><img src="/_common/themes/gw/files/mobile/ic-rem-circulation.gif">
+<%= link_to "回覧板（#{circulars.size}件）", "/gwcircular" -%></p>
+<% circulars.each do |circular| %>
+<%
+title = circular[:title].gsub(/'/,'"')
+uri   = title.gsub(/<a .*?href="(.*?)".*?>.*?<\/a>/iom, '\1')
+label = title.sub(/(<a .*?href=".*?".*?>)(.*?)(<\/a>)/i, '\2')
+%>
+<p class="leftPad2">・<%= link_to label, uri -%></p>
+<% end %>
+<% end %>

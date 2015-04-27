@@ -1,0 +1,65 @@
+ja:
+  activerecord:
+    models:
+      gwsub/sb04assignedjob:  "GW補完機能/名簿担当コード"
+      gwsub/sb04category:  "GW補完機能/名簿区分コード"
+      gwsub/sb04officialtitle:  "GW補完機能/名簿職名コード"
+      gwsub/sb04section:  "GW補完機能/名簿所属コード"
+      gwsub/sb04stafflist:  "GW補完機能/名簿職員一覧"
+      gwsub/sb04help:  "GW補完機能/名簿ヘルプ"
+      gwsub/sb04_seating_list:  "GW補完機能/名簿座席表"
+      gwsub/sb04_editable_date:  "GW補完機能/名簿編集期限"
+    attributes:
+      gwsub/sb04stafflist:
+        fyear_id: 年度
+        section_id: 所属
+        staff_no: "職員番号"
+        name: "氏名"
+        kana: "カナ氏名"
+        section_code: "所属コード"
+        section_name: "所属名称"
+        official_title_code: "コード"
+        official_title_name: "名称"
+        extension: "内線"
+        divide_duties: "事務分掌"
+        divide_duties_order: "並び順"
+        remarks: "備考"
+      gwsub/sb04assignedjob:
+        fyear_id: 年度
+        section_id: 所属
+        section_code: "所属コード"
+        section_name: "所属名称"
+        code: "担当コード"
+        name: "担当名称"
+        remarks: "備考"
+      gwsub/sb04officialtitle:
+        fyear_id: 年度
+        code: "職名コード"
+        name: "職名"
+        remarks: "備考"
+      gwsub/sb04category:
+        fyear_id: 年度
+        code: "職種コード"
+        name: "職種名称"
+        remarks: "備考"
+      gwsub/sb04section:
+        fyear_id: 年度
+        ldap_code: "所属コード(システム)"
+        code: "所属コード"
+        name: "所属名称"
+        remarks: "備考"
+      gwsub/sb04help:
+        title: "タイトル"
+        bbs_url: "掲示板記事url"
+      gwsub/sb04_seating_list:
+        fyear_id: 年度
+        title: "見出し"
+        bbs_url: "座席表掲示板URL"
+      gwsub/sb04_editable_date:
+        fyear_id: "指定年度"
+        published_at: "公開開始日"
+        start_at: "編集開始日"
+        end_at: "編集終了日"
+        headline_at: "見出し日付"
+      gwsub/sb04_limit_setting:
+        limit: "表示行数"

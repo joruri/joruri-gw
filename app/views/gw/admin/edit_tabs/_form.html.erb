@@ -1,0 +1,196 @@
+<%= f.hidden_field :class_created %>
+<%= f.hidden_field :parent_id %>
+<%= f.hidden_field :level_no %>
+<%= f.hidden_field :sort_no %>
+
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td><%= f.radio_buttons :published, Gw::EditTab.published_select %></td>
+  </tr>
+  <tr>
+    <th>状態</th>
+    <td><%= f.radio_buttons :state, Gw::EditTab.state_select %></td>
+  </tr>
+  <tr>
+    <th>表示名<%= required %></th>
+    <td><%= f.text_field :name, :size => 80 %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+</table>
+
+<% if @parent.level_no == 1 %>
+<%= f.hidden_field :class_sso %>
+<table class="show">
+  <tr>
+    <th>リンク種別<%= required %></th>
+    <td><%= f.select :other_controller_use, options_for_select(Gw::EditTab.other_ctrl_select, @item.other_controller_use), {}, {:onchange=>'changeOtherControllerUse();', :class=>'state'} %></td>
+  </tr>
+</table>
+<table class="show" style="display:none;" id="tab_keys_table">
+  <tr>
+    <th>タブキー</th>
+    <td><%= f.text_field :tab_keys, :size => 10 ,:class => 'IMEoff' %> <%= required %>タブキーを利用する場合は必須です。</td>
+  </tr>
+</table>
+<table class="show" id="other_controller_table">
+  <tr>
+    <th>個別割当のURL</th>
+    <td><%= f.text_field :other_controller_url, :size => 80, :class => 'IMEoff' %> <%= required %>個別割当を利用する場合は必須です。</td>
+  </tr>
+</table>
+<table class="show" id="sso_link_table">
+  <tr>
+    <th>リンク先URL</th>
+    <td><%= f.text_area :link_url, :rows => 3, :cols => 80, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
+  </tr>
+  <tr>
+    <th>接続先区分</th>
+    <td><%= f.radio_buttons :class_external, Gw::EditTab.external_select %></td>
+  </tr>
+  <tr>
+    <th>アカウント項目名</th>
+    <td><%= f.text_field :field_account,:size => 50, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
+  </tr>
+  <tr>
+    <th>パスワード項目名</th>
+    <td><%= f.text_field :field_pass, :size => 50, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
+  </tr>
+</table>
+<% elsif @parent.level_no == 2 %>
+<%= f.hidden_field :tab_keys -%>
+<%= f.hidden_field :other_controller_use -%>
+<%= f.hidden_field :other_controller_url -%>
+<%= f.hidden_field :class_external -%>
+<%= f.hidden_field :class_sso -%>
+<% elsif @parent.level_no >= 3 %>
+<%= f.hidden_field :tab_keys -%>
+<%= f.hidden_field :other_controller_use -%>
+<%= f.hidden_field :other_controller_url -%>
+<table class="show">
+  <tr>
+    <th>リンク種別</th>
+    <td><%= f.select :class_sso, options_for_select(Gw::EditTab.sso_select, @item.class_sso), :class => 'state' %></td>
+  </tr>
+  <tr>
+    <th>リンク先URL</th>
+    <td><%= f.text_area :link_url, :rows => 3, :cols => 80, :class => 'IMEoff' %></td>
+  </tr>
+  <tr>
+    <th>接続先区分</th>
+    <td><%= f.radio_buttons :class_external, Gw::EditTab.external_select %></td>
+  </tr>
+  <tr>
+    <th>アカウント項目名</th>
+    <td><%= f.text_field :field_account, :size => 50, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
+  </tr>
+  <tr>
+    <th>パスワード項目名</th>
+    <td><%= f.text_field :field_pass, :size => 50, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
+  </tr>
+  <tr>
+    <th>リンク用アイコンパス</th>
+    <td><%= f.text_area :icon_path , :rows=>3 , :cols=>80  ,:class=>'IMEoff' %></td>
+  </tr>
+</table>
+<% end %>
+
+<% if @parent.level_no >= 2 -%>
+<table class="show">
+  <tr>
+    <th>公開区分<%= required %></th>
+    <td><%= f.radio_buttons :is_public, Gw::EditTab.public_select, {}, {:onclick => 'is_public_click();'} %></td>
+  </tr>
+</table>
+<div id="public_groups_table" style="<%= 'display:none;' if @item.is_public != 1 %>">
+  <%= render 'form_public_role', f: f %>
+</div>
+<div id="public_display_auth" style="<%= 'display:none;' if @item.is_public != 2 %>">
+  <table class="show">
+    <tr>
+      <th>関数<%= required %></th>
+      <td><%= f.text_field :display_auth, :size => 50, :class => 'IMEoff' %></td>
+    </tr>
+  </table>
+</div>
+<% else -%>
+  <%= f.hidden_field :is_public -%>
+<% end -%>
+
+<div class="preserve">
+  <% if @parent.level_no == 1 %>
+    <%= f.submit '保存' %>
+  <% else %>
+    <%= f.submit '保存', :onclick => 'return my_submit()' %>
+  <% end %>
+</div>
+
+<% if @parent.level_no == 1 %>
+<script type="text/javascript">
+//<![CDATA[
+var changeOtherControllerUse = function() {
+  var value = $('item_other_controller_use').value;
+  switch (value) {
+  case '1':
+    Element.hide($('tab_keys_table'));
+    Element.show($('other_controller_table'));
+    Element.hide($('sso_link_table'));
+    $('item_class_sso').value = 1;
+    $('item_class_external_1').checked = true;
+    break;
+  case '2':
+    Element.show($('tab_keys_table'));
+    Element.hide($('other_controller_table'));
+    Element.hide($('sso_link_table'));
+    $('item_class_sso').value = 1;
+    $('item_class_external_1').checked = true;
+    break;
+  case '3':
+    Element.hide($('tab_keys_table'));
+    Element.hide($('other_controller_table'));
+    Element.show($('sso_link_table'));
+    $('item_class_sso').value = 2;
+    break;
+  <% System::Product.where(sso: 1).all.each do |p| %>
+  case <%= p.product_type %>:
+    Element.hide($('tab_keys_table'));
+    Element.hide($('other_controller_table'));
+    Element.show($('sso_link_table'));
+    $('item_class_sso').value = <%= p.product_type %>;
+    break;
+  <% end %>
+  }
+}
+
+window.onload = function() {
+  changeOtherControllerUse();
+}
+//]]>
+</script>
+<% end %>
+
+<% if @parent.level_no >= 2 %>
+<script type="text/javascript">
+//<![CDATA[
+var is_public_click = function () {
+  // 公開範囲
+  idx = radio_selected('item[is_public]');
+  //alert(idx);
+  if (idx == 2) {
+    Element.show($('public_groups_table'));
+    Element.hide($('public_display_auth'));
+  } else if (idx == 3) {
+    Element.hide($('public_groups_table'));
+    Element.show($('public_display_auth'));
+  } else {
+    Element.hide($('public_groups_table'));
+    Element.hide($('public_display_auth'));
+  }
+}
+//]]>
+</script>
+<% end %>

@@ -1,0 +1,252 @@
+@charset "UTF-8";
+/* =========================================================
+   _common/themes/gw/css/workflow.css
+========================================================= */
+
+/* ミニアイコン設定
+----------------------------------------------- */
+#content .workflow {
+  background-image: url(/_common/themes/gw/files/title/title_denshiketu.gif);
+}
+
+/* タイトル・本文フォーム
+------------------------------------------------*/
+.docsInnerBox {
+  overflow: hidden;
+  clear: both;
+  width: 96%;
+  background-color: #E3EFFD;
+  margin: 10px auto;
+  padding: 10px;
+}
+#itemForm .docsInnerBox {
+  width: auto;
+  margin: 10px;
+}
+.formTitle {
+  margin-left: 10px;
+}
+.docsInnerBox .bbsUserform {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+table.bbsUserformBody {
+  width: 100%;
+}
+table.bbsUserformBody td {
+  padding: 8px;
+  word-break: break-all;
+  background-color: #FFFFFF;
+}
+.bbsCreatorInf {
+  float: right;
+  margin-bottom: 10px;
+}
+.bbsCreatorInf td.space {
+  width: 20px;
+}
+.docsInnerBox .bbsUserformBody td.docTitle {
+  background-color: #FFFFE9;
+  border: 1px solid #AAB1E6;
+}
+.docsInnerBox .bbsUserformBody td.docTitle span {
+  display: block;
+  font-size: 130%;
+  font-weight: bold;
+}
+.bbsCreator table td {
+  width: auto;
+}
+.docsInnerBox table.bbsUserformBody td.spaceBottom {
+  height: 15px;
+  padding: 0;
+  background-color: #E3EFFF;
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+}
+*html #contentBody .docsInnerBox table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+*:first-child+html #contentBody .docsInnerBox table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+#content .workflow .pieceBody {
+  height: 1%;
+  padding-top: 0px;
+}
+#contentBody .setting .pieceBody {
+  padding: 10px;
+}
+#page-gw-scheduleHelpConfigs #content .workflow .pieceBody {
+  padding-top: 5px;
+}
+.workflow .pieceBody {
+  overflow: hidden;
+}
+#content .workflow .pieceBody #itemForm {
+  padding-top: 10px;
+}
+#page-gwworkflow-basics-1-edit #content .pieceBody {
+  padding-top: 20px;
+}
+#page-gwworkflow-customGroups #content .pieceBody {
+  padding-top: 15px;
+}
+
+/* table index
+----------------------------------------------- */
+#contentBody .workflow table.index th {
+  border: none;
+}
+.bbsDocList table.index {
+  width: 98%;
+  margin: 0 auto 10px;
+}
+.bbsDocList table.index tr.index td {
+  border: none;
+  background-color: #E3EFFF;
+}
+#contentBody .bbsDocList .update {
+    width: 110px;
+}
+#contentBody .bbsDocList td.docTitle {
+  word-break: break-all;
+}
+#contentBody .bbsDocList td.docTitle a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-repeat: no-repeat;
+  background-position: 0 4px;
+}
+#contentBody .bbsDocList td.group {
+  width: 170px;
+}
+
+/* table show
+------------------------------------------------*/
+.workflow table.show {
+  width: 98%;
+  margin: 10px auto;
+}
+.workflow table.show th {
+  width: 110px;
+}
+
+/* table bbsExpirydate (回覧期限日時テーブル)
+------------------------------------------------*/
+table.bbsExpirydate {
+  float: right;
+}
+tabl.bbsExpirydate td.space {
+  width: 10px;
+}
+
+/* table bbsText (件名、記事入力テーブル)
+------------------------------------------------*/
+#contentBody table.bbsText {
+  margin: 10px auto;
+  width: 98%;
+}
+#contentBody table.bbsText th {
+  width: auto;
+}
+
+/* table bbsFile (添付ファイル欄)
+------------------------------------------------*/
+table.bbsFile {
+  width: 98%;
+  margin: 20px auto 0px;
+  border: 2px solid #C5D1E7;
+}
+table.bbsFile th {
+  width: 110px;
+  padding: 6px 7px;
+  border-top: none;
+  background-color: #E3EFFF;
+}
+table.bbsFile td {
+  padding: 6px 7px;
+  border-left: 1px solid #CCCCCC;
+}
+table#attach_form {
+  margin-top: 0;
+  border-top: 1px solid #CCCCCC;
+}
+
+/* タブ周り
+------------------------------------------------*/
+#contentBody .pieceBanner {
+  background-color: #FFFCF0;
+  border-left: 1px solid #1E3B8C;
+  clear: both;
+  height: 20px;
+}
+#page-gwworkflow-customGroups #contentBody .pieceBanner,
+#page-gwmonitor-customGroups #contentBody .pieceBanner,
+#page-gwworkflow-settings-index #contentBody .pieceBanner {
+  background-color: #FFFFFF;
+}
+#contentBody .bbsDocList .tabBox {
+  margin-bottom: 10px;
+  padding-top: 20px;
+  background-color: #FFFCF0;
+}
+
+/* 機能ボタン
+---------------------------------------------*/
+#page-gwworkflow-basics-1-index .setting .pieceBody {
+  padding-top: 20px;
+}
+#contentContainer .editingBox {
+  width: 700px;
+  margin-left: 0;
+  padding-left: 10px;
+}
+.workflow .editingBox .docLink {
+  float:left;
+}
+.workflow .editingBox .docLink a {
+  margin: 0;
+}
+a.btConfirmed {
+  display: inline-block;
+  height: 0px;
+  width: 410px;
+  padding-top: 48px;
+  margin: 10px 0;
+  background-image: url("/_common/themes/gw/files/bt_confirm.gif");
+  overflow: hidden;
+}
+a.btConfirmed:hover {
+  background-position: 0 -48px;
+}
+#contentBody .setting .pieceBanner {
+    height: 0;
+    overflow: hidden;
+}
+#contentBody .bbsDocList th {
+  background-color: #E3EFFF;
+  border: medium none;
+}
+#contentBody .workflow th {
+  background-color: #E3EFFF;
+  border: 1px solid #C6D1E8;
+}
+
+.expired {
+  color: red;
+}
+
+/* gwworkflow/settings
+--------------------------------------*/
+*html #page-gwworkflow-settings-index .setting .pieceBodyBody {
+  margin-top: -13px;
+  margin-left: -12px;
+}
+*html #page-gwworkflow-settings-index .setting .pieceBodyBody ul {
+  margin-bottom: 0;
+}

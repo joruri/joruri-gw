@@ -1,0 +1,38 @@
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<%= render 'title_info' %>
+
+<table class="index">
+  <tr>
+    <th style="width: 70px;"></th>
+    <th>回答者</th>
+    <th style="width: 120px;">回答日時</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:70px; text-align:center;"><%= link_to '詳細確認', edit_questionnaire_menu_preview_path(@title, item) %></td>
+    <td><%= link_to item.target_user_name, edit_questionnaire_menu_preview_path(@title, item) %></td>
+    <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') if item.updated_at %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= paginate @items %>
+
+<div align="center">
+<table>
+  <tr>
+    <td><div class="btReturn"><%= link_to '設問登録へ戻る', questionnaire_menu_form_fields_path(@title) %></div></td>
+    <% if @title.state == 'draft' %>
+    <td>&nbsp;&nbsp;</td>
+    <td><div class="btReturn"><%= link_to '受付開始', open_enq_questionnaire_menu_path(@title) %></div></td>
+    <% end %>
+  </tr>
+</table>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,41 @@
+<%-
+# コード管理　url
+l01 = url_for({:action => :index})
+l02 = url_for({:action => :new})
+l03 = url_for({:action => :csvput})
+l04 = url_for({:action => :csvup})
+# コード管理メニュー
+t01 = %Q(<span>一覧</span>)
+t02 = %Q(<span>登録</span>)
+t03 = %Q(<span>CSVに書き出し</span>)
+t04 = %Q(<span>CSVから登録</span>)
+# 選択位置判定
+case @l3_current
+when '01'
+  t01 = %Q(<span class="gwsub_current_menu">一覧</span>)
+when '02'
+  t02 = %Q(<span class="gwsub_current_menu">登録</span>)
+when '03'
+  t03 = %Q(<span class="gwsub_current_menu">CSVに書き出し</span>)
+when '04'
+  t04 = %Q(<span class="gwsub_current_menu">CSVから登録</span>)
+else
+end
+# 無効メニュークリア
+case @menu_header4
+when 'sb06_budget_notices'
+  t03 = nil
+  t04 = nil
+when 'sb06_budget_editable_dates'
+  t03 = nil
+  t04 = nil
+else
+end
+-%>
+<div class="menu">
+<!-- <p><%#=h "#{@menu_title4}" %></p> -->
+<%= link_to t01.html_safe , l01 %>
+<%= link_to t02.html_safe , l02 %>
+<%= link_to t03.html_safe , l03 unless t03.blank? %>
+<%= link_to t04.html_safe , l04 unless t04.blank? %>
+</div>

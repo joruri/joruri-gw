@@ -1,0 +1,72 @@
+<%
+# 本務ユーザーに担当を割り当て
+# 所属判定
+if @item.section_id.to_i==0
+  grped_id = @grped_id
+else
+  grped_id = @item.section_id
+end
+# 担当選択肢
+assignedjobs    = Gwsub::Sb04assignedjob.sb04_assignedjobs_id_select(@item.fyear_id,grped_id)
+# 職名選択肢
+official_titles = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@item.fyear_id)
+# 職種選択肢
+# ユーザー選択肢（全所属の本務ユーザーすべて）
+user                    = Gwsub::Sb04stafflist.new
+user.fyear_id           = @item.fyear_id
+user.multi_section_flg  = '1'
+user.order "section_code , assignedjobs_code , divide_duties_order_int"
+users                   = user.find(:all).collect{|x|x.section_name.blank? ? [x.name,x.id] : ['('+x.section_name+')'+x.name,x.id]}
+# ユーザー選択初期値
+user_id                 = 0
+if @item.id.to_i==0
+  user_id = users[0].id unless users.blank?
+else
+  user_id = @item.id
+end
+-%>
+
+<%= hidden_field_tag 'pre_fyear'  , @fyed_id  -%>
+<%= hidden_field_tag 'fyed_id'    , @fyed_id  -%>
+<%= hidden_field_tag 'grped_id'   , @grped_id -%>
+<%= hidden_field_tag 'limit'      , @limits   -%>
+<%= hidden_field_tag 's_keyword'  , @s_keyword %>
+
+<%= f.hidden_field :fyear_id           -%>
+<%= f.hidden_field :section_id         -%>
+<%= f.hidden_field :multi_section_flg  -%>
+<%= f.hidden_field :id                 -%>
+<%= f.error_messages %>
+<table class="index">
+<tr>
+  <th class="divide_duties_order">表示順</th>
+  <th class="id">職名・担当</th>
+  <th>職員</th>
+  <th class="extension">内線</th>
+</tr>
+<tr>
+  <td><%= f.text_field :divide_duties_order  ,:size=>4  ,:class => 'IMEoff'         %></td>
+  <td>
+    <div><%= f.select :official_title_id   ,options_for_select(official_titles,@item.official_title_id.to_i ), {:include_blank=>true} %></div>
+    <br />
+    <div><%= f.select :assignedjobs_id     ,options_for_select(assignedjobs,@item.assignedjobs_id.to_i ) %></div>
+  </td>
+  <td>
+    <div>
+    <%= select_tag('item_user_id' ,options_for_select(users,user_id))  unless @action=='edit'  %>
+    <%= @item.name if @action=='edit' %>
+    </div>
+  </td>
+  <td><%= f.text_field :extension            ,:size=>20   %></td>
+</tr>
+<tr>
+  <th colspan="2" class="divide_duties" style="width:50%;">事務分掌</th>
+  <th colspan="2" class="remarks">備考</th>
+</tr>
+<tr>
+  <td colspan="2"><%= f.text_area  :divide_duties  ,:rows=>10,:cols=>70 %></td>
+  <td colspan="2"><%= f.text_area :remarks         ,:rows=>10,:cols=>70 %></td>
+</tr>
+</table>
+<br />
+<div class="preserve"><%= f.submit '保存' %></div>

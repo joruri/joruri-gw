@@ -1,0 +1,32 @@
+<%
+fyears = Gwsub::Sb04EditableDate.all.order("fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+location = "#{@csv_base_url}/csvadd"
+-%>
+
+<h4 style="margin-left:2em;">CSV追加登録</h4>
+<div style="margin-left:3em;">
+登録対象CSVファイルを指定して実行してください
+<br /><span style="color:red">登録済データに、追加登録となります。
+<br />登録済年度を指定した場合は、指定年度分のデータを削除してから新規追加となります。</span>
+</div>
+<br />
+<%= form_tag location , {:method=>:post , :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','add') %>
+<table class="show">
+<tr>
+  <th>年度</th>
+  <td><%= select_tag( 'item[fyed_id]',options_for_select( fyears ,@fyed_id.to_i ) ) %></td>
+</tr>
+<tr>
+  <th>文字コード</th>
+  <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %></td>
+</tr>
+<tr>
+  <th>対象ファイル</th>
+  <td><%= file_field_tag('item[file]' , :size=>80 , :accept=>'text/csv') %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= submit_tag 'CSV追加' %>
+</div>
+<% end %>

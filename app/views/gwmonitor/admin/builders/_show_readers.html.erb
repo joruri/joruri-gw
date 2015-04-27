@@ -1,0 +1,13 @@
+<table class="show">
+  <tr><th colspan="3"><%= title %></th></tr>
+  <% readers.each_slice(3) do |sliced_readers| %>
+    <tr>
+      <% sliced_readers.each do |reader| %>
+        <td style="width: 33%"><%= reader[2] %></td>
+      <% end %>
+      <% (3 - sliced_readers.size).times do %>
+        <td style="width: 33%"></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

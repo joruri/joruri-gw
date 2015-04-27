@@ -1,0 +1,20 @@
+<div class="search">
+<%= form_tag "#{@title.docs_path}", :method => :get do %>
+  <%# 検索対象を絞り込み範囲内に制限する パラメータの持ち回り %>
+  <%= hidden_field_tag 'title_id'   ,params[:title_id]  -%>
+  <%= hidden_field_tag 'state'      ,params[:state]     -%>
+  <%= hidden_field_tag 'limit'      ,params[:limit]     -%><%# 行数　 param -%>
+  <%= hidden_field_tag 'grp'        ,params[:grp]       -%><%# 所属別 param -%>
+  <%= hidden_field_tag 'cat1'       ,params[:cat1]      -%><%# 分類別 param -%>
+  <%= hidden_field_tag 'yyyy'       ,params[:yyyy]      -%><%# 月別　 param -%>
+  <%= hidden_field_tag 'mm'         ,params[:mm]        -%><%# 月別　 param -%>
+  <%#= hidden_field_tag(:title_id, "#{params[:title_id]}") %>
+  <%#= hidden_field_tag(:state, "#{params[:state]}") %>
+  <h4 class="iconSideKey">キーワード</h4>
+  <%= text_field_tag 'kwd', params[:kwd], :size => '16' %>
+  <div class="submitters">
+    <%= submit_tag '検索', :name => :search, :class => 'btSarch' %>
+    <%= submit_tag 'リセット', :name => :reset, :class => 'btSarch' %>
+  </div><!--submitters-->
+<% end %><!--form_tag-->
+</div><!--search-->

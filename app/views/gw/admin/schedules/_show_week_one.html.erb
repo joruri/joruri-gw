@@ -1,0 +1,20 @@
+<% schedules.each do |schedule| %>
+<% if schedule.is_public_auth?(@is_gw_admin) %>
+  <div title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) %>" class="ind tooltip">
+    <a class="<%= schedule.display_category_class(display_prop) %>" href="/gw/schedules/<%= schedule.id %>/show_one">
+      <span><%= schedule.display_time(display_prop, week_add_day) %></span>
+      <span class="title"><%= schedule.display_title(display_prop) %></span>
+      <% if @schedule_settings[:view_place_display] == '1' && schedule.place.present? %>
+        <span class="place">（<%= schedule.place %>）</span>
+      <% end %>
+    </a>
+  </div>
+<% else %>
+  <% unless schedule.todo? %>
+    <div title="<%= "#{schedule.display_time(display_prop, week_add_day)} [非公開予定]" %>" class="ind tooltip">
+      <span><%= schedule.display_time(display_prop, week_add_day) %></span>
+      <span class="title">[非公開予定]</span>
+    </div>
+  <% end %>
+<% end %>
+<% end %>

@@ -1,0 +1,7 @@
+<% unless @items.blank? %>
+  <% if params[:pp].blank? %>
+    <%# render 'whats_new' %>
+  <% else %>
+    <%= render 'titlelist' %>
+  <% end %>
+<% end %>

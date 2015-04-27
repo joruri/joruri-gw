@@ -1,0 +1,38 @@
+<%
+#r_states  = Gwsub::Sb05Request.m_status_requests
+#managers_r_states  = Gwsub::Sb05Request.manager_r_status_requests
+@action     = "edit"
+@edit_path  = "#{@index_uri}#{@req1.id}?sb05_users_id=#{@user.id}"
+form_str    = "form#{@req1.media_code}"
+if @req1.blank? or @req1.id.blank?
+  show_url  = nil
+else
+  if @media_code==4 and @categories_code==2 and @req1.contract_at.blank?
+    # メルマガ　イベント情報の新規を除外
+    show_url  = nil
+  else
+    show_url  = "#{@index_uri}#{@req1.id}?l2_c=#{@l2_current}&sb05_users_id=#{@req1.sb05_users_id}&media_code=#{@req1.media_code}"
+  end
+end
+@item = @req1
+%>
+<div class="gwsub sb05">
+<%= render 'gwsub/admin/sb05/sb05_piece_header' %>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb05/sb05_requests/menu' %>
+<%= render 'gwsub/admin/sb05/sb05_requests/menu_l3'  %>
+<%= render 'gwsub/admin/sb05/sb05_requests/menu_l4' unless @media_code.to_i==0 %>
+</div>
+<div class="pieceBody">
+<div class="showMenu">
+<%= link_to '詳細' ,url_for(show_url) unless show_url.blank? -%>
+</div>
+<%= render 'gwsub/admin/sb05/sb05_requests_user' %>
+<%= form_for :req1, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render form_str, f: f %>
+  <div class="preserve">
+  <%= f.submit '保存' %>
+  </div>
+<% end %>
+</div>
+</div>

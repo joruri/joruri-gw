@@ -1,0 +1,112 @@
+<div class="piece prop from">
+<div class="pieceHeader">
+<h2 class="pieceTitle">施設備品マスタ - <%= @item.name -%></h2>
+</div><div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render 'prop_master_menu' %>
+  <%= render 'titleline' %>
+</div>
+<div class="pieceBodyBody">
+
+<table class="index">
+  <tr><th>設備名称</th></tr>
+  <tr><td><%= @item.name -%></td></tr>
+</table>
+
+<p>この設備に画像を添付します。</p>
+<%= form_for @image_item, :as => :item, :url => {action: :image_create}, :html => {multipart: true, id: 'itemForm'} do |f| -%>
+  <%= f.error_messages %>
+  <p>
+    <label for="item_upload">ファイル指定:</label>
+    <%= f.file_field :file -%>
+  </p>
+  <p>
+    <label for="item_note">ファイル備考:</label>
+    <%= f.text_field :note, :size => '60' -%>
+  </p>
+  <p>
+    <%= f.submit 'アップロード' -%>
+  </p>
+<% end -%>
+<hr />
+<table class="index">
+  <tbody>
+    <tr>
+      <th class="action"></th>
+      <th class="path">画像</th>
+      <th class="orig_filename">ファイル名</th>
+      <th class="note">備考</th>
+      <th class="content_type">ファイル種別</th>
+      <th class="_size">サイズ（幅x高さ）</th>
+    </tr>
+    <% @item.images.reject(&:new_record?).each do |image| -%>
+      <tr>
+        <td class="action"><%= link_to '削除', {action: :image_destroy, image_id: image.id}, method: :delete, confirm: "削除してよろしいですか？" %></td>
+        <td><%= image.path %></td>
+        <td><%= image.orig_filename %></td>
+        <td><%= image.note %></td>
+        <td><%= image.content_type %></td>
+        <td>
+          <% info = image.image_size_info %>
+          <%= "#{number_to_human_size(info[:size])} (#{info[:width]}x#{info[:height]})" if info %>
+        </td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table>
+
+<hr />
+<table class="show">
+  <tbody>
+    <tr>
+      <th>予約</th>
+      <td><%= @item.reserved_state_label -%></td>
+    </tr>
+    <tr>
+      <th>表示順</th>
+      <td><%= @item.sort_no -%></td>
+    </tr>
+    <tr>
+      <th>名称</th>
+      <td><%= @item.name -%></td>
+    </tr>
+    <tr>
+      <th>種別</th>
+      <td><%= @item.prop_type.try(:name) -%></td>
+    </tr>
+    <tr>
+      <th>備考</th>
+      <td><%=br @item.comment -%></td>
+    </tr>
+    <tr>
+      <th>作成日</th>
+      <td><%=l @item.created_at if @item.created_at -%></td>
+    </tr>
+    <tr>
+      <th>更新日</th>
+      <td><%=l @item.updated_at if @item.updated_at -%></td>
+    </tr>
+    <tr>
+      <th>管理区分</th>
+      <td>一般</td>
+    </tr>
+    <tr>
+      <th>施設管理組織</th>
+      <td><%=br @item.admin_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+    <tr>
+      <th>予約可能組織</th>
+      <td><%=br @item.edit_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+    <tr>
+      <th>照会可能組織</th>
+      <td><%=br @item.read_role_corrected_group_names.join('<br />') -%></td>
+    </tr>
+  </tbody>
+</table>
+<div class="btReturn">
+  <%= link_to '詳細へ戻る', {action: :show} -%>
+</div>
+</div>
+</div>
+</div>

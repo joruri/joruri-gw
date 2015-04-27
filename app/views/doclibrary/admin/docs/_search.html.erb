@@ -1,0 +1,20 @@
+<%= form_tag '', :method => :get, :class => 'search' do %>
+<table class="bbsSearch">
+
+  <tr>
+    <th>キーワード</th>
+    <td colspan="4"><%= text_field_tag 'kwd', params[:kwd], :style => 'width: 250px;' %></td>
+    <td class="submitters">
+      <%= submit_tag '検索',     :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+   <th>表示行数</th>
+    <td><%= select_tag('limit',
+      options_from_collection_for_select([[10,'10行'],[20,'20行'],[30,'30行'],[50,'50行'],[100,'100行']],:first,:last,params['limit'].to_i),
+    :onchange => 'submit();') %></td>
+  </tr>
+
+</table>
+<input type="hidden" name="state" value='<%="#{params[:state]}"%>' />
+<input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
+<!-- end .search --><% end %>

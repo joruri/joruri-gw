@@ -1,0 +1,26 @@
+<%
+if @item.is_finished.blank?
+  finish_str = '完了する'
+else
+  finish_str = '未完了に戻す'
+end
+delete_path = "/gw/todos/#{@item.id}/confirm"
+%>
+<hr  class="borderDash"/>
+<%=show_notice -%>
+
+<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif"><%= link_to finish_str, "/gw/todos/#{@item.id}/finish" -%></p>
+<p class="leftPad2">
+<%= link_to '編集', "/gw/todos/#{@item.id}/edit" if @item.is_finished != 1 -%>
+ <%= link_to '引用作成', "/gw/todos/#{@item.id}/quote" -%>
+ <%= link_to '削除' , url_for(delete_path) %> <br />
+<%= Gw::Todo.finished_show(@item.is_finished) -%><br />
+<%= @item.ed_at.strftime('%Y-%m-%d %H:%M')%><br />
+<%= @item.title%><br />
+<%= raw(@item.body)%><br />
+
+</p>
+
+<hr class="borderDash"/>
+<p class="leftPad2">
+<%=link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}"%></p>

@@ -1,0 +1,42 @@
+<div class="piece AdminSetting">
+
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<%= render 'header' %>
+</div>
+
+<div class="pieceBodyBody">
+<div class="editingBox">
+  <span class="btEdit"><%= link_to "編集", :action => :edit, :id => @item.id %></span>
+  <span class="btDestroy"><%= link_to_destroy @item.id, :confirm => "メッセージを削除します。よろしいですか？" %></span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>分類</th>
+    <td><%= @item.kind_show %></td>
+  </tr>
+  <tr>
+    <th>表示</th>
+    <td><%= @item.state_show %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>メッセージ</th>
+    <td><%= @item.body.html_safe %></td>
+  </tr>
+</table>
+
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', action: :index %>
+</div>
+
+</div>
+</div>
+</div>

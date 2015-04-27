@@ -1,0 +1,18 @@
+<table class="show">
+  <tr>
+    <th>状態<%= required %></th>
+    <td><%= f.radio_buttons :state, @item.states -%></td>
+  </tr>
+  <tr>
+    <th>拡張子<%= required %></th>
+    <td><%= f.text_field :extension, :size => 20 -%></td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%= f.text_field :remark, :size => 100 -%></td>
+  </tr>
+  <tr>
+    <th>並び順<%= required %></th>
+    <td><%= f.text_field :sort_no, :size => 20, :class => 'IMEoff' -%></td>
+  </tr>
+</table>

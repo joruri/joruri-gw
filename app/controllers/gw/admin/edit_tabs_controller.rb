@@ -1,0 +1,104 @@
+class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
+  include System::Controller::Scaffold
+  layout "admin/template/admin"
+
+  def pre_dispatch
+    @role_developer = Gw::EditTab.is_dev?
+    @role_admin = Gw::EditTab.is_admin?
+    @role_editor = Gw::EditTab.is_editor?
+    @u_role = @role_developer || @role_admin || @role_editor
+    return error_auth unless @u_role
+
+    @parent = params[:pid].present? ? Gw::EditTab.find_by(id: params[:pid]) : Gw::EditTab.root
+    return http_error(404) unless @parent
+
+    Page.title = "タブ編集"
+  end
+
+  def url_options
+    super.merge(params.slice(:pid).symbolize_keys) 
+  end
+
+  def index
+    @items = Gw::EditTab.where(parent_id: @parent.id).order(:sort_no)
+      .paginate(page: params[:page], per_page: params[:limit])
+
+    _index @items
+  end
+
+  def show
+    @item = Gw::EditTab.find(params[:id])
+  end
+
+  def new
+    @item = Gw::EditTab.new(
+      parent_id: @parent.id,
+      level_no: @parent.level_no + 1,
+      state: 'enabled',
+      published: 'opened',
+      tab_keys: 0,
+      sort_no: Gw::EditTab.where(parent_id: @parent.id).maximum(:sort_no).to_i + 10,
+      class_created: 1,
+      class_external: 0,
+      class_sso: '1',
+      is_public: 0
+    )
+  end
+
+  def create
+    @item = Gw::EditTab.new(params[:item])
+    _create @item
+  end
+
+  def edit
+    @item = Gw::EditTab.find(params[:id])
+  end
+
+  def update
+    @item = Gw::EditTab.find(params[:id])
+    @item.attributes = params[:item]
+    _update @item
+  end
+
+  def destroy
+    @item = Gw::EditTab.find(params[:id])
+    @item.published      = 'closed'
+    @item.state          = 'deleted'
+    @item.tab_keys       = nil
+    @item.sort_no        = nil
+    @item.deleted_at     = Time.now
+    @item.deleted_user   = Core.user.name
+    @item.deleted_group  = Core.user_group.name
+    @item.save(validate: false)
+
+    redirect_to url_for(action: :index), notice: "削除処理が完了しました。"
+  end
+
+  def updown
+    item = Gw::EditTab.find(params[:id])
+
+    item_rep = 
+      case params[:order]
+      when 'up'
+        Gw::EditTab.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first
+      when 'down'
+        Gw::EditTab.where(parent_id: @parent.id).where("sort_no > #{item.sort_no}").order(sort_no: :asc).first
+      end
+    return http_error(404) unless item_rep
+
+    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
+    item.save(validate: false)
+    item_rep.save(validate: false)
+    redirect_to url_for(action: :index)
+  end
+
+  def list
+    @items = Gw::EditTab.where(level_no: 2).order(state: :desc, sort_no: :asc)
+  end
+
+  def getajax
+    group = System::Group.find(params[:group_id])
+    options = group.self_and_enabled_descendants.map{|g| [g.name, g.id]}
+    render text: view_context.options_for_select(options)
+  end
+end

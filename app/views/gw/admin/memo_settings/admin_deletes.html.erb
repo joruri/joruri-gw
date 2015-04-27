@@ -1,0 +1,33 @@
+<div class="piece memo setting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+<span class="title">連絡メモ削除設定</span>
+</div>
+</div>
+
+<div class="pieceBodyBody">
+
+<%= form_tag "/gw/memo_settings/edit_admin_deletes", {:method => :put, :multipart => true} do %>
+<table class="show">
+  <tr>
+    <th>既読</th>
+    <td><%= select_tag 'item[memos][read_memos_admin_delete]', options_for_select(@item.delete_options, @item.read_memos_admin_delete) %>経過した既読メモを削除</td>
+  </tr>
+  <tr>
+    <th>未読</th>
+    <td><%= select_tag 'item[memos][unread_memos_admin_delete]', options_for_select(@item.delete_options, @item.unread_memos_admin_delete) %>経過した未読メモを削除</td>
+  </tr>
+</table>
+<div class="submitters"><%= submit_tag '保存' %></div>
+<% end %>
+
+</div>
+
+<div class="btReturn">
+  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,55 @@
+<div id="basic" class="piece">
+<div class="pieceContainer">
+<div class="pieceBody">
+
+<div id="pref">
+
+<%
+@item.opened_children.each_with_index do |blk,idx|
+  if @is_gw_admin || blk.is_public?
+    if idx.to_i%2 == 0
+      concat raw %Q(<div class="clearfix"></div>) 
+    end
+    
+    concat raw %Q(<div class="box">)
+    concat raw %Q(<h3>#{blk.name}</h3>)
+    concat raw %Q(<div class="menu">)
+    concat raw %Q(<ul>)
+    
+    blk.opened_children.each do |lnk|
+      if @is_gw_admin || lnk.is_public?
+        lnk_opts = lnk.link_options
+        concat raw %Q(<li class="#{lnk_opts[:disabled]}">)
+        
+        if lnk_opts[:icon_path]
+          if lnk_opts[:url].blank?
+            concat raw image_tag(lnk_opts[:icon_path], :alt => lnk.name, :title => lnk.name, :border => 0)
+          else
+            concat raw link_to("#{image_tag(lnk_opts[:icon_path], :alt =>lnk.name, :title => lnk.name, :border => 0)} #{lnk.name}".html_safe,
+              lnk_opts[:url], :class => lnk_opts[:class_ext], :target => lnk_opts[:target])
+          end
+        else
+          if lnk_opts[:url].blank?
+            concat raw %Q(#{lnk.name})
+          else
+            concat raw link_to(lnk.name.to_s.html_safe,
+              lnk_opts[:url], :class => lnk_opts[:class_ext], :target => lnk_opts[:target])
+          end
+        end
+        
+        concat raw %Q(</li>)
+      end
+    end
+    
+    concat raw %Q(</ul>)
+    concat raw %Q(</div>)
+    concat raw %Q(</div>)
+  end
+end
+%>
+
+</div>
+
+</div>
+</div>
+</div>

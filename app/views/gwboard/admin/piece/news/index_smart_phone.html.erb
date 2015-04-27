@@ -1,0 +1,35 @@
+<div id="portal_bbs_part">
+<div class="piece gadget bbs">
+<div class="pieceBody">
+<% if @items.length > 0 %>
+  <table class="index">
+  <% @items.each_with_index do |item, idx| %>
+    <% if idx == 0 || item.latest_updated_at.to_date != @items[idx-1].latest_updated_at.to_date %>
+    <tr>
+      <th colspan="2"><h4><%=l item.latest_updated_at.to_date %></h4></th>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="bbsImportant leftLine" rowspan="2"><%=raw '<span></span>' if item.importance == 0 %></td>
+      <td class="title">
+        <%= link_to item.portal_show_path + gwbbs_params_set do %>
+          <%=hbr item.title %><%=raw '<span class="new">new</span>' if item.new_mark_flg %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td class="group"><span><%= link_to item.section_name, "#{@title.docs_path}&state=GROUP&grp=#{item.section_code}" %></span></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <div class="pieceBody" style="color: #080;">表示する内容はありません。</div>
+<% end %>
+<% if @items.total_entries > @limit_portal -%>
+  <div class="bbsContinue">
+    <%= link_to '続き・・・', gwbbs_docs_path(title_id: @title.id, limit: 10) %>
+  </div>
+  <% end -%>
+</div>
+</div>
+</div>

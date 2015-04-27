@@ -1,0 +1,52 @@
+<%
+g_codes = []
+g_dup = Proc.new do |_code|
+  rs = g_codes.index(_code.to_s)
+  g_codes << _code.to_s
+  rs
+end
+
+u_codes = []
+u_dup = Proc.new do |_code|
+  rs = u_codes.index(_code.to_s)
+  u_codes << _code.to_s
+  rs
+end
+
+%><style type="text/css">
+.dep   {margin: 10px 0px 0px 0px; padding: 5px 5px; background-color: #bbb;}
+.sec   {margin: 0px 0px 5px 0px; padding: 5px 5px; background-color: #ddd;}
+.users {margin: 5px 5px; padding: 5px; border: 0px solid #ccc; font-size: 90%;}
+.user  {display: inline-block; margin: 0px 0.2em 0px 0px;}
+</style>
+
+<% if @groups && @groups.size > 0 %>
+<div style="margin: 10px 0px; font-size: 90%; font-family: 'MS Gothic';">
+
+<% @groups.each do |d| %>
+  <% next unless d.synchro_target? %>
+  <div class="dep">
+    <%= d.db_value(:code) %>,
+    <%= d.db_value(:name) %>
+  </div>
+  <div class="secs">
+    <% d.children.each do |s| %>
+    <div class="sec" style="<%= 'color: red;' if g_dup.call(s.db_value(:code)) %>">
+      <%= s.db_value(:code) %>,
+      <%= s.db_value(:name) %>,
+      <%= s.db_value(:name_en) %>,
+      <%= s.db_value(:email) %>
+    </div>
+    <div class="users">
+      <% s.users.each do |u| %>
+        <% next unless u.synchro_target? %>
+        <span class="user" style="<%= 'color: red;' if u_dup.call(u.uid) %>">
+          <%= u.get('cn') %>/ 
+        </span>
+      <% end %>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+</div>
+<% end %>

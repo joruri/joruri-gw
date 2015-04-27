@@ -1,0 +1,56 @@
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<!-- <h2>担当者名等管理</h2> -->
+<%= render 'gwsub/admin/sb06/sb0602_piece_header' %>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%#= render 'gwsub/admin/sb06/sb0602_submenu' %>
+<%= render 'gwsub/admin/sb06/sb06_level3menu_header' %>
+</div>
+<div class="pieceBody">
+<%= render 'gwsub/admin/sb06/sb06_assigned_conf_kinds/display_name' %>
+<%= render 'gwsub/admin/sb06/sb06_common_showMenu' %>
+<table class="show">
+<tr><th>年度</th>
+<td><%= @item.fyear_markjp %></td>
+</tr>
+<tr><th>分類</th>
+<td><%= safe{@item.cat.cat_name} %></td>
+</tr>
+<tr><th>種別コード</th>
+<td><%= @item.conf_kind_code %></td>
+</tr>
+<tr><th>種別名称</th>
+<td><%= @item.conf_kind_name %></td>
+</tr>
+<tr><th>メニュー表示名</th>
+<td><%= @item.conf_menu_name %></td>
+</tr>
+<tr><th>種別表示順</th>
+<td><%= @item.conf_kind_sort_no %></td>
+</tr>
+<tr><th>宛先名称</th>
+<td><%= @item.conf_to_name %></td>
+</tr>
+<tr><th>タイトル</th>
+<td><%= @item.conf_title %></td>
+</tr>
+<tr><th>本文</th>
+<td><%=hbr @item.conf_body %></td>
+</tr>
+<tr><th>フォーム番号</th>
+<td><%= @item.conf_form_no %></td>
+</tr>
+<tr><th>最大明細数</th>
+<td><%= @item.conf_max_count %></td>
+</tr>
+<tr><th>選択肢表示</th>
+<td><%= Gwsub::Sb06AssignedConfKind.select_list_show(@item.select_list) %></td>
+</tr>
+</table>
+<%#= render 'gwsub/admin/sb04/sb04_common_info_show' %>
+<div class="btReturn">
+  <%= link_to '一覧に戻る' ,url_for( "#{url_for({:action => :index})}?#{@qs}" ) %>
+</div>
+</div>

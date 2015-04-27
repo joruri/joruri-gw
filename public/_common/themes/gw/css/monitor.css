@@ -1,0 +1,845 @@
+@charset "UTF-8";
+/* =========================================================
+   掲示板カスタマイズ用css設定
+   _common/themes/gw/css/gwboard/circular.css
+========================================================= */
+
+/*掲示板一覧画面
+----------------------------------------------- */
+/*検索*/
+form.search {
+  background-color: #BEE1F6;
+}
+
+/*重要アイコン*/
+table.bbsList .bbsImportant {
+  background-image: url(/_common/themes/gw/files/important.png);
+  background-position: 2px 7px;
+}
+
+/*添付ファイルアイコン*/
+table.bbsList .bbsAttach {
+  background-image: url(/_common/themes/gw/files/attached.jpg);
+  background-position: 2px 7px;
+}
+
+/*１行コメントアイコン*/
+table.bbsList .bbsBalloon {
+  background-image: url(/_common/themes/gw/files/balloon.png);
+  background-position: 2px 7px;
+}
+
+/*一覧*/
+table.bbsList th {
+  padding: 6px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #BEE1F6;
+}
+table.bbsList td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+}
+
+/*掲示板詳細画面
+----------------------------------------------- */
+/*一覧*/
+#contentBody .bbsDocList table.index td.bbsImportant {
+  padding-top: 7px;
+  padding-right: 0;
+  border-right: none;
+  vertical-align: top;
+}
+
+/*作成者*/
+table.bbsCreator {
+  clear: both;
+  width: auto;
+  text-align: left;
+  vertical-align: top;
+}
+table.bbsCreator th {
+  padding: 1px 0px;
+  background-color: #BEE1F6;
+  text-align: left;
+}
+table.bbsCreator td {
+  padding: 1px 0px;
+}
+
+/*重要度・分類*/
+table.bbsImportance {
+  width: auto;
+  margin: 0;
+  text-align: left;
+  vertical-align:top;
+}
+table.bbsImportance th {
+  padding: 1px 0px;
+  border: 1px solid #CCCCCC;
+  background-color: #BEE1F6;
+}
+table.bbsImportance td {
+  padding: 1px 0px;
+}
+
+/*タイトル*/
+table.bbsUserformTitle {
+  margin: 10px 0px;
+  text-align: left;
+  vertical-align: top;
+}
+table.bbsUserformTitle th {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #6182DA;
+  color: #FFFFFF;
+}
+table.bbsUserformTitle td {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  font-size: 12pt;
+}
+
+/*記事*/
+.right {
+  padding-bottom: 10px;
+}
+.batchProcess {
+  margin-bottom: 5px;
+}
+#contentBody .bbsDocList .tabBox .tabtable  {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+.docsInnerBox .bbsUserform {
+  clear: both;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  background-color: #ffffff;
+}
+table.bbsUserformBody {
+  width: 100%;
+  margin-top: 1px;
+  margin-bottom: 0px;
+  text-align: left;
+  vertical-align: top;
+}
+*html table.bbsUserformBody {
+  margin-bottom: 17px;
+}
+*:first-child+html table.bbsUserformBody {
+  margin-bottom: 17px;
+}
+table.bbsUserformBody th {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #6182DA;
+  font-size: 12pt;
+}
+table.bbsUserformBody td {
+  padding: 8px;
+  word-break: break-all;
+}
+
+/*添付ファイルリスト*/
+table.gwboardAttachlist {
+  margin: 10px 0px;
+  text-align: left;
+  vertical-align: top;
+}
+table.gwboardAttachlist th {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #BEE1F6;
+}
+table.gwboardAttachlist td {
+  padding: 4px 7px;
+  border: 1px solid #D3DCED;
+  background-color: #fff;
+}
+
+/*1行コメントリスト
+-------------------------------------------------*/
+table.bbsCommentlist {
+  margin: 0px;
+  background-color: #FFFFFF;
+  text-align: left;
+  vertical-align: top;
+}
+table.bbsCommentlist th {
+  padding: 4px 7px;
+  border: 1px solid #CCCCCC;
+  background-color: #BEE1F6;
+}
+table.bbsCommentlist td {
+  padding: 4px 7px;
+  border: 1px solid #D3DCED;
+}
+table.show {
+  width: 98%;
+  margin: 10px 10px 0;
+}
+#content .bbsDocList {
+  background-image: url(/_common/themes/gw/files/title/title_board.gif);
+}
+#content .circular {
+  background-image: url(/_common/themes/gw/files/title/title-electronic-reference.gif);
+}
+#content .bbsDocList .pieceHeader {
+  position: relative;
+  height: 29px;
+  margin-left: 29px;
+  background-image: url(/_common/themes/gw/files/title/title_re.gif);
+  background-repeat: repeat-x;
+  color: #FFFFFF;
+}
+.bbsDocList .pieceHeader h2 {
+  display: inline-block;
+  width: auto;
+  padding-left: 10px;
+  line-height: 1.8;
+}
+#contentBody .pieceBanner {
+  clear: both;
+  height: 20px;
+  background-color: #FFFCF0;
+  border-left: 1px solid #1E3B8C;
+}
+#contentBody .setting .pieceBanner {
+  height: 0px;
+  overflow: hidden;
+}
+#page-gwcircular-settings-index #contentBody .pieceBanner,
+#page-gwcircular-customGroups #contentBody .pieceBanner {
+  background-color: #FFF;
+}
+#contentBody .pieceBanner h3 {
+  padding: 10px;
+  font-size: 200%;
+}
+#content .bbsDocList .pieceBody {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1E3B8C;
+  border-left: 1px solid #1E3B8C;
+  padding-top: 1px;
+  height: 1%;
+}
+#content .bbsDocList.setting .pieceBody {
+  padding-top: 20px;
+}
+.helpBox {
+  float: right;
+  margin-top: -58px;
+  padding-right: 15px;
+  background-color: #FFFCF0;
+  text-align: right;
+}
+.bbsDocList table.index {
+  width: 98%;
+  margin: 0px auto;
+  margin-bottom: 10px;
+  table-layout: fixed;
+}
+body:first-of-type .bbsDocList table.index {
+  table-layout: auto;
+}
+.bbsDocList table.index  tr {
+  border-left: none;
+}
+.bbsDocList table.index tr.index td {
+  border: none;
+  background-color: #E3EFFF;
+}
+.bbsDocList table.index td.bbstitle {
+  border-left: none;
+}
+.bbsDocList table.index td.update {
+  border-right: none;
+}
+.bbsDocList table.index tr.cycle td {
+  background-color: #F7FBFF;
+}
+#contentBody .bbsDocList .tabBox {
+  margin-bottom: 10px;
+  padding-top: 20px;
+  background-color: #fffcf0;
+}
+#contentBody .bbsDocList .tabBox .tabtable {
+  height: 24px;
+  margin-top: 1px;
+}
+.menu table.index td {
+  border-left: none;
+  border-right: none;
+}
+#contentBody .bbsDocList th {
+  background-color:#E3EFFF;
+  border: none;
+  text-align: left;
+  vertical-align: middle;
+  height: 15px;
+}
+#contentBody .bbsDocList td.bbsImportant {
+  border-left: 1px solid #CCCCCC;
+}
+#contentBody .bbsDocList td.noneLeft {
+  border-left: none;
+}
+#contentBody .bbsDocList td.noneRight {
+  border-right: none;
+}
+#contentBody .bbsDocList td.category {
+  border-right: none;
+}
+#contentBody .bbsDocList td.tab1,
+#contentBody .bbsDocList td.tab2,
+#contentBody .bbsDocList td.tab3,
+#contentBody .bbsDocList td.tab4 {
+  border-left: 1px solid #BBBBBB;
+  border-right: 1px solid #BBBBBB;
+  border-top: 1px solid #BBBBBB;
+}
+#contentBody .bbsDocList td.tab1 {
+  width: 100px;
+  background-color: #fff;
+  text-align: center;
+}
+#contentBody .bbsDocList td.tab2 {
+  width: 80px;
+  background-color: #fff;
+  text-align: center;
+}
+#contentBody .bbsDocList td.tab3 {
+  width:100px;
+  background-color: #fff;
+  text-align: center;
+}
+#contentBody .bbsDocList td.tab4 {
+  width:100px;
+  background-color: #fff;
+  text-align: center;
+}
+#contentBody .bbsDocList td.tab {
+  width: 90px;
+  border-bottom:1px solid #CCC;
+  background-color: #F1F0F5;
+  text-align: center;
+}
+#contentBody .bbsDocList td.spaceLeft {
+  width:10px;
+}
+#contentBody .bbsDocList td.current {
+  padding: 3px;
+  border-bottom: 2px solid #FFFFFF;
+  background-color: #fff;
+}
+#contentBody .bbsDocList td.bbsAttach {
+  width: 16px;
+}
+#contentBody .bbsDocList td.bbsBalloon {
+  width: 16px;
+}
+#contentBody .bbsDocList td.bbsAttach span,
+#contentBody .bbsDocList td.bbsBalloon span {
+  display: block;
+  background-repeat: no-repeat;
+}
+#contentBody .bbsDocList td.bbsImportant span {
+  display: inline-block;
+  overflow: hidden;
+  width: 4px;
+  height: 0px;
+  padding-top: 14px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_important.gif);
+  background-repeat: no-repeat;
+}
+*html #contentBody .bbsDocList td.bbsImportant span {
+  left: 0;
+}
+*:first-child+html #contentBody .bbsDocList td.bbsImportant span {
+  left: 0;
+}
+#contentBody .bbsDocList td.bbsAttach span {
+  height: 16px;
+  padding-left: 15px;
+  background-image: url(/_common/themes/gw/files/bbs/ic_attach.gif);
+}
+#contentBody .bbsDocList td.bbsBalloon span {
+  display: block;
+  background-image: url(/_common/themes/gw/files/bbs/ic_comment.gif);
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
+#contentBody .bbsDocList td.exhibition {
+  width: 100px;
+}
+#contentBody .bbsDocList td.position {
+  width: 100px;
+}
+#contentBody .bbsDocList td.category {
+  width: 100px;
+}
+#page-gwbbs-docs #contentBody .bbsDocList td.category {
+  width: 170px;
+}
+#page-gwbbs-docs-new #contentBody .bbsDocList td.current,
+#page-gwbbs-docs-new #contentBody .bbsDocList td.tab {
+  background-color: #F1F0F5;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+/*required*/
+#page-gwbbs-docs-new .required {
+  margin-left: 10px;
+}
+#contentBody .bbsDocList .pagination {
+  color: #999999;
+}
+#contentBody .bbsDocList .pagination span {
+  vertical-align: middle;
+}
+.lineSelBox {
+  float: right;
+  margin-top: 5px;
+  margin-right: 10px;
+}
+#footerBody {
+  margin: 0;
+  padding-top: 3px;
+  background-image: url(/_common/themes/gw/files/futter02_re.gif);
+  background-repeat: repeat-x;
+}
+.docsPageMove {
+  margin: 20px auto 0;
+  text-align: center;
+}
+.bbsDocList .right div.submitters {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+.right div.submitters #item_submit {
+  margin-bottom: 20px;
+}
+
+/*button
+---------------------------------------------*/
+.bbsDocList .editingBox {
+  overflow: hidden;
+  clear: both;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.bbsDocList .editingBox a {
+  margin-right: 0;
+  margin-left: 10px;
+}
+.bbsDocList .right form.changelimit {
+  border-top: none;
+}
+.bbsCommentlist th .btComment a {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  top: 4px;
+  width: 15px;
+  background-image: url("/_common/themes/gw/files/schedule/ic_add.gif");
+  text-indent: -9999px;
+}
+* html .bbsCommentlist th .btComment a {
+  top: 2px;
+}
+*:first-child+html .bbsCommentlist th .btComment a {
+  top: 2px;
+}
+.editingBox .btReproduce a {
+  background-image: url(/_common/themes/gw/files/ic_act_copy.gif);
+}
+.editingBox .btAppEdit a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/ic_act_approve-edit.gif);
+  zoom: 100%;
+}
+.editingBox .btAppEdit a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/ic_act_approve-edit.gif);
+}
+.editingBox .btAppReproduce a {
+  width: 85px;
+  background-image: url(/_common/themes/gw/files/ic_act_approve-copy.gif);
+}
+.pieceBanner .btNew {
+  display: block;
+  height: 15px;
+  width: 70px;
+  margin-left: 10px;
+  background-image: url("/_common/themes/gw/files/icon/ic_act_add.gif");
+  overflow: hidden;
+  text-indent: -9999px;
+}
+.circular .pieceBodyBody ul {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+a.btConfirmed {
+  display: inline-block;
+  height: 0px;
+  width: 410px;
+  padding-top: 48px;
+  margin-bottom: 10px;
+  background-image: url("/_common/themes/gw/files/bt_confirm.gif");
+  overflow: hidden;
+}
+a.btConfirmed:hover {
+  background-position: 0 -48px;
+}
+
+/*comment
+---------------------------------------------*/
+#contentBody .bbsDocList table.show,
+#contentBody .bbsDocList table.form {
+  width: 98%;
+  margin: 10px auto;
+  border: 2px solid #C5D1E7;
+}
+#contentBody .bbsDocList table.bbsText {
+  margin-bottom: 0;
+  border-bottom-width: 0;
+}
+#contentBody .bbsDocList .show th,
+#contentBody .bbsDocList .form th {
+  width: 110px;
+  border-bottom: 1px solid #CCCCCC;
+}
+#contentBody .bbsDocList .show th.titleTop {
+  width: auto;
+}
+#contentBody .docsInnerBox table.show {
+  clear: none;
+  border: 1px solid #D3DCED;
+}
+#contentBody .bbsDocList .docsInnerBox table.show th,
+#contentBody .bbsDocList .docsInnerBox table.show td {
+  border: 1px solid #D3DCED;
+  background-color: #fff;
+}
+#contentBody .bbsDocList table.bbsText th {
+  width: auto;
+}
+#contentBody .bbsDocList table.bbsImage {
+  width: 98%;
+  margin: 0px auto;
+  border: 2px solid #C5D1E7;
+  border-top-width: 0px;
+}
+#contentBody .bbsDocList table#image_form {
+  margin-top: -2px;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+#contentBody .bbsDocList table.bbsFile {
+  width: 98%;
+  margin: 20px auto 0px;
+  border: 2px solid #C5D1E7;
+}
+#contentBody .bbsDocList table#attach_form {
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top: 1px solid #CCCCCC;
+}
+#contentBody .bbsDocList table#attach_form td{
+  border-bottom: none;
+}
+#contentBody .bbsDocList table.bbsComment {
+  width: 98%;
+  margin: 0px auto 10px;
+  border: 2px solid #C5D1E7;
+  border-top: 1px solid #CCCCCC;
+}
+#contentBody .bbsDocList table.bbsImage th,
+#contentBody .bbsDocList table.bbsFile th,
+#contentBody .bbsDocList table.bbsComment th {
+  width: 110px;
+  padding: 6px 7px;
+  border-top: none;
+}
+#contentBody .bbsDocList table.bbsImage td,
+#contentBody .bbsDocList table.bbsFile td,
+#contentBody .bbsDocList table.bbsComment td {
+  padding: 6px 7px;
+  border-left: 1px solid #CCCCCC;
+}
+.formTitle {
+  margin-left: 10px;
+}
+.docsInnerBox .bbsCreatorInf {
+  float: right;
+  margin-bottom: 10px;
+}
+.docsInnerBox .bbsCreatorInf table {
+  width: 100%;
+}
+* html .docsInnerBox .bbsCreatorInf table {
+  width: auto;
+}
+*:first-child+html .docsInnerBox .bbsCreatorInf table {
+  width: auto;
+}
+.docsInnerBox .bbsUserformBody td.docTitle span {
+  display: block;
+  font-size: 130%;
+  font-weight: bold;
+}
+.bbsCreator table td {
+  width: auto;
+}
+td.attachIcon {
+  width: 40px;
+  text-align: center;
+}
+.bbsCreatorInf td.space {
+  width: 20px;
+}
+.docsInnerBox .show ol,
+.bbsUserformBody ol {
+  margin-left: 20px;
+}
+.docsInnerBox .show ul,
+.bbsUserformBody ul {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+/* bbsUserformBody
+-------------------------------------------*/
+#contentBody table.bbsUserformBody td.border,
+#contentBody table.bbsUserformBody table.border  {
+  border: 1px solid #000000;
+}
+
+/* adms
+--------------------------------------------*/
+.docsInnerBox {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  clear: both;
+  width: 96%;
+  background-color: #E3EFFD;
+  margin: 10px;
+  padding: 10px;
+}
+.docLink, .showLink {
+    float: left;
+}
+form .docsInnerBox2 {
+  width: 95%;
+  margin: 10px;
+  padding: 10px;
+  background-color:#E3EFFD;
+}
+* html #contentBody .right {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.btReturn {
+  clear: both;
+  width: 100%;
+  margin-top: 25px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  text-align: center;
+}
+.btReturn a {
+  display: inline;
+  clear: both;
+  margin-left: auto;
+  margin-right: auto;
+}
+.preserve {
+  text-align: center;
+}
+
+/* docs table
+-----------------------------------------------*/
+#contentBody .bbsDocList .bbsExpirydate {
+  float: right;
+  width: auto;
+}
+#contentBody .bbsDocList .bbsExpirydate td {
+  width: auto;
+}
+#contentBody .bbsDocList .bbsExpirydate td.space {
+  width: 10px;
+}
+#contentBody .bbsDocList .update {
+  width: 110px;
+}
+#contentBody .bbsDocList .group {
+  width: 200px;
+}
+#contentBody .bbsDocList .category {
+  width: 170px;
+}
+#contentBody .bbsDocList .item{
+  width: 10px;
+}
+#contentBody .bbsDocList .order {
+  text-align: center;
+  width: 30px;
+}
+#contentBody .bbsDocList .bbsCommentlist .group {
+  width: 200px;
+}
+#contentBody .bbsDocList .daytime {
+  width: 120px;
+}
+#contentBody .bbsDocList .delete {
+  text-align: center;
+  width: 35px;
+}
+#contentBody .bbsDocList .gwboardAttachlist .remark {
+  width: 220px;
+}
+#contentBody .bbsDocList table.index td .iconFile {
+  padding: 0;
+}
+
+/* hanrei
+------------------------------------------------*/
+.explainIcon {
+  margin-bottom: 10px;
+  margin-right: 20px;
+  text-align: right;
+}
+.explainIcon span {
+  display: inline-block;
+  background-position: 0 center;
+}
+.explainIcon span.important {
+  margin-left: 10px;
+  padding-left: 10px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_important.gif");
+}
+.explainIcon span.attach {
+  margin-left: 10px;
+  padding-left: 15px;
+  padding-top: 2px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_attach.gif");
+}
+.explainIcon span.balloon {
+  margin-left: 10px;
+  padding-left: 20px;
+  background-image: url("/_common/themes/gw/files/bbs/ic_comment.gif");
+}
+#contentBody table.index tr.subIndex th {
+  padding: 5px 0 5px 7px;
+  background-color: #C6D1E8;
+  color: #000000;
+  font-weight: bold;
+}
+#contentBody .bbsDocList th.docTitle,
+#contentBody .bbsDocList td.docTitle {
+  border-left: none;
+  word-break: break-all;
+}
+#contentBody .bbsDocList table.bbsUserformBody td.docTitle {
+  background-color: #FFFFE9;
+  border: 1px solid #AAB1E6;
+}
+#contentBody .docsInnerBox table.bbsUserformBody td.spaceBottom {
+  height: 15px;
+  padding: 0;
+  background-color: #E3EFFF;
+  border-left: 1px solid #E3EFFF;
+  border-right: 1px solid #E3EFFF;
+}
+*html #contentBody .docsInnerBox table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+*:first-child+html #contentBody .docsInnerBox table.bbsUserformBody td.spaceBottom {
+  border-left: none;
+  border-right: none;
+}
+#contentBody .bbsDocList td.docTitle a {
+  display: inline-block;
+  padding-left: 15px;
+  background-image:url(/_common/themes/gw/files/icon/linkallow_right.gif);
+  background-repeat: no-repeat;
+  background-position: 0 4px;
+}
+#contentBody .sideMenu .iconSideMonth span,
+#contentBody .sideMenu .iconSideCategory span,
+#contentBody .sideMenu .iconSideGroup span {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+  background-image:url(/_common/themes/gw/files/switch/switch_arrow01_onoff.gif);
+  text-indent: -9999px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+#contentBody .sideMenu .iconSideMonth span.current,
+#contentBody .sideMenu .iconSideCategory span.current,
+#contentBody .sideMenu .iconSideGroup span.current {
+  background-position: 0 -13px;
+}
+#contentBody .sideMenu .iconSideMonth span a,
+#contentBody .sideMenu .iconSideCategory span a,
+#contentBody .sideMenu .iconSideGroup span a {
+  display: block;
+}
+#content .pieceBody .outer .right h4.docSearchTitle {
+  clear: both;
+  width: 300px;
+  margin-left: 10px;
+  padding-left: 30px;
+  background-color: #FFFFFF;
+  background-image: none;
+  font-weight: normal;
+}
+#content .pieceBody .outer .right h4.docAttachTitle {
+  clear: both;
+  width: 300px;
+  margin-left: 10px;
+  padding-left: 30px;
+  background-color: #FFFFFF;
+  background-position: 5px center;
+  background-repeat: no-repeat;
+  background-image: url(/_common/themes/gw/files/ic_attach_list.gif);
+  font-weight: normal;
+}
+#content .pieceBody h4 {
+  background-color:#FFF;
+}
+
+/* helpicon */
+head/* */body .help {
+  vertical-align:none;
+}
+
+#page-gwmonitor-settings #contentBody .pieceBanner,
+#page-gwmonitor-customGroups #contentBody .pieceBanner,
+#page-gwmonitor-customGroups-index #contentBody .pieceBanner {
+  background-color: #ffffff;
+
+}
+#errorExplanation ul {
+  margin-bottom: 0;
+}
+
+/* gwcircular/settings
+--------------------------------------*/
+*html #page-gwmonitor-settings .setting .pieceBodyBody {
+  margin-top: 0px;
+  margin-left: 0px;
+}
+*html #page-gwmonitor-settings .setting .pieceBodyBody ul {
+  margin-bottom: 0;
+}

@@ -1,0 +1,38 @@
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <div class="pieceBanner">
+    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render 'gwsub/admin/sb04/sb04helps/menu' %>
+  </div>
+  <div class="pieceBody">
+    <% if @items.blank? %>
+    <%= show_notice %>
+    <% else %>
+    <table class="index">
+      <% if @u_role == true -%><colgroup class="action"></colgroup><% end -%>
+      <colgroup class="categories"></colgroup>
+      <colgroup class="bbs_url"></colgroup>
+      <% if @u_role == true -%><colgroup class="remarks"></colgroup><% end -%>
+      <tbody>
+        <tr>
+          <% if @u_role == true -%><th></th><% end -%>
+          <th>記事分類</th>
+          <th>本文</th>
+          <% if @u_role == true -%><th>備考</th><% end -%>
+        </tr>
+        <% @items.each do |item| %>
+        <tr>
+          <% if @u_role == true -%><td><a href="/gwsub/sb04/05/sb04helps/<%= item.id -%>">詳細</a></td><% end -%>
+          <td>ヘルプ</td>
+          <td>
+            <%= link_to item.title, item.bbs_url, {:target => "_blank", :title => '別ウィンドウ・別タブで開きます。' } -%>
+          </td>
+          <% if @u_role == true -%><td><%= item.remarks -%></td><% end -%>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @items %>
+    <% end %>
+  </div>
+</div>

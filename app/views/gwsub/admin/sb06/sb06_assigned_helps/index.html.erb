@@ -1,0 +1,71 @@
+<%-
+options =  {'table_name' => 'gwsub_sb06_assigned_helps' ,:link_to_show=>0}
+case @help
+when 'admin'
+  options[:action]='index_admin'
+else
+  options[:action]='index'
+end
+options['field_td_criteria']={
+  'id'=>Proc.new{ |item|
+    case @help
+    when 'admin'
+      param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}"
+    when 'main_admin'
+      param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{@c_cat_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}"
+    else
+      param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{@c_cat_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}"
+    end
+    %Q(<a href="/gwsub/sb06/sb06_assigned_helps/#{item.id}#{param}">詳細</a>)
+  }
+}
+
+case @help
+  when 'admin'
+    str_param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}"
+  when 'main_admin'
+    str_param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{@c_cat_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}"
+  else
+    str_param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}&pre_c_cat_id=#{@c_cat_id}&c_cat_id=#{@c_cat_id}&kind_id=#{@kind_id}"
+  end
+
+%>
+<div class="gwsub sb06">
+<div class="pieceHeader">
+<!-- <h2>担当者名等管理</h2> -->
+<%= render 'gwsub/admin/sb06/sb0602_piece_header' %>
+</div>
+<div class="pieceBanner">
+<%= render 'gwsub/admin/sb06/sb0602_subfunction_select_menu' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu'     unless @help=='admin' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_conferences/submenu_l3'  unless @help=='admin' %>
+<%= render 'gwsub/admin/sb06/sb06_assigned_helps/submenu_l4' %>
+</div>
+<div class="pieceBody">
+
+<table class="index">
+  <colgroup class="id"></colgroup>
+  <colgroup class="help_kind"></colgroup>
+  <colgroup class="state"></colgroup>
+  <colgroup class="title"></colgroup>
+  <colgroup class="bbs_url"></colgroup>
+  <colgroup class="remarks"></colgroup>
+  <tbody>
+    <tr>
+      <th>詳細</th><th>ヘルプ分類</th><th>状態</th><th>並び順</th><th>見出し</th><th>説明</th><th>備考</th>
+    </tr>
+    <% @items.each do |item| %>
+    <tr>
+      <td><%=link_to("詳細", "/gwsub/sb06/sb06_assigned_helps/#{item.id}#{str_param}")%></td>
+      <td><%=item.assigned_help_kind[item.help_kind]%></td>
+      <td><%=item.state_name[item.state]%></td>
+      <td><%=item.sort_no%></td>
+      <td><%=item.title%></td>
+      <td><%=item.bbs_url%></td>
+      <td><%=item.remarks%></td></tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @items %>
+</div>
+</div>

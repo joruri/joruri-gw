@@ -1,0 +1,46 @@
+<%
+target_fyear_id = Gw::YearFiscalJp.get_record(Time.now).id
+target_start_at = Gw::YearFiscalJp.find(target_fyear_id).start_at.strftime("%Y-%m-%d 00:00:00")
+p_cond = ["deleted_at IS NULL"]
+p_order = "parent_g_order, g_order, u_order"
+p_groups = Gw::PrefDirector.where(p_cond).order(p_order).group("parent_g_code")
+groups = p_groups.collect{|x| ["(#{x.parent_g_code})#{x.parent_g_name}", x.parent_g_code]}
+%>
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'header_new_botton' %>
+
+<div class="titleLine">
+<span class="title">ＣＳＶ 出力</span>
+</div>
+
+<div class="explain">
+文字コードを選択して実行してください
+<br /><span style="color:blue">
+出力対象を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。
+</span>
+</div>
+
+<%= form_for :item, url: {action: :csvput, system: @system}, html: {method: :get, multipart: true} do |f| %>
+  <%= f.error_messages %>
+  <table class="show">
+    <tr>
+      <th>部局</th>
+      <td><%= select_tag 'item[extras][g_cat]', raw('<option value="0">すべて</option>' + options_for_select(groups, @item.extras[:g_cat])) %></td>
+    </tr>
+    <tr>
+      <th>文字コード</th>
+      <td><%= f.radio_buttons :encoding, @item.encoding_options %></td>
+    </tr>
+  </table>
+  <br />
+  <div class="preserve">
+    <div class="submitters">
+      <%= f.submit 'CSV出力' %>
+    </div>
+</div>
+<% end %>
+
+</div>
+</div>

@@ -1,0 +1,21 @@
+ja:
+  activerecord:
+    models:
+      gwsub/sb00_conference_manager:  "GW補完機能/申請書管理者登録"
+      gwsub/sb00_conference_reference:  "GW補完機能/申請書表示文言登録"
+      gwsub/sb00_conference_section_manager_name:  "GW補完機能/申請・通知所属長名管理"
+    attributes:
+      gwsub/sb00_conference_reference:
+        fyear_id: 年度
+        kind_code: 種別コード
+        kind_name: 種別名
+        title: 表示文言
+      gwsub/sb00_conference_manager:
+        controler: 機能ID
+        controler_title: 機能名
+        memo_str: 通知文
+        user_id: 管理者
+      gwsub/sb00_conference_section_manager_name:
+        gid: 所属
+        g_sort_no: 所属表示順
+        manager_name: 所属長名

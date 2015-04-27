@@ -1,0 +1,25 @@
+<%
+@edit_path = "#{@index_uri}#{@item.id}"
+%>
+<div class="piece AdminMessage">
+
+<%= render 'header' %>
+<div class="pieceBanner">
+<%= render 'menu' %>
+</div>
+<div class="pieceBody">
+<div class="showMenu">
+  <a href=<%="#{@index_uri}#{@item.id}?#{@qs}" %>>詳細</a>
+</div>
+
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :multipart => true} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+<%= submit_for(f, {:caption => '保存'})  %>
+
+<% end %>
+</div>
+</div>

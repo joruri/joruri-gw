@@ -1,0 +1,181 @@
+<%
+  link_str1 = nil
+  link_str2 = nil
+  link_str3 = nil
+  link_str4 = nil
+  link_str5 = nil
+  link_str6 = nil
+  link_str7 = nil
+  link_str8 = nil
+  link_str9 = nil
+case @menu_header4
+when 'sb04_editable_dates'
+  # 00期限設定
+  link_str1 = %Q(<span>一覧</span>)
+  link_str3 = %Q(<span>登録</span>)
+  link_url1 = "/gwsub/sb04/04/sb04_editable_dates"
+  link_url3 = "/gwsub/sb04/04/sb04_editable_dates/new?#{@qs}"
+  case @l3_current
+  when '01'
+    link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+  when '03'
+    link_str3 = %Q(<span class="gwsub_current_menu">登録</span>)
+  else
+  end
+when 'sb04_seatlng_lists'
+  # 90座席表設定
+  link_str1 = %Q(<span>一覧</span>)
+  link_str3 = %Q(<span>登録</span>)
+  link_url1 = "/gwsub/sb04/04/sb04_seating_lists?v=1"
+  link_url3 = "/gwsub/sb04/04/sb04_seating_lists/new"
+  case @l3_current
+  when '01'
+    link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+  when '03'
+    link_str3 = %Q(<span class="gwsub_current_menu">登録</span>)
+  else
+  end
+when 'sb04assignedjobs'
+  # 40 担当一覧
+  if @u_role == true || @role_sb04_dev
+    link_str1 = %Q(<span>一覧</span>)
+    link_str3 = %Q(<span>登録</span>)
+    link_str9 = %Q(<span>過去データコピー</span>)
+    link_url1 = "/gwsub/sb04/04/sb04assignedjobs"
+    link_url3 = "/gwsub/sb04/04/sb04assignedjobs/new?#{@qs}"
+    link_url9 = "/gwsub/sb04/04/sb04assignedjobs/year_copy?#{@qs}"
+
+    case @l3_current
+    when '01'
+      link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+    when '03'
+      link_str3 = %Q(<span class="gwsub_current_menu">登録</span>)
+    when '09'
+      link_str9 = %Q(<span class="gwsub_current_menu">過去データコピー</span>)
+    else
+    end
+  end
+  if @u_role == true
+    link_str4 = %Q(<span>CSV出力</span>)
+    link_str6 = %Q(<span>CSV追加</span>)
+    link_str8 = %Q(<span>CSV仮データ</span>)
+    link_url4 = "/gwsub/sb04/04/sb04assignedjobs/csvput?#{@qs}"
+    link_url6 = "/gwsub/sb04/04/sb04assignedjobs/csvadd_check?#{@qs}"
+    link_url8 = "/gwsub/sb04/04/sb04assignedjobs/index_csv?#{@qs}"
+    case @l3_current
+    when '04'
+      link_str4 = %Q(<span class="gwsub_current_menu">CSV出力</span>)
+    when '05'
+      link_str5 = %Q(<span class="gwsub_current_menu">CSV登録</span>)
+    when '06'
+      link_str6 = %Q(<span class="gwsub_current_menu">CSV追加</span>)
+    when '08'
+      link_str8 = %Q(<span class="gwsub_current_menu">CSV仮データ</span>)
+    else
+    end
+  end
+when 'sb04stafflists'
+  # 50職員一覧
+  link_str1 = %Q(<span>一覧</span>)
+  link_str2 = %Q(<span>兼務も表示</span>)
+  link_url1 = "/gwsub/sb04/04/sb04stafflists?multi_section=1"
+  link_url2 = "/gwsub/sb04/04/sb04stafflists?multi_section=2"
+  case @l3_current
+  when '01'
+    link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+  when '02'
+    link_str2 = %Q(<span class="gwsub_current_menu">兼務も表示</span>)
+  else
+  end
+  if @u_role==true || @role_sb04_dev
+    link_str3 = %Q(<span>登録</span>)
+    link_str9 = %Q(<span>過去データコピー</span>)
+    link_url3 = "/gwsub/sb04/04/sb04stafflists/new?#{@qs}"
+    link_url9 = "/gwsub/sb04/04/sb04stafflists/year_copy?#{@qs}"
+    case @l3_current
+    when '03'
+      link_str3 = %Q(<span class="gwsub_current_menu">登録</span>)
+    when '09'
+      link_str9 = %Q(<span class="gwsub_current_menu">過去データコピー</span>)
+    else
+    end
+  end
+  if @u_role==true
+    link_str4 = %Q(<span>CSV出力</span>)
+    link_str6 = %Q(<span>CSV追加</span>)
+    link_str7 = %Q(<span>電子職員録作成</span>)
+    link_str8 = %Q(<span>CSV仮データ</span>)
+    link_url4 = "/gwsub/sb04/04/sb04stafflists/csvput?#{@qs}"
+    link_url6 = "/gwsub/sb04/04/sb04stafflists/csvadd_check?#{@qs}"
+    link_url7 = "/gwsub/sb04/04/sb04stafflists/stafflists_create?#{@qs}"
+    link_url8 = "/gwsub/sb04/04/sb04stafflists/index_csv?#{@qs}"
+    case @l3_current
+    when '04'
+      link_str4 = %Q(<span class="gwsub_current_menu">CSV出力</span>)
+    when '05'
+      link_str5 = %Q(<span class="gwsub_current_menu">CSV登録</span>)
+    when '06'
+      link_str6 = %Q(<span class="gwsub_current_menu">CSV追加</span>)
+    when '07'
+      link_str7 = %Q(<span class="gwsub_current_menu">電子職員録作成</span>)
+    when '08'
+      link_str8 = %Q(<span class="gwsub_current_menu">CSV仮データ</span>)
+    else
+    end
+  end
+else
+  # 10 職名一覧
+  # 20 職種一覧
+  # 30 所属一覧
+    link_str1 = %Q(<span>一覧</span>)
+    link_str3 = %Q(<span>登録</span>)
+    link_str4 = %Q(<span>CSV出力</span>)
+    link_str6 = %Q(<span>CSV追加</span>)
+    link_str8 = %Q(<span>CSV仮データ</span>)
+    link_strA = %Q(<span>担当未設定(本)</span>)
+    link_strA = "" unless  @menu_header4=="sb04sections"
+    link_strB = %Q(<span>担当未設定(仮)</span>)
+    link_strB = "" unless  @menu_header4=="sb04sections"
+
+    link_url1 = "/gwsub/sb04/04/#{@menu_header4}"
+    link_url3 = "/gwsub/sb04/04/#{@menu_header4}/new?#{@qs}"
+    link_url4 = "/gwsub/sb04/04/#{@menu_header4}/csvput?#{@qs}"
+    link_url6 = "/gwsub/sb04/04/#{@menu_header4}/csvadd_check?#{@qs}"
+    link_url8 = "/gwsub/sb04/04/#{@menu_header4}/index_csv?#{@qs}"
+    link_urlA = "/gwsub/sb04/04/#{@menu_header4}/index2?#{@qs}"
+    link_urlB = "/gwsub/sb04/04/#{@menu_header4}/index3?#{@qs}"
+    case @l3_current
+    when '01'
+      link_str1 = %Q(<span class="gwsub_current_menu">一覧</span>)
+    when '03'
+      link_str3 = %Q(<span class="gwsub_current_menu">登録</span>)
+    when '04'
+      link_str4 = %Q(<span class="gwsub_current_menu">CSV出力</span>)
+    when '05'
+      link_str5 = %Q(<span class="gwsub_current_menu">CSV登録</span>)
+    when '06'
+      link_str6 = %Q(<span class="gwsub_current_menu">CSV追加</span>)
+    when '08'
+      link_str8 = %Q(<span class="gwsub_current_menu">CSV仮データ</span>)
+    when '10'
+      link_strA = %Q(<span class="gwsub_current_menu">担当未設定(本)</span>)
+      link_strA = "" unless  @menu_header4=="sb04sections"
+    when '11'
+      link_strB = %Q(<span class="gwsub_current_menu">担当未設定(仮)</span>)
+      link_strB = "" unless  @menu_header4=="sb04sections"
+    else
+    end
+end
+-%>
+<div class="menu">
+<%= link_to raw(link_str1) , url_for(link_url1)  unless link_str1.blank? -%>
+<%= link_to raw(link_str2) , url_for(link_url2)  unless link_str2.blank? -%>
+<%= link_to raw(link_str3) , url_for(link_url3)  unless link_str3.blank? -%>
+<%= link_to raw(link_str4) , url_for(link_url4)  unless link_str4.blank? -%>
+<%= link_to raw(link_str6) , url_for(link_url6)  unless link_str6.blank? -%>
+<%= link_to raw(link_str8) , url_for(link_url8)  unless link_str8.blank? -%>
+<%= link_to raw(link_str7) , url_for(link_url7)  unless link_str7.blank? -%>
+<%= link_to raw(link_str9) , url_for(link_url9)  unless link_str9.blank? -%>
+<%= link_to raw(link_strA) , url_for(link_urlA)  unless link_strA.blank? -%>
+<%= link_to raw(link_strB) , url_for(link_urlB)  unless link_strB.blank? -%>
+</div>

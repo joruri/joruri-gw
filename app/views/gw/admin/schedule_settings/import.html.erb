@@ -1,0 +1,36 @@
+<div class="piece schedulePiece setting">
+  <div class="pieceHeader">
+    <%= render '/gw/admin/schedules/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <div class="titleLine">
+        <span class="title">個人設定</span>
+      </div>
+    </div>
+    <div class="pieceBodyBody">
+      <a name=""></a>
+      <h4>インポート</h4>
+      CSVファイルのインポートでは、エラー結果をCSVで出力します。エラーを修正すれば再登録できます。<br />
+      <%= form_tag "#{gw_schedule_settings_path}/import_file" , {:method=>:post , :multipart => true} do %>
+      <%#= hidden_field_tag('item[file]','up') %>
+      <table class="show">
+      <tr>
+        <th>対象ファイル</th>
+        <td><%= file_field_tag('item[file]' , :size=>80 , :accept=>'text/csv,text/plain') %></td>
+      </tr>
+      <tr>
+        <th>ファイル形式</th>
+        <td>
+          <%= radio_button_tag('item[file_type]', 'csv',false   ) %><label for="item_file_type_csv" >CSV形式</label>
+          <%= radio_button_tag('item[file_type]', 'ical',true  ) %><label for="item_file_type_ical" >iCal形式</label><br />
+          <%= Gw.required("「CSV形式」は、スケジュール一覧画面の「CSV (MS Outlook)形式エクスポート」および、Yahoo!カレンダーのCSVエクスポートで取得したCSVにのみ対応しています。") -%>
+        </td>
+      </tr>
+      </table>
+      <div class="submitters"><%= submit_tag '保存' %></div>
+      <% end %>
+      <br />
+    </div>
+  </div>
+</div>

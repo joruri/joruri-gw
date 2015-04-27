@@ -1,0 +1,30 @@
+<%
+fyears = Gw::YearFiscalJp.select_dd_markjp_id(nil,6)
+-%>
+<%= hidden_field_tag 'fyed_id'  ,@fyed_id %>
+<%= hidden_field_tag 'limit'    ,@limits %>
+<%= hidden_field_tag 's_keyword',@s_keyword %>
+
+<%= f.error_messages %>
+<%= required_head %>
+<table class="show">
+<tr>
+<th>年度<%= required %></th>
+<td><%= f.select(:fyear_id, options_for_select(fyears,@item.fyear_id) ) %></td>
+</tr>
+<tr>
+<th>編集開始日<%= required %></th>
+<td><%= f.datetimepicker :start_at %></td>
+</tr>
+<tr>
+<th>編集終了日<%= required %></th>
+<td><%= f.datetimepicker :end_at %></td>
+</tr>
+<tr>
+<th>見出し日付<%= required %></th>
+<td><%= f.datepicker :headline_at %></td>
+</tr>
+</table>
+<div class="preserve">
+<%= f.submit '保存' %>
+</div>

@@ -1,0 +1,19 @@
+<%
+event_date = @item.st_at.strftime('%Y%m%d') if @item.st_at.present?
+%>
+
+<div style="float: right;">
+  <%= link_to '>>一覧へ戻る', {action: :index}, style: "margin: 0 8px;" %>
+  <% if @pattern == 'week' %>
+    <%= link_to "/gw/schedules/event_week?s_date=#{event_date}", target: "_blank", style: "margin: 0 8px;" do %>
+      <span>&gt;&gt;週間行事予定表</span>
+    <% end %>
+  <% elsif @pattern == 'month' %>
+    <%= link_to "/gw/schedules/event_month?s_date=#{event_date}", target: "_blank", style: "margin: 0 8px;" do %>
+      <span>&gt;&gt;月間行事予定表</span>
+    <% end %>
+  <% end %>
+  <%= link_to "/gw/schedules/#{@item.schedule_id}/show_one", target: "_blank", style: "margin: 0 8px;" do %>
+    <span>&gt;&gt;スケジューラー詳細画面</span>
+  <% end %>
+</div>

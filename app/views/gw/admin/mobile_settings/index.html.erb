@@ -1,0 +1,31 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+
+<table class="index">
+  <tr>
+    <th></th>
+    <th>設定項目</th>
+    <th>設定値</th>
+    <th>説明</th>
+  </tr>
+  <tr>
+    <td><%= link_to '編集' , "/gw/mobile_settings/access_edit?#{@qs}" %></td>
+    <td>携帯アクセス許可設定</td>
+    <td><%= System::User.m_access_show(@user.mobile_access) %></td>
+    <td>携帯からのアクセスを許可するかどうかを設定します。</td>
+  </tr>
+  <tr>
+    <td><%= link_to '編集' , "/gw/mobile_settings/password_edit?#{@qs}" %></td>
+    <td>携帯アクセスパスワード設定</td>
+    <td><%= @user.mobile_password.blank? ? '未設定' : '設定済み' %></td>
+    <td>携帯からアクセスするときの、携帯用パスワードを設定します。</td>
+  </tr>
+</table>
+<div class="btReturn">
+  <%= link_to '個人設定へ戻る', "/gw/config_settings/ind_settings?#{@qs}" %>
+</div>
+
+</div>
+</div>

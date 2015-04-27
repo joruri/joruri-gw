@@ -1,0 +1,36 @@
+<%#
+@cabinet_title は、Doclibrary::Public::CabinetsController で初期化しています。
+%>
+<div class="piece docLibrary">
+<div class="pieceHeader">
+<h2><%= @cabinet_title %></h2>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index cabinets">
+  <tr>
+    <th class="blueIndex" style="width: 60px; text-align: right;">管理番号</th>
+    <th class="blueIndex">タイトル</th>
+    <th class="blueIndex" style="width: 60px; text-align: center;">　</th>
+    <th class="blueIndex" style="width: 80px; text-align: center;">更新日</th>
+    <th class="blueIndex" style="width: 40px; text-align: center;">並び順</th>
+    <th class="blueIndex" style="width: 80px; text-align: center;">ステータス</th>
+    <th class="blueIndex" style="width: 80px; text-align: center;">　</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to '詳細確認', doclibrary_cabinet_path(item, {:state => params[:state]}) %></td>
+    <td style="text-align: center;"><%= item.updated_at.strftime('%Y-%m-%d') %></td>
+    <td style="text-align: center;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_show %></td>
+    <td style="text-align: center;"><%= link_to '公開画面 >> ', doclibrary_docs_path({:title_id => item.id}) %></td>
+  </tr>
+  <% end %>
+</table>
+<br />
+<%= paginate @items %>
+<div class="btReturn"><%= link_to '書庫一覧へ戻る', '/doclibrary' %></div>
+</div>
+</div>

@@ -1,0 +1,37 @@
+<%
+groups = Gwsub::Sb04CheckSection.sb04_group_select
+limits = Gw.limit_select
+-%>
+<!-- start form -->
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch' ) do %>
+<%= hidden_field_tag 'v'              , params[:v]              , :value=>@v.to_i %>
+<%= hidden_field_tag 'pre_fyear'      , params[:pre_fyear]      , :value=>params[:pre_fyear] %>
+<%= hidden_field_tag 'pre_fyear'      , params[:pre_fyear]      , :value=>params[:fyed_id] %>
+<%= hidden_field_tag 'multi_section'  , params[:multi_section]  , :value=>@multi_section if @multi_section %>
+<table>
+<tr>
+  <td></td><td></td>
+<% if @grped_id %>
+  <td>所属</td>
+  <td><%= select_tag( 'grped_id',options_for_select( groups , @grped_id.to_i ) ) %></td>
+<% end %>
+</tr>
+
+<tr>
+<td>表示行数</td>
+<td><%= select_tag( 'limit',options_for_select( limits , @limits.to_i ) ) %></td>
+
+<td>検索</td><td><%= text_field_tag 's_keyword', @s_keyword ,:size=>50 %></td>
+<td class="submitters">
+<%= submit_tag '検索',     :name => :search %>
+<%= submit_tag 'リセット', :name => :reset  %>
+</td>
+</tr>
+</table>
+<%end%>
+<!-- end form -->
+<% if @menu_header3 == 'sb0404menu' %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>
+<% end %>

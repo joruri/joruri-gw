@@ -1,0 +1,28 @@
+<%
+# スケジュラーメニューのパラメーター
+d = Time.now
+@st_date = Time.now.strftime('%Y%m%%d')
+%>
+<div class="piece schedulePiece assembly">
+<div class="pieceHeader"><h2 class="pieceTitle">在庁表示</h2></div>
+<div class="pieceBody">
+
+<div class="pieceBodyHeader">
+<%= render "gw/admin/schedules/schedule_bt_box", d: d, mode: 'only_assembly' %>
+<span class="presentTime"><%= render "gw/admin/pref_directors/display_time" %></span>
+</div><!--pieceBodyHeader-->
+
+<div class="pieceBodyBody assembly">
+
+<%= render 'gw/admin/pref_assembly/index', disable_switch: true %>
+
+</div><!--pieceBodyBody-->
+</div><!--pieceBody-->
+</div><!--schedulePiece-->
+
+<script type="text/javascript">
+//<![CDATA[
+  // 3分毎に再読込
+  setTimeout("location.reload()", 180000);
+//]]>
+</script>

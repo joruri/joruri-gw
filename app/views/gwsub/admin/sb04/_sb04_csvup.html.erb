@@ -1,0 +1,23 @@
+<% location = "#{@csv_base_url}/csvup" -%>
+
+<h4 style="margin-left:2em;">CSV登録</h4>
+<div style="margin-left:3em;">
+登録対象CSVファイルを指定して実行してください
+<br /><span style="color:red">登録済データを、すべて削除し、新規登録となります。</span>
+</div>
+<br />
+<%= form_tag location , {:method=>:post , :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','up') %>
+<table class="show">
+<tr>
+  <th>文字コード</th>
+  <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %></td>
+</tr>
+<tr>
+  <th>対象ファイル</th>
+  <td><%= file_field_tag('item[file]' , :size=>80 , :accept=>'text/csv') %></td>
+</tr>
+</table>
+<div class="preserve"><%= submit_tag 'CSV登録' %></div>
+<% end %>
+<br />

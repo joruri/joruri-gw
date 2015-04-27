@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<link rel="icon" href="/favicon.ico" />
+<title><%= Core.title %> - <%= Site.title -%></title>
+<link href="/_common/themes/admin/style.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="header">
+<div id="headerContainer">
+
+  <h1><a href="/_admin">Joruri</a></h1>
+  <div class="menu">
+    <span class="previousLogin">
+    前回ログイン日時　<%= Core.user.previous_login_date ?
+        Core.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+        '---' %>
+    </span>
+    <span class="user"><%= safe{Core.user_group.name} %>　<%= safe{Core.user.name_with_account} %></span>
+    <a href="/">公開画面</a>
+    <a class="logout" href="/_admin/logout">ログアウト</a>
+  </div>
+
+<!-- /#headerContainer --></div>
+<!-- /#header --></div>
+
+<div id="banner">
+<div id="bannerContainer">
+
+<!-- /#bannerContainer --></div>
+<!-- /#banner --></div>
+
+<div id="navi">
+<div id="naviContainer">
+
+  <table><tr><td class="menu">
+    <%= render controller.controller_path + '/header' %></td>
+  </tr></table>
+
+<!-- /#navigationContainer --></div>
+<!-- /#navigation --></div>
+
+<div id="main">
+
+<div id="content">
+<div id="contentContainer">
+
+<div id="contentHeader"><% dir = "#{Rails.root}/app/views/#{controller.controller_path}" %>
+  <% if FileTest.exist?("#{dir}/_menu.html.erb") %>
+  <%= render controller.controller_path + '/menu' %>
+  <% end %>
+</div>
+
+<div id="contentBody">
+<% if flash[:notice] %><div class="notice"><%=raw flash[:notice] %></div><% end %>
+<%= yield  %>
+</div>
+
+<div id="contentFooter"></div>
+
+<!-- /#contentContainer --></div>
+<!-- /#content --></div>
+
+<div id="menu">
+<div id="menuContainer">
+
+
+<!-- /#menuContainer --></div>
+<!-- /#menu --></div>
+
+<!-- /#main --></div>
+
+<div id="footer">
+<div id="footerContainer">
+
+<%#= :footer %>
+
+<!-- /#footerContainer --></div>
+<!-- /#footer --></div>
+
+<!-- /#container --></div>
+
+</body>
+</html>

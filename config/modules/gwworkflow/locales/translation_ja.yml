@@ -1,0 +1,9 @@
+ja:
+  attributes:
+    title: タイトル
+    name: 名前
+  activerecord:
+    attributes:
+      gwworkflow/file:
+        file: ファイル
+        filename: ファイル名

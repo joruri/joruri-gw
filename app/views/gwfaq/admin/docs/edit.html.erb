@@ -1,0 +1,4 @@
+<%= form_for :item, :url => gwfaq_doc_path(@item,{:parent_id => params[:parent_id], :title_id => params[:title_id]}), :html => {:method => :put} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form', f: f %>
+<% end %>

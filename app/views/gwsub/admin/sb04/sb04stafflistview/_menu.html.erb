@@ -1,0 +1,14 @@
+<%
+  link_str1 = %Q(<span>表示行数</span>)
+  link_url1 = "/gwsub/sb04/09/sb04_limit_settings"
+
+  case @l2_current
+  when '01'
+    link_str1 = %Q(<span class="gwsub_current_menu">表示行数</span>)
+  end
+-%>
+<% unless link_str1.blank? %>
+<div class="menu">
+<%= link_to raw(link_str1) , url_for(link_url1) %>
+</div>
+<% end %>

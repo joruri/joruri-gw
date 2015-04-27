@@ -1,0 +1,67 @@
+<%
+holidays = Gw::Holiday.find_by_range_cache(@first_day, @end_day)
+%>
+<table class="index scheduleList">
+  <tr>
+    <% if action_name == 'index' -%>
+    <th class="id" style="text-align:center; width: 30px;">
+      <%= check_box_tag(:idall, value = "all", false, {:onclick=>"all_check('listForm', 'ids', this);"}) -%>
+    </th>
+    <% end -%>
+    <th class="day">日付</th>
+    <th class="st_at_time">開始時刻</th>
+    <th class="ed_at_time">終了時刻</th>
+    <th class="title">件名</th>
+    <th class="body">メモ（備考）</th>
+    <th class="place">場所</th>
+    <th class="users">参加者</th>
+  </tr>
+  <% @items.each do |item| %>
+  <%
+    # 件名カテゴリ
+    ed_at_str1 = ""
+    ed_at_str2 = ""
+    st_at_str = item.st_at.strftime('%Y-%m-%d')
+  
+    # 終了日の表示
+    if item.stepped_over?
+      # 日をまたいでいる
+      ed_at_str1 = "#{item.ed_at.strftime("%m-%d")} （#{Gw.weekday_s(item.ed_at)}）"
+    end
+    if item.allday.blank?
+      st_at_time = item.st_at.strftime("%H:%M")
+      ed_at_str2 = item.ed_at.strftime("%H:%M")
+    else
+      case item.allday
+      when 1
+        st_at_time = "時間未定"
+      when 2
+        st_at_time = "終日"
+      end
+    end
+  %>
+  <tr>
+    <% if action_name == 'index' -%>
+      <td align="center"><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+    <% end -%>
+    <td class="day <%= 'saturday' if item.st_at.wday == 6 %> <%= 'sunday' if item.st_at.wday == 0 %> <%= 'holiday' if holidays.any?{|h| h.st_at.strftime('%Y-%m-%d') == st_at_str} %>">
+      <%= st_at_str -%> （<%= Gw.weekday_s(item.st_at) -%>）
+      <% if ed_at_str1.present? -%>
+      <br />～ <%= ed_at_str1 -%>
+      <% end %>
+    </td>
+    <td><%= st_at_time %></td>
+    <td><%= ed_at_str2 %></td>
+    <% if item.is_public_auth?(@is_gw_admin) -%>
+      <td><%= link_to item.title, "/gw/schedules/#{item.id}/show_one" -%></td>
+      <td><%= item.memo -%></td>
+      <td><%= item.place -%></td>
+    <% else -%>
+      <td><span style="color:red;">[非公開]</span></td>
+      <td></td>
+      <td></td>
+    <% end -%>
+    <td><%= item.get_usernames -%></td>
+  </tr>
+  <% end %>
+</table>

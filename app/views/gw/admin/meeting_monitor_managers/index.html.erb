@@ -1,0 +1,26 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+
+<div class="pieceBody">
+<%= render 'menu' %>
+<% if @items.length == 0 -%>
+<%= show_notice -%>
+<% else -%>
+<table class="index">
+  <tr>
+    <th></th>
+    <th>状態</th>
+    <th>通知先メールアドレス</th>
+  </tr>
+  <% @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+    <td><span style="<%= 'color:red;' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
+    <td><%= item.manager_user_addr %></td>
+  </tr>
+  <% end -%>
+</table>
+<%= paginate @items %>
+<% end -%>
+</div>
+</div>

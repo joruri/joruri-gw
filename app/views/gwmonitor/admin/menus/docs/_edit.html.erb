@@ -1,0 +1,66 @@
+<div class="bbsDocList circular">
+<%= render 'gwmonitor/admin/menus/piece_header' %>
+
+<div class="pieceBody">
+<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<div class="docsInnerBox">
+概要説明
+<table class="bbsExpirydate">
+  <tr>
+    <td>　回答期限日時 : </td>
+    <td class="space"></td>
+    <td><%=l @item.expiry_date if @item.expiry_date %></td>
+  </tr>
+</table>
+
+<div class="bbsCreatorInf">
+<table>
+  <tr>
+    <td>作成 : &nbsp;</td>
+    <td><%= @item.createrdivision %></td>
+    <td class="space"></td>
+    <td><%= @item.creater %></td>
+    <td class="space"></td>
+    <td><%= @item.createdate %></td>
+  </tr>
+</table>
+</div>
+
+<div class="docsInnerBox">
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+  <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
+  <tr><td class="spaceBottom"></td></tr>
+  <tr>
+    <%- if @title.wiki_enabled? -%>
+      <td class="wiki"><%=raw wiki_show(@title.caption) -%></td>
+    <%- else -%>
+      <td><%=raw @title.caption -%></td>
+    <%- end -%>
+  </tr>
+</table>
+</div>
+</div>
+
+</div><!--docsInnerBox-->
+
+<%= render 'board_config' %>
+
+<%= form_for :item, :url => @item.update_path ,:html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render @title.gwmonitor_form_name + 'form', f: f %>
+  <%
+    lbl_name = '受取済みに戻す'
+    lbl_name = '下書き' if @item.state == 'editing'
+  %>
+  <div class="submitters">
+    <input id="<%= f.object_name %>_submit_public" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public'; if (confirm('所属として回答します。よろしいですか？')){return true;}else{return false;};" type="submit" value="回答する" />
+    <input id="<%= f.object_name %>_submit_qNA" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='qNA'; if (confirm('所属として回答します。よろしいですか？')){return true;}else{return false;};" type="submit" value="該当なし" />
+    <input id="<%= f.object_name %>_submit_editing" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='editing';" type="submit" value="<%=lbl_name%>" />
+    <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+  </div>
+<% end %>
+
+</div><!--pieceBody-->
+</div><!--piece-->

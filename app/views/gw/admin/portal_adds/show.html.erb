@@ -1,0 +1,82 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<div class="editingBox">
+  <span class="btEdit">
+    <%= link_to '編集', {action: :edit} %>
+  </span>
+  <span class="btDestroy">
+    <%= link_to '削除', {action: :destroy}, confirm: "削除してよろしいですか？", method: :delete %>
+  </span>
+</div>
+
+<table class="show">
+  <tr>
+    <th>公開</th>
+    <td><span style="<%= @item.published_display_style %>"><%= @item.published_label %></span></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th>広告タイトル</th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th>代替テキスト</th>
+    <td><%= @item.body %></td>
+  </tr>
+  <tr>
+    <th>画像ファイル</th>
+    <td><img src="<%= @item.file_path -%>?<%= @item.updated_at.to_i -%>"/></td>
+  </tr>
+  <tr>
+    <th>画像サイズ</th>
+    <td><%= @item.is_large_label %></td>
+  </tr>
+  <tr>
+    <th>画像ファイル名</th>
+    <td><%= @item.file_name %> (<%= @item.file_path %>)</td>
+  </tr>
+  <tr>
+    <th>掲載開始日</th>
+    <td><%= @item.publish_start_at.strftime('%Y-%m-%d') %></td>
+  </tr>
+  <tr>
+    <th>掲載終了日</th>
+    <td><%= @item.publish_end_at.strftime('%Y-%m-%d') %></td>
+  </tr>
+  <tr>
+    <th>掲載位置</th>
+    <td><%= @item.place_label %></td>
+  </tr>
+</table>
+
+<table class="show">
+  <tr>
+    <th>リンク種別</th>
+    <td><%= @item.class_sso_label %></td>
+  </tr>
+  <tr>
+    <th>リンク先URL</th>
+    <td><%= @item.url %></td>
+  </tr>
+  <tr>
+    <th>アカウント項目名</th>
+    <td><%= @item.field_account %></td>
+  </tr>
+  <tr>
+    <th>パスワード項目名</th>
+    <td><%= @item.field_pass %></td>
+  </tr>
+</table>
+
+<div class="btReturn">
+  <%= link_to '一覧', action: :show -%>
+</div>
+
+</div>
+</div>

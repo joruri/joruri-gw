@@ -1,0 +1,47 @@
+<%
+suffixes_raw = I18n.a('enum.gw/memo.category')
+suffixes = Gw.options_for_select(suffixes_raw, nil)
+%>
+
+<%= raw(get_form_title_div params) %>
+
+<span class="required">※は必須項目です。</span>
+<table class="show">
+  <tr>
+    <th>時刻 <%= required %></th>
+    <td><%= f.datetimepicker :ed_at %></td>
+  </tr>
+  <tr>
+    <th>所属/担当/社名</th>
+    <td><%= f.text_field :fr_group, :style => "width:30em;" %> の</td>
+  </tr>
+  <tr>
+    <th>担当者</th>
+    <td><%= f.text_field :fr_user, :style => "width: 30em; ime-mode: active;" %> 様から</td>
+  </tr>
+  <tr>
+    <th>伝言 <%= required %></th>
+    <td>
+      <%= f.text_area :title, :rows => 5, :style => "width: 30em; ime-mode: active;" %>
+      <br />
+      <%= select_tag :_category, suffixes, :size => suffixes_raw.length, :ondblclick => 'select_category()' %>
+    </td>
+  </tr>
+  <tr>
+    <th>備考</th>
+    <td><%= f.text_area :body, :rows => 5, :style => "width: 30em; ime-mode: active;" %></td>
+  </tr>
+</table>
+
+<%= render 'form_participant', f: f %>
+
+<script type="text/javascript">
+//<![CDATA[
+  var select_category = function() {
+    var fr = $('_category');
+    var idxs = select_options_selected_indexes(fr);
+    var to = $('item_title');
+    to.value = fr[idxs].innerHTML;
+  }
+//]]>
+</script>

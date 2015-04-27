@@ -1,0 +1,41 @@
+<div class="piece AdminSetting">
+<%= render 'header_str' %>
+<div class="pieceBody">
+<%= render 'menu' %>
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
+</div>
+
+<% if @items.length == 0 -%>
+<%= show_notice -%>
+<% else -%>
+<table class="index">
+  <tr>
+    <th></th>
+    <th>公開</th>
+    <th style="width: 170px;">画像</th>
+    <th>掲載期間</th>
+    <th>タイトル</th>
+    <th style="width: 80px;">画像サイズ</th>
+    <th>掲載位置</th>
+    <th>並び順</th>
+  </tr>
+  <% @items.each do |item| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細', {:action => :show, :id => item.id} %></td>
+      <td><span style="<%= item.published_display_style %>"><%= item.published_label %></span></td>
+      <td><img src="<%= item.file_path -%>?<%= item.updated_at.to_i %>" width="100" /></td>
+      <td><%= item.publish_start_at.strftime('%Y年%m月%d日') %>　～　<%= item.publish_end_at.strftime('%Y年%m月%d日') %></td>
+      <td><%= item.title %></td>
+      <td><%= item.is_large_label %></td>
+      <td><%= item.place_label %></td>
+      <td><%= item.sort_no %></td>
+    </tr>
+  <% end -%>
+</table>
+<%= paginate @items %>
+<% end -%>
+
+</div>
+</div>

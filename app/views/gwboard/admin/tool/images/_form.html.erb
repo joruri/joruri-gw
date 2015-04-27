@@ -1,0 +1,23 @@
+<%
+  files_uri = gwboard_images_path(item.id) + "?system=#{item.system_name}&form_id=#{form_id}&title_id=#{item.title_id}"
+  if ["digitallibrary", "gwbbs", "gwfaq", "gwqa", 'doclibrary'].index(item.system_name)  && item.wiki_enabled?
+    files_uri += "&wiki=1"
+  end
+%>
+<table class="bbsImage">
+  <tr>
+    <th>画像貼付</th>
+    <td>
+      <a href="#" onclick="chageDisp(this,'image_form');return false;">開く▼</a>
+      ＊記事中に張り込む画像ファイルのみアップロードしてください。
+    </td>
+  </tr>
+</table>
+
+<table id="image_form" border="0" class="show" style="display: none;">
+  <tr>
+    <td style="padding: 0px 0px;">
+      <iframe id="image_attach_form" src="<%= files_uri %>" style="width: 100%; height: 200px;" frameborder="0"></iframe>
+    </td>
+  </tr>
+</table>

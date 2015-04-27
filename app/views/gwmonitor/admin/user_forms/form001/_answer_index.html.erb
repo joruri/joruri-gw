@@ -1,0 +1,19 @@
+<table class="index">
+  <tr>
+    <th style="width: 70px;">状態</th>
+    <th style="width: 200px;">配信先</th>
+    <th style="width: 100px;">回答者</th>
+    <th>回答</th>
+    <th style="width: 60px;">添付</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td style="width:70px;text-align: center;"><%=raw item.status_name_show %></td>
+    <td><%= link_to "#{item.target_user_name}#{item.target_user_code}", item.result_show_path %></td>
+    <td><%= item.editor %></td>
+    <td><%=raw item.body %></td>
+    <td class="bbsAttach"><%=raw item.str_attache_span if item.str_attache_span.present? %></td>
+  </tr>
+  <% end %>
+</table>
+<%= paginate @items %>

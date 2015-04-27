@@ -1,0 +1,88 @@
+<%
+help_item = Questionnaire::Property::HelpLink.first_or_new
+%>
+<div class="bbsDocList circular">
+<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+
+<div class="pieceBody">
+<%= render 'header' %>
+<div class="editingBox">
+  <% if @item_edit_flg %>
+    <span class="btEdit"><%= link_to '編集', {:action => :edit} %></span>
+  	<!--回答で新規作成あるまで-->
+  	<span class="btDestroy"><%= link_to '削除', {:action => :destroy}, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+  	<span class="docLink"></span>
+  <% end %>
+</div>
+
+<table class="show">
+  <tr>
+    <th>状態</th>
+    <td><%= @item.state_name %></td>
+  </tr>
+  <tr>
+    <th>設問内容</th>
+    <td><%=hbr @item.title %></td>
+  </tr>
+  <% if @item.group_name.blank? || @item.question_type == "group" %>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>設問形式<span class="help"><%=raw help_item.options_value[3][0] %></span></th>
+    <td><%= @item.question_type_name %></td>
+  </tr>
+  <% unless @item.group_name.blank? && @item.question_type != "group" %>
+  <tr>
+    <th>グループ名称</th>
+    <td><%= @item.group_name %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <% end %>
+  <% unless @item.group_repeat.blank? %>
+  <tr>
+    <th>グループ行数</th>
+    <td><%= @item.group_repeat %></td>
+  </tr>
+  <% end %>
+  <% if @item.is_question_type_text %>
+  <tr>
+    <th>テキスト枠の長さ</th>
+    <td><%= @item.field_cols %></td>
+  </tr>
+  <% end %>
+  <% if @item.question_type == 'textarea' %>
+  <tr>
+    <th>表示行数</th>
+    <td><%= @item.field_rows %></td>
+  </tr>
+  <% end %>
+  <% unless @item.question_type == 'display' %>
+    <tr>
+      <th>必須入力チェック</th>
+      <td><%= @item.required_entry_state_name %></td>
+    </tr>
+    <tr>
+      <th>投稿許可設定<span class="help"><%=raw help_item.options_value[4][0] %></span></th>
+      <td>
+      <% unless @item.permit.blank? %>
+      <%= @item.permit.title %> &nbsp;の選択値が&nbsp;<%= @item.post_permit_value %>&nbsp;の時に許可する
+      <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= option_view @item unless @item.is_question_type_text %>
+
+<div class="btReturn">
+  <%= link_to "設問構成一覧へ戻る", questionnaire_template_form_fields_path(@title) %>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,34 @@
+<div class="piece schedulePiece setting">
+<div class="pieceHeader">
+<%= render '/gw/admin/schedules/piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+<div class="titleLine">
+  <span class="title">個人設定</span>
+</div><!--titleLine-->
+</div>
+<div class="pieceBodyBody">
+
+<%= form_for :item, :url => "/gw/schedules/edit_ind_schedules", :html => {method: :put, multipart: true} do |f| %>
+  <h4>予定表設定</h4>
+  <table class="show">
+    <tr>
+      <th>月表示の開始曜日</th>
+      <td><%= radio_button_tags 'item[schedules][month_view_leftest_weekday]', @item.month_view_leftest_weekday_options, @item.month_view_leftest_weekday %></td>
+    </tr>
+    <tr>
+      <th>場所の表示</th>
+      <td><%= radio_button_tags 'item[schedules][view_place_display]', @item.view_place_display_options, @item.view_place_display %></td>
+    </tr>
+    <tr>
+      <th>ポータル表示設定</th>
+      <td><%= radio_button_tags 'item[schedules][view_portal_schedule_display]', @item.view_portal_schedule_display_options, @item.view_portal_schedule_display %></td>
+    </tr>
+  </table>
+  <%= f.submit '保存' -%>
+<% end -%>
+
+</div>
+</div>
+</div>

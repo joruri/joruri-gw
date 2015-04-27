@@ -1,0 +1,18 @@
+<%= @from_user.groups.first.try(:name) %> <%= @from_user.name %>さんより
+「<%= @doc.control.try(:title) %>」
+についての回答依頼が届きました。
+
+次のリンクから内容を確認し，回答してください。
+
+<%= Core.full_uri.chomp('/') %><%= gwmonitor_doc_path(@doc.control, @doc)  %>
+
+
+回答までの手順
+--------------
+１ 所属内で回答する担当者を決定
+２ 担当者は上記リンクから記事の内容を確認し,「受け取る」をクリック
+３ 担当者は回答期限までに回答欄を編集し,「回答する」又は「該当なし」をクリック
+--------------
+以上で完了です。
+
+<%= Joruri.config.application['gwmonitor.request_mail_help_link'] %>

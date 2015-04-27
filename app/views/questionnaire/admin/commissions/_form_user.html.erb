@@ -1,0 +1,44 @@
+<%
+  box_width = 'width:400px;'  #承認者設定枠の幅
+
+  concat hidden_field_tag('init[custom_readers_json]', @item.custom_readers_json)
+  concat hidden_field_tag('init[readers_json]', @item.readers_json)
+  user_groups = Gwboard::Group.level
+  groups = Gwmonitor::CustomUserGroup.custom_select
+  first_group_id = Gwmonitor::CustomUserGroup.first_group_id
+%>
+<div id="item_bgselect_type2" style="display:none;" >
+
+<table class="show">
+<tr><th colspan="3" class="titleTop">個人カスタム配信設定<%= required('　事前に登録している個人カスタム配信先設定から選択します。') %></th></tr>
+<tr><td class="userChange">
+<%= select_tag('item[custom_readers][gid]', options_for_select(groups, first_group_id), :onchange=>'update_custom_reader_cand();' ) %><br />
+<%= select_tag('item[custom_readers][uid]', options_for_select(Gwmonitor::CustomUserGroup.get_user_select(first_group_id)), :size=>6, :style => box_width, :ondblclick => 'add_custom_reader()', :multiple => true) %>
+</td>
+<td>
+<%= button_tag '追加 →',  :onclick =>'add_custom_reader()' %><br /><br />
+<%= button_tag '← 削除',  :onclick =>'del_custom_reader()' %>
+</td>
+<td>
+<%= select_tag 'item[custom_readers_add_buf]', [], :size=>7, :style => box_width, :ondblclick => 'del_custom_reader()', :multiple => true %>
+<%= hidden_field_tag 'item[custom_readers_json]', '' %>
+</td>
+</tr>
+</table>
+<table class="show">
+<tr><th colspan="3" class="titleTop">個人配信設定<%= required('　指定された個人に配信されます。') %></th></tr>
+<tr><td class="userChange">
+<%= select_tag('item[readers][gid]', options_for_select(user_groups, Core.user_group.id ), :onchange=>'update_reader_cand();' ) %><br />
+<%= select_tag('item[readers][uid]', options_for_select(System::User.get_user_select(Core.user_group.id,:all,{})), :size=>14, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
+</td>
+<td>
+<%= button_tag '追加 →',  :onclick =>'add_reader()' %><br /><br />
+<%= button_tag '← 削除',  :onclick =>'del_reader()' %>
+</td>
+<td>
+<%= select_tag 'item[readers_add_buf]', [], :size=>15, :style => box_width, :ondblclick => 'del_reader()', :multiple => true %>
+<%= hidden_field_tag 'item[readers_json]', '' %>
+</td></tr>
+</table>
+
+</div>

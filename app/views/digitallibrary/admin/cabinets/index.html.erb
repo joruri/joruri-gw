@@ -1,0 +1,32 @@
+<div class="piece digitalLibrary">
+<div class="pieceHeader">
+<h2>電子図書</h2>
+</div>
+<div class="pieceBody">
+<%= render 'header' %>
+<table class="index cabinets">
+  <tr>
+    <th style="width: 70px;text-align: right;" >管理番号</th>
+    <th >タイトル</th>
+    <th style="width: 70px; text-align: center;" >　</th>
+    <th style="width: 85px; text-align: center;">更新日</th>
+    <th style="width: 55px; text-align: center;">並び順</th>
+    <th style="width: 75px; text-align: center;">ステータス</th>
+    <th style="width: 95px; text-align: center;" >　</th>
+  </tr>
+  <% @items.each do |item| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: right;" ><%= item.id %></td>
+    <td style="text-align: left;" ><%= item.title %></td>
+    <td style="text-align: center;" ><%= link_to '詳細確認', digitallibrary_cabinet_path(item) %></td>
+    <td style="text-align: center;"><%=item.updated_at.strftime('%Y-%m-%d').to_s %></td>
+    <td style="text-align: center;"><%=item.sort_no %></td>
+    <td style="text-align: center;"><%= item.status_show %></td>
+    <td style="text-align: center;" ><%= link_to '公開画面 >> ', digitallibrary_docs_path({:title_id=>item.id}) %></td>
+  </tr>
+  <% end %>
+</table>
+<br />
+<%= paginate @items %>
+</div>
+</div>

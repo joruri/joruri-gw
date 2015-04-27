@@ -1,0 +1,125 @@
+<table class="show">
+  <tr>
+    <th>拡張項目</th>
+    <td><a href="#" onclick="notesForm(this,'notes_field_form');return false;">開く▼</a></td>
+  </tr>
+</table>
+
+<table id="notes_field_form" border="0" class="show" style="display: none;">
+  <tr>
+    <th>ヘルプリンク</th>
+    <td><%= f.select:help_display, options_for_select([['表示する','0'],['表示しない','1']], @item.help_display) %></td>
+  </tr>
+  <tr>
+    <th>ヘルプ　URL</th>
+    <td><%= f.text_field :help_url, :size => '80' %></td>
+  </tr>
+  <tr>
+    <th>管理者ヘルプ　URL</th>
+    <td><%= f.text_field :help_admin_url, :size => '80' %></td>
+  </tr>
+  <% if @item.is_sysadm? %>
+  <tr style="display: none;">
+    <th>データベース指定<%= required('<br/>※通常は変更不可') %></th>
+    <td><%= f.text_field :dbname, :class=>'mockblock' %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>画面形式選択</th>
+    <td><%= f.select :form_name, @item.use_form_name %></td>
+  </tr>
+  <tr>
+    <th>他シス連携指定<br />(HTML形式)</th>
+    <td><%= f.text_area :other_system_link, :cols => 84, :rows => 2, :class => 'string other_system_link' %></td>
+  </tr>
+  <tr>
+    <th>左リスト表示<br />(通常は表示する)</th>
+    <td><%= f.select :left_index_use, @item.index_view_name %></td>
+  </tr>
+  <tr>
+    <th>記事本文利用サイズ<br /><%= required '障害時のみ編集' %></th>
+    <td class="IMEoff"><%= f.text_field :doc_body_size_currently, :size=>13 %></td>
+  </tr>
+  <tr>
+    <th>画像 現在の利用サイズ<br /><%= required '障害時のみ編集' %></th>
+    <td class="IMEoff"><%= f.text_field :upload_graphic_file_size_currently, :size=>13 %></td>
+  </tr>
+  <tr>
+    <th>添付 現在の利用サイズ<br /><%= required '障害時のみ編集' %></th>
+    <td class="IMEoff"><%= f.text_field :upload_document_file_size_currently, :size=>13 %></td>
+  </tr>
+  <tr>
+    <th>記事特殊制限機能<br /><%= required '※通常は使用しない' %></th>
+    <td><%= f.select :restrict_access, @item.restrict_access_use %></td>
+  </tr>
+  <tr>
+    <th>記事追加<br /><%= required '※通常は許可する' %></th>
+    <td><%= f.select :addnew_forbidden, @item.function_forbidden %></td>
+  </tr>
+  <tr>
+    <th>記事編集<br /><%= required '※通常は許可する' %></th>
+    <td><%= f.select :edit_forbidden, @item.function_forbidden %></td>
+  </tr>
+  <tr>
+    <th>記事下書<br /><%= required '※通常は許可する' %></th>
+    <td><%= f.select :draft_forbidden, @item.function_forbidden %></td>
+  </tr>
+  <tr>
+    <th>記事削除<br /><%= required '※通常は許可する' %></th>
+    <td><%= f.select :delete_forbidden, @item.function_forbidden %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目01<br /></th>
+    <td><%= f.text_area :notes_field01, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目02<br /></th>
+    <td><%= f.text_area :notes_field02, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目03<br /></th>
+    <td><%= f.text_area :notes_field03, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目04<br /></th>
+    <td><%= f.text_area :notes_field04, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目05<br /></th>
+    <td><%= f.text_area :notes_field05, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目06<br /></th>
+    <td><%= f.text_area :notes_field06, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目07<br /></th>
+    <td><%= f.text_area :notes_field07, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目08<br /></th>
+    <td><%= f.text_area :notes_field08, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目09<br /></th>
+    <td><%= f.text_area :notes_field09, :cols => 35, :rows => 5 %></td>
+  </tr>
+  <tr>
+    <th>notes用拡張項目10<br /></th>
+    <td><%= f.text_area :notes_field10, :cols => 35, :rows => 5 %></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+function notesForm(obj,changeObjId) {
+  var display = document.getElementById(changeObjId).style.display;
+  if (display == 'none') {
+    obj.innerHTML = '閉じる▲';
+  } else if (display == '') {
+    obj.innerHTML = '開く▼';
+  }
+  Element.toggle($(changeObjId));
+}
+//]]>
+</script>

@@ -1,0 +1,7 @@
+<table class="show">
+  <tr>
+    <th>表示期間設定</th>
+    <td><%= f.select :limit_date, @item.limit_line, :include_blank => false, :class => 'select limit' %></td>
+    <td><%= f.submit "保存" %></td>
+  </tr>
+</table>

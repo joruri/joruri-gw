@@ -1,0 +1,8 @@
+<%= hidden_field_tag :c1 , 2 %>
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>携帯アクセス許可設定<%= required %></th>
+    <td><%= f.select :mobile_access, options_for_select(System::User.m_access_select, @user.mobile_access.to_i) %></td>
+  </tr>
+</table>

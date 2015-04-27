@@ -1,0 +1,33 @@
+<%unless @files.blank?%>
+<h4 class="docAttachTitle">添付ファイル一覧</h4>
+<table class="index">
+<tr>
+<th style="text-align: left;"></th>
+<th style="width: 24px; text-align: center;"></th>
+<th style="text-align: left;">添付ファイル名</th>
+<%if @title.upload_system.blank? %>
+<th style="width: 220px; text-align: left;">備考</th>
+<%end%>
+</tr>
+<% for item in @files %>
+<tr>
+<%if item.parent.title.blank?%>
+ <td><%= link_to('タイトルが登録されていません' , "#{item.item_parent_path}#{gwbbs_params_set}" ) unless item.parent.blank? %></td>
+<%else%>
+ <td><%= link_to(item.parent.title , "#{item.item_parent_path}#{gwbbs_params_set}" ) unless item.parent.blank? %></td>
+<%end%>
+
+<%if @title.upload_system.blank? %>
+<td><%= link_to('',"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}",:class => item.icon_type ) %></td>
+<td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}") %></td>
+<td><%=item.memo%></td>
+<%else%>
+ <%download_url = "#{item.file_uri(item.system_name)}"%>
+ <td class="attachIcon"><%= link_to('',download_url,:class => item.icon_type) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],download_url) %></td>
+<%end%>
+</tr>
+<% end %>
+</table>
+<%=paginate @files %>
+<%end%>

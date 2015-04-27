@@ -1,0 +1,20 @@
+<%= required_head %>
+<br />
+  <table class="show">
+    <tr>
+      <th>種別</th>
+      <td><%= @item.get_type_name -%><%= f.hidden_field :type_name -%></td>
+    </tr>
+    <tr>
+      <th>表示行数<%= required -%></th>
+      <td><%=  f.select( :limit, options_for_select(Gw.limit_select , @item.limit)) -%></td>
+    </tr>
+    <tr>
+      <th>更新日時</th>
+      <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+    </tr>
+  </table>
+
+<div class="preserve">
+<%= submit_for(f, {:caption => '保存'}) %>
+</div>

@@ -1,0 +1,70 @@
+<%
+fyear_markjp = ""
+fyear = Gwsub::Sb04EditableDate.where(:fyear_id => @item.fyear_id_sb04).first
+fyear_markjp = fyear.fyear_markjp if !fyear.blank?
+
+management_uid_sb04_name = ""
+staff = Gwsub::Sb04stafflist.where(:id => @item.management_uid_sb04).first
+management_uid_sb04_name = staff.name if !staff.blank?
+
+management_gid_sb04_name = ""
+section = Gwsub::Sb04section.where(:id => @item.management_gid_sb04).first
+management_gid_sb04_name = "#{section.name}" if !section.blank?
+
+division_gid_sb04_name = ""
+section = Gwsub::Sb04section.where(:id => @item.division_gid_sb04).first
+division_gid_sb04_name = "#{section.name}" if !section.blank?
+
+destroy_confirm_s = '削除してよろしいですか？'
+
+%>
+
+<div class="gwsub sb04">
+  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <div class="pieceBanner">
+    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render 'menu' %>
+    <%= render 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
+    <div class="editingBox">
+      <div class="btEdit">
+        <%= link_to('編集する', "#{@public_uri}/#{@item.id}/edit#{@params_set}") -%>
+      </div>
+      <div class="btDestroy">
+        <%= link_to_destroy @item.id, nil, :confirm=>destroy_confirm_s, :qs =>@params_set -%>
+      </div>
+    </div>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyBody">
+      <table class="show">
+      <tr>
+        <th>年度</th>
+        <td><%= fyear_markjp  -%></td>
+      </tr>
+      <tr>
+        <th>主管課担当者 所属課</th>
+        <td><%= management_gid_sb04_name  -%></td>
+      </tr>
+      <tr>
+        <th>主管課担当者</th>
+        <td><%= management_uid_sb04_name -%></td>
+      </tr>
+      <tr>
+        <th>所属</th>
+        <td><%= division_gid_sb04_name -%></td>
+      </tr>
+      <tr>
+        <th>作成日</th>
+        <td><%= @item.created_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      </tr>
+      <tr>
+        <th>更新日</th>
+        <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') -%></td>
+      </tr>
+      </table>
+    </div>
+    <div class="btReturn">
+      <%=link_to '一覧に戻る', "#{@public_uri}#{@params_set}" -%>
+    </div>
+  </div>
+</div>

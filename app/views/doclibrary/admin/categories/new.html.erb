@@ -1,0 +1,12 @@
+<br />
+<%= form_for :item, :url => @item.update_path, :html => {:method => :put} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render 'form', f: f %>
+
+<div class="submitters">
+  <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='public';" type="submit" value="登録する" />
+</div>
+
+<% end %>

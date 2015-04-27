@@ -1,0 +1,31 @@
+<%= required_head %>
+
+<table class="show">
+  <tr>
+    <th>タイトル<%= required('※') %></th>
+    <td><%= f.text_field :manage_title, :class => 'string title' %></td>
+  </tr>
+  <tr>
+    <th>概要説明<%= required('※') %></th>
+    <td><%= f.text_field :title, :class => 'string title' %></td>
+  </tr>
+  <% if false %><% if @is_sysadm %>
+    <tr>
+      <th>種別<%= required('※') %></th>
+      <td><%= f.radio_buttons :admin_setting, @item.admin_setting_name %></td>
+    </tr>
+  </table>
+  <% end %><% end %>
+</table>
+<%= f.hidden_field :admin_setting %>
+<%= f.hidden_field :state %>
+
+<script type="text/javascript">
+//<![CDATA[
+var my_submit = function(state) {
+    var st = $('item_state');
+    st.value = state;
+    $('itemForm').submit();
+  }
+//]]>
+</script>

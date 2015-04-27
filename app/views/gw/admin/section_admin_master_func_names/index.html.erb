@@ -1,0 +1,37 @@
+<div class="piece sectionAdminMasters index">
+<div class="pieceHeader">
+<%= render 'piece_header' -%>
+</div>
+<div class="pieceBody">
+
+<div class="editingBox">
+  <span class="btNew"><%= link_to '新規作成', :action => :new %></span>
+</div>
+
+<div class="pieceBodyBody">
+
+<% if @items.length == 0 -%>
+<%= show_notice -%>
+<% else -%>
+<table class="index">
+  <tr>
+    <th class="show"></th>
+    <th class="sort_no">並び順</th>
+    <th class="func_name">機能名</th>
+    <th class="name">表示名</th>
+  </tr>
+  <% @items.each do |item| -%>
+  <tr cycle='<%= cycle '', 'cycle' %>'>
+    <td><%= link_to '詳細', {:action => :show, :id => item.id} %></td>
+    <td><%= item.sort_no %></td>
+    <td><%= item.func_name %></td>
+    <td><%= item.name %></td>
+  </tr>
+  <% end -%>
+</table>
+<%= paginate @items %>
+<% end -%>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,22 @@
+<p class="mobileScheduleCurrent">スケジュール</p>
+<p class="bgAsh">
+<%if params[:gid].blank?%>
+  <%if params[:cgid].blank?%>
+    <%if @dis=="day"%>
+個人（日表示）
+    <%elsif @dis=="week"%>
+個人（週表示）
+    <%else%>
+個人（日表示）
+    <%end%>
+  <%else%>
+<%if @custom_group%>
+<%=@custom_group.name%>
+<%else%>
+カスタムグループ
+<%end%>
+  <%end%>
+<%else%>
+グループ
+<%end%>
+</p>

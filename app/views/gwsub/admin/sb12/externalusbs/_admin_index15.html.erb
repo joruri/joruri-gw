@@ -1,0 +1,54 @@
+<% _inherit_qs_s = @qs ? "?#{@qs}" : '' %>
+<table class="index">
+  <colgroup class="action"></colgroup>
+  <colgroup class="id"></colgroup>
+  <colgroup class="registedno"></colgroup>
+  <colgroup class="registed_at"></colgroup>
+  <colgroup class="equipmentname"></colgroup>
+  <colgroup class="capacity"></colgroup>
+  <colgroup class="capacityunit_id"></colgroup>
+  <colgroup class="user"></colgroup>
+  <colgroup class="categories"></colgroup>
+  <colgroup class="ending_at"></colgroup>
+  <colgroup class="remarks"></colgroup>
+  <tbody>
+  <tr>
+    <th></th><th>登録番号</th><th>H20まで登録番号</th><th>登録日</th><th>製品名</th><th>容量</th><th>単位</th><th>保有者</th><th>分類</th><th>使用中止年月日</th><th>備考</th>
+  </tr>
+  <%lbl_name = ''%>
+  <% @items.each do |item| %>
+  <%
+    unless lbl_name == item.section_name
+      flg = true
+      lbl_name = item.section_name
+    end
+    flg_red = false
+    flg_red = true if item.section_id == 0
+    flg_red = true if item.group.blank?
+    flg_red = true if item.group.state == 'disabled' unless item.group.blank?
+  %>
+  <%if flg%>
+  <tr>
+    <th colspan="12">
+      <%=required(lbl_name) if flg_red%>
+      <%=lbl_name unless flg_red%>
+    </th>
+  </tr>
+  <% flg = false
+  end%>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+    <td><%=link_to('詳細',"#{item.show_path}#{_inherit_qs_s}")%></td>
+    <td>&nbsp;<%=sprintf('%06d',item.new_registedno)%></td>
+    <td><%=item.registedno%></td>
+    <td><%=item.registed_at.strftime('%Y-%m-%d') unless item.registed_at.blank?%></td>
+    <td><%=item.equipmentname%></td>
+    <td><%=item.capacity%></td>
+    <td><%=item.capacityunitset.name unless item.capacityunitset.blank?%></td>
+    <td><%=item.user%></td>
+    <td><%=item.categories_status_show[item.categories.to_i]%></td>
+    <td><%=item.ending_at.strftime('%Y-%m-%d') unless item.ending_at.blank?%> </td>
+    <td><%=item.remarks%></td>
+  </tr>
+  <% end %>
+</tbody>
+</table>

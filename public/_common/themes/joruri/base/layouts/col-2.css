@@ -1,0 +1,106 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Layout 2 Columns
+========================================================= */
+
+/* body
+----------------------------------------------- */
+body {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+}
+
+/* container
+----------------------------------------------- */
+#container {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 800px;
+  margin:0px auto;
+}
+* html #container {
+  width : expression(document.body.clientWidth < 801? "800px" : document.body.clientWidth > 1201? "1200px" : "auto");
+  }
+
+/* header
+----------------------------------------------- */
+#header {
+  clear: both;
+}
+#headerContainer {
+  padding: 0px 10px;
+}
+
+/* banner
+----------------------------------------------- */
+#banner {
+  clear: both;
+  margin-bottom: 7px;
+}
+#bannerContainer {
+  padding: 0px 10px;
+}
+
+/* navi
+----------------------------------------------- */
+#navi {
+  clear: both;
+}
+#naviContainer {
+  padding: 0px 10px;
+}
+
+
+/* main
+----------------------------------------------- */
+#main {
+  clear: both;
+  margin-top: 10px;
+  padding: 0px 10px;
+}
+#main:after {
+    content: "";
+    clear: both;
+    height: 0;
+    display: block;
+    visibility: hidden;
+}
+
+/* content(中央カラム)
+----------------------------------------------- */
+#content {
+  float: right;
+  width: 100%;
+  margin-left: -190px;
+  margin-bottom:20px;
+}
+#contentBody {
+  padding-left: 180px;
+}
+
+/* menu(左カラム)
+----------------------------------------------- */
+#menu {
+  float: left;
+  width: 170px;
+  margin-bottom: 20px;
+}
+
+/* footer
+----------------------------------------------- */
+#footer {
+  clear: both;
+  width: 100%;
+}
+#footerContainer {
+  padding: 30px 10px 0px 10px;
+}
+
+/* pieces
+----------------------------------------------- */
+#main .pieceSeparator {
+  margin: 10px 0px;
+}

@@ -1,0 +1,29 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>接続情報確認</h2>
+</div>
+<div class="pieceBody">
+<table class="index">
+<tr>
+<td class="manager">接続先サーバ名</td>
+<td class="bbsTitle"><%=@host || request.server_name%></td>
+</tr>
+<tr>
+<td class="manager">端末IPアドレス</td>
+<td class="bbsTitle"><%=request.remote_ip%></td>
+</tr>
+<tr>
+<script type="text/javascript">
+<!--
+document.write('<tr><td class="manager">ブラウザコード名</td><td class="bbsTitle">' + navigator.appCodeName + '</td></tr>');
+document.write('<tr><td class="manager">ブラウザ名</td><td class="bbsTitle">' + navigator.appName + '</td></tr>');
+document.write('<tr><td class="manager">バージョン</td><td class="bbsTitle">' + navigator.appVersion + '</td></tr>');
+document.write('<tr><td class="manager">プラットフォーム</td><td class="bbsTitle">' + navigator.platform + '</td></tr>');
+document.write('<tr><td class="manager">ユーザーエージェント</td><td class="bbsTitle">' + navigator.userAgent + '</td></tr>');
+// -->
+</script>
+</tr>
+</table>
+</div>
+</div>
+

@@ -1,0 +1,63 @@
+ja:
+  activerecord:
+    attributes:
+      gwsub/sb06_assigned_conf_category:
+        cat_name: 分類名
+        cat_sort_no: 表示順
+        cat_code: コード
+      gwsub/sb06_assigned_conference:
+        conf_at: 申請日
+        group_id: 申請所属
+        conf_kind_place: 室名
+        user_id: 担当者
+        conf_mark: 文書記号
+        conf_no: 文書番号
+      gwsub/sb06_assigned_conf_item:
+        conf_kind_id: 申請書種別
+        item_title: 項目見出し
+        item_max_count: 項目最大数
+      gwsub/sb06_assigned_conf_kind:
+        conf_group_id: 管理所属
+        conf_kind_code: 種別コード
+        conf_kind_name: 種別名称
+        conf_menu_name: メニュー表示名
+        conf_title: タイトル
+        conf_form_no: フォーム番号
+        conf_max_count: 最大明細数
+      gwsub/sb06_assigned_conf_group:
+        fyear_id: "年度"
+        group_id: "管理所属"
+      gwsub/sb06_assigned_official_title:
+        official_title_code: "職名コード"
+        official_title_name: "職名"
+      gwsub/sb06_assigned_help:
+        title: "見出し"
+        bbs_url: "説明 掲示板記事URL"
+      gwsub/sb06_budget_editable_date:
+        start_at: "編集開始日"
+        end_at: "編集終了日"
+        recognize_at: "主管課承認期限日"
+      gwsub/sb06_budget_notice:
+        title: "見出し"
+        bbs_url: "説明記事url"
+      gwsub/sb06_budget_assign_admin:
+        user_id: "システム管理者"
+      gwsub/sb06_budget_assign_main:
+        user_id: "主管課担当"
+      gwsub/sb06_budget_assign:
+        section_kind_id: "所属分類"
+        group_id: "管理所属"
+        user_id: "担当者"
+        budget_role_id: "処理権限"
+        multi_group_id: "兼務所属"
+        multi_sequence: "兼務順"
+      gwsub/sb06_budget_section:
+        fyear_id: "年度"
+        section_kind_id: "所属分類"
+        group_id: "管理所属"
+      gwsub/sb06_budget_section_kind:
+        code: "所属分類コード"
+        name: "所属分類名"
+      gwsub/sb06_budget_role:
+        code: "処理権限コード"
+        name: "処理権限名"

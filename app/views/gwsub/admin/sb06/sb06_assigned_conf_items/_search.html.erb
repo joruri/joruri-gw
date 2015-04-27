@@ -1,0 +1,53 @@
+<%
+fyears = Gw::YearFiscalJp.select_dd_markjp_id( 'all' , 5)
+#group_options = {:fy_id=>@fy_id,:all=>'all'}
+#groups = Gwsub::Sb06AssignedConfGroup.sb06_assign_conf_group_id_select(group_options)
+conf_kind_options = {:c_group_id=>@c_group_id,:all=>'all', :fyear_id=>@fy_id}
+conf_kinds = Gwsub::Sb06AssignedConfKind.sb06_assign_conf_kind_id_select(conf_kind_options)
+limits = Gw.limit_select
+%>
+<%= form_tag '', :method => :get, :class => 'search', :name => 'frmSearch' do %>
+<table>
+  <tr>
+    <td>年度</td>
+    <td><%= select_tag :fy_id, options_for_select(fyears, @fy_id.to_i), onchange: "get_list();" %></td>
+    <td>申請書種別</td>
+    <td><%= select_tag :c_kind_id, options_for_select(conf_kinds, @c_kind_id.to_i) %></td>
+  </tr>
+  <tr>
+    <td>表示行数</td>
+    <td><%= select_tag :limit, options_for_select(limits, @limit.to_i) %></td>
+    <td>検索</td>
+    <td><%= text_field_tag :s_keyword, params[:s_keyword], :size => 40 %></td>
+    <td class="submitters">
+      <%= submit_tag '検索', :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset  %>
+    </td>
+  </tr>
+</table>
+<!-- end form -->
+<% end %>
+<% unless (params[:reset] || !params[:search] ) %>
+<div class="hit">検索結果<span class="count"><%= "#{@items.total_entries}" %></span>件</div>
+<% end %>
+
+<script type="text/javascript">
+//<![CDATA[
+  var end_cnt = -1;
+  var ed_str = '';
+//ユーザー
+  function get_list() {
+    g_id = 0;
+    fy_id = $("fy_id").value;
+    document.body.style.cursor = 'wait';
+    end_cnt = 0;
+    new Ajax.Request("<%= url_for({:action => :index})%>/conf_kinds_select?g_id=" + g_id + "&fyid=" + fy_id + "&all=all", {method:'get', onComplete: function(x){
+      $('c_kind_id').update(x.responseText);
+      end_cnt = end_cnt + 1;
+      if (end_cnt == 1) {
+        document.body.style.cursor = 'default';
+      }
+    }})
+  }
+  //]]>
+</script>

@@ -1,0 +1,5 @@
+<% if @item.doc_type == 0 %>
+  <%= render 'question_show' %>
+<% else %>
+  <%= render 'answer_show' %>
+<% end %>

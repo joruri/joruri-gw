@@ -1,0 +1,33 @@
+<div class="piece prop schedulePiece index">
+<div class="pieceHeader">
+  <%= render '/gw/admin/schedules/piece_header' -%>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedules/schedule_bt_box', d: @st_date, mode: 'month' -%>
+  <%# メニュー 置き場 -%>
+</div>
+
+<% if params[:user_add].present? -%>
+  <%= render 'user_add' -%>
+<% else -%>
+  <%= render 'user_delete' -%>
+<% end -%>
+
+<div class="titleLine">
+  <span class="title">スケジュール一覧</span>
+  <span class="linkSpace">
+  </span>
+</div>
+
+<div class="pieceBodyBody">
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+  <%= render 'list' %>
+<% end %>
+
+</div>
+
+</div>
+</div>

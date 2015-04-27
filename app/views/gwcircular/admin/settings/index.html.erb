@@ -1,0 +1,31 @@
+<div class="bbsDocList circular setting">
+<div class="pieceHeader">
+  <h2 class="pieceTitle">回覧板 機能設定</h2>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner"></div>
+
+<div class="pieceBody">
+
+<div class="pieceBodyBody">
+<ul>
+  <% if @title.is_admin? %>
+  <li>
+    <span class="function"><a href="/gwcircular/basics/1/">基本設定</a></span>
+    <span class="explanation">回覧板の基本設定を行います。</span>
+  </li>
+  <% end %>
+  <li>
+    <span class="function"><a href="/gwcircular/custom_groups">配信先カスタム設定</a></span>
+    <span class="explanation">個人毎に配信先の雛形が登録できます。</span>
+  </li>
+</ul>
+</div>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '回覧板一覧へ戻る', "#{@title.menus_path}?cond=owner" %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

@@ -1,0 +1,7 @@
+<%= required_head %>
+<table class="show">
+  <tr>
+    <th>表示モード<%= required('※') %></th>
+    <td><%= f.radio_buttons :options, @item.mode_options %></td>
+  </tr>
+</table>

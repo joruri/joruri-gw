@@ -1,0 +1,140 @@
+@charset "UTF-8";
+
+/* =========================================================
+   print.css
+========================================================= */
+.pieceHeader, .pieceBanner, .sideMenu, .tabBox, .btReturn,
+.navi, .btBox, .editingBox, a img {
+  display: none;
+}
+#content,
+#content #contentBody .bbsDocList .pieceBody, 
+#content .DLDocList .pieceBody,
+#contentContainer #contentBody .sideMenu,
+#content #contentBody .gwfaq .pieceBody,
+#content #contentBody .gwqa .pieceBody {
+  border: none;
+}
+#content #contentBody .pieceBody {
+  overflow: visible;
+}
+.pieceBody .outer {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.outer .bbsCreator, .outer .bbsImportance,
+.outer .bbsCreatorInf, .outer .docTitle {
+  font-size: 9pt;
+}
+.docsInnerBox .bbsUserformBody  {
+  font-size: 9pt;
+}
+div.piece.schedulePiece {
+  background-image: none;
+}
+div.piece.schedulePiece .pieceBody, div.piece.schedulePiece .pieceFooter {
+  border: none;
+}
+.scheduleMove form#schedule_header,
+.scheduleMove form#schedule_footer {
+  display: none;
+}
+#main {
+  margin: 0;
+}
+.schedulePiece .pieceBodyHeader .lineBox .dayInformation {
+  height: 30px;
+}
+.scheduleUser .link.nobr {
+  display: none;
+}
+
+/*-- category color --*/
+a.category0 {
+  border: solid 1px #FF3399;
+}
+a.category1 {
+  border: solid 1px #2283E5;
+}
+a.category2 {
+  border: solid 1px #FF0000;
+}
+a.category3 {
+  border: solid 1px #B851B1;
+}
+a.category4 {
+  border: solid 1px #FF3F38;
+}
+a.category5 {
+  border: solid 1px #003300;
+}
+a.category6 {
+  border: solid 1px #CC6600;
+}
+a.category7 {
+  border: solid 1px #000099;
+}
+a.category8 {
+  border: solid 1px #A17300;
+}
+a.category9 {
+  border: solid 1px #DC6500;
+}
+a.category10 {
+  border: solid 1px #FFE100;
+}
+a.category11 {
+  border: solid 1px #8658B2;
+}
+a.category12 {
+  border: solid 1px #009900;
+}
+a.category13 {
+  border: solid 1px #663333;
+}
+a.category13 {
+  border: solid 1px #0A4F1E;
+}
+.rentcar a.category0 {
+  border: solid 1px #FF3399;
+}
+.rentcar a.category1,
+.meetingroom a.category1 {
+  border: solid 1px #2E49B4;
+}
+.rentcar a.category2,
+.meetingroom a.category2 {
+  border: solid 1px #FF3F38;
+}
+.rentcar a.category3,
+.meetingroom a.category3 {
+  border: solid 1px #CFD0D2;
+}
+.meetingroom a.category0 {
+  border: solid 1px #35E1FF;
+}
+a.cancelled {
+  border: solid 1px #2B2B57;
+}
+a.received {
+  border: solid 1px #BBFF00;
+}
+a.confirmed {
+  border: solid 1px #2E49B4;
+}
+a.rented {
+  border: solid 1px #FF3F38;
+}
+a.returned {
+  border: solid 1px #CFD0D2;
+}
+a.temporary {
+  border: solid 1px #35E1FF;
+}
+
+/*-- kanzai gojokai chuuigaki --*/
+#contentBody span.att {
+  display: none;
+}
+
