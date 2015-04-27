@@ -238,7 +238,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
     @item.attributes = params[:item]
 
-    csv = Gwsub::Sb04stafflist.order(fyear_id: :desc, section_code: :asc, assignedjobs_code: :asc, divide_duties_order: :asc).all.to_csv
+    csv = Gwsub::Sb04stafflist.order(fyear_id: :desc, section_code: :asc, assignedjobs_code: :asc, divide_duties_order: :asc).to_csv
     send_data @item.encode(csv), filename: "sb04_stafflists_backup_#{@item.encoding}.csv"
   end
 
