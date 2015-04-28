@@ -242,7 +242,7 @@ class Gwsub::Admin::Sb12::ExternalusbsController < Gw::Controller::Admin::Base
 
     @item.attributes = params[:item]
 
-    csv = Gwsub::Externalusb.order(:id).all.to_csv(i18n_key: :default)
+    csv = Gwsub::Externalusb.order(:id).to_csv(i18n_key: :default)
     send_data @item.encode(csv), filename: "sb12_external_usbs_#{@item.encoding}.csv"
   end
 

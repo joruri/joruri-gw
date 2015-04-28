@@ -8,19 +8,19 @@
     prop_type_title = prop[:type_title]
   %>
     <%if @genre == prop[:genre]%>
-    <div class="btEtc btHead currentHead"><%=prop[:type_title]%></div>
-    <div class="btDayLink btIndex<%= (params[:action] == "show" && @genre ==  prop[:genre])  ?' current' : '' -%>">
-      <%= link_to '日表示', {:controller=> :schedule_props, :action => :show, :id => d.strftime("%Y%m%d"),
-        :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
-    </div>
+      <div class="btEtc btHead currentHead"><%=prop[:type_title]%></div>
+      <div class="btDayLink btIndex<%= (params[:action] == "show" && @genre ==  prop[:genre])  ?' current' : '' -%>">
+        <%= link_to '日表示', {:controller=> :schedule_props, :action => :show, :id => d.strftime("%Y%m%d"),
+          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id].to_i, :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+      </div>
       <div class="btWeekLink btIndex<%=( params[:action] == "show_week" && @genre == prop[:genre] )   ? ' current' : '' -%>">
         <%= link_to '週表示', {:controller=> :schedule_props, :action => :show_week, :s_data => d.strftime("%Y%m%d"),
-          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id].to_i, :s_other_admin_gid => params[:s_other_admin_gid]} -%>
       </div>
      <%else%>
       <div class="btHead<%= (params[:action] == "show" && @genre ==  prop[:genre])  ?' current' : '' -%>">
         <%= link_to prop[:type_title], {:controller=> :schedule_props, :action => :show_week, :s_data => d.strftime("%Y%m%d"),
-          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id], :s_other_admin_gid => params[:s_other_admin_gid]} -%>
+          :cls =>prop[:cls], :s_genre =>prop[:genre], :type_id => params[:type_id].to_i, :s_other_admin_gid => params[:s_other_admin_gid]} -%>
       </div>
     <%end%>
   <%end%>
