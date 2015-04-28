@@ -503,7 +503,9 @@ namespace :joruri do
         Digitallibrary::Doc => [:body], 
         Gwcircular::Doc => [:body],
         Gwmonitor::Control => [:caption],
-        Gwsub::Sb01Training => [:body]
+        Gwsub::Sb01Training => [:body],
+        Gw::AdminMessage => [:body],
+        Gw::PrefSoumuMessage => [:body]
       }
 
       update_models_and_columns.each do |doc_model, columns|
