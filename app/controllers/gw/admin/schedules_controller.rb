@@ -544,7 +544,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     @todo_display = false
 
     @schedule_events = Gw::ScheduleEvent.joins(:schedule).eager_load(:group)
-      .with_week_opened.scheduled_between(@calendar_first_day, @calendar_end_day)
+      .with_week_opened.start_at_between(@calendar_first_day, @calendar_end_day)
       .order("system_groups.sort_no, system_groups.code, gw_schedules.allday DESC, gw_schedules.st_at, gw_schedules.ed_at, gw_schedules.id")
       .preload(:schedule => {:schedule_users => :user, :schedule_props => :prop})
 
@@ -575,7 +575,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     @show_flg = true
 
     @schedule_events =  Gw::ScheduleEvent.joins(:schedule).eager_load(:group)
-      .with_month_opened.scheduled_between(@st_date, @ed_date)
+      .with_month_opened.start_at_between(@st_date, @ed_date)
       .order('system_groups.level_no, system_groups.sort_no, system_groups.code, gw_schedule_events.sort_id, gw_schedules.allday desc, gw_schedule_events.st_at')
       .preload(:schedule)
 
