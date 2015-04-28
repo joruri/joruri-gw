@@ -27,7 +27,7 @@ namespace :cron do
   desc 'Update cron setting on primary web server'
   task :update do
     on primary(fetch(:web_role)) do
-      execute "cd #{fetch(:deploy_to)}; whenever -w --set 'environment=#{fetch(:stage)}'"
+      execute "cd #{fetch(:deploy_to)}; whenever -i --set 'environment=#{fetch(:stage)}'"
     end
   end
 end
