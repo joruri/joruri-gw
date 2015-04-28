@@ -12,6 +12,15 @@ namespace :app do
   end
 end
 
+namespace :cron do
+  desc 'Update cron setting on primary web server'
+  task :update do
+    on primary(fetch(:web_role)) do
+      execute "cd #{fetch(:deploy_to)}; whenever -i --set 'environment=#{fetch(:stage)}'"
+    end
+  end
+end
+
 desc 'Execute command'
 task :execute do
   unless ENV['command']
@@ -23,24 +32,24 @@ task :execute do
   end
 end
 
-namespace :cron do
-  desc 'Update cron setting on primary web server'
-  task :update do
-    on primary(fetch(:web_role)) do
-      execute "cd #{fetch(:deploy_to)}; whenever -i --set 'environment=#{fetch(:stage)}'"
-    end
+desc 'Upload local file to remote web servers'
+task :upload do
+  unless ENV['file']
+    puts "usage: cap #{ARGV.join(' ')} file=[FILE]"
+    next
+  end
+  on roles(fetch(:web_role)), fetch(:run_options) do
+    upload!(ENV['file'], File.join(fetch(:deploy_to), ENV['file']))
   end
 end
 
-namespace :file do
-  desc 'Upload local file to remote web servers'
-  task :upload do
-    unless ENV['file']
-      puts "usage: cap #{ARGV.join(' ')} file=[FILE]"
-      next
-    end
-    on roles(fetch(:web_role)), fetch(:run_options) do
-      upload!(ENV['file'], File.join(fetch(:deploy_to), ENV['file']))
-    end
+desc 'Download file from remote servers to local server'
+task :download do
+  unless ENV['file']
+    puts "usage: cap #{ARGV.join(' ')} file=[FILE]"
+    next
+  end
+  on roles(fetch(:web_role)), fetch(:run_options) do |server|
+    download!(File.join(fetch(:deploy_to), ENV['file']), File.join(fetch(:deploy_to), "#{ENV['file']}.#{server.hostname}"))
   end
 end
