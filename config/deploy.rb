@@ -47,5 +47,6 @@ set :deploy_to, '/var/share/jorurigw'
 #
 #end
 
-set :web_role, (ENV['role'] || :web).to_sym
 set :run_options, {in: :groups, limit: (ENV['limit'] || 3).to_i}
+
+SSHKit.config.command_map[:rake] = 'bundle exec rake'
