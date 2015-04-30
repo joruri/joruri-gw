@@ -1,8 +1,10 @@
 namespace :passenger do
   desc 'Restart passenger'
   task :restart do
-    on roles(fetch(:web_role)), fetch(:run_options) do
-      execute "cd #{fetch(:deploy_to)}; touch tmp/restart.txt"
+    on roles(:app), fetch(:run_options) do
+      within fetch(:deploy_to) do
+        execute :touch, "tmp/restart.txt"
+      end
     end
   end
 end
