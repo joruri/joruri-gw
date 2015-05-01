@@ -32,12 +32,12 @@ class Gw::Script::MeetingMonitor < System::Script::Base
     now_minutes = now.strftime('%M')
     if now_hour.to_i <= 8
       if now_minutes.to_i < 30
-        dump "#{self}, #{system_name}／監視対象時間外　終了"
+        dump "#{self}, 監視対象時間外　終了"
         return
       end
     elsif  now_hour.to_i >= 18
       if now_minutes.to_i > 15
-        dump "#{self}, #{system_name}／監視対象時間外"
+        dump "#{self}, 監視対象時間外"
         return
       end
     end
