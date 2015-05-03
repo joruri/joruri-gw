@@ -1,20 +1,21 @@
 <%
+roles = 
   if @is_dev
-    roles = System::RoleName.all.order(:sort_no)
+    System::RoleName.all.order(sort_no: :asc)
   else
-    roles = System::RoleName.where.not(:table_name => "gwsub").order(:sort_no)
+    System::RoleName.where.not(table_name: "gwsub").order(sort_no: :asc)
   end
-  privs = System::PrivName.where(:state => "public").order(:sort_no)
+privs = System::PrivName.where(state: "public").order(sort_no: :asc)
 %>
 
 <%= required_head %>
 <table class="show">
   <tr>
     <th>機能名<%= required %></th>
-    <td><%= f.collection_select :role_id, roles, :id, :display_name, {:selected => nz(@item.role_id, @role_id).to_i } %></td>
+    <td><%= f.collection_select :role_id, roles, :id, :display_name, {selected: @item.role_id} %></td>
   </tr>
   <tr>
     <th>権限名<%= required %></th>
-    <td><%= f.collection_select :priv_id, privs, :id, :display_name, {:selected => nz(@item.priv_id, 0).to_i } %></td>
+    <td><%= f.collection_select :priv_id, privs, :id, :display_name, {selected: @item.priv_id} %></td>
   </tr>
 </table>

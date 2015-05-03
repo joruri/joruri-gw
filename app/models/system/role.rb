@@ -1,4 +1,3 @@
-#require 'digest/sha1'
 class System::Role < ActiveRecord::Base
   include System::Model::Base
   include System::Model::Base::Content
@@ -9,15 +8,15 @@ class System::Role < ActiveRecord::Base
   belongs_to :user, :foreign_key => :uid, :class_name => 'System::User'
   belongs_to :group, :foreign_key => :uid, :class_name => 'System::Group'
 
-  before_save :before_save_setting_columns
+  before_validation :set_uid
+  before_validation :set_table_name
+  before_validation :set_priv_name
 
-  validates_presence_of :idx, :class_id, :priv
-  validates_presence_of :role_name_id
-  validates_presence_of :priv_user_id
-  validates_numericality_of :idx
-  validates_uniqueness_of :role_name_id, :scope => [:priv_user_id, :uid, :priv, :class_id],
-    :message => 'と対象権限が登録済みのものと重複しています。'
-  validates_presence_of :uid, :if => lambda {|p| p.class_id.to_s != '0' }
+  validates :role_name_id, presence: true, uniqueness: { scope: [:priv_user_id, :uid, :priv, :class_id], message: 'と対象権限が登録済データと重複しています。'}
+  validates :priv_user_id, presence: true
+  validates :class_id, :priv, presence: true
+  validates :idx, presence: true, numericality: true
+  validates :uid, presence: true, unless: :class_id_all?
 
   def self.is_dev?(user = Core.user)
     user.has_role?('_admin/developer')
@@ -27,20 +26,16 @@ class System::Role < ActiveRecord::Base
     user.has_role?('_admin/admin')
   end
 
-  def users
-    System::User.select(:id, :name).map{|u| [u.id, u.name]}
-  end
-
-  def groups
-    items_raw = System::Group.select(:id, :name).order(:code).all.map{|g| [g.id, g.name]}
-  end
-
   def class_id_no
     [['すべて', 0], ['ユーザー', 1], ['グループ', 2]]
   end
 
   def class_id_label
     class_id_no.rassoc(class_id).try(:first)
+  end
+
+  def class_id_all?
+    class_id == 0
   end
 
   def priv_no
@@ -64,17 +59,19 @@ class System::Role < ActiveRecord::Base
     self.class.where(:table_name => table_name, :priv_name => priv_name).order(:idx)
   end
 
-  def search(params)
-    params.each do |n, v|
-      next if v.to_s == ''
-      case n
-      when 'role_id'
-        search_id v,:role_name_id unless (v.to_s == '0' || v.to_s == nil)
-      when 'priv_id'
-        search_id v,:priv_user_id unless (v.to_s == '0' || v.to_s == nil)
+  def role_name_options(user = Core.user)
+    roles = 
+      if System::Role.is_dev?(user)
+        System::RoleName.all.order(sort_no: :asc)
+      else
+        System::RoleName.where.not(table_name: "gwsub").order(sort_no: :asc)
       end
-    end if params.size != 0
-    return self
+    roles.map{|r| [r.display_name, r.id] }
+  end
+
+  def priv_name_options
+    privs = System::RoleNamePriv.joins(:priv).where(role_id: self.role_name_id).order("system_priv_names.sort_no")
+    privs.map {|p| [p.priv.try(:display_name), p.priv_id] }
   end
 
   def editable?
@@ -84,7 +81,7 @@ class System::Role < ActiveRecord::Base
   def deletable?
     if table_name.to_s == "_admin"
       # GW管理画面の管理者（システム管理者）が2名以上の場合のみ削除可
-      return System::Role.where(:table_name => '_admin', :priv_name => 'admin').count.to_i > 1
+      return System::Role.where(table_name: '_admin', priv_name: 'admin').count.to_i > 1
     else
       return true
     end
@@ -92,12 +89,21 @@ class System::Role < ActiveRecord::Base
 
 private
 
-  def before_save_setting_columns
-    unless self.role_name_id.nil?
-      self.table_name = self.role_name.table_name unless self.role_name_id.blank?
+  def set_table_name
+    if self.role_name
+      self.table_name = self.role_name.table_name
     end
-    unless self.priv_user_id.nil?
-      self.priv_name = self.priv_user.priv_name unless self.priv_user_id.blank?
+  end
+
+  def set_priv_name
+    if self.priv_user
+      self.priv_name = self.priv_user.priv_name
+    end
+  end
+
+  def set_uid
+    if self.class_id != 1
+      self.uid = self.group_id
     end
   end
 end

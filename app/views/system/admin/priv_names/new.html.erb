@@ -3,10 +3,10 @@
 <div class="pieceBody">
 <%= render 'system/admin/roles/header_menu' %>
 
-<%= form_for :item, :url => "/system/priv_names" do |f| %>
+<%= form_for :item, url: {action: :create} do |f| %>
   <%= f.error_messages %>
   <%= render 'form', f: f %>
-  <%= submit_for(f, {:caption => '保存'}) %>
+  <%= submit_for f, caption: '保存' %>
 <% end %>
 
 </div>

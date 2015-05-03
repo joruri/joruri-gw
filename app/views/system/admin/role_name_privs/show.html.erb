@@ -4,24 +4,24 @@
 <%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
-  <span class="btEdit"><%= link_to "編集", "/system/role_name_privs/#{@item.id}/edit#{@params_set}" if @item.editable? %></span>
-  <span class="btDestroy"><%= link_to "削除", "/system/role_name_privs/#{@item.id}#{@params_set}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
+  <span class="btEdit"><%= link_to "編集", {action: :edit} if @item.editable? %></span>
+  <span class="btDestroy"><%= link_to "削除", {action: :destroy}, confirm: "削除してよろしいですか？", method: :delete if @item.deletable? %></span>
 </div>
 
 <table class="show">
   <tr>
     <th>機能名</th>
-    <td><%= @item.role.display_name %></td>
+    <td><%= @item.role.display_name if @item.role %></td>
   </tr>
   <tr>
     <th>権限名</th>
-    <td><%= @item.priv.display_name %></td>
+    <td><%= @item.priv.display_name if @item.priv %></td>
   </tr>
 </table>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '戻る', "/system/role_name_privs#{@params_set}" %>
+  <%= link_to '戻る', {action: :index} %>
 </div>
 
 </div>

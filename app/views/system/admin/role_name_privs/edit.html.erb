@@ -3,10 +3,10 @@
 <div class="pieceBody">
 <%= render 'system/admin/roles/header_menu' %>
 
-<%= form_for :item, :url => "/system/role_name_privs/#{@item.id}#{@params_set}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= form_for :item, url: {action: :update}, html: {method: :put, multipart: true, id: 'itemForm'} do |f| %>
   <%= f.error_messages %>
   <%= render 'form', f: f %>
-  <%= submit_for(f, {:caption => '保存'}) %>
+  <%= submit_for f, caption: '保存' %>
 <% end %>
 
 </div>

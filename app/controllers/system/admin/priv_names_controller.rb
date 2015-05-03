@@ -7,8 +7,6 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
     @is_admin = System::Role.is_admin?
     return error_auth unless @is_dev
 
-    search_condition
-
     Page.title = "対象権限設定"
   end
 
@@ -21,38 +19,26 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
   end
 
   def new
-    @item = System::PrivName.new(:state => 'public')
+    @item = System::PrivName.new(state: 'public')
   end
 
   def create
     @item = System::PrivName.new(params[:item])
-
-    _create @item, :success_redirect_uri => "/system/priv_names?#{@qs}"
+    _create @item
   end
 
   def edit
-    @item = System::PrivName.where(:id => params[:id]).first
+    @item = System::PrivName.find(params[:id])
   end
 
   def update
     @item = System::PrivName.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item,:success_redirect_uri => "/system/priv_names/#{@item.id}?#{@qs}"
+    _update @item
   end
 
   def destroy
     @item = System::PrivName.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => "/system/priv_names?#{@qs}"
-  end
-
-private
-
-  def search_condition
-    params[:role_id] = nz(params[:role_id], @role_id)
-
-    qsa = ['role_id' , 'priv_id' , 'role' , 'priv_user']
-    @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
+    _destroy @item
   end
 end

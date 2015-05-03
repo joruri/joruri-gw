@@ -4,8 +4,8 @@
 <%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
- <span class="btEdit"><%= link_to "編集", "/system/priv_names/#{@item.id}/edit?#{@qs}" if @item.editable? %></span>
- <span class="btDestroy"><%= link_to "削除", "/system/priv_names/#{@item.id}?#{@qs}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
+ <span class="btEdit"><%= link_to "編集", {action: :edit} if @item.editable? %></span>
+ <span class="btDestroy"><%= link_to "削除", {action: :destroy}, confirm: "削除してよろしいですか？", method: :delete if @item.deletable? %></span>
 </div>
 
 <table class="show">
@@ -29,7 +29,7 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '戻る', "/system/priv_names?#{@qs}" %>
+  <%= link_to '戻る', {action: :index} %>
 </div>
 
 </div>

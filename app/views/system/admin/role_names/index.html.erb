@@ -4,7 +4,7 @@
 <%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
-  <span class="btNew"><%= link_to '新規作成', "/system/role_names/new?#{@qs}" %></span>
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
 </div>
 
 <table class="index">
@@ -17,7 +17,7 @@
     </tr>
     <% @items.each do |item| %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td style="text-align: center;"><%= link_to '詳細', "/system/role_names/#{item.id}?#{@qs}" %></td>
+      <td style="text-align: center;"><%= link_to '詳細', {action: :show, id: item.id} %></td>
       <td><%= item.display_name %></td>
       <td><%= item.table_name %></td>
       <td style="text-align: center;"><%= item.sort_no %></td>

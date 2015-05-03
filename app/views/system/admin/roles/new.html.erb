@@ -3,10 +3,10 @@
 <div class="pieceBody">
 <%= render 'header_menu' %>
 
-<%= form_for :item, :url => url_for(:action => :create) + "?#{@qs}", :html => {:method => :post} do |f| %>
+<%= form_for :item, url: {action: :create}, html: {method: :post} do |f| %>
   <%= f.error_messages %>
   <%= render 'form', f: f %>
-  <%= submit_for(f, {:caption => '保存'}) %>
+  <%= submit_for f, caption: '保存' %>
 <% end %>
 
 </div>

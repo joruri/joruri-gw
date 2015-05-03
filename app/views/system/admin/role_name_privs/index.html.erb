@@ -4,7 +4,7 @@
 <%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
-  <span class="btNew"><%= link_to '新規作成', "/system/role_name_privs/new#{@params_set}" %></span>
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
 </div>
 <%= render 'search' %>
 
@@ -17,9 +17,9 @@
     </tr>
     <% @items.each do |item| %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td style="text-align: center;"><%= link_to '詳細', "/system/role_name_privs/#{item.id}#{@params_set}" %></td>
-      <td><%= item.role.display_name %></td>
-      <td><%= item.priv.display_name %></td>
+      <td style="text-align: center;"><%= link_to '詳細', {action: :show, id: item.id} %></td>
+      <td><%= item.role.display_name if item.role %></td>
+      <td><%= item.priv.display_name if item.priv %></td>
     </tr>
     <% end %>
   </tbody>
