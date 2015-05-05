@@ -22,32 +22,6 @@ module System::Model::Base
     super
   end
 
-  def save_with_direct_sql
-    quote = Proc.new do |val|
-      self.class.connection.quote(val)
-    end
-
-    sql = "INSERT INTO #{self.class.table_name} (" + "\n"
-    sql += self.class.column_names.sort.join(',')
-    sql += ") VALUES (" + "\n"
-    i = 0
-    attributes.sort.each do |attr|
-      sql += ',' if i != 0
-      if attr[1] == nil
-        sql += 'NULL'
-      elsif attr[1].class == Time
-        sql += "'#{attr[1].strftime('%Y-%m-%d %H:%M:%S')}'"
-      else
-        sql += quote.call(attr[1])
-      end
-      i += 1
-    end
-    sql += ")"
-    self.class.connection.execute(sql)
-
-    return true
-  end
-
   module ClassMethods
     def locale(name)
       human_attribute_name(name)
