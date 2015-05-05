@@ -36,51 +36,56 @@ class FormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def datepicker(method, options = {}, picker_options = {})
-    options.reverse_merge!(value: object.read_attribute(method).try(:strftime, '%Y-%m-%d'))
-    text_field(method, options) + 
-      jquery { %| $('##{tag_id(method)}').datepicker(#{picker_options.to_json}); | }.html_safe
+    picker_base(:date, '%Y-%m-%d', method, options, picker_options)
   end
 
   def timepicker(method, options = {}, picker_options = {})
-    options.reverse_merge!(value: object.read_attribute(method).try(:strftime, '%H:%M'))
-    text_field(method, options) + 
-      jquery { %| $('##{tag_id(method)}').timepicker(#{picker_options.to_json}); | }.html_safe
+    picker_base(:time, '%H:%M', method, options, picker_options)
   end
 
   def datetimepicker(method, options = {}, picker_options = {})
-    options.reverse_merge!(value: object.read_attribute(method).try(:strftime, '%Y-%m-%d %H:%M'))
-    text_field(method, options) + 
-      jquery { %| $('##{tag_id(method)}').datetimepicker(#{picker_options.to_json}); | }.html_safe
+    picker_base(:datetime, '%Y-%m-%d %H:%M', method, options, picker_options)
   end
 
   def date_select_with_picker(method, options = {}, html_options = {}, picker_options = {})
-    picker_options.reverse_merge!(yearRange: "#{Date.today.year-5}:#{Date.today.year+5}")
-    id = tag_id(method)
-    html = date_select(method, options, html_options)
-    html << hidden_field(method, value: object.read_attribute(method).try(:strftime, '%Y-%m-%d'))
-    html << jquery { %| $('##{id}').datepicker(#{picker_options.to_json}); synchroDateSelectAndPicker('##{id}'); | }.html_safe
+    select_with_picker_base(:date, '%Y-%m-%d', method, options, html_options, picker_options)
   end
 
   def datetime_select_with_picker(method, options = {}, html_options = {}, picker_options = {})
-    picker_options.reverse_merge!(yearRange: "#{Date.today.year-5}:#{Date.today.year+5}")
-    id = tag_id(method)
-    html = datetime_select(method, options, html_options)
-    html << hidden_field(method, value: object.read_attribute(method).try(:strftime, '%Y-%m-%d %H:%M'))
-    html << jquery { %| $('##{id}').datetimepicker(#{picker_options.to_json}); synchroDatetimeSelectAndPicker('##{id}'); | }.html_safe
+    select_with_picker_base(:datetime, '%Y-%m-%d %H:%M', method, options, html_options, picker_options)
   end
 
   def datetime_select_for_mobile(method, options = {}, html_options = {})
     datetime_select(method, options, html_options).gsub('日', '日<br />').html_safe
   end
 
-  private
-
-  def jquery
-    %|<script type="text/javascript"> (function($) { $(function() { #{yield} }); })(jQuery); </script>|
-  end
-
   def object
     @object ? @object : @template.instance_variable_get("@#{@object_name}")
+  end
+
+  private
+
+  def picker_base(picker_type, format, method, options = {}, picker_options = {})
+    options.reverse_merge!(value: object.read_attribute(method).try(:strftime, format))
+    html = text_field(method, options)
+    html << jquery { %| $('##{tag_id(method)}').#{picker_type}picker(#{picker_options.to_json}); | }
+    html
+  end
+
+  def select_with_picker_base(picker_type, format, method, options = {}, html_options = {}, picker_options = {})
+    picker_options.reverse_merge!(yearRange: "#{Date.today.year-5}:#{Date.today.year+5}")
+    id = tag_id(method)
+    html = case picker_type
+      when :date; date_select(method, options, html_options)
+      when :datetime; datetime_select(method, options, html_options)
+      end
+    html << hidden_field(method, value: object.read_attribute(method).try(:strftime, format))
+    html << jquery { %| $('##{id}').#{picker_type}picker(#{picker_options.to_json}); synchro#{picker_type.capitalize}SelectAndPicker('##{id}'); | }
+    html
+  end
+
+  def jquery
+    %|<script type="text/javascript"> (function($) { $(function() { #{yield} }); })(jQuery); </script>|.html_safe
   end
 
   def tag_id(method)
@@ -88,10 +93,14 @@ class FormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def separators_from_options(options, mode = :datetime)
-    seps = [[:discard_year, '年'], [:discard_month, '月'], [:discard_day, '日']].select{|k,_| !options[k]}.map(&:last)
+    seps = []
+    seps << '年' unless options[:discard_year]
+    seps << '月' unless options[:discard_month]
+    seps << '日' unless options[:discard_day]
     if mode == :datetime
-      seps += [[:discard_hour, '時'], [:discard_minute, '分']].select{|k,_| !options[k]}.map(&:last)
-      seps += '秒' if options[:include_seconds]
+      seps << '時' unless options[:discard_hour]
+      seps << '分' unless options[:discard_minute]
+      seps << '秒' if options[:include_seconds]
     end
     seps
   end
