@@ -365,7 +365,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def edit
     @item = Gw::Schedule.find(params[:id])
-    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin)
+    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if auth_level[:edit_level] != 1 && !@quote
 
     users = []
@@ -408,7 +408,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     return http_error(404) if @item.blank?
     return error_auth unless @item.is_public_auth?(@is_gw_admin)
 
-    @auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin)
+    @auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
   end
 
   def create
@@ -467,7 +467,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def destroy
     @item = Gw::Schedule.find(params[:id])
-    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin)
+    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if auth_level[:delete_level] != 1
 
     location = 
@@ -487,7 +487,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def destroy_repeat
     @item = Gw::Schedule.find(params[:id])
-    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin)
+    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if auth_level[:delete_level] != 1
 
     Gw::Schedule.transaction do

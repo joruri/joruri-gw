@@ -1,26 +1,18 @@
-<% # app/views/gw/admin/schedules/editlending.html.erb
-#concat render '/gw/admin/schedules/header'
-#header_str = render "/gw/admin/schedules/header"
-#header_str = header_str.gsub(/\r\n|\r|\n/, "")  # デザインからの依頼で、改行を削除している。
+<div class="piece schedulePiece form">
+<div class="pieceHeader">
+<%= render '/gw/admin/schedules/piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+  <%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'form' %>
+</div>
 
-header = <<-EOL
-#{show_notice}
-#{render '/gw/admin/schedules/piece_header'}
-EOL
-content_for :form do
-  form_for :item, :url => "/gw/schedules/#{@item.id}/editlending#{@edit_params}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f|
-    concat <<-EOL
-#{f.error_messages}
-#{render 'form_lending', f: f}
-#{submit_for_update(f, :js_submitter => 'return my_submit();', :class=>:mockblock)}
-EOL
-#<span class="mock">繰り返しUI作業中につき登録・編集できません</span>
-  end
-end
-body = {
-  :body => <<-EOL
-#{@content_for_form}
-EOL
-}
-concat hhbff_struct(:schedulePiece, :form, :header=>header, :body=>body)
-%>
+<div class="pieceBodyBody scheduleform">
+<%= form_for :item, url: "/gw/schedules/#{@item.id}/editlending#{@edit_params}", html: {method: :put, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <%= render 'form_lending', f: f %>
+  <%= submit_for_update f, js_submitter: 'return my_submit();', class: :mockblock %>
+<% end %>
+</div>
+</div>
+</div>

@@ -836,6 +836,9 @@ class Gw::Schedule < Gw::Database
     if !auth.key?(:is_gw_admin)
       auth[:is_gw_admin] = Gw.is_admin_admin?
     end
+    if !auth.key?(:is_pm_admin)
+      auth[:is_pm_admin] = Gw::ScheduleProp.is_pm_admin?
+    end
     if !auth.key?(:is_ev_admin) # 月間・週刊行事予定の主管課。主管課マスタ（schedule_event_masters）で設定。
       auth[:is_ev_admin] = Gw::ScheduleEvent.is_ev_admin?
     end
