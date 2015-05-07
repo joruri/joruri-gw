@@ -442,7 +442,7 @@ class Gwcircular::Doc < Gw::Database
     doc.save
 
     if doc.state == 'unread'
-      title = "<a href=''#{doc.show_path}''>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>"
+      title = "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>"
       doc.commission_reminders.update_all(state: 1, title: title, ed_at: doc.expiry_date)
     end
   end
