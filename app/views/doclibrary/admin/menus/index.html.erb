@@ -28,6 +28,14 @@
     </tr>
     <% end %>
   <% end %>
+  <% @admin_items.each do |item| %>
+    <tr class="<%= cycle 'article', 'article cycle' %>">
+      <td class="libraryTitle"><%= link_to item.title, "/_admin/gw/link_sso/redirect_to_joruri?to=gw_ind&path=/adminlibrary/docs?title_id=#{item.id}" %></td>
+      <td class="explanation"><%= item.caption %></td>
+      <td class="manager"><%= item.display_first_admin_name %></td>
+      <td class="update"><%= item.docslast_updated_at.strftime('%y-%m-%d %H:%M') if item.docslast_updated_at %></td>
+    </tr>
+  <% end %>
 </table>
 <%= paginate @items %>
 </div>
