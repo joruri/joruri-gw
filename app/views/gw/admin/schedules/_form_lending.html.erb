@@ -1,0 +1,301 @@
+<%
+allday_radio_id = 1
+if params[:item].blank?
+  d_load_st, d_load_ed = [@item.st_at, @item.ed_at]
+else
+  d_load_st, d_load_ed = [Gw.to_time(params[:item][:st_at]), Gw.to_time(params[:item][:ed_at])]
+end
+
+if params[:action] == 'editlending'
+else
+  raise "呼び出しが不正です(action=#{params[:action]})"
+end
+@d_load_st, @d_load_ed = d_load_st, d_load_ed # => for _form_prop initialization
+%>
+
+<%=raw get_form_title_div params %>
+
+<% if @reason.present? %>
+<table class="show">
+  <tr>
+    <td colspan="2"><span style="color:red; font-weight: bold"><%= @reason %></span></td>
+  </tr>
+</table>
+<% end %>
+
+<table class="show" id="inputDatetimeNormal">
+  <tr class="start">
+    <th>開始日時<%= required %></th>
+    <td class="day"><%= date_picker_prop f, 'st_at', :errors => @item.errors, :mode => :datetime, :value => d_load_st, :minute_interval => '30' %></td>
+  </tr>
+  <tr class="close">
+    <th>終了日時<%= required %></th>
+    <td class="day">
+      <div class="timeSet">
+        <%= date_picker_prop f, 'ed_at', :errors => @item.errors, :mode => :datetime, :value => d_load_ed, :minute_interval => '30' %><br />
+        <%= required '保存前に、終了時刻を確認してください' %>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<% if @is_pm_admin %>
+<table class="show">
+  <tr>
+    <th>管理者メモ</th>
+    <td><%= form_text_area f, :admin_memo %></td>
+  </tr>
+</table>
+<% end %>
+
+<script type="text/javascript">
+//<![CDATA[
+var one_h_check = function() {
+
+  st_4i = $('item_st_at_4i').value;
+  st_4i-=0;
+  ed_4i = $('item_ed_at_4i').value;
+  ed_4i-=0;
+  st_5i = $('item_st_at_5i').value;
+  ed_5i = $('item_ed_at_5i').value;
+  flg = st_4i + 1 == ed_4i && st_5i == ed_5i;
+
+  if (st_4i + 1 == ed_4i && st_5i == ed_5i) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+var allday_check = function(obj) {
+  if (obj.checked) { // チェックボックスはチェックされています
+    item_time_disabled(true);
+    item_allday_radio_true_false(false);
+ } else { // チェックボックスはチェックされていません
+    item_time_disabled(false);
+    item_allday_radio_true_false(true);
+  }
+}
+
+var item_time_disabled = function(flg) {
+  $('item_st_at_4i').disabled = flg;
+  $('item_st_at_5i').disabled = flg;
+  $('item_ed_at_4i').disabled = flg;
+  $('item_ed_at_5i').disabled = flg;
+}
+
+var item_allday_radio_true_false = function(flg) {
+  $('item_allday_radio_id_1').disabled = flg;
+  $('item_allday_radio_id_2').disabled = flg;
+}
+
+var ed_at_123_true_false = function(flg) {
+  $('item_ed_at_1i').disabled = flg;
+  $('item_ed_at_2i').disabled = flg;
+  $('item_ed_at_3i').disabled = flg;
+}
+
+var my_load = function() {
+    Element.hide($('item_ed_at_calendar'));
+    ed_at_123_true_false(true);
+//  allday_check( $('item_allday') );
+
+}
+
+var my_submit = function() {
+  // 「OK」時の処理開始  確認ダイアログの表示
+
+  // 開始、終了の差が1時間で、管財を登録している場合、アラートを発生させる。
+  one_h = one_h_check();
+  if ( one_h ) {
+    confirm_str = '予約時間が１時間となっています。間違いありませんか？';
+    if(window.confirm(confirm_str)){// 「OK」時の処理終了
+    }
+    else{// 「キャンセル」時の処理開始
+      return false;
+    }
+  }
+  $('itemForm').submit(); // 送信
+}
+window.onload = my_load;
+
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_st_at = function() {
+  mode = $('init_st_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+  if (mode == 'datetime' || mode == 'time') {
+    hn = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+    var hne = $('item_st_at_4i').value;
+    hne-=0;
+    hne = hne + 1;
+    hne+"";
+    var hned = hne + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+  }
+  var sta;
+  var stb;
+  sta = $('item_st_at_4i').value;
+  stb = $('item_st_at_5i').value;
+  $('item_ed_at_4i').value = sta;
+  $('item_ed_at_5i').value = stb;
+  sta-=0;
+  stb-=0;
+  if (sta < 23) {
+    $('item_ed_at_4i').selectedIndex = sta + 1;
+  }
+  sty = $('item_st_at_1i').value;
+  stm = $('item_st_at_2i').value;
+  std = $('item_st_at_3i').value;
+  sty-=0;
+  stm-=0;
+  std-=0;
+  sty = sty - <%= Date.today.year - 5 -%>;
+  stm = stm - 1;
+  std = std - 1;
+  $('item_ed_at_1i').selectedIndex = sty;
+  $('item_ed_at_2i').selectedIndex = stm;
+  $('item_ed_at_3i').selectedIndex = std;
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+  $('item_ed_at').value = reted;
+  $('item_st_at').value = ret;
+}
+var update_item_st_at_from_calendar = function() {
+  mode = $('init_st_at_mode').value;
+  value = $('item_st_at').value;
+  // pp('onchanged. ' + value);
+  // $('item_st_at').value = this.value;
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_st_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_st_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+      hn = $('item_st_at_4i').value + ':' + $('item_st_at_5i').value;
+      var hne = $('item_st_at_4i').value;
+      hne-=0;
+      hne = hne + 1;
+      hne+"";
+      var hned = hne + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    $('item_ed_at').value = reted;
+    $('item_ed_at_1i').value= $('item_st_at_1i').value;
+    $('item_ed_at_2i').value= $('item_st_at_2i').value;
+    $('item_ed_at_3i').value= $('item_st_at_3i').value;
+    var sta;
+    var stb;
+    sta = $('item_st_at_4i').value;
+    stb = $('item_st_at_5i').value;
+    $('item_ed_at_4i').value = sta;
+    $('item_ed_at_5i').value = stb;
+    sta-=0;
+    stb-=0;
+    if (sta < 23) {
+      $('item_ed_at_4i').selectedIndex = sta + 1;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_ed_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_st_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_st_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_st_at_4i').selectedIndex = select_options_get_index_by_value($('item_st_at_4i'), match[1].sub(/^0/, ''));
+    $('item_st_at_5i').selectedIndex = select_options_get_index_by_value($('item_st_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var update_item_ed_at = function() {
+  mode = $('init_ed_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_ed_at').value = ret;
+
+}
+var update_item_ed_at_from_calendar = function() {
+  mode = $('init_ed_at_mode').value;
+  value = $('item_ed_at').value;
+  // pp('onchanged. ' + value);
+  // $('item_ed_at').value = this.value;
+  switch(mode) {
+  case 'datetime':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2})\s*$/);
+    for (var i=1; i<=5; i++)
+      $('item_ed_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_ed_at_'+i+'i'), match[i].sub(/^0/, ''));
+    if (mode == 'datetime' || mode == 'time') {
+      ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+      hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+      var hne = $('item_ed_at_4i').value;
+      var hned = hne + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+    }
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+
+    switch(mode) {
+    case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+    case 'date': ret = ymd; reted = ymd; break;
+    case 'time': ret = hn; reted = hned; break;
+    }
+    $('item_ed_at').value = reted;
+    break;
+  case 'date':
+    var match = value.match(/^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);
+    for (var i=1; i<=3; i++)
+      $('item_ed_at_'+i+'i').selectedIndex = select_options_get_index_by_value($('item_ed_at_'+i+'i'), match[i].sub(/^0/, ''));
+    break;
+  case 'time':
+    // this route is naver called.
+    var match = value.match(/^\s*(\d{1,2}):(\d{1,2})\s*$/);
+    $('item_ed_at_4i').selectedIndex = select_options_get_index_by_value($('item_ed_at_4i'), match[1].sub(/^0/, ''));
+    $('item_ed_at_5i').selectedIndex = select_options_get_index_by_value($('item_ed_at_5i'), match[1].sub(/^0/, ''));
+    break;
+  }
+  if (mode == 'datetime' || mode == 'date')
+  if (mode == 'datetime' || mode == 'time') {
+  }
+}
+//]]>
+</script>
+

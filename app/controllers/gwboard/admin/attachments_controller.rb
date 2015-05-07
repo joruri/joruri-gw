@@ -41,18 +41,10 @@ class Gwboard::Admin::AttachmentsController < Gw::Controller::Admin::Base
 
     params[:id] = "#{params[:u_code]}#{params[:d_code]}"
 
-    @item = if params[:system] == 'gwmonitor_base'
-        @title.base_files.find_by(id: params[:id])
-      else
-        @title.files.find_by(id: params[:id]) || @title.files.find_by(serial_no: params[:id], migrated: 1)
-      end
+    @item = load_file(@title, params[:id])
     return http_error(404) unless @item
 
-    check_id = if @item.has_attribute?(:serial_no) && @item.serial_no == params[:id].to_i
-        @item.doc.serial_no
-      else
-        @item.parent_id
-      end
+    check_id = file_check_id(@item, params[:id])
     return http_error(404) if params[:name] != sprintf('%08d', Util::CheckDigit.check(check_id))
 
     if @item.is_image
@@ -102,5 +94,34 @@ class Gwboard::Admin::AttachmentsController < Gw::Controller::Admin::Base
     end
 
     redirect_to gwboard_attachments_path(params[:parent_id]) + "?system=#{params[:system]}&title_id=#{params[:title_id]}"
+  end
+
+private
+
+  def load_file(title, id)
+    item = 
+      if params[:system] == 'gwmonitor_base'
+        title.base_files.find_by(id: id)
+      else
+        title.files.find_by(id: id)
+      end
+    item ||= title.files.find_by(serial_no: id, migrated: 1) if migrated_system?(params[:system])
+    item
+  end
+
+  def file_check_id(item, id)
+    if migrated_file_request?(item, id)
+      item.doc.serial_no
+    else
+      item.parent_id
+    end
+  end
+
+  def migrated_system?(system)
+    system.in?(['gwbbs', 'gwfaq', 'gwqa', 'doclibrary', 'digitallibrary'])
+  end
+
+  def migrated_file_request?(item, id)
+    item.has_attribute?(:serial_no) && item.serial_no == id.to_i
   end
 end

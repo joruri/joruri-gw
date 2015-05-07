@@ -68,7 +68,7 @@ conf_kinds        = nil if  @kind_id.to_i==0
   </tr>
   <tr>
     <td>任命年月日</td>
-    <td><%= f.datepicker :start_at %></td>
+    <td><%= f.text_field :start_at, value: member.start_at.try(:strftime, '%Y-%m-%d'), index: idx, class: 'datepicker' %></td>
   </tr>
   <tr>
     <td>備考</td>
@@ -77,6 +77,14 @@ conf_kinds        = nil if  @kind_id.to_i==0
   <% end %>
 </table>
 </div>
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('.datepicker').datepicker({});
+  });
+})(jQuery); 
+</script>
 
 <script type="text/javascript">
 //<![CDATA[
