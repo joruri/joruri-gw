@@ -30,7 +30,7 @@ class Sys::Admin::AirController < ApplicationController
 
     now   = Time.now
     token = Digest::MD5.hexdigest(now.to_f.to_s)
-    enc_password = Base64.encode64(Util::String::Crypt.encrypt(password))
+    enc_password = Base64.encode64(Util::Crypt.encrypt(password))
 
     user_tmp = System::User.find(user.id)
     user_tmp.air_login_id = "#{token} #{enc_password}"
@@ -53,7 +53,7 @@ class Sys::Admin::AirController < ApplicationController
     user.air_login_id = nil
     user.save(:validate => false)
 
-    user.password = Util::String::Crypt.decrypt(Base64.decode64(enc_password))
+    user.password = Util::Crypt.decrypt(Base64.decode64(enc_password))
 
     set_current_user(user)
 
