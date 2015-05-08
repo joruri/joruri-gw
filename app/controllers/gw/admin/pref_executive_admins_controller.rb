@@ -14,9 +14,7 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
   end
 
   def index
-    @items = Gw::PrefExecutive.order(u_order: :asc, id: :asc)
-      .paginate(page: params[:page], per_page: params[:limit])
-
+    @items = load_index_items
     _index @items
   end
 
@@ -65,21 +63,9 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
   end
 
   def sort_update
-    @items = Gw::PrefExecutive.order(u_order: :asc, id: :asc)
-      .paginate(page: params[:page], per_page: params[:limit])
-
-    params[:item].each do |id, param|
-      item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
-    end
-
-    if @items.map(&:valid?).all?
-      @items.each(&:save)
-      redirect_to url_for(action: :index), notice: '並び順を更新しました。'
-    else
-      flash.now[:notice] = '並び順の更新に失敗しました。'
-      render :index
-    end
+    @items = load_index_items
+    @items.each {|item| item.attributes = params[:item][item.id.to_s] if params[:item][item.id.to_s] }
+    _index_update @items
   end
 
   def csvput
@@ -117,5 +103,12 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
   def get_users
     group = System::Group.find(params[:group_id])
     render text: view_context.options_for_select(group.enabled_user_options(ldap: 1))
+  end
+
+  private
+
+  def load_index_items
+    Gw::PrefExecutive.order(u_order: :asc, id: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end

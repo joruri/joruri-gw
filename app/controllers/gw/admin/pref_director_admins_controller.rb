@@ -69,20 +69,11 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def sort_update
     @items = Gw::PrefDirector.where(parent_g_order: params[:g_cat].to_i)
-      .order(parent_g_order: :asc, u_order: :asc).paginate(page: params[:page], per_page: params[:limit])
+      .order(parent_g_order: :asc, u_order: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
 
-    params[:item].each do |id, param|
-      item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
-    end
-
-    if @items.map(&:valid?).all?
-      @items.each(&:save)
-      redirect_to url_for(action: :index), notice: '並び順を更新しました。'
-    else
-      flash.now[:notice] = '並び順の更新に失敗しました。'
-      render :index
-    end
+    @items.each {|item| item.attributes = params[:item][item.id.to_s] if params[:item][item.id.to_s] }
+    _index_update @items
   end
 
   def get_users
