@@ -1,6 +1,7 @@
 class Gw::EditLinkPieceCss < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::Name
   include Gw::Model::Cache::EditLinkPiece
 
   has_many :css_piece, :class_name => 'Gw::EditLinkPiece', :foreign_key => :block_css_id

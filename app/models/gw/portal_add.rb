@@ -1,15 +1,13 @@
 class Gw::PortalAdd  < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::UnameAndGid
   include Gw::Model::File::Base
 
   ACCEPT_FILE_EXTENSIONS = %w(.jpeg .jpg .png .gif)
 
   has_many :logs, :foreign_key => 'add_id', :class_name => 'Gw::PortalAddAccessLog'
   has_many :daily_accesses, :foreign_key => 'ad_id', :class_name => 'Gw::PortalAdDailyAccess'
-
-  before_create :set_creator
-  before_update :set_updator
 
   validates :title, :sort_no, :publish_start_at, :publish_end_at, presence: true
   validates :sort_no, numericality: true
@@ -152,15 +150,5 @@ class Gw::PortalAdd  < Gw::Database
         errors.add(:file, 'は横170ピクセル×縦50ピクセル以内にしてください。')
       end
     end
-  end
-
-  def set_creator
-    self.created_user  = Core.user.name if Core.user
-    self.created_group = Core.user_group.id if Core.user_group
-  end
-
-  def set_updator
-    self.updated_user  = Core.user.name if Core.user
-    self.updated_group = Core.user_group.id if Core.user_group
   end
 end

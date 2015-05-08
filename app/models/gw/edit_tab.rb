@@ -1,6 +1,7 @@
 class Gw::EditTab < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::Name
   include Concerns::Gw::EditTab::PublicRole
 
   acts_as_tree dependent: :destroy
@@ -11,8 +12,6 @@ class Gw::EditTab < Gw::Database
   accepts_nested_attributes_for :public_roles, allow_destroy: true
 
   before_create :set_default_values
-  before_create :set_creator
-  before_update :set_updator
   before_save :clear_needless_values
 
   validates :name, :sort_no, :is_public, presence: true
@@ -225,16 +224,6 @@ protected
     else
       "/_admin/gw/link_sso/redirect_to_joruri?to=#{other_controller_use}&path=#{CGI.escape(link_url)}"
     end
-  end
-
-  def set_creator
-    self.created_user   = Core.user.name if Core.user
-    self.created_group  = Core.user_group.name if Core.user_group
-  end
-
-  def set_updator
-    self.updated_user   = Core.user.name if Core.user
-    self.updated_group  = Core.user_group.name if Core.user_group
   end
 
   def set_default_values

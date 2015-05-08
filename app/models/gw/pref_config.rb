@@ -1,9 +1,7 @@
 class Gw::PrefConfig < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
-
-  before_create :set_creator
-  before_update :set_updator
+  include Gw::Model::Operator::UnameAndGid
 
   def display_name_select
     [['通常表示', 'normal'],['管理者にのみ表示', 'admin']]
@@ -30,19 +28,5 @@ class Gw::PrefConfig < Gw::Database
     else
       "admin"
     end
-  end
-
-private
-
-  def set_creator
-    self.created_at    = Time.now
-    self.created_user  = Core.user.name if Core.user
-    self.created_group = Core.user_group.id if Core.user_group
-  end
-
-  def set_updator
-    self.updated_at    = Time.now
-    self.updated_user  = Core.user.name if Core.user
-    self.updated_group = Core.user_group.id if Core.user_group
   end
 end

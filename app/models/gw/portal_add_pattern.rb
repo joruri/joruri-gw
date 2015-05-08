@@ -1,6 +1,7 @@
 class Gw::PortalAddPattern < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::UnameAndGid
 
   attr_accessor :skip_validate_size
 
@@ -14,9 +15,6 @@ class Gw::PortalAddPattern < Gw::Database
   validates :group_id, presence: true
   validate :validate_size, unless: :skip_validate_size
   validate :validate_place
-
-  before_create :set_creator
-  before_update :set_updator
 
   def pattern_select
     [['2',2],['3',3],['4',4],['5',5]]
@@ -71,15 +69,5 @@ class Gw::PortalAddPattern < Gw::Database
     if pattern == 2 && place == 3
       errors.add(:place, "：　表示形式が「パターン2」の場合、表示場所に「リマインダー部分」を選択できません。")
     end
-  end
-
-  def set_creator
-    self.created_user  = Core.user.name if Core.user
-    self.created_group = Core.user_group.id if Core.user_group
-  end
-
-  def set_updator
-    self.updated_user  = Core.user.name if Core.user
-    self.updated_group = Core.user_group.id if Core.user_group
   end
 end

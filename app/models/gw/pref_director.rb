@@ -1,6 +1,7 @@
 class Gw::PrefDirector < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::OuName
 
   attr_accessor :_destroy_flag
 
@@ -13,8 +14,6 @@ class Gw::PrefDirector < Gw::Database
 
   before_validation :set_user_values
   before_create :set_state
-  before_create :set_creator
-  before_update :set_updator
 
   validates :title, :u_order, presence: true
 
@@ -96,15 +95,5 @@ private
 
   def set_state
     self.state = 'off'
-  end
-
-  def set_creator
-    self.created_user  = Core.user.name if Core.user
-    self.created_group = Core.user_group.ou_name if Core.user_group
-  end
-
-  def set_updator
-    self.updated_user  = Core.user.name if Core.user
-    self.updated_group = Core.user_group.ou_name if Core.user_group
   end
 end

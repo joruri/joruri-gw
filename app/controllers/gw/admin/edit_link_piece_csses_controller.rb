@@ -32,8 +32,6 @@ class Gw::Admin::EditLinkPieceCssesController < Gw::Controller::Admin::Base
 
   def create
     @item = Gw::EditLinkPieceCss.new(params[:item])
-    @item.created_user = Core.user.name
-    @item.created_group = Core.user_group.name
     _create @item
   end
 
@@ -44,8 +42,6 @@ class Gw::Admin::EditLinkPieceCssesController < Gw::Controller::Admin::Base
   def update
     @item = Gw::EditLinkPieceCss.find(params[:id])
     @item.attributes = params[:item]
-    @item.updated_user = Core.user.name
-    @item.updated_group = Core.user_group.name
     _update @item
   end
 

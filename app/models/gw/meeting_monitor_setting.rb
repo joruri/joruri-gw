@@ -1,6 +1,7 @@
 class Gw::MeetingMonitorSetting < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::Name
 
   validates :name, :ip_address, presence: true
   validates :mail_from, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, 

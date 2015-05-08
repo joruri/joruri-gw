@@ -1,11 +1,9 @@
 class Gw::MeetingGuidePlace < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::Id
 
   belongs_to :meeting, :foreign_key => :prop_id, :class_name => 'Gw::PropMeetingroom'
-
-  before_create :set_creator
-  before_update :set_updator
 
   validates :sort_no, :state, :place, presence: true
   validates :place, length: { maximum: 20 }
@@ -50,17 +48,5 @@ class Gw::MeetingGuidePlace < Gw::Database
       options << %(<option value="#{Gw.html_escape(value.to_s)}"#{selected_attribute}#{title}>#{Gw.html_escape(text.to_s)}</option>)
     end
     options_for_select.join("\n")
-  end
-
-  private
-
-  def set_creator
-    self.created_uid = Core.user.id if Core.user
-    self.created_gid = Core.user_group.id if Core.user_group
-  end
-
-  def set_updator
-    self.updated_uid = Core.user.id if Core.user
-    self.updated_gid = Core.user_group.id if Core.user_group
   end
 end

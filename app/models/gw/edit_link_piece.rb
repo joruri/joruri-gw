@@ -1,6 +1,7 @@
 class Gw::EditLinkPiece < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gw::Model::Operator::Name
   include Gw::Model::Cache::EditLinkPiece
 
   acts_as_tree dependent: :destroy
@@ -8,9 +9,6 @@ class Gw::EditLinkPiece < Gw::Database
   has_many :opened_children, -> { where(published: "opened").order(:sort_no) }, :class_name => 'Gw::EditLinkPiece', :foreign_key => :parent_id
   belongs_to :css, :class_name => 'Gw::EditLinkPieceCss', :foreign_key => :block_css_id
   belongs_to :icon, :class_name => 'Gw::EditLinkPieceCss', :foreign_key => :block_icon_id
-
-  before_create :set_creator
-  before_update :set_updator
 
   validates :name, :sort_no, :mode, presence: true
   with_options if: lambda {|item| item.class_sso.to_i == 2} do |f|
@@ -175,17 +173,5 @@ class Gw::EditLinkPiece < Gw::Database
       end
     end
     return true
-  end
-
-  private
-
-  def set_creator
-    self.created_user   = Core.user.name if Core.user
-    self.created_group  = Core.user_group.name if Core.user_group
-  end
-
-  def set_updator
-    self.updated_user   = Core.user.name if Core.user
-    self.updated_group  = Core.user_group.name if Core.user_group
   end
 end
