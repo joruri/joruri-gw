@@ -96,4 +96,25 @@ protected
       end
     end
   end
+
+  def _index_update(items, options = {})
+    processed = false
+    ActiveRecord::Base.transaction do
+      processed = items.all?(&:editable?) && items.all?(&:valid?) && items.all?(&:save)
+    end
+
+    respond_to do |format|
+      if processed
+        yield if block_given?
+        options[:after_process].call if options[:after_process]
+        location = options[:success_redirect_uri].presence || url_for(:action => :index)
+        format.html { redirect_to location, notice: options[:notice] || '更新処理が完了しました' }
+        format.xml  { head :ok }
+      else
+        flash.now[:notice] = '更新処理に失敗しました'
+        format.html { render :action => :index }
+        format.xml  { render :xml => items.map(&:errors), :status => :unprocessable_entity }
+      end
+    end
+  end
 end

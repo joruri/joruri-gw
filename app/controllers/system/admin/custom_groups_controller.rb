@@ -39,18 +39,8 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
 
   def sort_update
     @items = load_index_items
-    params[:items].each do |id, param|
-      item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
-    end
-
-    if @items.map(&:valid?).all?
-      @items.each(&:save)
-      redirect_to url_for(action: :index), notice: '並び順を更新しました。'
-    else
-      flash.now[:notice] = '並び順の更新に失敗しました。'
-      render :index
-    end
+    @items.each {|item| item.attributes = params[:items][item.id.to_s] if params[:items][item.id.to_s] }
+    _index_update @items
   end
 
   def destroy
@@ -113,10 +103,10 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   private
 
   def load_index_items
-    System::CustomGroup
-      .tap {|g| break g.search_with_text(:name, params[:keyword]) if params[:keyword].present? }
-      .tap {|g| break g.with_owner_or_admin_role(Core.user) unless @is_gw_admin }
-      .order(sort_prefix: :asc, sort_no: :asc, id: :asc)
+    items = System::CustomGroup
+    items = items.search_with_text(:name, params[:keyword]) if params[:keyword].present?
+    items = items.with_owner_or_admin_role(Core.user) unless @is_gw_admin
+    items = items.order(sort_prefix: :asc, sort_no: :asc, id: :asc)
       .paginate(page: params[:page], per_page: params[:limit])
       .preload(:owner_group, :updater)
   end
