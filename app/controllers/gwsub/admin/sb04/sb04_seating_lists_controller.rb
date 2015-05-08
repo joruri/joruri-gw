@@ -244,8 +244,8 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
           g.bbs_url   = "/gwbbs/docs/#{item.id}?title_id=#{title_id}&limit=20&state=GROUP"
           g.ldap_name = ldap_name
           g.save(:validate => false)
+          save_ldap_codes << [g.ldap_code, item.id]
         end
-        save_ldap_codes << [g.ldap_code, item.id]
       end
     end
     return '0'
