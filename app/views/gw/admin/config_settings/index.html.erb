@@ -2,7 +2,7 @@
 <%= render 'header_str' %>
 <div class="pieceBanner"></div>
 <div class="pieceBody">
-<%= render 'menu' if @u_role==true %>
+<%= render 'menu' if @u_role==true && @role_hcs%>
 
 <%# 管理者・編集者には、切替タブを表示 %>
 <%if @u_role == true %>
