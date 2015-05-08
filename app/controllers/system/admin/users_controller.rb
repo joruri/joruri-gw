@@ -5,7 +5,6 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   def pre_dispatch
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
-    @current_no = 1
     @role_developer  = System::User.is_dev?
     @role_admin      = System::User.is_admin?
     @role_editor     = System::User.is_editor?
@@ -13,23 +12,23 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
     return error_auth unless @u_role
 
     @css = %w(/layout/admin/style.css)
-    @limit = nz(params[:limit],30)
-
-    search_condition
-
     Page.title = "ユーザー・グループ管理"
   end
 
-  def index
-    params[:state] = params[:state].presence || 'enabled'
+  def url_options
+    super.merge(params.slice(:ldap, :state, :group_id, :limit, :s_keyword).symbolize_keys)
+  end
 
-    item = System::User.new
-    item.search params
-    item.and :ldap, params[:ldap] if params[:ldap] && params[:ldap] != 'all'
-    item.and :state, params[:state] if params[:state] && params[:state] != 'all'
-    item.page params[:page], nz(params[:limit], 30)
-    item.order params[:sort], :code
-    @items = item.find(:all)
+  def index
+    params[:limit] ||= '30'
+    params[:state] ||= 'enabled'
+
+    items = System::User.eager_load(:groups)
+    items = items.where(ldap: params[:ldap]) if params[:ldap].present?
+    items = items.where(state: params[:state]) if params[:state].present?
+    items = items.where(System::UsersGroup.arel_table[:group_id].eq(nil_or_string(params[:group_id]))) if params[:group_id].present?
+    items = items.search_with_text(:code, :name, :name_en, :email, params[:s_keyword]) if params[:s_keyword].present?
+    @items = items.order(code: :asc).paginate(page: params[:page], per_page: params[:limit])
 
     _index @items
   end
@@ -39,39 +38,13 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   end
 
   def new
-    @top = System::Group.where(:level_no => 1).first
-    @group_id = @top.id
-    @item = System::User.new({
-      :state      =>  'enabled',
-      :ldap       =>  '0'
-    })
+    @item = System::User.new(state: 'enabled', ldap: 0)
   end
 
   def create
     @item = System::User.new(params[:item])
-    @item.id = params[:item]['id']
-
-    options={
-      :location => system_users_path,
-      :params=>params
-    }
-    ret = @item.save_with_rels(options)
-
-    if ret[0]==true
-      flash[:notice] = ret[1] || '登録処理が完了しました。'
-      status = params[:_created_status] || :created
-      options[:location] ||= url_for(:action => :index)
-      respond_to do |format|
-        format.html { redirect_to options[:location] }
-        format.xml  { render :xml => @item.to_xml(:dasherize => false), :status => status, :location => url_for(:action => :index) }
-      end
-    else
-      flash.now[:notice] = '登録処理に失敗しました。' + ' ' + ret[1]
-      respond_to do |format|
-        format.html { render :action => :new }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-      end
-    end
+    @item.user_groups.each {|ug| ug.user = @item } # for user_groups validation
+    _create @item
   end
 
   def edit
@@ -81,29 +54,23 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   def update
     @item = System::User.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => system_user_path(@item.id)
+    _update @item
   end
 
   def destroy
-    @item = System::User.where(:id => params[:id]).first
+    @item = System::User.find(params[:id])
     @item.state = 'disabled'
-
-    _update @item, {:notice => 'ユーザーを無効状態に更新しました。'}
+    _update @item, notice: 'ユーザーを無効状態にしました。'
   end
 
   def list
     Page.title = "ユーザー・グループ 全一覧画面"
-
-    @groups = System::Group.get_level2_groups
+    @groups = System::Group.roots
   end
 
 private
 
-  def search_condition
-    params[:limit] = nz(params[:limit], @limit)
-
-    qsa = ['limit', 's_keyword']
-    @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
+  def nil_or_string(str)
+    str == 'nil' ? nil : str
   end
 end

@@ -1,13 +1,13 @@
-<%
-  current_no = @current_no.blank? ? 0 : @current_no
-  if current_no == 1 && params[:action].index("csv").present?
-	current_no = 3
-  end
-%>
 <div class="menu">
-<a href="<%= system_users_path -%>"><span class="<%= "current_menu" if current_no == 1 -%>">ユーザー管理</span></a>
+<%= link_to system_users_path do %>
+  <span class="<%= "current_menu" if controller_name == 'users' -%>">ユーザー管理</span>
+<% end %>
 <% if @role_admin %>
-<a href="<%= system_groups_path(0) -%>"><span class="<%= "current_menu" if current_no == 2 -%>">グループ管理</span></a>
-<a href="<%= csvget_system_users_groups_csvdatas_path -%>"><span class="<%= "current_menu" if current_no == 3 -%>">CSV管理</span></a>
+  <%= link_to system_groups_path(0) do %>
+    <span class="<%= "current_menu" if controller_name.in?(['groups', 'users_groups']) -%>">グループ管理</span>
+  <% end %>
+  <%= link_to csvget_system_users_groups_csvdatas_path do %>
+    <span class="<%= "current_menu" if controller_name == 'users_groups_csvdatas' -%>">CSV管理</span>
+  <% end %>
 <% end %>
 </div>

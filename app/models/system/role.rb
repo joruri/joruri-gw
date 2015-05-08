@@ -18,6 +18,14 @@ class System::Role < ActiveRecord::Base
   validates :idx, presence: true, numericality: true
   validates :uid, presence: true, unless: :class_id_all?
 
+  scope :roles_for_user, ->(user = Core.user) {
+    where([
+      arel_table[:class_id].eq(0), 
+      arel_table[:class_id].eq(1).and( arel_table[:uid].eq(user.id) ),
+      arel_table[:class_id].eq(2).and( arel_table[:uid].in(user.first_group_and_ancestors_ids) )
+    ].reduce(:or))
+  }
+
   def self.is_dev?(user = Core.user)
     user.has_role?('_admin/developer')
   end

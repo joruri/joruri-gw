@@ -3,100 +3,83 @@ class System::Admin::GroupsController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
+    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+
     @role_admin = System::User.is_admin?
     return error_auth unless @role_admin
 
-    @current_no = 2
-    @action = params[:action]
     if params[:parent].blank? || params[:parent] == '0'
-      parent_id = 1
+      @parent = System::Group.root
     else
-      parent_id = params[:parent]
+      @parent = System::Group.find(params[:parent])
     end
-    @parent = System::Group.where(:id => parent_id).first
-    return http_error(404) if @parent.blank?
+    return http_error(404) unless @parent
 
     Page.title = "ユーザー・グループ管理"
   end
 
+  def url_options
+    super.merge(params.slice(:ldap, :state).symbolize_keys)
+  end
+
   def index
-    params[:state] = params[:state].presence || 'enabled'
+    params[:state] ||= 'enabled'
 
-    item = System::Group.new
-    item.and :parent_id, @parent.id
-    item.and :ldap, params[:ldap] if params[:ldap] && params[:ldap] != 'all'
-    item.and :state, params[:state] if params[:state] && params[:state] != 'all'
-    item.page  params[:page], params[:limit]
-    order = "state DESC,sort_no,code"
-    @items = item.find(:all, :order=>order)
-
+    items = System::Group.where(parent_id: @parent.id)
+    items = items.where(ldap: params[:ldap]) if params[:ldap].present?
+    items = items.where(state: params[:state]) if params[:state].present?
+    items = items.search_with_text(:code, :name, :name_en, :email, params[:s_keyword]) if params[:s_keyword].present?
+    @items = items.order(sort_no: :asc, code: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
+    
     _index @items
   end
 
   def show
-    @item = System::Group.new.find(params[:id])
+    @item = System::Group.find(params[:id])
     _show @item
   end
 
   def new
-    @item = System::Group.new({
-        :parent_id    =>  @parent.id,
-        :state        =>  'enabled',
-        :level_no     =>  @parent.level_no.to_i + 1,
-        :version_id   =>  @parent.version_id.to_i,
-        :start_at     =>  Time.now.strftime("%Y-%m-%d 00:00:00"),
-        :sort_no      =>  @parent.sort_no.to_i ,
-        :ldap_version =>  nil,
-        :ldap         =>  0
-    })
+    @item = System::Group.new(
+      parent_id: @parent.id,
+      state: 'enabled',
+      level_no: @parent.level_no.to_i + 1,
+      version_id: @parent.version_id.to_i,
+      start_at: Date.today,
+      sort_no: @parent.sort_no.to_i,
+      ldap: 0
+    )
   end
 
   def create
     @item = System::Group.new(params[:item])
-    @item.parent_id     = @parent.id
-    @item.level_no      = @parent.level_no.to_i + 1
-    @item.version_id    = @parent.version_id.to_i
-    @item.ldap_version  = nil
-    @item.ldap          = 0
+    @item.parent_id = @parent.id
+    @item.level_no = @parent.level_no.to_i + 1
+    @item.version_id = @parent.version_id.to_i
     _create @item
   end
 
   def update
-    @item = System::Group.new.find(params[:id])
+    @item = System::Group.find(params[:id])
     @item.attributes = params[:item]
     _update @item
   end
 
   def destroy
-    @item = System::Group.new.find(params[:id])
-    # 所属するユーザーが存在する場合は不可
-    ug_cond="group_id=#{@item.id}"
-    user_count = System::UsersGroup.where(ug_cond).count
-    # 下位に有効な所属が存在する場合は不可
-    g_cond="state='enabled' and parent_id=#{@item.id}"
-    group_count = System::Group.where(g_cond).count
+    @item = System::Group.find(params[:id])
 
-    if user_count == 0 and group_count == 0
-      @item.state  = 'disabled'
-      @item.end_at = Time.now.strftime("%Y-%m-%d 00:00:00")
-      _update @item,{:success_redirect_uri=>url_for(:action=>'show'),:notice=>'無効にしました。'}
+    if @item.disableable?
+      @item.state = 'disabled'
+      @item.end_at = Date.today
+      _update @item, location: url_for(action: :show), notice: '無効にしました。'
     else
-      flash[:notice] = flash[:notice]||'ユーザーが所属しているか、下位に有効な所属があるときは、無効にできません。'
-      redirect_to :action=>'show'
+      redirect_to url_for(action: :show), notice: 'ユーザーが所属しているか、下位に有効な所属があるときは、無効にできません。'
     end
-  end
-
-  def item_to_xml(item, options = {})
-    options[:include] = [:status]
-    xml = ''; xml << item.to_xml(options) do |n|
-    end
-    return xml
   end
 
   def list
     Page.title = "ユーザー・グループ 全一覧画面"
-
-    @groups = System::Group.get_level2_groups
+    @groups = System::Group.roots
   end
-
 end

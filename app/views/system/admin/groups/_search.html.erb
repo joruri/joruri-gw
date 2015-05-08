@@ -1,10 +1,15 @@
-<%= form_tag '', :method => :get, :class => 'search' do %>
+<%= form_tag '', method: :get, class: 'search' do %>
 <table>
   <tr>
-    <td>LDAP<%= select_tag :ldap, options_for_select([['全て', 'all']] + System::Group.ldap_options, params[:ldap]) %></td>
-    <td>状態<%= select_tag :state, options_for_select([['全て', 'all']] + System::Group.state_options, params[:state]) %></td>
+    <th>キーワード</th>
+    <td><%= text_field_tag :s_keyword, params[:s_keyword], size: 20 %></td>
+    <th>状態</th>
+    <td><%= select_tag :state, options_for_select([['全て', '']] + System::Group.state_options, params[:state]) %></td>
+    <th>LDAP同期</th>
+    <td><%= select_tag :ldap, options_for_select([['全て', '']] + System::Group.ldap_options, params[:ldap].present? ? params[:ldap].to_i : params[:ldap]) %></td>
     <td class="submitters">
-      <%= submit_tag '検索', :name => :search %>
+      <%= submit_tag '検索', name: :search %>
+      <%= submit_tag 'リセット', name: :reset %>
     </td>
   </tr>
 </table>

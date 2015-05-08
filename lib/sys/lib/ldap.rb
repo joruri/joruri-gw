@@ -3,6 +3,8 @@ class Sys::Lib::Ldap
   attr_accessor :host
   attr_accessor :port
   attr_accessor :base
+  attr_accessor :domain
+  attr_accessor :bind_dn
 
   ## Initializer.
   def initialize(params = nil)
@@ -11,12 +13,16 @@ class Sys::Lib::Ldap
       params = {
         :host => conf['host'],
         :port => conf['port'],
-        :base => conf['base']
+        :base => conf['base'],
+        :domain => conf['domain'],
+        :bind_dn => conf['bind_dn']
       }
     end
     self.host = params[:host]
     self.port = params[:port]
     self.base = params[:base]
+    self.domain = params[:domain]
+    self.bind_dn = params[:bind_dn] || "uid=[uid],[ous],[base]"
 
     return nil if host.blank? || port.blank? || base.blank?
 

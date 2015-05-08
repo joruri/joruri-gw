@@ -1,0 +1,25 @@
+<% groups.each do |group| %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細', system_group_path(group.parent_id, group.id) unless group.root? %></td>
+    <td>グループ</td>
+    <td><%= group.code -%></td>
+    <td><span style="margin-left:<%= (group.level_no.to_i-1)*2 %>em;"><%= group.name -%></span></td>
+    <td><%= group.email -%></td>
+    <td><%= System::UsersGroup.state_show(group.state) -%></td>
+    <td><%= System::UsersGroup.ldap_show(group.ldap) -%></td>
+  </tr>
+  <% if controller_path != "system/admin/groups" %>
+    <% group.users.each do |user| %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', system_user_path(user) %></td>
+        <td>ユーザー</td>
+        <td><%= user.code -%></td>
+        <td><span style="margin-left:<%= group.level_no.to_i*2 %>em;"><%= user.name -%></span></td>
+        <td><%= user.email -%></td>
+        <td><%= System::UsersGroup.state_show(user.state) -%></td>
+        <td><%= System::UsersGroup.ldap_show(user.ldap) -%></td>
+      </tr>
+    <% end %>
+  <% end %>
+  <%= render 'system/admin/users/list_users_groups', groups: group.children %>
+<% end %>

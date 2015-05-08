@@ -7,7 +7,7 @@
 <%= render '/system/admin/groups/navi' %>
 
 <div class="editingBox">
-  <span class="btNew"><%= link_to '新規作成', new_system_users_group_path %></span>
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
 </div>
 
 <% if @items.blank? %>
@@ -18,23 +18,23 @@
     <tr>
       <th>詳細</th>
       <th>ユーザーID</th>
-      <th>氏名</th>
-      <th>役職</th>
+      <th>ユーザー名</th>
       <th>メールアドレス</th>
-      <th>本務・兼務</th>
+      <th>役職</th>
       <th>LDAP同期</th>
       <th>状態</th>
+      <th>本務・兼務</th>
     </tr>
     <% @items.each do |item| %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', "/system/#{item.group_id}/users_groups/#{item.id}" %></td>
+      <td><%= link_to '詳細', {action: :show, parent: item.group_id, id: item.id} %></td>
       <td><%= item.user_code %></td>
-      <td><%= safe{item.user.name} %></td>
-      <td><%= safe{item.user.official_position} %></td>
-      <td><%= safe{item.user.email} %></td>
+      <td><%= item.user.name if item.user %></td>
+      <td><%= item.user.email if item.user %></td>
+      <td><%= item.user.official_position if item.user %></td>
+      <td><%= System::UsersGroup.ldap_show(item.user.ldap) if item.user %></td>
+      <td><%= System::UsersGroup.state_show(item.user.state) if item.user %></td>
       <td><%= System::UsersGroup.job_order_show(item.job_order) %></td>
-      <td><%= safe{System::UsersGroup.ldap_show(item.user.ldap)} %></td>
-      <td><%= safe{System::UsersGroup.state_show(item.user.state)} %></td>
     </tr>
     <% end %>
   </tbody>

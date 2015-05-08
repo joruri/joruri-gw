@@ -4,7 +4,7 @@ selected_edit_group_options = @item.selected_edit_group_options
 <table border="0">
   <tr>
     <td class="userChange">
-      <%= select_tag :edit_groups, options_for_select(System::Group.get_group_select('', '', add_conditions: "level_no = 3"), Core.user_group.id), size: 10, style: 'width:300px;', multiple: true -%>
+      <%= select_tag :edit_groups, options_for_select(System::Group.enabled_groups_for_options.map{|g| [g.ou_name, g.id]}, Core.user_group.id), size: 10, style: 'width:300px;', multiple: true -%>
     </td>
     <td>
       <%= button_tag '追加 →', type: :button, id: 'add_edit_groups' -%><br /><br />

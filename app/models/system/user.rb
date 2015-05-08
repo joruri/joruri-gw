@@ -3,12 +3,12 @@ class System::User < ActiveRecord::Base
   include System::Model::Base
   include System::Model::Base::Content
 
-  has_many :group_rels, :foreign_key => :user_id, :class_name => 'System::UsersGroup', :primary_key => :id
+  attr_accessor :in_password, :in_group_id, :encrypted_password
+
   has_many :user_groups, :foreign_key => :user_id, :class_name => 'System::UsersGroup'
   has_many :groups, -> { order(System::UsersGroup.arel_table[:job_order], System::Group.arel_table[:sort_no]) }, :through => :user_groups, :source => :group
   has_many :user_group_histories, :foreign_key => :user_id,:class_name => 'System::UsersGroupHistory'
   has_many :users_custom_groups, :foreign_key => :user_id, :dependent => :destroy
-
   has_many :logins, -> { order(:id => :desc) }, :foreign_key => :user_id, :class_name => 'System::LoginLog', :dependent => :delete_all
 
   has_one :todo_property, :foreign_key => :uid, :class_name => 'Gw::Property::TodoSetting'
@@ -18,13 +18,12 @@ class System::User < ActiveRecord::Base
   accepts_nested_attributes_for :user_groups, :allow_destroy => true,
     :reject_if => proc{|attrs| attrs['group_id'].blank?}
 
-  attr_accessor :in_password, :in_group_id, :encrypted_password
-
-  validates_presence_of :code, :name, :state, :ldap
-  validates_uniqueness_of :code
-
   before_save :encrypt_password
   after_save :save_users_group
+
+  validates :name, :state, :ldap, presence: true
+  validates :code, presence: true, uniqueness: true, 
+    format: { with: /\A[0-9A-Za-z\-\_]+\z/, message: "は半角英数字および半角アンダーバーのみ使用可能です。" }
 
   scope :with_enabled, -> { where(state: 'enabled') }
 
@@ -33,7 +32,7 @@ class System::User < ActiveRecord::Base
   end
 
   def name_and_code
-    name + '(' + code + ')'
+    "#{name}(#{code})"
   end
 
   def name_with_account
@@ -41,28 +40,18 @@ class System::User < ActiveRecord::Base
   end
 
   def display_name
-    return "#{name} (#{code})"
-  end
-
-  def label(name)
-    case name; when nil; end
+    "#{name} (#{code})"
   end
 
   def group_name
-    user_groups.get_gname(id)
+    groups.first.try(:ou_name)
   end
 
-  def groups_and_ancestors
-    return @groups_and_ancestors if @groups_and_ancestors
-    @groups_and_ancestors = (groups + groups.map(&:ancestors).flatten).uniq
-  end
-
-  def show_group_name(error = Gw.user_groups_error)
-    group = self.groups.collect{|x| ("#{x.code}") + %Q(#{x.name})}.join(' ')
-    if group.blank?
-      return error
+  def show_group_name(none = Gw.user_groups_error)
+    if groups.present?
+      groups.map(&:ou_name).join(', ')
     else
-      return group
+      none
     end
   end
 
@@ -83,8 +72,12 @@ class System::User < ActiveRecord::Base
     [['非同期',0],['同期',1]]
   end
 
+  def mobile_access_label
+    self.class.m_access_select.rassoc(mobile_access).try(:first)
+  end
+
   def self.m_access_select
-    [['不許可（標準）',0],['許可',1]]
+    [['不可（標準）',0],['許可',1]]
   end
 
   def self.m_access_show(access)
@@ -127,24 +120,6 @@ class System::User < ActiveRecord::Base
     self.where("id=#{uid}").first
   end
 
-  def delete_group_relations
-    System::UsersGroup.delete_all(:user_id => id)
-    return true
-  end
-
-  def search(params)
-    params.each do |n, v|
-      next if v.to_s == ''
-
-      case n
-      when 's_keyword'
-        search_keyword v, :code , :name , :name_en , :email
-      end
-    end if params.size != 0
-
-    return self
-  end
-
   def has_role?(*table_privs)
     table_privs.each do |table_priv|
       table, priv = table_priv.split('/')
@@ -156,81 +131,73 @@ class System::User < ActiveRecord::Base
   end
 
   def has_table_priv?(table, priv)
-    roles = System::Role.arel_table
-    System::Role.where(table_name: table, priv_name: priv).where([
-        roles[:class_id].eq(0), 
-        roles[:class_id].eq(1).and( roles[:uid].eq(id) ), 
-        roles[:class_id].eq(2).and( roles[:uid].in(groups[0].self_and_ancestors.map(&:id)) )
-      ].reduce(:or)
-    ).order(:idx).first.try(:priv) == 1
+    role = System::Role.where(table_name: table, priv_name: priv).roles_for_user(self).order(idx: :asc).first
+    role.try(:priv) == 1
   end
   memoize :has_table_priv?
 
-  def has_auth?(name)
-    auth = {
-      :none     => 0,
-      :reader   => 1,
-      :creator  => 2,
-      :editor   => 3,
-      :designer => 4,
-      :manager  => 5,
-      }
-
-    return 5
+  #ユーザID（user code)で有効な文字か？
+  def self.valid_user_code_characters?(string)
+    return self.half_width_characters?(string)
   end
 
-  def has_priv?(action, options = {})
-    return true
-    return true if has_auth?(:manager)
-    return nil unless options[:item]
-
-    item = options[:item]
-    if item.kind_of?(ActiveRecord::Base)
-      item = item.unid
+  def self.half_width_characters?(string)
+    # 半角英数字、および半角アンダーバーのチェック
+    if string =~  /^[0-9A-Za-z\_]+$/
+      return true
+    else
+      false
     end
-
-    cond  = "user_id = :user_id"
-    cond += " AND role_id IN (" +
-      " SELECT role_id FROM system_object_privileges" +
-      " WHERE action = :action AND item_unid = :item_unid )"
-    params = {
-      :user_id   => id,
-      :action    => action.to_s,
-      :item_unid => item,
-    }
-    System::UsersRole.where(cond, params).first
   end
 
-  def self.logger
-    @@logger ||= RAILS_DEFAULT_LOGGER
+  def first_group_and_ancestors_ids
+    if groups.first
+      groups.first.self_and_ancestors.map(&:id)
+    else
+      []
+    end
+  end
+
+  def previous_login_date
+    return @previous_login_date if @previous_login_date
+    if (list = logins.order(:created_at).limit(2)).size != 2
+      return nil
+    end
+    @previous_login_date = list[1].login_at
   end
 
   ## Authenticates a user by their account name and unencrypted password.  Returns the user or nil.
   def self.authenticate(in_account, in_password, encrypted = false)
-    in_password = Util::String::Crypt.decrypt(in_password) if encrypted
+    in_password = Util::Crypt.decrypt(in_password) if encrypted
 
-    user = nil
     self.where(code: in_account, state: 'enabled').all.each do |u|
       if u.ldap == 1
-        ## LDAP Auth
-        next unless ou1 = u.groups[0]
-        next unless ou2 = ou1.parent
-        dn = "uid=#{u.code},ou=#{ou1.ou_name},ou=#{ou2.ou_name},#{Core.ldap.base}"
-
         if Core.ldap.connection.bound?
           Core.ldap.connection.unbind
           Core.ldap = nil
         end
-        next unless Core.ldap.bind(dn, in_password)
-        u.password = in_password
+        if Core.ldap.bind(u.bind_dn, in_password)
+          u.password = in_password
+          return u
+        end
       else
-        ## DB Auth
-        next if in_password != u.password || u.password.to_s == ''
+        if u.password.present? && u.password == in_password
+          return u
+        end
       end
-      user = u
-      break
     end
-    return user
+    return nil
+  end
+
+  def bind_dn
+    group_path = groups.first.self_and_ancestors.reject(&:root?)
+    ous = group_path.map{|g| "ou=#{g.ou_name}"}.join(',')
+
+    Core.ldap.bind_dn
+      .gsub("[base]", Core.ldap.base.to_s)
+      .gsub("[domain]", Core.ldap.domain.to_s)
+      .gsub("[uid]", code.to_s)
+      .gsub("[ous]", ous.to_s)
   end
 
   def self.encrypt(in_password, salt)
@@ -243,7 +210,7 @@ class System::User < ActiveRecord::Base
 
   def encrypt_password
     return if password.blank?
-    Util::String::Crypt.encrypt(password)
+    Util::Crypt.encrypt(password)
   end
 
   def authenticated?(in_password)
@@ -260,12 +227,6 @@ class System::User < ActiveRecord::Base
     save(:validate => false)
   end
 
-  def remember_me
-    self.remember_token_expires_at = 2.weeks.from_now.utc
-    self.remember_token            = encrypt("#{email}--#{remember_token_expires_at}")
-    save(:validate => false)
-  end
-
   def forget_me
     self.remember_token_expires_at = nil
     self.remember_token            = nil
@@ -273,124 +234,8 @@ class System::User < ActiveRecord::Base
     update_attributes :remember_token_expires_at => nil, :remember_token => nil
   end
 
-  def previous_login_date
-    return @previous_login_date if @previous_login_date
-    if (list = logins.order(:created_at).limit(2)).size != 2
-      return nil
-    end
-    @previous_login_date = list[1].login_at
-  end
-
-  #ユーザID（user code)で有効な文字か？
-  def self.valid_user_code_characters?(string)
-    return self.half_width_characters?(string)
-  end
-
-  def self.half_width_characters?(string)
-    # 半角英数字、および半角アンダーバーのチェック
-    if string =~  /^[0-9A-Za-z\_]+$/
-      return true
-    else
-      false
-    end
-  end
-
-  def save_with_rels(options)
-    # only user create
-    # create users_groups / users_group_histsorires after user create
-    params = options[:params]
-    ret = []
-    ret[0]  = true
-    ret[1]  = ""
-
-    if System::User.valid_user_code_characters?(self.code) == false
-      ret[1]="ユーザーIDは半角英数字、および半角アンダーバーのみのデータとしてください。"
-      ret[0]=false
-      return ret
-    end
-
-
-    # validate of params
-    valid = true
-
-    if params[:ug]['group_id'].to_i==0
-      valid = false
-    end
-
-    if params[:ug]['start_at'].blank?
-      valid = false
-    else
-      start_dt  = params[:ug]['start_at'].split('-')
-      if start_dt.size == 3
-        st_at = Time.local(start_dt[0],start_dt[1],start_dt[2] , 0 , 0 , 0 )
-      else
-        valid = false
-      end
-    end
-
-    if params[:ug]['end_at'].blank?
-      ed_at = nil
-      valid = true
-    else
-      end_dt  = params[:ug]['end_at'].split('-')
-      if end_dt.size==3
-        ed_at = Time.local(end_dt[0],end_dt[1],end_dt[2] , 0 , 0 , 0 )
-      else
-        valid = false
-      end
-    end
-
-    if valid==false
-      ret[1]="所属の指定・配属の日付けにエラーがあります。"
-      ret[0]=false
-      return ret
-    end
-
-    # save user
-    if self.save
-
-      if params[:ug]
-          ugr = System::UsersGroup.new
-          ugr.user_id   = self.id
-          ugr.group_id  = params[:ug]['group_id'].to_i
-          ugr.job_order = params[:ug]['job_order'].to_i
-          ugr.start_at  = st_at
-          ugr.end_at    = ed_at
-        if ugr.save
-          ugh = System::UsersGroupHistory.new
-          ugh.user_id   = self.id
-          ugh.group_id  = params[:ug]['group_id'].to_i
-          ugh.job_order = params[:ug]['job_order'].to_i
-          ugh.start_at  = st_at
-          ugh.end_at    = ed_at
-          #ugh.save(:validate=>false)
-          if ugh.save
-          else
-            ret[1] = '登録ユーザーのグループ割当に失敗しました。'
-            ret[0]=false
-            return ret
-          end
-        else
-          ret[1] = '登録ユーザーのグループ割当に失敗しました。'
-          ret[0]=false
-          return ret
-        end
-      else
-          ret[1] = '登録ユーザーのグループ割当に失敗しました。'
-          ret[0]=false
-          return ret
-      end
-      ret[1]=""
-      ret[0]=true
-      return ret
-    else
-      ret[1]="登録に失敗しました。"
-      ret[0]=false
-      return ret
-    end
-  end
-
 protected
+
   def password_required?
     password.blank? || !in_password.blank?
   end

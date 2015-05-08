@@ -8,24 +8,18 @@
 
 <div class="editingBox">
   <span class="btEdit">
-    <%= action_menu :edit %>
+    <%= link_to '編集', {action: :edit} if @item.editable? %>
   </span>
   <span class="btDestroy">
-    <%= action_menu :destroy %>
+    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' if @item.deletable? %>
   </span>
 </div>
 
-<div>
-ユーザーが所属している所属の削除はできません。
-<br />また、削除は、終了日を設定し、状態を「無効」に変更するだけです。現在は、コード・名称の再利用はできませんので、注意してください。
-</div>
-
-<% user = @item.user %>
 <table class="show">
   <tbody>
     <tr>
       <th>ユーザー</th>
-      <td><%= safe{user.name} %></td>
+      <td><%= @item.user.name if @item.user %></td>
     </tr>
     <tr>
       <th>所属グループ</th>
@@ -33,7 +27,7 @@
     </tr>
     <tr>
       <th>役職</th>
-      <td><%= safe{user.official_position} %></td>
+      <td><%= @item.user.official_position if @item.user %></td>
     </tr>
     <tr>
       <th>本務・兼務</th>
@@ -41,21 +35,21 @@
     </tr>
     <tr>
       <th>配属開始日</th>
-      <td><%= safe{Gw.date_str(@item.start_at)} %></td>
+      <td><%=l @item.start_at, format: :date if @item.start_at %></td>
     </tr>
     <tr>
       <th>配属終了日</th>
-      <td><%= safe{Gw.date_str(@item.end_at)} %></td>
+      <td><%=l @item.end_at, format: :date if @item.end_at %></td>
     </tr>
     <tr>
       <th>状態</th>
-      <td><%= safe{System::UsersGroup.state_show(user.state) } %></td>
+      <td><%= System::UsersGroup.state_show(@item.user.state) if @item.user %></td>
     </tr>
   </tbody>
 </table>
 
 <div class="btReturn">
-  <%= link_to '戻る', system_users_groups_path(@parent) %>
+  <%= link_to '戻る', {action: :index} %>
 </div>
 
 </div>

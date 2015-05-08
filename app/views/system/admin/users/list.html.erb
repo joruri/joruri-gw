@@ -5,7 +5,7 @@
 <%= render 'header_menu' %>
 
 <div class="editingBox">
-  <span class="btNew"><%= link_to '新規作成', new_system_user_path %></span>
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
 </div>
 <%= render 'navi' %>
 <%= render 'list_table' %>

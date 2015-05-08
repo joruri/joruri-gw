@@ -1,16 +1,43 @@
 <%= required_head %>
 <table class="show">
-  <% if params[:action].in?(['new', 'create']) %>
+  <% if @item.new_record? %>
   <tr>
     <th>ユーザID<%= required %></th>
-    <td><%= f.text_field :code, :class => 'string', :style => 'width: 200px;' %></td>
+    <td><%= f.text_field :code, class: 'string', style: 'width: 200px;' %></td>
   </tr>
   <% else %>
   <tr>
-    <th>ユーザID</th>
-    <td><%= @item.code%></td>
+    <th>ユーザーID</th>
+    <td><%= @item.code %></td>
   </tr>
   <% end %>
+  <tr>
+    <th>ユーザー名<%= required %></th>
+    <td><%= f.text_field :name, class: 'string name', style: 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>ユーザー名(英)</th>
+    <td><%= f.text_field :name_en, class: 'string name', style: 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス</th>
+    <td><%= f.text_field :email, class: 'string email', style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th>役職</th>
+    <td><%= f.text_field :official_position, class: 'string name', style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th>担当</th>
+    <td><%= f.text_field :assigned_job, class: 'string name', style: 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= f.text_field :sort_no, class: 'string name', style: 'width: 400px;' %></td>
+  </tr>
+</table>
+
+<table class="show">
   <tr>
     <th>状態<%= required %></th>
     <td><%= f.radio_buttons :state, @item.class.state_options %></td>
@@ -20,66 +47,50 @@
     <td><%= f.radio_buttons :ldap, @item.class.ldap_options %></td>
   </tr>
   <tr>
-    <th>名前<%= required %></th>
-    <td><%= f.text_field :name, :class => 'string name', :style => 'width: 200px;' %></td>
-  </tr>
-  <tr>
-    <th>名前(英)</th>
-    <td><%= f.text_field :name_en, :class => 'string name', :style => 'width: 200px;' %></td>
-  </tr>
-  <tr>
     <th>パスワード</th>
-    <td><%= f.text_field :password, :class => 'string name', :style => 'width: 200px;' %></td>
+    <td><%= f.text_field :password, class: 'string name', style: 'width: 200px;' %></td>
   </tr>
   <tr>
-    <th>メールアドレス</th>
-    <td><%= f.text_field :email, :class => 'string email', :style => 'width: 400px;' %></td>
+    <th>モバイルアクセス</th>
+    <td><%= f.radio_buttons :mobile_access, @item.class.m_access_select %></td>
   </tr>
   <tr>
-    <th>役職</th>
-    <td><%= f.text_field :official_position, :class => 'string name', :style => 'width: 400px;' %></td>
-  </tr>
-  <tr>
-    <th>担当</th>
-    <td><%= f.text_field :assigned_job, :class => 'string name', :style => 'width: 400px;' %></td>
+    <th>モバイルパスワード</th>
+    <td><%= f.text_field :mobile_password, class: 'string name', style: 'width: 200px;' %></td>
   </tr>
 </table>
 
-<% if params[:action].in?(['new', 'create']) %>
-<br />
+<% if @item.new_record? %>
 <div>登録するユーザーの所属を指定してください</div>
-<table class="show">
-  <tr>
-    <th>グループ</th>
-    <td><%= select_tag('ug[group_id]', options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @group_id || safe{params[:ug][:group_id]}), :include_blank => true) %></td>
-  </tr>
-  <tr>
-    <th>本務・兼務</th>
-    <td>
-      <%= radio_button_tag 'ug[job_order]', 0, params[:ug] ? params[:ug][:job_order] == '0' : false %><%= label_tag 'ug_job_order_0', '本務' %>
-      <%= radio_button_tag 'ug[job_order]', 1, params[:ug] ? params[:ug][:job_order] == '1' : false %><%= label_tag 'ug_job_order_1', '兼務' %>
-      <%= radio_button_tag 'ug[job_order]', 9, params[:ug] ? params[:ug][:job_order] == '9' : true  %><%= label_tag 'ug_job_order_9', '仮配属' %>
-    </td>
-  </tr>
-  <tr>
-    <th>配属開始日</th>
-    <td>
-      <%= text_field_tag 'ug[start_at]', safe{params[:ug] ? params[:ug][:start_at] : Gw.date_str(Time.now)}, class: 'datepicker' %>
-    </td>
-  </tr>
-  <tr>
-    <th>配属終了日</th>
-    <td>
-      <%= text_field_tag 'ug[end_at]', safe{params[:ug][:end_at]}, class: 'datepicker' %>
-    </td>
-  </tr>
-</table>
+<%
+if @item.user_groups.blank?
+  @item.user_groups.build(
+    group_id: System::Group.root.id, 
+    job_order: 0, 
+    start_at: Date.today,
+    skip_user_id_validation: true
+  )
+end
+%>
+<%= f.fields_for :user_groups do |f2| %>
+  <%= f2.hidden_field :skip_user_id_validation %>
+  <table class="show">
+    <tr>
+      <th>グループ</th>
+      <td><%= f2.select :group_id, options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, f2.object.group_id), include_blank: true %></td>
+    </tr>
+    <tr>
+      <th>本務・兼務</th>
+      <td><%= f2.radio_buttons :job_order, f2.object.class.job_order_options %></td>
+    </tr>
+    <tr>
+      <th>配属開始日</th>
+      <td><%= f2.datepicker :start_at %></td>
+    </tr>
+    <tr>
+      <th>配属終了日</th>
+      <td><%= f2.datepicker :end_at %></td>
+    </tr>
+  </table>
 <% end %>
-
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $('input.datepicker').datepicker();
-  });
-})(jQuery);
-</script>
+<% end %>

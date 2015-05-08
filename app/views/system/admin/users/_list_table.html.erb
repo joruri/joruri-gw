@@ -2,53 +2,13 @@
   <tbody>
     <tr>
       <th></th>
-      <th>ID</th>
-      <th>階層</th>
       <th>種別</th>
-      <th>LDAP同期</th>
-      <th>状態</th>
+      <th>ID</th>
       <th>名前</th>
+      <th>メールアドレス</th>
+      <th>状態</th>
+      <th>LDAP同期</th>
     </tr>
-    <% @groups.each do |group| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td>
-        <%= link_to '詳細', "/system/#{group.parent_id}/groups/#{group.id}" %>
-      </td>
-      <td><%= group.code -%></td>
-      <td><%= System::Group.level_show(group.level_no) -%></td>
-      <td>グループ</td>
-      <td><%= System::UsersGroup.ldap_show(group.ldap) -%></td>
-      <td><%= System::UsersGroup.state_show(group.state) -%></td>
-      <td><%= group.name -%></td>
-    </tr>
-      <% group.children.order(:code, :sort_no, :id).each do |c_group| %>
-      <tr class="<%= cycle '', 'cycle' %>">
-        <td>
-          <%= link_to '詳細', "/system/#{c_group.parent_id}/groups/#{c_group.id}" %>
-        </td>
-        <td><%= c_group.code -%></td>
-        <td><%= System::Group.level_show(c_group.level_no) -%></td>
-        <td>グループ</td>
-        <td><%= System::UsersGroup.ldap_show(c_group.ldap) -%></td>
-        <td><%= System::UsersGroup.state_show(c_group.state) -%></td>
-        <td><span style="margin-left:2em;"><%= c_group.name -%></span></td>
-      </tr>
-        <% if params[:controller] != "system/admin/groups" %>
-          <% c_group.users.each do |user| %>
-          <tr class="<%= cycle '', 'cycle' %>">
-            <td>
-              <a href="/system/users/<%= user.id -%>">詳細</a>
-            </td>
-            <td><%= user.code -%></td>
-            <td></td>
-            <td>ユーザー</td>
-            <td><%= System::UsersGroup.ldap_show(user.ldap) -%></td>
-            <td><%= System::UsersGroup.state_show(user.state) -%></td>
-            <td><span style="margin-left:4em;"><%= user.name -%></span></td>
-          </tr>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% end %>
+    <%= render 'system/admin/users/list_users_groups', groups: @groups %>
   </tbody>
 </table>

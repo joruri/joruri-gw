@@ -7,7 +7,7 @@
 <%= render 'navi' %>
 
 <div class="editingBox">
-  <span class="btNew"><%= link_to '新規作成', new_system_group_path %></span>
+  <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
 </div>
 
 <%= render 'search' %>
@@ -23,22 +23,22 @@
       <th>グループID</th>
       <th>グループ名</th>
       <th>メールアドレス</th>
+      <th>状態</th>
+      <th>LDAP同期</th>
       <th>適用開始日</th>
       <th>適用終了日</th>
-      <th>LDAP同期</th>
-      <th>状態</th>
     </tr>
     <% @items.each do |item| %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '展開', "/system/#{item.id}/groups" %></td>
-      <td><%= link_to '詳細', "/system/#{@parent.id}/groups/#{item.id}" %></td>
+      <td><%= link_to '展開', {action: :index, parent: item.id} %></td>
+      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
       <td><%= item.code %></td>
       <td><%= item.name %></td>
       <td><%= item.email %></td>
-      <td><%= Gw.date_str(item.start_at) %></td>
-      <td><%= Gw.date_str(item.end_at) %></td>
-      <td><%= System::UsersGroup.ldap_show(item.ldap) %></td>
       <td><%= System::UsersGroup.state_show(item.state) %></td>
+      <td><%= System::UsersGroup.ldap_show(item.ldap) %></td>
+      <td><%=l item.start_at, format: :date if item.start_at %></td>
+      <td><%=l item.end_at, format: :date if item.end_at %></td>
     </tr>
     <% end %>
   </tbody>
