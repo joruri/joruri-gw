@@ -2,6 +2,7 @@ class Gw::Memo < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::Memo::Receiver
+  include Concerns::Gw::Memo::Reminder
 
   has_many :memo_users, :foreign_key => :schedule_id, :class_name => 'Gw::MemoUser', :dependent => :destroy
   belongs_to :sender, :primary_key => :id, :foreign_key => :uid, :class_name => 'System::User'
@@ -45,29 +46,6 @@ class Gw::Memo < Gw::Database
     end
   }
 
-  scope :memos_for_reminder, ->(user, property) {
-    read = property.memos['read_memos_display'].to_i
-    unread = property.memos['unread_memos_display'].to_i
-    if read == 0 && unread == 0
-      none
-    elsif read == 0
-      with_receiver(user).unfinished_memos_for_reminder(unread)
-    elsif unread == 0
-      with_receiver(user).finished_memos_for_reminder(read)
-    else
-      with_receiver(user).where([
-        finished_memos_for_reminder(read).where_values.reduce(:and),
-        unfinished_memos_for_reminder(unread).where_values.reduce(:and)
-      ].reduce(:or))
-    end
-  }
-  scope :finished_memos_for_reminder, ->(read_memos_display) {
-    where(is_finished: 1).where(arel_table[:created_at].gt(Date.today - read_memos_display + 1))
-  }
-  scope :unfinished_memos_for_reminder, ->(unread_memos_display) {
-    where(is_finished: 0).where(arel_table[:created_at].gt(Date.today - unread_memos_display + 1))
-  }
-
   def is_finished_label
     is_finished == 1 ? '既読' : '未読'
   end
@@ -108,26 +86,35 @@ class Gw::Memo < Gw::Database
     return true
   end
 
-  def send_mail_after_addition(uids = nil)
+  def send_mail_after_addition
     return if is_system == 1
 
-    receiver_emails = []
-    memo_users.preload(:user_property).each do |mu|
-      if p = mu.user_property
-        receiver_emails << p.mobiles[:kmail] if p.mobiles[:ktrans].to_s == "1" && Gw.is_valid_email_address?(p.mobiles[:kmail])
-      end
-    end
-
-    settings = AppConfig.gw.memo_mobile_settings
-    sender_email = settings[:admin_email_from].presence || "admin@localhost.localdomain"
-    subject = settings[:subject]
-
-    receiver_emails.each do |receiver_email|
-      Gw::Mailer.memo_mail(from: sender_email, to: receiver_email, subject: "#{subject}#{uname}", item: self).deliver
+    emails = load_receiver_emails
+    emails.each do |email|
+      Gw::Mailer.memo_mail(from: memo_mail_sender, to: email, subject: "#{memo_mail_subject}#{uname}", item: self).deliver
     end
   end
 
   private
+
+  def load_receiver_emails
+    emails = []
+    memo_users.preload(:user_property).each do |mu|
+      if mu.user_property
+        mobiles = mu.user_property.mobiles
+        emails << mobiles[:kmail] if mobiles[:ktrans].to_s == "1" && Gw.is_valid_email_address?(mobiles[:kmail])
+      end
+    end
+    emails
+  end
+
+  def memo_mail_sender
+    AppConfig.gw.memo_mobile_settings[:admin_email_from].presence || "admin@localhost.localdomain"
+  end
+
+  def memo_mail_subject
+    AppConfig.gw.memo_mobile_settings[:subject]
+  end
 
   def set_user_data
     self.class_id ||= 1

@@ -1,33 +1,23 @@
 module DownloadHelper
 
-  def file_name_encode?(user_agent)
-    #IE判定
+  def file_name_encode?(user_agent = request.user_agent)
+    ie_browser?(user_agent)
+  end
+
+  def ie_browser?(user_agent = request.user_agent)
     agents = Joruri.config.application['sys.file_encode_prefix']
-    if agents.blank?
-      chk = user_agent.index("MSIE")
-      chk = user_agent.index("Trident") if chk.blank?
+    if agents.present?
+      agents.split(/,/).any? {|ua| user_agent.include?(ua) }
     else
-      chk = false
-      agent_list = agents.split(/,/)
-      agent_list.each do |agent|
-        chk = true if !user_agent.index(agent).blank?
-      end
+      user_agent.include?("MSIE") || user_agent.include?("Trident")
     end
-    return false if chk.blank?
-    return true
   end
 
-  def chrome_browser(user_agent)
-    chk = user_agent.index("Chrome")
-    return false if chk.blank?
-    return true
+  def chrome_browser?(user_agent = request.user_agent)
+    user_agent.include?("Chrome")
   end
 
-  def firefox_browser(user_agent)
-    chk = user_agent.index("Firefox")
-    return false if chk.blank?
-    return true
+  def firefox_browser?(user_agent = request.user_agent)
+    user_agent.include?("Firefox")
   end
-
-
 end

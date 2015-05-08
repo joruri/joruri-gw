@@ -71,7 +71,7 @@ class Gw
           )
         end
         memo.save!
-        memo.send_mail_after_addition uids
+        memo.send_mail_after_addition
       end
       return true
     rescue => e

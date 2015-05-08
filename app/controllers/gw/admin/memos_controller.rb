@@ -8,10 +8,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   def pre_dispatch
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
-    firefox = firefox_browser(request.headers['HTTP_USER_AGENT'])
-    ie = file_name_encode?(request.headers['HTTP_USER_AGENT'])
-    chrome = chrome_browser(request.headers['HTTP_USER_AGENT'])
-    @mobile_image = !ie && (firefox || chrome)
+    @mobile_image = !ie_browser? && (firefox_browser? || chrome_browser?)
 
     Page.title = "連絡メモ"
     @css = %w(/_common/themes/gw/css/memo.css)
@@ -41,18 +38,11 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
     end
   end
 
-  def quote
-    @item = Gw::Memo.find(params[:id])
-    if request.mobile? && flash[:mail_to].present?
-      @item.selected_receiver_uids = flash[:mail_to].split(',')
-    end
-  end
-
   def create
     @item = Gw::Memo.new(params[:item])
     @item.uid = Core.user.id
     _create @item, success_redirect_uri: {action: :index, s_send_cls: 2}, notice: '連絡メモの登録処理が完了しました。' do
-      @item.send_mail_after_addition(@item.memo_users.map(&:uid))
+      @item.send_mail_after_addition
     end
   end
 
@@ -67,13 +57,17 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
     @item = Gw::Memo.find(params[:id])
     @item.attributes = params[:item]
     _update @item, notice: '連絡メモの編集処理が完了しました。' do
-      @item.send_mail_after_addition(@item.memo_users.map(&:uid))
+      @item.send_mail_after_addition
     end
   end
 
   def destroy
     @item = Gw::Memo.find(params[:id])
     _destroy @item
+  end
+
+  def quote
+    edit
   end
 
   def finish
