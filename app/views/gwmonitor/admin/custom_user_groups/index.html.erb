@@ -6,8 +6,10 @@
 </div>
 <div class="pieceBody">
 
-<%= form_for :item, :url => "/gwmonitor/custom_user_groups/sort_update", :html => {method: :put} do |f| %>
-  <%= f.error_messages %>
+<%= form_tag url_for(action: :sort_update), {method: :put} do %>
+  <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
+  <%= hidden_field_tag :limit, params[:limit] if params[:limit].present? %>
+  <%= unique_error_messages_for @items %>
   <table class="index">
     <colgroup style="width:100px;"></colgroup>
     <colgroup class="name"></colgroup>
@@ -24,14 +26,16 @@
       <th></th>
     </tr>
     <% @items.each do |item| %>
-    <tr>
-      <td><%= item.sort_prefix %>&nbsp;<%= f.text_field "sort_no_#{item.id}", value: item.sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
-      <td><%= item.name %></td>
-      <td><%=l item.updated_at if item.updated_at %></td>
-      <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
-      <td><%= link_to_edit item.id %></td>
-      <td><%= link_to_destroy item.id %></td>
-    </tr>
+      <%= fields_for 'items[]', item do |f| %>
+        <tr>
+          <td><%= item.sort_prefix %>&nbsp;<%= f.text_field :sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+          <td><%= item.name %></td>
+          <td><%=l item.updated_at if item.updated_at %></td>
+          <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+          <td><%= link_to_edit item.id %></td>
+          <td><%= link_to_destroy item.id %></td>
+        </tr>
+      <% end %>
     <% end %>
   </table>
 <% end %>

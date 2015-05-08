@@ -63,8 +63,4 @@ class Gwmonitor::CustomGroup < Gw::Database
     end
     return selects
   end
-
-#  def item_path
-#    return "/gwmonitor/custom_groups"
-#  end
 end

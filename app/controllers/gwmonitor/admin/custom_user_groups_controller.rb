@@ -1,94 +1,63 @@
 class Gwmonitor::Admin::CustomUserGroupsController < Gw::Controller::Admin::Base
-
   include System::Controller::Scaffold
   include Gwmonitor::Controller::Systemname
-  
   layout "admin/template/gwmonitor"
-  
+
   def pre_dispatch
     @system_title = disp_system_name
     @css = ["/_common/themes/gw/css/monitor.css"]
     params[:limit] = 50
-    @home_path = '/gwmonitor/custom_user_groups'
   end
 
   def index
-    item = Gwmonitor::CustomUserGroup.new
-    item.and :owner_uid , Core.user.id
-    item.order 'sort_no, id'
-    item.page params[:page], params[:limit]
-    @items = item.find(:all)
+    @items = load_index_items
   end
 
   def show
-
   end
 
   def new
-    @item = Gwmonitor::CustomUserGroup.new({
-      :state => 'enabled',
-      :sort_no => 10
-    })
-  end
-
-  def edit
-    @item = Gwmonitor::CustomUserGroup.find(params[:id])
-    return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
-
+    @item = Gwmonitor::CustomUserGroup.new(
+      state: 'enabled',
+      sort_no: 10
+    )
   end
 
   def create
     @item = Gwmonitor::CustomUserGroup.new(params[:item])
     @item.owner_uid = Core.user.id
-    _create(@item, :success_redirect_uri=>@home_path)
+    _create @item
+  end
+
+  def edit
+    @item = Gwmonitor::CustomUserGroup.find(params[:id])
+    return error_auth if @item.owner_uid != Core.user.id
   end
 
   def update
     @item = Gwmonitor::CustomUserGroup.find(params[:id])
-    return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return error_auth if @item.owner_uid != Core.user.id
     @item.attributes = params[:item]
-    @item.owner_uid = Core.user.id
-    _update(@item, :success_redirect_uri=>@home_path)
+    _update @item
   end
 
   def destroy
     @item = Gwmonitor::CustomUserGroup.find(params[:id])
-    return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
-    _destroy(@item, :success_redirect_uri=>@home_path)
+    return error_auth if @item.owner_uid != Core.user.id
+    _destroy @item
   end
 
   def sort_update
-    @item = Gwmonitor::CustomUserGroup.new
-    unless params[:item].blank?
-      params[:item].each{|key,value|
-        if /^[0-9]+$/ =~ value
-        else
-          @item.errors.add :"並び順"
-          break
-        end
-      }
-    end
-
-    if @item.errors.size == 0
-      unless params[:item].blank?
-       params[:item].each{|key,value|
-         cgid = key.slice(8, key.length - 7 ) #sort_no_* > *
-         item = Gwmonitor::CustomUserGroup.new.find(cgid)
-         item.sort_no = value
-         item.save
-       }
-     end
-     flash_notice 'カスタムグループの並び順更新', true
-     redirect_to '/gwmonitor/custom_user_groups'
-   else
-      respond_to do |format|
-        format.html { render :action => "index" }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-      end
-   end
+    @items = load_index_items
+    @items.each {|item| item.attributes = params[:items][item.id.to_s] if params[:items][item.id.to_s] }
+    _index_update @items
   end
 
+private
+
+  def load_index_items
+    Gwmonitor::CustomUserGroup.where(owner_uid: Core.user.id)
+      .order(sort_no: :asc, id: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
+  end
 end

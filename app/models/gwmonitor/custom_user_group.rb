@@ -61,14 +61,4 @@ class Gwmonitor::CustomUserGroup < Gw::Database
     end
     return selects
   end
-
-
-  def item_path
-    return "#{Site.current_node.public_uri.chop}"
-  end
-
-  def update_path
-    return "#{Site.current_node.public_uri}#{self.id}"
-  end
-
 end
