@@ -10,21 +10,19 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
     @meetings_guide_admin = @is_gw_admin ? true : Gw::Model::Schedule.meetings_guide_admin? # 会議開催案内 管理者
     @u_role = @is_gw_admin || @meetings_guide_admin
     return error_auth unless @u_role
-
-    @model = Gw::MeetingGuidePlace
   end
 
   def index
-    @items = @model.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
+    @items = Gw::MeetingGuidePlace.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
 
   def show
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuidePlace.find(params[:id])
   end
 
   def new
-    @item = @model.new(
+    @item = Gw::MeetingGuidePlace.new(
       state: 'enabled',
       place_master: nil,
       place_type: 1,
@@ -34,22 +32,22 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = Gw::MeetingGuidePlace.new(params[:item])
     _create @item, notice: '場所の登録に成功しました。'
   end
 
   def edit
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuidePlace.find(params[:id])
   end
 
   def update
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuidePlace.find(params[:id])
     @item.attributes = params[:item]
     _update @item, notice: '場所の更新に成功しました。'
   end
 
   def destroy
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuidePlace.find(params[:id])
     @item.state       = 'deleted'
     @item.sort_no     = nil
     @item.deleted_at  = Time.now
@@ -61,14 +59,14 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
   end
 
   def updown
-    item = @model.find(params[:id])
+    item = Gw::MeetingGuidePlace.find(params[:id])
 
     item_rep = 
       case params[:order]
       when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
+        Gw::MeetingGuidePlace.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
       else
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
+        Gw::MeetingGuidePlace.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
       end
 
     item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
@@ -79,10 +77,10 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
   end
 
   def prop_sync
-    @model.where(place_type: 2).update_all(place_type: -1)
+    Gw::MeetingGuidePlace.where(place_type: 2).update_all(place_type: -1)
 
     Gw::PropMeetingroom.order(:sort_no).each do |meeting|
-      item = @model.where(prop_id: meeting.id).first || @model.new
+      item = Gw::MeetingGuidePlace.where(prop_id: meeting.id).first || Gw::MeetingGuidePlace.new
 
       if meeting.delete_state == 1
         item.state         = 'deleted'
@@ -105,7 +103,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
       item.save
     end
 
-    @model.where(place_type: -1).update_all(
+    Gw::MeetingGuidePlace.where(place_type: -1).update_all(
       place_type: 2,
       state: 'deleted', 
       deleted_at: Time.now, 

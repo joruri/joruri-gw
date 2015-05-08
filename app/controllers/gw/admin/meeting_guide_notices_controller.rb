@@ -10,44 +10,42 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
     @meetings_guide_admin = @is_gw_admin ? true : Gw::Model::Schedule.meetings_guide_admin? # 会議開催案内 管理者
     @u_role = @is_gw_admin || @meetings_guide_admin
     return error_auth unless @u_role
-
-    @model = Gw::MeetingGuideNotice
   end
 
   def index
-    @items = @model.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
+    @items = Gw::MeetingGuideNotice.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
 
   def show
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideNotice.find(params[:id])
   end
 
   def new
-    @item = @model.new(
+    @item = Gw::MeetingGuideNotice.new(
       state: 'enabled',
       published: 'opened',
-      sort_no: @model.maximum(:sort_no).to_i + 10
+      sort_no: Gw::MeetingGuideNotice.maximum(:sort_no).to_i + 10
     )
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = Gw::MeetingGuideNotice.new(params[:item])
     _create @item, notice: 'お知らせの登録に成功しました。'
   end
 
   def edit
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideNotice.find(params[:id])
   end
 
   def update
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideNotice.find(params[:id])
     @item.attributes = params[:item]
     _update @item, notice: 'お知らせの更新に成功しました。'
   end
 
   def destroy
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideNotice.find(params[:id])
     @item.published   = 'closed'
     @item.state       = 'deleted'
     @item.sort_no     = nil
@@ -60,14 +58,14 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
   end
 
   def updown
-    item = @model.find(params[:id])
+    item = Gw::MeetingGuideNotice.find(params[:id])
 
     item_rep = 
       case params[:order]
       when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
+        Gw::MeetingGuideNotice.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
       else
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
+        Gw::MeetingGuideNotice.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
       end
 
     item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no

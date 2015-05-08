@@ -10,40 +10,38 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
     @meetings_guide_admin = @is_gw_admin ? true : Gw::Model::Schedule.meetings_guide_admin? # 会議開催案内 管理者
     @u_role = @is_gw_admin || @meetings_guide_admin
     return error_auth unless @u_role
-
-    @model = Gw::MeetingGuideBackground
   end
 
   def index
-    @items = @model.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
+    @items = Gw::MeetingGuideBackground.order(sort_no: :asc).paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
 
   def show
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideBackground.find(params[:id])
   end
 
   def new
-    @item = @model.new(
+    @item = Gw::MeetingGuideBackground.new(
       state: 'enabled',
       published: 'opened',
-      sort_no: @model.maximum(:sort_no).to_i + 10
+      sort_no: Gw::MeetingGuideBackground.maximum(:sort_no).to_i + 10
     )
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = Gw::MeetingGuideBackground.new(params[:item])
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _create @item, notice: '背景画像の登録に成功しました。'
   end
 
   def edit
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideBackground.find(params[:id])
   end
 
   def update
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideBackground.find(params[:id])
     @item.attributes = params[:item]
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
@@ -51,7 +49,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
   end
 
   def destroy
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingGuideBackground.find(params[:id])
     @item.published   = 'closed'
     @item.state       = 'deleted'
     @item.sort_no     = nil
@@ -64,14 +62,14 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
   end
 
   def updown
-    item = @model.find(params[:id])
+    item = Gw::MeetingGuideBackground.find(params[:id])
 
     item_rep = 
       case params[:order]
       when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
+        Gw::MeetingGuideBackground.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
       when 'down'
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
+        Gw::MeetingGuideBackground.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
       end
 
     item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no

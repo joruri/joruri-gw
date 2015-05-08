@@ -8,44 +8,42 @@ class Gw::Admin::MeetingMonitorManagersController < Gw::Controller::Admin::Base
 
     @u_role = Gw::MeetingMonitorManager.is_admin? # GW全体の管理者
     return error_auth unless @u_role
-
-    @model = Gw::MeetingMonitorManager
   end
 
   def index
-    @items = @model.order(manager_user_addr: :asc, updated_at: :asc)
+    @items = Gw::MeetingMonitorManager.order(manager_user_addr: :asc, updated_at: :asc)
       .paginate(page: params[:page], per_page: params[:limit])
     _index @items
   end
 
   def show
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingMonitorManager.find(params[:id])
   end
 
   def new
-    @item = @model.new(
+    @item = Gw::MeetingMonitorManager.new(
       state: 'enabled', 
       manager_group_id: Core.user_group.id
      )
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = Gw::MeetingMonitorManager.new(params[:item])
     _create @item
   end
 
   def edit
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingMonitorManager.find(params[:id])
   end
 
   def update
-    @item = @model.new.find(params[:id])
+    @item = Gw::MeetingMonitorManager.find(params[:id])
     @item.attributes = params[:item]
     _update @item
   end
 
   def destroy
-    @item = @model.find(params[:id])
+    @item = Gw::MeetingMonitorManager.find(params[:id])
     @item.state          = 'deleted'
     @item.deleted_at     = Time.now
     @item.deleted_user   = Core.user.name
