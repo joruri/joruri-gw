@@ -14,22 +14,17 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   def index
-    item = Gwcircular::CustomGroup.new
-    item.and :owner_uid , Core.user.id
-    item.order 'sort_no, id'
-    item.page params[:page], params[:limit]
-    @items = item.find(:all)
+    @items = load_index_items
   end
 
   def show
-
   end
 
   def new
-    @item = Gwcircular::CustomGroup.new({
-      :state => 'enabled',
-      :sort_no => 10
-    })
+    @item = Gwcircular::CustomGroup.new(
+      state: 'enabled',
+      sort_no: 10
+    )
   end
 
   def create
@@ -40,55 +35,34 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
 
   def edit
     @item = Gwcircular::CustomGroup.find(params[:id])
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return error_auth if @item.owner_uid != Core.user.id
   end
 
   def update
     @item = Gwcircular::CustomGroup.find(params[:id])
-    return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return error_auth if @item.owner_uid != Core.user.id
 
     @item.attributes = params[:item]
-    @item.owner_uid = Core.user.id
-    _update(@item)
+    _update @item
   end
 
   def destroy
     @item = Gwcircular::CustomGroup.find(params[:id])
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return error_auth if @item.owner_uid != Core.user.id
     _destroy @item
   end
 
   def sort_update
-    item = Gwcircular::CustomGroup.new
-    item.and :owner_uid , Core.user.id
-    item.order 'sort_no, id'
-    item.page params[:page], params[:limit]
-    @items = item.find(:all)
+    @items = load_index_items
+    @items.each {|item| item.attributes = params[:items][item.id.to_s] if params[:items][item.id.to_s] }
+    _index_update @items
+  end
 
-    @item = Gwcircular::CustomGroup.new
-    unless params[:item].blank?
-      params[:item].each do |key,value|
-        cgid = key.gsub(/sort_no_/, '').to_i
-        if item = @items.find{|x| x.id == cgid}
-          item.sort_no = value
-          unless item.valid?
-            item.errors.to_a.each{|msg| @item.errors.add(:base, msg)}
-            break
-          end
-        end
-      end
-    end
+  private
 
-    if @item.errors.size == 0
-      @items.each{|item| item.save}
-      flash_notice 'カスタムグループの並び順更新', true
-      redirect_to '/gwcircular/custom_groups'
-    else
-      respond_to do |format|
-        format.html { render :action => "index" }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-      end
-    end
+  def load_index_items
+    Gwcircular::CustomGroup.where(owner_uid: Core.user.id)
+      .order(sort_no: :asc, id: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end
