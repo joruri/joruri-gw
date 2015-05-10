@@ -6,19 +6,19 @@
 <% else %>
   <table cellspacing="0" cellpadding="0" class="index">
     <tr>
-    <% if @bbs_docs != 0 %>
+    <% if @bbs_docs.to_i != 0 %>
       <td style="width: 60px;"><%= link_to "掲示板(#{@bbs_docs}件)", "/syntheses?system=gwbbs" %></td>
     <% end %>
-    <% if @faq_docs != 0 %>
+    <% if @faq_docs.to_i != 0 %>
       <td style="width: 60px;"><%= link_to "ＦＡＱ(#{@faq_docs}件)", "/syntheses?system=gwfaq" %></td>
     <% end %>
-    <% if @qa_docs != 0 %>
+    <% if @qa_docs.to_i != 0 %>
       <td style="width: 60px;"><%= link_to "Ｑ＆Ａ(#{@qa_docs}件)", "/syntheses?system=gwqa" %></td>
     <% end %>
-    <% if @doclib_docs != 0 %>
+    <% if @doclib_docs.to_i != 0 %>
       <td style="width: 60px;"><%= link_to "書庫(#{@doclib_docs}件)", "/syntheses?system=doclibrary" %></td>
     <% end %>
-    <% if @digitallib_docs != 0 %>
+    <% if @digitallib_docs.to_i != 0 %>
       <td style="width: 60px;"><%= link_to "電子図書(#{@digitallib_docs}件)", "/syntheses?system=digitallibrary" %></td>
     <% end %>
   </table>
