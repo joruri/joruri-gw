@@ -3,10 +3,9 @@ module Gwboard::Model::Adm::Auth
 
   included do
     scope :with_user_or_groups, ->(user = Core.user) {
-      gcodes = user.groups.map{|g| g.self_and_ancestors.map(&:code)}.flatten
       where([
-        [arel_table[:user_id].eq(0), arel_table[:group_code].in(gcodes)].reduce(:and),
-        [arel_table[:user_id].not_eq(0), arel_table[:user_code].eq(user.code)].reduce(:and) 
+        arel_table[:user_id].eq(0).and( arel_table[:group_code].in(user.groups_and_ancestors_codes) ),
+        arel_table[:user_id].not_eq(0).and( arel_table[:user_code].eq(user.code) )
       ].reduce(:or))
     }
   end

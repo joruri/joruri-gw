@@ -40,32 +40,32 @@ class Gwboard::Admin::Piece::SynthesesController < ApplicationController
   private
 
   def index_gwbbs
-    @bbs_docs = Gwbbs::Doc.public_docs.latest_updated_since(@date).with_notification_enabled.satisfy_restrict_access
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .distinct(:id).count
+    items = Gwbbs::Doc.distinct(:id).public_docs.latest_updated_since(@date).with_notification_enabled.satisfy_restrict_access
+    items = items.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm?
+    @bbs_docs = items.count
   end
 
   def index_gwfaq
-    @faq_docs = Gwfaq::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .distinct(:id).count
+    items = Gwfaq::Doc.distinct(:id).public_docs.latest_updated_since(@date).with_notification_enabled
+    items = items.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm?
+    @faq_docs = items.count
   end
 
   def index_gwqa
-    @qa_docs = Gwqa::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .distinct(:id).count
+    items = Gwqa::Doc.distinct(:id).public_docs.latest_updated_since(@date).with_notification_enabled
+    items = items.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm?
+    @qa_docs = items.count
   end
 
   def index_doclib
-    @doclib_docs = Doclibrary::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm? }
-      .distinct(:id).count
+    items = Doclibrary::Doc.distinct(:id).public_docs.latest_updated_since(@date).with_notification_enabled
+    items = items.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm?
+    @doclib_docs = items.count
   end
 
   def index_digitallib
-    @digitallib_docs = Digitallibrary::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .distinct(:id).count
+    items = Digitallibrary::Doc.distinct(:id).public_docs.latest_updated_since(@date).with_notification_enabled
+    items = items.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm?
+    @digitallib_docs = items.count
   end
 end

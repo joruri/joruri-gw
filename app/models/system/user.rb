@@ -150,12 +150,20 @@ class System::User < ActiveRecord::Base
     end
   end
 
+  def first_group_code
+    groups.first.try(:code)
+  end
+
   def first_group_and_ancestors_ids
     if groups.first
       groups.first.self_and_ancestors.map(&:id)
     else
       []
     end
+  end
+
+  def groups_and_ancestors_codes
+    groups.map(&:self_and_ancestors).flatten.compact.map(&:code).uniq
   end
 
   def previous_login_date

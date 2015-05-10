@@ -2,7 +2,15 @@ module Gwboard::Model::Control::Auth
   extend ActiveSupport::Concern
 
   included do
-    after_save :save_adms, :save_roles
+    with_options if: "admingrps_json.present? && adms_json.present?" do |f|
+      f.after_save :save_adms
+      f.after_save :update_dsp_admin_name
+    end
+    after_save :save_editors, if: "editors_json.present?"
+    after_save :save_sueditors, if: "sueditors_json.present?"
+    after_save :save_readers, if: "readers_json.present?"
+    after_save :save_sureaders, if: "sureaders_json.present?"
+    
     validate :validate_json_columns
     scope :with_readable_role, ->(user = Core.user) {
       joins(:role).merge(reflect_on_association(:role).klass.with_user_or_groups(user, "r/w"))
@@ -37,27 +45,27 @@ module Gwboard::Model::Control::Auth
   end
 
   def admingrps_json_value
-    JSON.parse(admingrps_json)
+    JSON.parse(admingrps_json) rescue []
   end
 
   def adms_json_value
-    JSON.parse(adms_json)
+    JSON.parse(adms_json) rescue []
   end
 
   def editors_json_value
-    JSON.parse(editors_json)
+    JSON.parse(editors_json) rescue []
   end
 
   def sueditors_json_value
-    JSON.parse(sueditors_json)
+    JSON.parse(sueditors_json) rescue []
   end
 
   def readers_json_value
-    JSON.parse(readers_json)
+    JSON.parse(readers_json) rescue []
   end
 
   def sureaders_json_value
-    JSON.parse(sureaders_json)
+    JSON.parse(sureaders_json) rescue []
   end
 
   def board_role_for?(user = Core.user, role_code = 'a/w/r')
@@ -144,56 +152,64 @@ module Gwboard::Model::Control::Auth
   end
 
   def save_adms
-    return if self.admingrps_json.blank? || self.adms_json.blank?
-
     role.destroy_all
 
-    dsp_admin_name = nil
-    admingrps_json_value.each do |group|
-      if (g = System::Group.find_by(id: group[1]))
-        role.create(role_code: 'a', group_id: g.id, group_code: g.code, group_name: g.name)
-        dsp_admin_name ||= g.name
-      end
+    admingrps_json_value.each do |group_value|
+      create_group_role('a', group_value)
     end
-    adms_json_value.each do |user|
-      if (u = System::User.find_by(id: user[1]))
-        role.create(role_code: 'a', user_id: u.id, user_code: u.code, user_name: u.name_and_code,
-          group_id: u.groups.first.try(:id), group_name: u.groups.first.try(:name), group_code: u.groups.first.try(:code))
-        dsp_admin_name ||= u.groups[0].try(:name)
-      end
+    adms_json_value.each do |user_value|
+      create_user_role_for_adm('a', user_value)
     end
-
-    update_columns(dsp_admin_name: dsp_admin_name)
   end
 
-  def save_roles
-    return if self.editors_json.blank? || self.sueditors_json.blank?
-    return if self.readers_json.blank? || self.editors_json.blank?
+  def update_dsp_admin_name
+    r = role.select(&:admin_role?).first
+    update_columns(dsp_admin_name: r.group_name) if r
+  end
 
-    editors_json_value.each do |group|
-      if group[1].to_s == '0'
-        role.create(role_code: 'w', group_id: 0, group_code: '0', group_name: group[2])
-      elsif (g = System::Group.find_by(id: group[1]))
-        role.create(role_code: 'w', group_id: g.id, group_code: g.code, group_name: g.name)
-      end
+  def save_editors
+    editors_json_value.each do |group_value|
+      create_group_role('w', group_value)
     end
-    sueditors_json_value.each do |user|
-      if (u = System::User.find_by(id: user[1]))
-        role.create(role_code: 'w', user_id: u.id, user_code: u.code, user_name: u.name_and_code)
-      end
-    end
+  end
 
-    readers_json_value.each do |group|
-      if group[1].to_s == '0'
-        role.create(role_code: 'r', group_id: 0, group_code: '0', group_name: group[2])
-      elsif (g = System::Group.find_by(id: group[1]))
-        role.create(role_code: 'r', group_id: g.id, group_code: g.code, group_name: g.name)
-      end
+  def save_sueditors
+    sureaders_json_value.each do |user_value|
+      create_user_role('w', user_value)
     end
-    sureaders_json_value.each do |user|
-      if (u = System::User.find_by(id: user[1]))
-        role.create(role_code: 'r', user_id: u.id, user_code: u.code, user_name: u.name_and_code)
-      end
+  end
+
+  def save_readers
+    readers_json_value.each do |group_value|
+      create_group_role('r', group_value)
+    end
+  end
+
+  def save_sureaders
+    sureaders_json_value.each do |user_value|
+      create_user_role('r', user_value)
+    end
+  end
+
+  def create_group_role(role_code, group_value)
+    if group_value[1].to_s == '0'
+      return role.create(role_code: role_code, group_id: 0, group_code: '0', group_name: group_value[2])
+    elsif group = System::Group.find_by(id: group_value[1])
+      return role.create(role_code: role_code, group_id: group.id, group_code: group.code, group_name: group.name)
+    end
+  end
+
+  def create_user_role_for_adm(role_code, user_value)
+    if user = System::User.find_by(id: user_value[1])
+      group = user.groups.first
+      return role.create(role_code: role_code, user_id: user.id, user_code: user.code, user_name: user.name_and_code,
+        group_id: group.try(:id), group_name: group.try(:name), group_code: group.try(:code))
+    end
+  end
+
+  def create_user_role(role_code, user_value)
+    if user = System::User.find_by(id: user_value[1])
+      return role.create(role_code: role_code, user_id: user.id, user_code: user.code, user_name: user.name_and_code)
     end
   end
 end

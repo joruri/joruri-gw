@@ -13,7 +13,7 @@ module Gwboard::Model::Doc::Base
       where(arel_table[:latest_updated_at].gteq(time))
     }
     scope :with_notification_enabled, ->(user = Core.user) { 
-      joins(:control).where(reflect_on_association(:control).klass.arel_table[:notification].eq(1))
+      joins(:control).where(control_klass.arel_table[:notification].eq(1))
     }
   end
 
@@ -52,21 +52,51 @@ module Gwboard::Model::Doc::Base
 
   def save(args = {})
     if self.skip_updating_updated_at == "1"
-      flag1 = self.class.record_timestamps
-      flag2 = control.class.record_timestamps
-      self.class.record_timestamps = false
-      control.class.record_timestamps = false
+      flags = disable_record_timestamps
     end
     ret = super
   ensure
     if self.skip_updating_updated_at == "1"
-      self.class.record_timestamps = flag1 unless flag1.nil?
-      control.class.record_timestamps = flag2 unless flag2.nil?
+      revert_record_timestamps(flags)
     end
     ret
   end
 
+  module ClassMethods
+    def control_klass
+      reflect_on_association(:control).klass
+    end
+
+    def role_klass
+      reflect_on_association(:roles).klass
+    end
+
+    def recognizer_klass
+      reflect_on_association(:recognizers).klass
+    end
+
+    def folder_klass
+      reflect_on_association(:folder).klass
+    end
+
+    def folder_acl_klass
+      reflect_on_association(:folder_acls).klass
+    end
+  end
+
   private
+
+  def disable_record_timestamps
+    flags = [self.class.record_timestamps, control.class.record_timestamps]
+    self.class.record_timestamps = false
+    control.class.record_timestamps = false
+    flags
+  end
+
+  def revert_record_timestamps(flags)
+    self.class.record_timestamps = flags[0] unless flags[0].nil?
+    control.class.record_timestamps = flag[1] unless flags[1].nil?
+  end
 
   def set_attachmentfile_count
     self.attachmentfile = files.count

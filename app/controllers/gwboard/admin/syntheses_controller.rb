@@ -25,62 +25,59 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
   end
 
   def index
-    case params[:system]
-    when 'gwbbs'
-      index_gwbbs
-    when 'gwfaq'
-      index_gwfaq
-    when 'gwqa'
-      index_gwqa
-    when 'doclibrary'
-      index_doclib
-    when 'digitallibrary'
-      index_digitallib
-    end
+    @items = 
+      case params[:system]
+      when 'gwbbs'
+        index_gwbbs
+      when 'gwfaq'
+        index_gwfaq
+      when 'gwqa'
+        index_gwqa
+      when 'doclibrary'
+        index_doclib
+      when 'digitallibrary'
+        index_digitallib
+      else
+        index_gwbbs
+      end
+
+    @items = @items.order(latest_updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
+      .preload(:control)
   end
 
   def index_gwbbs
-    @items = Gwbbs::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
+    items = Gwbbs::Doc.distinct.select(:id, :title_id, :title, :section_name, :latest_updated_at)
       .public_docs.latest_updated_since(@date).with_notification_enabled.satisfy_restrict_access
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    items = items.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm?
+    items
   end
 
   def index_gwfaq
-    @items = Gwfaq::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
+    items = Gwfaq::Doc.distinct.select(:id, :title_id, :title, :section_name, :latest_updated_at)
       .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    items = items.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm?
+    items
   end
 
   def index_gwqa
-    @items = Gwqa::Doc.select(:id, :title_id, :doc_type, :title, :section_name, :latest_updated_at)
+    items = Gwqa::Doc.distinct.select(:id, :title_id, :doc_type, :title, :section_name, :latest_updated_at)
       .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwqa::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    items = items.with_readable_role(Core.user) unless Gwqa::Control.is_sysadm?
+    items
   end
 
   def index_doclib
-    @items = Doclibrary::Doc.select(:id, :title_id, :category1_id, :title, :section_name, :latest_updated_at)
+    items = Doclibrary::Doc.distinct.select(:id, :title_id, :category1_id, :title, :section_name, :latest_updated_at)
       .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    items = items.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm?
+    items
   end
 
   def index_digitallib
-    @items = Digitallibrary::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
+    items = Digitallibrary::Doc.distinct.select(:id, :title_id, :title, :section_name, :latest_updated_at)
       .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    items = items.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm?
+    items
   end
 end
