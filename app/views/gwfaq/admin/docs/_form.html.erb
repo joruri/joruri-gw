@@ -20,19 +20,16 @@ end
 </tr>
 </table>
 
-<%if @title.category == 1 %>
+<% if @title.category == 1 %>
 <table class="show">
-<tr>
-<th>
-<%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %>
-</th>
-<td>
-<%= f.select(:category1_id, @categories1.collect{|i|
-[i.name, i.id]}, :include_blank => '分類を選択してください') %>
-</td>
-</tr>
+  <tr>
+    <th><%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %></th>
+    <td>
+      <%= f.select :category1_id, @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id).map{|i| [i.name, i.id]}, :include_blank => '分類を選択してください' %>
+    </td>
+  </tr>
 </table>
-<%end%>
+<% end %>
 
 <table class="show">
 <tr>

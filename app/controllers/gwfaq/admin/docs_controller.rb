@@ -7,22 +7,15 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], limit: params[:limit], state: params[:state]) if params[:reset]
+
     @title = Gwfaq::Control.find(params[:title_id])
 
     Page.title = @title.title
 
     params[:state] = "CATEGORY" if params[:state].blank? && @title.category == 1
 
-    return redirect_to(gwfaq_docs_path({:title_id=>@title.id}) + "&limit=#{params[:limit]}&state=#{params[:state]}") if params[:reset]
-
-    _search_condition
-
     initialize_value_set_new_css
-  end
-
-  def _search_condition
-    @categories1 = @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id)
-    @d_categories = @categories1.index_by(&:id)
   end
 
   def index
@@ -30,6 +23,7 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
       .index_order_with_params(@title, params)
       .search_with_params(@title, params)
       .paginate(page: params[:page], per_page: params[:limit])
+      .preload(:category)
   end
 
   def show
@@ -37,7 +31,7 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
     return find_migrated_item unless @item
     return error_auth if !@title.is_readable? && !@item.is_recognizable? && !@item.is_publishable?
 
-    Page.title = @item.title unless @item.title.blank?
+    Page.title = @item.title if @item.title.present?
   end
 
   def new
@@ -90,7 +84,7 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
     @item = @title.docs.find(params[:id])
     return error_auth unless @item.is_editable?
 
-    _destroy @item, :success_redirect_uri => gwfaq_docs_path({:title_id=>@title.id})
+    _destroy @item, success_redirect_uri: gwfaq_docs_path(title_id: @title.id)
   end
 
   def recognize_update

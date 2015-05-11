@@ -9,37 +9,9 @@ class Gwfaq::Category < Gwboard::CommonDb
 
   belongs_to :control, :foreign_key => :title_id
 
-  validates_presence_of :state, :sort_no, :name
-
-  def link_list_path
-    return "#{Site.current_node.public_uri}?parent_id=#{self.id}&title_id=#{self.title_id}"
-  end
-
-  def item_path
-    return "#{Site.current_node.public_uri}?parent_id=#{self.parent_id}&title_id=#{self.title_id}"
-  end
-
-  def show_path
-    return "#{Site.current_node.public_uri}#{self.id}?parent_id=#{self.parent_id}&title_id=#{self.title_id}"
-  end
-
-  def edit_path
-    return "#{Site.current_node.public_uri}#{self.id}/edit?parent_id=#{self.parent_id}&title_id=#{self.title_id}"
-  end
-
-  def delete_path
-    return "#{Site.current_node.public_uri}#{self.id}/delete?parent_id=#{self.parent_id}&title_id=#{self.title_id}"
-  end
-
-  def update_path
-    return "#{Site.current_node.public_uri}#{self.id}/update?parent_id=#{self.parent_id}&title_id=#{self.title_id}"
-  end
-
+  validates :state, :sort_no, :name, presence: true
 
   def is_deletable?
-    cnt = Gwfaq::Doc.where(:category1_id=>self.id).count
-    return false if cnt > 0
-    return true
+    !Gwfaq::Doc.where(category1_id: self.id).exists?
   end
-
 end

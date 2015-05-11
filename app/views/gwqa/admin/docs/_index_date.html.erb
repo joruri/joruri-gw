@@ -31,7 +31,7 @@ mode = 'date' if @title.category == 0
       <td class="qaAnswer"><%=raw "<span>#{item.answer_count}</span>" if item.answer_count.to_i > 0 %></td>
       <td class="qaSettled"><%=raw "<span>解決済</span>" if item.content_state == "resolved" %></td>
       <% if mode.blank? %>
-      <td class="category"><%= gwbd_category_name(@d_categories, item.category1_id) %></td>
+      <td class="category"><%= item.category.try(:name) %></td>
       <% end %>
       <td class="group"><%=l item.latest_answer if item.latest_answer %></td>
     </tr>

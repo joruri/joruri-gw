@@ -7,22 +7,13 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy, :settlement]
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], state: params[:state]) if params[:reset]
+
     @title = Gwqa::Control.find(params[:title_id])
 
     Page.title = @title.title
 
-    str_param = ''
-    str_param += "&state=#{params[:state]}" unless params[:state].blank?
-    return redirect_to(gwqa_docs_path({:title_id=>@title.id}) + "#{str_param}") if params[:reset]
-
-    _search_condition
-
     initialize_value_set_new_css
-  end
-
-  def _search_condition
-    @categories1 = @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id)
-    @d_categories = @categories1.index_by(&:id)
   end
 
   def index
@@ -31,6 +22,7 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
       .index_order_with_params(@title, params)
       .question_docs
       .paginate(page: params[:page], per_page: params[:limit])
+      .preload(:category)
   end
 
   def show

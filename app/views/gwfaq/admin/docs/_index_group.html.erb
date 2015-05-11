@@ -15,7 +15,7 @@
     <% end %>
     <tr class="<%= cycle 'article', 'article cycle' %>">
       <td class="doctitle"><%= link_to hbr(item.title), gwfaq_doc_path(item, title_id: item.title_id) + "&grp=#{params[:grp]}" + gwfaq_params_set %></td>
-      <td class="category"><%= gwbd_category_name(@d_categories, item.category1_id) %></td>
+      <td class="category"><%= item.category.try(:name) %></td>
       <td class="update"><%=l item.latest_updated_at if item.latest_updated_at %></td>
     </tr>
     <% brk_key = item.section_code %>

@@ -3,7 +3,6 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    @img_path = "public/_common/modules/gwfaq/"
     @system = 'gwfaq'
     @css = ["/_common/themes/gw/css/gwfaq.css"]
     Page.title = "質問管理"
@@ -12,15 +11,8 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
   def index
     return error_auth if !Gwfaq::Control.is_admin? && !Gwqa::Control.is_admin?
 
-    @faq_items = Gwfaq::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
-
-    @qa_items = Gwqa::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Gwqa::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    @faq_items = load_control_items(Gwfaq::Control)
+    @qa_items = load_control_items(Gwqa::Control)
   end
 
   def show
@@ -38,7 +30,7 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
   end
 
   def new
-    @item = Gwfaq::Control.new({
+    @item = Gwfaq::Control.new(
       :state => 'public' ,
       :published_at => Time.now ,
       :importance => '1' ,
@@ -67,7 +59,7 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
       :monthly_view => 1 ,
       :monthly_view_line => 6 ,
       :default_limit => '20'
-    })
+    )
     return error_auth unless @item.is_admin?
   end
 
@@ -90,7 +82,7 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
       @item.readers_json = @item.editors_json
     end
 
-    _create @item, :success_redirect_uri => "/gwfaq/controls"
+    _create @item, success_redirect_uri: "/gwfaq/controls"
   end
 
   def update
@@ -104,13 +96,22 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
       @item.readers_json = @item.editors_json
     end
 
-    _update @item, :success_redirect_uri => "/gwfaq/controls"
+    _update @item, success_redirect_uri: "/gwfaq/controls"
   end
 
   def destroy
     @item = Gwfaq::Control.find(params[:id])
     return error_auth unless @item.is_admin?
 
-    _destroy @item, :success_redirect_uri => "/gwfaq/controls"
+    _destroy @item, success_redirect_uri: "/gwfaq/controls"
+  end
+
+  private
+
+  def load_control_items(model)
+    items = model.distinct.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
+    items = items.where(state: 'public').with_admin_role(Core.user) unless model.is_sysadm?
+    items = items.order(sort_no: :asc, updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end

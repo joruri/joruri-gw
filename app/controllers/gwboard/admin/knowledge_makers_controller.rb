@@ -10,14 +10,16 @@ class Gwboard::Admin::KnowledgeMakersController < Gw::Controller::Admin::Base
   end
 
   def index
-     @faq_items = Gwfaq::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    @faq_items = load_control_items(Gwfaq::Control)
+    @qa_items = load_control_items(Gwqa::Control)
+  end
 
-    @qa_items = Gwqa::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Gwqa::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+  private
+
+  def load_control_items(model)
+    items = model.distinct.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
+    items = items.where(state: 'public').with_admin_role(Core.user) unless model.is_sysadm?
+    items = items.order(sort_no: :asc, updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end

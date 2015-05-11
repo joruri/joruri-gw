@@ -19,15 +19,15 @@
 </table>
 
 <table class="show docState">
-<tr>
-<th>解決状況<%= required('※') %></th>
-<td><%= f.radio_buttons :content_state, @item.resolved_status_select %></td>
-</tr>
-<% if @title.category == 1 %>
-<tr>
-<th><%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %></th>
-<td><%= f.select(:category1_id, @categories1.collect{|i| [i.name, i.id]}, :include_blank => '分類を選択してください') %></td>
-</tr>
+  <tr>
+    <th>解決状況<%= required('※') %></th>
+    <td><%= f.radio_buttons :content_state, @item.resolved_status_select %></td>
+  </tr>
+  <% if @title.category == 1 %>
+  <tr>
+    <th><%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %></th>
+    <td><%= f.select :category1_id, @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id).map{|i| [i.name, i.id]}, :include_blank => '分類を選択してください' %></td>
+  </tr>
 <% end %>
 </table>
 

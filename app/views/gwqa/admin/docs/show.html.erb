@@ -22,7 +22,7 @@
   <div>
     <% if @title.category == 1 %>
       <%= @title.category1_name + ' : ' unless @title.category1_name.blank? %>
-      <%= gwbd_category_name(@d_categories,@item.category1_id) %>
+      <%= @item.category.try(:name) %>
     <% end %>
   </div>
 </div>

@@ -10,7 +10,7 @@
   <% @items.each do |item| %>
     <% if brk_key != item.category1_id %>
     <tr class="subIndex">
-      <th class="docTitle">■ <%= gwbd_category_name(@d_categories, item.category1_id) %></th>
+      <th class="docTitle">■ <%= item.category.try(:name) %></th>
       <th class="item"></th>
       <th class="item"></th>
       <th class="update"></th>

@@ -58,25 +58,4 @@ class Gwqa::Control < Gw::Database
   def docs_path
     return self.item_home_path + "docs?title_id=#{self.id}&limit=#{self.default_limit}"
   end
-
-  def item_path
-    return "#{Site.current_node.public_uri}"
-  end
-
-  def show_path
-    return "#{Site.current_node.public_uri}#{self.id}/"
-  end
-
-  def edit_path
-    return "#{Site.current_node.public_uri}#{self.id}/edit"
-  end
-
-  def delete_path
-    return "#{Site.current_node.public_uri}#{self.id}/delete"
-  end
-
-  def update_path
-    return "#{Site.current_node.public_uri}#{self.id}/update"
-  end
-
 end
