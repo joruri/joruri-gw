@@ -25,7 +25,7 @@ brk_key = nil
     </tr>
     <tr>
       <% if mode.blank? %>
-        <td class="category group <%= title_class %>"><span><%= gwbd_category_name(@d_categories, item.category1_id) %></span></td>
+        <td class="category group <%= title_class %>"><span><%= item.category.try(:name) %></span></td>
       <% else %>
         <td class="update group <%= title_class %>"><span><%=l item.created_at if item.created_at %></span></td>
       <% end %>

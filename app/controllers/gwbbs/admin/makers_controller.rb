@@ -4,7 +4,6 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     @is_gw_admin = Gw.is_admin_admin?
-    @img_path = "public/_common/modules/gwbbs/"
     @system = 'gwbbs'
     @css = ["/_common/themes/gw/css/bbs.css"]
     Page.title = "掲示板"
@@ -14,12 +13,12 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
   def index
     return error_auth unless Gwbbs::Control.is_admin?
 
-    @items = Gwbbs::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(create_section: nil) if Gwbbs::Control.is_sysadm? && params[:state] != "SECTION" }
-      .tap {|c| break c.where.not(create_section: nil) if Gwbbs::Control.is_sysadm? && params[:state] == "SECTION" }
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    items = Gwbbs::Control.distinct.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
+    items = items.where(create_section: nil) if Gwbbs::Control.is_sysadm? && params[:state] != "SECTION"
+    items = items.where.not(create_section: nil) if Gwbbs::Control.is_sysadm? && params[:state] == "SECTION"
+    items = items.where(state: 'public').with_admin_role(Core.user) unless Gwbbs::Control.is_sysadm?
+    @items = items.order(sort_no: :asc, updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 
   def show

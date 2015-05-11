@@ -7,7 +7,7 @@
     <p class="<%=cycle('bgAsh','leftPad1')%>">ステータス　<%=@item.importance_name%></p>
   <% end %>
   <%if @title.category == 1 %>
-    <%= raw(%Q(<p class="#{cycle('bgAsh','leftPad1')}">#{@title.category1_name}　#{gwbd_category_name(@d_categories, @item.category1_id)}</p>))  unless @title.category1_name.blank? %>
+    <%= raw(%Q(<p class="#{cycle('bgAsh','leftPad1')}">#{@title.category1_name}　#{@item.category.try(:name)}</p>))  unless @title.category1_name.blank? %>
   <% end %>
 <% end %>
 <p class="<%=cycle('bgAsh','leftPad1')%>">作成　<%= @item.createrdivision %>：<%= @item.creater %>　</p>

@@ -2,7 +2,7 @@
 <% @items.each do |item| %>
 <% unless brk_code == item.category1_id.to_s %>
   <% brk_code = item.category1_id.to_s %>
-  <p class="bgAsh"><%= gwbd_category_name(@d_categories, item.category1_id) %></p>
+  <p class="bgAsh"><%= item.category.try(:name) %></p>
 <% end %>
 <p class="leftPad1">
 <%= link_to item.inpfld_006, "#{item.show_path}#{gwbbs_params_set}" %><br />

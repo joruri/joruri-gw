@@ -7,25 +7,24 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
   end
 
   def index
-    @title = Gwbbs::Control.where(:create_section => Core.user_group.code).first
+    @title = Gwbbs::Control.where(create_section: Core.user_group.code).first
   end
 
   def create
-    unless params[:board_group].blank?
-      create_bbs_board
-      create_default_category unless @title.blank?
+    if group = System::Group.select(:id, :code, :name).where(id: params[:board_group]).first
+      title = create_bbs_board(group)
+      create_default_category(title) if title
     end
 
     redirect_to '/gwbbs'
   end
 
-  def create_bbs_board
-    item = Gwboard::Group.where(:id => params[:board_group]).select('id, code, name').first
-    return item if item.blank?
+  private
 
-    @title = Gwbbs::Control.create({
+  def create_bbs_board(group)
+    Gwbbs::Control.create(
       :state => 'public',
-      :title => "#{item.name}掲示板" ,
+      :title => "#{group.name}掲示板" ,
       :published_at => Time.now,
       :recognize => 0,
       :importance => '1', #重要度使用
@@ -60,73 +59,30 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
       :restrict_access => 0 ,
       :default_limit => '30',
       :form_name => 'form001' ,
-      :admingrps_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
+      :admingrps_json => %Q{[["#{group.code}", "#{group.id}", "#{group.name}"]]},
       :adms_json => "[]",
-      :editors_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
+      :editors_json => %Q{[["#{group.code}", "#{group.id}", "#{group.name}"]]},
       :sueditors_json => "[]",
-      :readers_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
+      :readers_json => %Q{[["#{group.code}", "#{group.id}", "#{group.name}"]]},
       :sureaders_json => "[]",
       :limit_date => 'none',  #期限切れ削除機能は利用しない
       :docslast_updated_at =>  Time.now
-    })
-
+    )
   end
 
-  def create_default_category
-    @cat_item = Gwbbs::Category
-    create_category(1, 'お知らせ')
-    create_category(2, params[:cat02]) unless params[:cat02].blank?
-    create_category(3, params[:cat03]) unless params[:cat03].blank?
-    create_category(4, params[:cat04]) unless params[:cat04].blank?
-    create_category(5, params[:cat05]) unless params[:cat05].blank?
-    create_category(6, params[:cat06]) unless params[:cat06].blank?
-    create_category(7, params[:cat07]) unless params[:cat07].blank?
-    create_category(8, params[:cat08]) unless params[:cat08].blank?
-  end
-
-  def create_category(i, name)
-      item = @cat_item
-      item.create({
-        :state     => 'public',
-        :title_id  => @title.id,
-        :sort_no   => i * 10 ,
-        :name   =>  name ,
-        :level_no  => 1
-      })
-  end
-
-  def gwbbs_output_files
-    params[:id] = 48
-    params[:system] = 'gwbbs'
-    @title = Gwbbs::Control.find(params[:id])
-    table = Gwbbs::File
-    table = table.new
-    items = table.find(:all)
-    for item in items
-      item.content_id = 2
-      file = Gwbbs::DbFile
-      db_file = file.where(:id => item.db_file_id).first
-      unless db_file.blank?
-        FileUtils.mkdir_p(item.f_path) unless FileTest.exist?(item.f_path)
-        File.open(item.f_name, "wb") { |f|
-          f.write db_file.data
-        }
-      end
-      item.save
-
-      update_doc_link(item)
+  def create_default_category(title)
+    create_category(title, 1, 'お知らせ')
+    2.upto(8) do |i|
+      create_category(title, i, params["cat0#{i}"]) if params["cat0#{i}"].present?
     end
   end
 
-  def update_doc_link(item)
-    doc_item = Gwbbs::Doc
-    doc_item = doc_item.where(:id => item.parent_id).first
-    return if doc_item.blank?
-
-    str = "<p>&nbsp;</p><p>&nbsp;</p>"
-    str += "<a href=" + item.file_uri(params[:system]) + " class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>"
-    doc_item.body = doc_item.body + str
-    doc_item.save
+  def create_category(title, i, name)
+    title.categories.create(
+      state: 'public',
+      sort_no: i * 10,
+      name: name,
+      level_no: 1
+    )
   end
-
 end

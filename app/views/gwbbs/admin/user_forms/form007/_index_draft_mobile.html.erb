@@ -2,7 +2,7 @@
 <% @items.each do |item| %>
 <p class="leftPad1">
 状態：<%= item.ststus_name %><br />
-分類：<%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %><br />
+分類：<%= link_to item.category.try(:name), "#{item.show_path}#{gwbbs_params_set}" %><br />
 区分：<%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %><br />
 通知日：<%= link_to item.inpfld_006, "#{item.show_path}#{gwbbs_params_set}" %><br />
 文書名：<%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %>

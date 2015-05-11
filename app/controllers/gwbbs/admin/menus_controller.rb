@@ -8,9 +8,9 @@ class Gwbbs::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   def index
-    @items = Gwbbs::Control.where(state: 'public', view_hide: 1)
-      .tap {|c| break c.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .order(sort_no: :asc, docslast_updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    items = Gwbbs::Control.distinct.where(state: 'public', view_hide: 1)
+    items = items.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm?
+    @items = items.order(sort_no: :asc, docslast_updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end

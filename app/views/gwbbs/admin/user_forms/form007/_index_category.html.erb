@@ -8,7 +8,7 @@
   <% @items.each do |item| %>
     <% unless brk_code == item.category1_id.to_s %>
       <% brk_code = item.category1_id.to_s %>
-      <tr><th style="text-align: left;"colspan="3"><%= gwbd_category_name(@d_categories, item.category1_id) %></th></tr>
+      <tr><th style="text-align: left;"colspan="3"><%= item.category.try(:name) %></th></tr>
     <% end %>
     <tr class="<%= cycle 'article', 'article cycle' %>">
       <td class="date"><%= link_to item.inpfld_006, "#{item.show_path}#{gwbbs_params_set}" %></td>

@@ -13,26 +13,34 @@ class Gwbbs::Admin::SynthesetupController < Gw::Controller::Admin::Base
   end
 
   def new
-    @item = Gwboard::Synthesetup.where(content_id: 0).first_or_create(
-      gwbbs_check: false, gwfaq_check: false, gwqa_check: false, doclib_check: false, digitallib_check: false
-    )
+    @item = load_check_item
   end
 
   def create
-    @item = Gwboard::Synthesetup.where(content_id: 0).first_or_create(
-      gwbbs_check: false, gwfaq_check: false, gwqa_check: false, doclib_check: false, digitallib_check: false
-    )
+    @item = load_check_item
     @item.attributes = params[:item]
     _update @item
   end
 
   def edit
-    @item = Gwboard::Synthesetup.where(content_id: 2).first_or_create(limit_date: 'yesterday')
+    @item = load_limit_date_item
   end
 
   def update
-    @item = Gwboard::Synthesetup.where(content_id: 2).first_or_create(limit_date: 'yesterday')
+    @item = load_limit_date_item
     @item.attributes = params[:item]
     _update @item
+  end
+
+  private
+
+  def load_check_item
+    Gwboard::Synthesetup.where(content_id: 0).first_or_create(
+      gwbbs_check: false, gwfaq_check: false, gwqa_check: false, doclib_check: false, digitallib_check: false
+    )
+  end
+
+  def load_limit_date_item
+    Gwboard::Synthesetup.where(content_id: 2).first_or_create(limit_date: 'yesterday')
   end
 end

@@ -9,7 +9,7 @@
     <% unless brk_code == item.category1_id.to_s %>
       <% brk_code = item.category1_id.to_s %>
       <tr>
-        <th style="text-align: left;"><%= gwbd_category_name(@d_categories, item.category1_id) %></th>
+        <th style="text-align: left;"><%= item.category.try(:name) %></th>
         <th style="text-align: left;"></th>
         <th style="text-align: left;"></th>
       </tr>

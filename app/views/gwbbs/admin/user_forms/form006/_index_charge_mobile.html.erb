@@ -6,7 +6,7 @@
 <% end %>
 <p class="leftPad1">
 <%= link_to item.inpfld_006, "#{item.show_path}#{gwbbs_params_set}" %><br />
-分類：<%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %><br />
+分類：<%= link_to item.category.try(:name), "#{item.show_path}#{gwbbs_params_set}" %><br />
 文書名：<%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %>
 </p><br />
 <% end %>

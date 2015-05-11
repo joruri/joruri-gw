@@ -29,7 +29,7 @@
      <tr>
       <%if @title.category == 1 %>
         <th style="width: 60px; text-align: left;"><%= @title.category1_name  unless @title.category1_name.blank? %> : </th>
-        <td style="text-align: left;"><%= gwbd_category_name(@d_categories, @item.category1_id) %></td>
+        <td style="text-align: left;"><%= @item.category.try(:name) %></td>
       <% end %>
     </tr>
   </table>

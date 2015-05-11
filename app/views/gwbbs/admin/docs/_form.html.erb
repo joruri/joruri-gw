@@ -49,8 +49,7 @@
         <%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %>
       </th>
       <td colspan="3">
-        <%= f.select(:category1_id, @categories1.collect{|i|
-          [i.name, i.id]}, :include_blank => '分類を選択してください') %>
+        <%= f.select :category1_id, @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id).map{|i| [i.name, i.id]}, :include_blank => '分類を選択してください' %>
       </td>
     </tr>
   <% end %>

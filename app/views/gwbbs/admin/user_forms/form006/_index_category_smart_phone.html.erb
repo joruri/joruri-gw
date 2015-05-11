@@ -4,7 +4,7 @@
   <% unless brk_code == item.category1_id.to_s %>
     <% brk_code = item.category1_id.to_s %>
     <tr claass="subIndex">
-      <th><%= gwbd_category_name(@d_categories, item.category1_id) %></th>
+      <th><%= item.category.try(:name) %></th>
       <th>区分</th>
     </tr>
   <% end %>

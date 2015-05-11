@@ -7,7 +7,7 @@
   <% @items.each do |item| %>
   <tr cycle="<%= cycle 'article', 'article cycle' %>">
     <td class="group"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></td>
-    <td class="category"><%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="category"><%= link_to item.category.try(:name), "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="clericalName"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="update"><%= link_to item.latest_updated_at.strftime('%Y-%m-%d %H:%M'), "#{item.show_path}#{gwbbs_params_set}" %></td>
   </tr>

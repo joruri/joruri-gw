@@ -20,16 +20,16 @@ class Gwbbs::Admin::CsvExportsController < Gw::Controller::Admin::Base
     @item = System::Model::FileConf.new(encoding: 'sjis')
     @item.attributes = params[:item]
 
-    @categories = @title.categories.select(:id, :name).order(:sort_no, :id).index_by(&:id)
+    items = @title.docs.select(:id, :section_code, :section_name, :category1_id, :title)
+      .where(state: 'public').order(id: :asc).preload(:category)
 
-    csv = @title.docs.where(state: 'public').select(:id, :section_code, :section_name, :category1_id, :title).order(:id)
-      .to_csv(headers: ["レコードid","所属コード","所属名","分類コード","分類名","件名"]) do |item|
+    csv = items.to_csv(headers: ["レコードid","所属コード","所属名","分類コード","分類名","件名"]) do |item|
       [
         item.id,
         item.section_code,
         item.section_name,
         item.category1_id,
-        @categories[item.category1_id].try(:name),
+        item.category.try(:name),
         item.title
       ]
     end

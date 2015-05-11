@@ -13,7 +13,7 @@
   <% @items.each do |item| %>
     <% if brk_key != item.category1_id %>
     <tr class="subIndex">
-      <th colspan="<%= @title.importance == 1 ? 6 : 5 %>" class="docTitle"><%= gwbd_category_name(@d_categories, item.category1_id) %></th>
+      <th colspan="<%= @title.importance == 1 ? 6 : 5 %>" class="docTitle"><%= item.category.try(:name) %></th>
     </tr>
     <% end %>
     <tr class="<%= cycle 'article', 'article cycle' %>">

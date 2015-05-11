@@ -7,11 +7,9 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], state: params[:state]) if params[:reset]
+
     @title = Gwbbs::Control.find(params[:title_id])
-
-    return redirect_to("/gwbbs/docs?title_id=#{params[:title_id]}&state=#{params[:state]}") if params[:reset]
-
-    _category_condition
 
     initialize_value_set_new_css
 
@@ -20,20 +18,16 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     @css = ["/_common/themes/gw/css/gwbbs_standard.css", "/_common/themes/gw/css/doc_2column.css"]
   end
 
-  def _category_condition
-    @categories1 = @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id)
-    @d_categories = @categories1.index_by(&:id)
-  end
-
   def index
-    @items = index_docs.index_select(@title).paginate(page: params[:page], per_page: params[:limit])
+    @items = index_docs.index_select(@title)
+      .paginate(page: params[:page], per_page: params[:limit])
+      .preload(:category)
 
     if params[:kwd].present?
       @files = @title.files.search_with_text(:filename, params[:kwd])
         .merge(@title.docs.index_docs_with_params(@title, params)).joins(:doc).order(:filename)
         .paginate(page: params[:page], per_page: params[:limit])
     end
-    Page.title = @title.title
   end
 
   def show
@@ -42,18 +36,17 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     return error_auth if !@title.is_readable? && !@item.is_recognizable? && !@item.is_publishable?
 
     # 前後記事
-    items = index_docs.select(:id, :title_id)
-    current = items.index{|item| item.id == @item.id}.to_i
-    @previous = items[current - 1] if current - 1 >= 0
-    @next = items[current + 1]
+    load_next_and_prev_item
 
     # 福利厚生ポータルへのリンク情報を取得
     link_hss_portal
 
-    ptitle = ''
-    ptitle = @title.notes_field09 unless @title.notes_field09.blank? if @title.form_name == 'form003'
-    ptitle = @item.title unless @title.form_name == 'form003'
-    Page.title = ptitle unless ptitle.blank?
+    case @title.form_name
+    when 'form003'
+      Page.title = @title.notes_field09 if @title.notes_field09.present?
+    else
+      Page.title = @item.title if @item.title.present?
+    end
   end
 
   def new
@@ -190,6 +183,13 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
 
   def check_title_writable
     return error_auth unless @title.is_writable?
+  end
+
+  def load_next_and_prev_item
+    items = index_docs.select(:id, :title_id)
+    current = items.index{|item| item.id == @item.id}.to_i
+    @previous = items[current - 1] if current - 1 >= 0
+    @next = items[current + 1]
   end
 
   def link_hss_portal

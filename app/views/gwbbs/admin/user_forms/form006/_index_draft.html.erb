@@ -9,7 +9,7 @@
   <% @items.each do |item| %>
   <tr>
     <td class="draft"><%= item.ststus_name %></td>
-    <td class="category"><%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="category"><%= link_to item.category.try(:name), "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="division"><%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="date"><%= link_to item.inpfld_006, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="docName"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>

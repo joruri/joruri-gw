@@ -33,7 +33,7 @@ mode = 'date' if @title.category == 0
       <td class="bbsAttach"><%=raw retstr_attache_span(item.attachmentfile) %></td>
       <td class="bbsBalloon"><%=raw retstr_balloon_span(item) %></td>
       <% if mode.blank? %>
-        <td class="category"><%= gwbd_category_name(@d_categories, item.category1_id) %></td>
+        <td class="category"><%= item.category.try(:name) %></td>
       <% else %>
         <td class="update"><%=l item.created_at if item.created_at %></td>
       <% end %>
