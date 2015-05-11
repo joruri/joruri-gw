@@ -37,7 +37,7 @@
   <tr>
     <% @members.each do |item| %>
       <td>メールアドレス</td>
-      <td><%= %Q(<a href="mailto:#{item.user_mail}">#{item.user_mail}</a>) %></td>
+      <td><%if item.user_mail%><a href="mailto:<%=item.user_mail.html_safe%>"><%=item.user_mail%></a><%end%></td>
     <% end %>
   </tr>
 </table>
