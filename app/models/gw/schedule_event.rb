@@ -202,7 +202,7 @@ class Gw::ScheduleEvent < Gw::Database
   end
 
   def self.select_st_at_month_options(is_ev_reader)
-    month_start = Time.new('2016-01-01').beginning_of_month
+    month_start = Time.now.beginning_of_month
     items = self.where(event_month: 1).where(arel_table[:st_at].gteq(month_start))
     items = items.where(gid: Core.user.id) unless is_ev_reader
     items = items.select("DATE_FORMAT(st_at, '%Y-%m-01') as month, DATE_FORMAT(st_at, '%Y年%m月') as month_str")
@@ -388,14 +388,14 @@ class Gw::ScheduleEvent < Gw::Database
         csv << [nil, "週間行事予定表（#{st_date.month}月#{st_date.day}日～#{ed_date.month}月#{ed_date.day}日）"]
         csv << [nil, nil, "#{now.month}月#{now.day}日（#{Gw.weekday(now.wday)}） #{now.hour}時現在　#{Core.user_group.name}調べ"]
         csv << [nil] + (st_date..ed_date).map{|d| "#{d.month}/#{d.day}#{Gw.weekday(d.wday)}"}
-  
+
         groups.each do |group|
           group_events = items.select {|ev|
             ((group[:collect_by_parent] && ev.parent_gid == group[:id]) ||
             (!group[:collect_by_parent] && ev.gid == group[:id]))
           }
           next if group_events.blank?
-  
+
           data = [group[:name]]
           st_date.upto(ed_date).each do |date|
             events = group_events.select{|ev| ev.schedule.date_between?(date)}
@@ -428,7 +428,7 @@ class Gw::ScheduleEvent < Gw::Database
               data << event.event_display("month")
               csv << data
             end
-          end 
+          end
         end
       end
     end
