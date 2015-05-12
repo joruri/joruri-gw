@@ -3,7 +3,6 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    @img_path = "public/doclibrary/docs/"
     @system = 'doclibrary'
     @css = ["/_common/themes/gw/css/doclibrary.css"]
     @cabinet_title = '書庫'
@@ -13,10 +12,10 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   def index
     return error_auth unless Doclibrary::Control.is_admin?
 
-    @items = Doclibrary::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Doclibrary::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    items = Doclibrary::Control.distinct.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
+    items = items.where(state: 'public').with_admin_role(Core.user) unless Doclibrary::Control.is_sysadm?
+    @items = items.order(sort_no: :asc, updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 
   def show
@@ -68,14 +67,8 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     @item.upload_document_file_size_currently = 0
     @item.upload_system = 3
 
-    if @item.save
-      @item.group_folders.build.class.delay.sync_group_folders(@item.id,'public')
-      redirect_to doclibrary_cabinets_path
-    else
-      respond_to do |format|
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
-      end
+    _create @item do
+      Doclibrary::GroupFolder.delay.sync_group_folders(@item.id, 'public')
     end
   end
 

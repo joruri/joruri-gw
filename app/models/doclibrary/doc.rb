@@ -58,7 +58,7 @@ class Doclibrary::Doc < Gwboard::CommonDb
   scope :index_select, ->(control) {
     case control.form_name
     when 'form001'
-      select(:id, :title_id, :parent_id, :category1_id, :state, :title, :section_code, :updated_at, :latest_updated_at)
+      select(:id, :title_id, :parent_id, :category1_id, :category2_id, :state, :title, :section_code, :updated_at, :latest_updated_at)
     else
       all
     end

@@ -5,17 +5,10 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   before_action :check_title_readable, only: [:index, :show]
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
+  before_action :load_parent_folder
 
   def pre_dispatch
     @title = Doclibrary::Control.find(params[:title_id])
-
-    if params[:cat].blank?
-      @parent = @title.folders.root
-      params[:cat] = @parent.id.to_s
-    else
-      @parent = @title.folders.find(params[:cat])
-    end
-    return http_error(404) unless @parent
 
     Page.title = @title.title
     initialize_value_set
@@ -96,5 +89,15 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   def check_title_writable
     return error_auth unless @title.is_writable?
+  end
+
+  def load_parent_folder
+    if params[:cat].blank?
+      @parent = @title.folders.root
+      params[:cat] = @parent.id.to_s
+    else
+      @parent = @title.folders.find(params[:cat])
+    end
+    return http_error(404) unless @parent
   end
 end

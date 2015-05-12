@@ -6,54 +6,25 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
 
   before_action :check_title_readable, only: [:index, :show]
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_default_state_param
+  before_action :load_parent_folder
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], limit: params[:limit], state: params[:state]) if params[:reset]
+
     @title = Doclibrary::Control.find(params[:title_id])
 
-    Page.title = @title.title
-    return redirect_to("#{doclibrary_docs_path}?title_id=#{params[:title_id]}&limit=#{params[:limit]}&state=#{params[:state]}") if params[:reset]
-
-    if params[:state].blank?
-      params[:state] = 'CATEGORY' unless params[:cat].blank?
-      params[:state] = 'GROUP' unless params[:gcd].blank?
-      if params[:cat].blank?
-        params[:state] = @title.default_folder.to_s if params[:state].blank?
-      end if params[:gcd].blank?
-    end
-
-    _search_condition
-
-    return http_error(404) if @parent.blank?
     initialize_value_set
-  end
-
-  def _search_condition
-    @groups = Gwboard::Group.level3_all_hash
-    @categories = @title.folders.where(state: 'public').select(:id, :name).index_by(&:id)
-
-    case params[:state]
-    when 'CATEGORY'
-      if params[:cat].blank?
-        @parent = @title.folders.root
-        params[:cat] = @parent.id.to_s
-      else
-        @parent = @title.folders.find_by(id: params[:cat])
-      end
-    else
-      if params[:cat].blank?
-        @parent = @title.folders.root
-      else
-        @parent = @title.folders.find_by(id: params[:cat])
-      end
-    end
+    Page.title = @title.title
   end
 
   def index
-    @items = @title.docs.index_select(@title)
+    @items = @title.docs.index_select(@title).distinct
       .index_docs_with_params(@title, params)
       .index_order_with_params(@title, params)
-      .search_with_params(@title, params).distinct
+      .search_with_params(@title, params)
       .paginate(page: params[:page], per_page: params[:limit])
+      .preload(:section, :category)
 
     if params[:state].in?(%w(CATEGORY DRAFT))
       @folders = @title.folders.index_folders_with_params(@title, params)
@@ -62,9 +33,9 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
     end
 
     if params[:kwd].present?
-      @files = @title.files.search_with_params(@title, params)
+      @files = @title.files.search_with_params(@title, params).distinct
         .merge(@title.docs.index_docs_with_params(@title, params)).joins(:doc)
-        .index_order_with_params(@title, params).distinct
+        .index_order_with_params(@title, params)
         .paginate(page: params[:page], per_page: params[:limit])
     end
   end
@@ -180,6 +151,29 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
   def check_title_writable
     return error_auth unless @title.is_writable?
   end
+
+  def set_default_state_param
+    if params[:state].blank?
+      params[:state] = 
+        if params[:cat].present?
+          'CATEGORY'
+        elsif params[:gcd].present?
+          'GROUP'
+        else
+          @title.default_folder.to_s
+        end
+    end
+  end
+
+  def load_parent_folder
+    if params[:cat].blank?
+      @parent = @title.folders.root
+      params[:cat] = @parent.id.to_s if params[:state] == 'CATEGORY'
+    else
+      @parent = @title.folders.find_by(id: params[:cat])
+    end
+    return http_error(404) unless @parent
+  end    
 
   def find_migrated_item
     if @item = @title.docs.find_by(serial_no: params[:id], migrated: 1)

@@ -10,12 +10,12 @@
   </tr>
   <% @items.each do |item| %>
   <tr>
-    <td><%= gwbd_category_name(@groups, item.section_code) %></td>
+    <td><%= item.section.try(:name) %></td>
     <% if params[:state] != 'CATEGORY' %>
-    <td><%= gwbd_category_name(@categories, item.category1_id) %></td>
+    <td><%= item.folder.try(:name) %></td>
     <% end %>
     <td><%= link_to item.title, "#{doclibrary_show_uri(item,params)}#{doclib_params_set_index}" %></td>
-    <td><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') if item.latest_updated_at %></td>
+    <td><%=l item.latest_updated_at if item.latest_updated_at %></td>
   </tr>
   <% end %>
 </table>
