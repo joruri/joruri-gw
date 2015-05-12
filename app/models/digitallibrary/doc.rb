@@ -28,7 +28,7 @@ class Digitallibrary::Doc < Gwboard::CommonDb
 
   has_many :public_children_for_tree, -> { 
     select(:id, :title_id, :parent_id, :level_no, :state, :doc_type, :title, :seq_name).where(state: 'public').order(display_order: :asc, sort_no: :asc)
-}, :foreign_key => :parent_id, :class_name => self.name
+  }, :foreign_key => :parent_id, :class_name => self.name
   has_many :public_children_for_prev_and_next_link, -> { 
     select(:id, :title_id, :parent_id, :doc_type).where(state: 'public').order(display_order: :asc, sort_no: :asc)
   }, :foreign_key => :parent_id, :class_name => self.name
@@ -91,7 +91,14 @@ class Digitallibrary::Doc < Gwboard::CommonDb
       order(level_no: :asc, display_order: :asc, sort_no: :asc, id: :asc)
     end
   }
-
+  scope :preload_public_children_for_prev_and_next_link, -> {
+    preload(
+      :public_children_for_prev_and_next_link => {
+        :public_children_for_prev_and_next_link => {
+          :public_children_for_prev_and_next_link => 
+            :public_children_for_prev_and_next_link}})
+  }
+  
   def deletable?
     return false if self.parent_id.blank? && self.level_no == 1 && self.doc_type == 0
     return false unless self.children.blank?
@@ -158,39 +165,26 @@ class Digitallibrary::Doc < Gwboard::CommonDb
     options
   end
 
-  def seq_no_options
-    return [] unless parent
+  def seq_no_items_for_options
+    if parent
+      parent.children.without_preparation.where(doc_type: self.doc_type)
+        .order(level_no: :asc, sort_no: :asc, parent_id: :asc, id: :asc)
+    else
+      []
+    end
+  end
 
+  def seq_no_options
     options = []
-    items = doc_type == 0 ? parent.children.where(doc_type: 0) : parent.children.where(doc_type: 1)
-    items.where.not(state: 'preparation').order(:level_no, :sort_no, :parent_id, :id).each do |item|
+    seq_no_items_for_options.each do |item|
       options << if item.seq_no == seq_no
-          [sprintf("%d", item.seq_no), item.seq_no]
+          [item.seq_no.to_i.to_s, item.seq_no]
         else
-          [sprintf("%d", item.seq_no).to_s + 'の前に挿入', item.seq_no - 0.5]
+          [item.seq_no.to_i.to_s + 'の前に挿入', item.seq_no - 0.5]
         end
     end
-    options << ['最後尾', Digitallibrary::Doc::MAX_SEQ_NO]
+    options << ['最後尾', Digitallibrary::Doc::MAX_SEQ_NO] if options.present?
     options
-  end
-
-  def item_path
-    return "#{Site.current_node.public_uri.chop}?title_id=#{self.title_id}"
-  end
-
-  def docs_path
-    ret = "#{Site.current_node.public_uri}?title_id=#{self.title_id}&cat=#{self.id.to_s}" if self.parent_id.blank?
-    ret = "#{Site.current_node.public_uri}?title_id=#{self.title_id}&cat=#{self.parent_id.to_s}" unless self.parent_id.blank?
-    return ret
-  end
-
-  def show_path(param_id=nil)
-    if param_id.blank?
-      return "#{Site.current_node.public_uri}#{self.id}?title_id=#{self.title_id}&cat=#{self.parent_id.to_s}" unless self.parent_id.blank?
-      return "#{Site.current_node.public_uri}#{self.id}?title_id=#{self.title_id}&cat=#{self.id.to_s}" if self.parent_id.blank?
-    else
-      return "#{Site.current_node.public_uri}#{param_id}?title_id=#{self.title_id}&cat=#{param_id}"
-    end
   end
 
   def edit_path
@@ -215,30 +209,8 @@ class Digitallibrary::Doc < Gwboard::CommonDb
     return ret
   end
 
-  def delete_path
-    return "#{Site.current_node.public_uri}#{self.id}/delete?title_id=#{self.title_id}&cat=#{self.parent_id.to_s}" unless self.parent_id.blank?
-    return "#{Site.current_node.public_uri}#{self.id}/delete?title_id=#{self.title_id}&cat=#{self.id.to_s}" if self.parent_id.blank?
-  end
-
-  def update_path
-    return "#{Site.current_node.public_uri}#{self.id}/update?title_id=#{self.title_id}&cat=#{self.parent_id.to_s}" unless self.parent_id.blank?
-    return "#{Site.current_node.public_uri}#{self.id}/update?title_id=#{self.title_id}&cat=#{self.id.to_s}" if self.parent_id.blank?
-  end
-
   def adms_edit_path
     return self.item_home_path + "adms/#{self.id}/edit/?title_id=#{self.title_id}"
-  end
-
-  def recognize_update_path
-    return "#{Site.current_node.public_uri}#{self.id}/recognize_update?title_id=#{self.title_id}"
-  end
-
-  def publish_update_path
-    return "#{Site.current_node.public_uri}#{self.id}/publish_update?title_id=#{self.title_id}"
-  end
-
-  def clone_path
-    return "#{Site.current_node.public_uri}#{self.id}/clone/?title_id=#{self.title_id}"
   end
 
   def adms_clone_path
@@ -273,21 +245,25 @@ class Digitallibrary::Doc < Gwboard::CommonDb
     show_doc_path
   end
 
+  def separator_str
+    doc_type_folder? ? control.separator_str1 : control.separator_str2
+  end
+
   def update_level_no_for_descendants
     children.update_all(level_no: self.level_no + 1)
     children.each(&:update_level_no_for_descendants)
   end
 
   def update_seq_name_for_children
-    children.without_preparation.reorder(:seq_no, :id).partition(&:doc_type_folder?).each do |items|
+    docc_type_items = children.without_preparation.reorder(:seq_no, :id).partition(&:doc_type_folder?)
+    docc_type_items.each do |items|
       items.each.with_index(1) do |item, i|
-        seq_name = if self.seq_name.blank?
+        seq = if self.seq_name.blank?
             i.to_s
           else
-            separator = item.doc_type_folder? ? control.separator_str1 : control.separator_str2
-            "#{self.seq_name}#{separator}#{i}"
+            "#{self.seq_name}#{item.separator_str}#{i}"
           end
-        item.update_columns(seq_no: i, order_no: i, sort_no: i + item.doc_type * 1000000000, seq_name: seq_name)
+        item.update_columns(seq_no: i, order_no: i, sort_no: i + item.doc_type * 1000000000, seq_name: seq)
       end
     end
   end

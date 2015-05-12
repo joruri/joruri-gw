@@ -22,14 +22,6 @@ class Digitallibrary::Control < Gw::Database
   validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
-  def get_root_folder
-    Digitallibrary::Folder.where(:title_id=>self.id, :parent_id=>nil, :level_no => 1, :doc_type=>0).first
-  end
-
-  def menu_item_path
-    return "#{Site.current_node.public_uri.chop}?title_id=#{self.id}"
-  end
-
   def categorys_path
     return "#{self.item_home_path}categories?title_id=#{self.id}"
   end
@@ -52,6 +44,12 @@ class Digitallibrary::Control < Gw::Database
 
   def date_index_display_states
     {'0' => '使用する', '1' => '使用しない'}
+  end
+
+  class << self
+    def wallpapers
+      Gw::Icon.joins(:icon_group).where(gw_icon_groups: {name: 'digitallibrary'}).order(idx: :asc)
+    end
   end
 
   private

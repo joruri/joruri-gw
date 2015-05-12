@@ -3,7 +3,6 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    @img_path = "public/digitallibrary/docs/"
     @system = 'digitallibrary'
     @css = ["/_common/themes/gw/css/digitallibrary.css"]
     Page.title = "電子図書"
@@ -12,10 +11,10 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   def index
     return error_auth unless Digitallibrary::Control.is_admin?
 
-    @items = Digitallibrary::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    items = Digitallibrary::Control.distinct.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
+    items = items.where(state: 'public').with_admin_role(Core.user) unless Digitallibrary::Control.is_sysadm?
+    @items = items.order(sort_no: :asc, updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 
   def show
@@ -26,7 +25,7 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   end
 
   def new
-    @item = Digitallibrary::Control.new({
+    @item = Digitallibrary::Control.new(
       :state => 'public' ,
       :published_at => Core.now ,
       :importance => '1' ,
@@ -56,10 +55,8 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
       :separator_str1 => '.',
       :separator_str2 => '.',
       :default_limit => '20'
-    })
+    )
     return error_auth unless @item.is_admin?
-
-    load_theme_settings
   end
 
   def create
@@ -71,8 +68,6 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     @item.upload_document_file_size_currently = 0
     @item.upload_system = 3
 
-    load_theme_settings
-
     _create @item
   end
 
@@ -81,8 +76,6 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     return error_auth unless @item.is_admin?
 
     @item.notification = 0 if @item.notification.blank?
-
-    load_theme_settings
   end
 
   def update
@@ -90,9 +83,6 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     return error_auth unless @item.is_admin?
 
     @item.attributes = params[:item]
-
-    load_theme_settings
-
     _update @item
   end
 
@@ -101,34 +91,5 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     return error_auth unless @item.is_admin?
 
     _destroy @item
-  end
-
-  private
-
-  def load_theme_settings
-    @wallpapers = get_wallpapers
-    @csses = get_csses
-  end
-
-  def get_wallpapers
-    wallpapers = nil
-    wallpaper = Gw::IconGroup.find_by(name: 'digitallibrary')
-    unless wallpaper.blank?
-      item = Gw::Icon.new
-      item.and :icon_gid, wallpaper.id
-      wallpapers = item.find(:all,:order => 'idx')
-    end
-    return wallpapers
-  end
-
-  def get_csses
-    csses = nil
-    css = Gw::IconGroup.find_by(name: 'digitallibrary_CSS')
-    unless css.blank?
-      item = Gw::Icon.new
-      item.and :icon_gid, css.id
-      csses = item.find(:all,:order => 'idx')
-    end
-    return csses
   end
 end

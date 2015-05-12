@@ -5,47 +5,22 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   before_action :check_title_readable, only: [:index, :show]
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
+  before_action :load_parent_folder
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], limit: params[:limit], state: params[:state]) if params[:reset]
+
     @title = Digitallibrary::Control.find(params[:title_id])
 
     Page.title = @title.title
-    return redirect_to("Site.current_node.public_uri?title_id=#{params[:title_id]}&limit=#{params[:limit]}&state=#{params[:state]}") if params[:reset]
-
-    begin
-      _search_condition
-    rescue
-      return http_error(404)
-    end
-    return http_error(404) if @parent.blank?
-
     initialize_value_set_new_css_dl
   end
 
-  def _search_condition
-    if params[:cat].blank?
-      @parent = @title.get_root_folder
-    else
-      @parent = @title.folders.find(params[:cat])
-    end
-
-  end
-
   def index
-    item = Digitallibrary::Folder.new
-    unless params[:state] == 'DRAFT'
-      if @parent.blank?
-        item.level_no = 1
-      else
-        item.parent_id = @parent.id
-      end
-    end
-
-    item.and :state, 'closed' if @title.is_writable? if params[:state] == 'DRAFT'
-    item.and :doc_type, 0
-    item.and  :title_id, params[:title_id]
-    item.page  params[:page], params[:limit]
-    @items = item.find(:all , :order=>"level_no, sort_no, id")
+    items = @title.folders.where(parent_id: @parent.id)
+    items = items.where(state: 'closed') if params[:state] == 'DRAFT' && @title.is_writable?
+    @items = items.order(level_no: :asc, sort_no: :asc, id: :asc)
+      .paginate(page: params[:page], per_page: params[:limit])
 
     _index @items
   end
@@ -56,20 +31,20 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   end
 
   def new
-    @item = Digitallibrary::Folder.new({
-      :state      => 'public' ,
+    @item = Digitallibrary::Folder.new(
+      :state => 'public' ,
       :latest_updated_at => Time.now,
-      :parent_id  => @parent.id ,
+      :parent_id => @parent.id ,
       :chg_parent_id => @parent.id ,
-      :title_id  => params[:title_id],
-      :doc_type  => 0 ,
+      :title_id => params[:title_id],
+      :doc_type => 0 ,
       :level_no => @parent.level_no + 1,
       :section_code => Core.user_group.code,
       :sort_no => Digitallibrary::Doc::MAX_SEQ_NO,
       :order_no => Digitallibrary::Doc::MAX_SEQ_NO,
       :display_order => 100,  #
       :seq_no => Digitallibrary::Doc::MAX_SEQ_NO.to_f
-    })
+    )
   end
 
   def create
@@ -82,13 +57,9 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
     @item.level_no = @parent.level_no + 1
     @item.doc_type = 0
 
-    unless @item.save
-      return render :action => :new
-    end
-
-    str_params = digitallibrary_docs_path({:title_id=>@title.id})
+    str_params = digitallibrary_docs_path(title_id: @title.id)
     str_params += "&cat=#{@item.parent_id}" unless @item.parent_id == 0 unless @item.parent_id.blank?
-    redirect_to  str_params
+    _create @item, success_redirect_uri: str_params
   end
 
   def edit
@@ -103,8 +74,6 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
     @item = @title.folders.find(params[:id])
     return error_auth unless @item.doc_type == 0
     return error_auth unless @item.folder_editable?
-
-    _search_condition
 
     @item.attributes = params[:item]
     @item.doc_type = 0
@@ -138,5 +107,14 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   def check_title_writable
     return error_auth unless @title.is_writable?
+  end
+
+  def load_parent_folder
+    if params[:cat].blank?
+      @parent = @title.folders.root
+    else
+      @parent = @title.folders.find(params[:cat])
+    end
+    return http_error(404) if @parent.blank?
   end
 end

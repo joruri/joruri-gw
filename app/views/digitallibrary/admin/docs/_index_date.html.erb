@@ -29,8 +29,8 @@ str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
       <td style="text-align: center;"><%= item.seq_name %></td>
     <% end %>
     <td><%= link_to item.title, "#{digitallibrary_doc_path(item,{:title_id=>@title.id})}#{str_params}#{cat_params(item)}" %></td>
-    <td><%= "#{item.section_code}#{gwbd_category_name(@groups, item.section_code)}" %></td>
-    <td><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') if item.latest_updated_at %></td>
+    <td><%= "#{item.section.try(:code)}#{item.section.try(:name)}" %></td>
+    <td><%=l item.latest_updated_at if item.latest_updated_at %></td>
     <% if @title.is_writable? %>
       <td style="width: 30px; text-align: right;"><%= item.display_order %></td>
     <% end %>

@@ -38,10 +38,10 @@
     <th>左上バナー指定<br />(HTML形式)</th>
     <td><%= f.text_area :left_banner , :cols => 84, :rows => 4 , :class => 'string left_banner'%></td>
   </tr>
-  <% unless @wallpapers.blank? %>
+  <% if Digitallibrary::Control.wallpapers.present? %>
     <tr>
       <th>左サイドメニュー<br />画像指定</th>
-      <td><%= f.select(:wallpaper, @wallpapers.collect{|i| [ i.title, i.path ]}, {:include_blank => '指定しない'}) %></td>
+      <td><%= f.select :wallpaper, Digitallibrary::Control.wallpapers.map{|i| [i.title, i.path]}, {:include_blank => '指定しない'} %></td>
     </tr>
   <% end %>
   <tr>

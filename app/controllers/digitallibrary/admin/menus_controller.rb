@@ -8,9 +8,9 @@ class Digitallibrary::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   def index
-    @items = Digitallibrary::Control.where(state: 'public', view_hide: 1)
-      .tap {|c| break c.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .order(sort_no: :asc, docslast_updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+    items = Digitallibrary::Control.distinct.where(state: 'public', view_hide: 1)
+    items = items.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm?
+    @items = items.order(sort_no: :asc, docslast_updated_at: :desc)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 end

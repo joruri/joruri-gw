@@ -6,45 +6,32 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
 
   before_action :check_title_readable, only: [:index, :show]
   before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy]
+  before_action :load_parent_folder
 
   def pre_dispatch
+    return redirect_to url_for(action: :index, title_id: params[:title_id], limit: params[:limit], state: params[:state]) if params[:reset]
+
     @title = Digitallibrary::Control.find(params[:title_id])
-
-    Page.title = @title.title
-    return redirect_to("/digitallibrary/docs?title_id=#{params[:title_id]}&limit=#{params[:limit]}&state=#{params[:state]}") if params[:reset]
-
-    _search_condition
 
     initialize_value_set_new_css_dl
 
-    is_normal_idx = true
-    is_normal_idx = false if params[:state].to_s == 'DATE'
-    if is_normal_idx
-      @css = ["/_common/themes/gw/css/#{@title.system_name}_standard.css", "/_common/themes/gw/css/doc_2column_dl.css"]
+    Page.title = @title.title
+    @css = ["/_common/themes/gw/css/#{@title.system_name}_standard.css"]
+    if params[:state] == 'DATE'
+      @css << "/_common/themes/gw/css/doc_1column_dl.css"
     else
-      @css = ["/_common/themes/gw/css/#{@title.system_name}_standard.css", "/_common/themes/gw/css/doc_1column_dl.css"]
+      @css << "/_common/themes/gw/css/doc_2column_dl.css"
     end
-  end
-
-  def _search_condition
-    if params[:cat].blank?
-      @parent = @title.folders.root
-      params[:cat] = @parent.id
-    else
-      @parent = @title.folders.find_by(id: params[:cat])
-    end
-    params[:parent_id] = @parent.id if @parent
-    @groups = Gwboard::Group.level3_all_hash
   end
 
   def index
-    @items = index_docs.index_select.paginate(page: params[:page], per_page: params[:limit])
+    @items = index_docs.index_select.paginate(page: params[:page], per_page: params[:limit]).preload(:section)
     @items.preload!(:parent) if params[:state] == 'DATE'
 
     if params[:state] == 'DRAFT'
-      @folders = @title.folders.index_select.where(state: 'closed')
-        .tap {|f| break f.group_or_creater_docs unless @title.is_admin? }
-        .order(level_no: :asc, sort_no: :asc, id: :asc)
+      items = @title.folders.index_select.where(state: 'closed')
+      items = items.group_or_creater_docs unless @title.is_admin?
+      @folders = items.order(level_no: :asc, sort_no: :asc, id: :asc)
         .paginate(page: params[:page], per_page: params[:limit])
     end
   end
@@ -62,29 +49,7 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
     Page.title = @item.title
 
     # 前後記事
-    items = case params[:state]
-      when 'DRAFT', 'RECOGNIZE', 'PUBLISH', 'DATE'
-        index_docs.select(:id, :parent_id, :title_id)
-      else
-        items = @title.folders.roots.includes(
-          :public_children_for_prev_and_next_link => {
-            :public_children_for_prev_and_next_link => {
-              :public_children_for_prev_and_next_link => 
-                :public_children_for_prev_and_next_link}})
-        next_and_prev_items(items)
-      end
-
-    current = items.index{|item| item.id == @item.id}.to_i
-    @previous = items[current - 1] if current - 1 >= 0
-    @next = items[current + 1]
-  end
-
-  def next_and_prev_items(items)
-    items.inject([]) do |arr, item|
-      arr << item if item.doc_type_doc?
-      arr += next_and_prev_items(item.public_children_for_prev_and_next_link) if item.doc_type_folder?
-      arr
-    end
+    load_next_and_prev_item
   end
 
   def new
@@ -190,6 +155,16 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
     return error_auth unless @title.is_writable?
   end
 
+  def load_parent_folder
+    if params[:cat].blank?
+      @parent = @title.folders.root
+      params[:cat] = @parent.id
+    else
+      @parent = @title.folders.find_by(id: params[:cat])
+    end
+    params[:parent_id] = @parent.id if @parent
+  end
+
   def index_docs
     @title.docs_and_folders.index_docs_with_params(@title, params)
       .index_order_with_params(@title, params)
@@ -201,6 +176,29 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
       redirect_to url_for(params.merge(id: @item.id, title_id: @item.title_id, cat: @item.id))
     else
       http_error(404)
+    end
+  end
+
+  def load_next_and_prev_item
+    items = 
+      case params[:state]
+      when 'DRAFT', 'RECOGNIZE', 'PUBLISH', 'DATE'
+        index_docs.select(:id, :parent_id, :title_id)
+      else
+        folders = @title.folders.roots.preload_public_children_for_prev_and_next_link
+        collect_doc_items(folders)
+      end
+
+    current = items.index{|item| item.id == @item.id}.to_i
+    @previous = items[current - 1] if current - 1 >= 0
+    @next = items[current + 1]
+  end
+
+  def collect_doc_items(items)
+    items.inject([]) do |arr, item|
+      arr << item if item.doc_type_doc?
+      arr += collect_doc_items(item.public_children_for_prev_and_next_link) if item.doc_type_folder?
+      arr
     end
   end
 end
