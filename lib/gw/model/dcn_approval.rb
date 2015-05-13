@@ -31,7 +31,7 @@ dump ["Gw::Tool::Reminder.checker_api　dcn_approvals_remind_xml",Time.now.strft
       xml_data << %Q(<id>#{dcn.id}</id>)
       xml_data << %Q(<link rel="alternate" href="#{href_uri}"/>)
       xml_data << %Q(<updated>#{dcn.ed_at.strftime('%Y-%m-%d %H:%M:%S')}</updated>)
-      xml_data << %Q(<category term="denshiKessai">電子決済</category>)
+      xml_data << %Q(<category term="denshiKessai">電子決裁</category>)
       xml_data << %Q(<title>#{dcn.title}</title>)
       xml_data << %Q(<author><name>#{dcn.author}</name></author>)
       xml_data << %Q(</entry>)
