@@ -179,6 +179,7 @@ var my_submit = function() {
   fr.selectedIndex = -1; // fr の送信を抑止
 
   $('itemForm').submit();
+  return false;
 }
 
 <% if prop_id.blank? %>

@@ -160,7 +160,7 @@ form_kind_radio_str = radio(f, 'form_kind_id', Gw::PropType.gw_restricted_form_k
 <%#= required_head %>
 
 <% if action_name.in?(%w(new create)) && @firstaction != 'quote' %>
-<%= render 'form_tabbox', tab_captions: [%Q(<a onclick="switchRepeat(1);">通常</a>)], 
+<%= render 'form_tabbox', tab_captions: [%Q(<a onclick="switchRepeat(1);">通常</a>)],
   selected_tab: !params[:repeat].nil? ? 2 : 1, form_kind_radio_str: form_kind_radio_str %>
 <% end %>
 
@@ -370,7 +370,7 @@ var my_submit = function() {
   fr.selectedIndex = -1; // fr の送信を抑止
 
   $('itemForm').submit(); // 送信
-
+  return false;
 };
 
 var my_load = function() {
