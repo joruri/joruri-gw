@@ -16,7 +16,7 @@ class Gw::Admin::MobileParticipantsController < Gw::Controller::Admin::Base
       @group_id = params[:group_id].to_i
       @group = System::Group.where(:id => params[:group_id]).first
     end
-    @items = System::User.get_user_select(@group_id,nil)
+    @items = System::User.get_user_select(@group_id, nil, ldap: 1)
     @groups  = System::Group.where("parent_id = ? AND state = ?",@group.id,"enabled").order(:sort_no)
   end
 

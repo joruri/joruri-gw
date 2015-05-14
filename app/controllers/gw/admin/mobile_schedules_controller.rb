@@ -14,7 +14,7 @@ class Gw::Admin::MobileSchedulesController < Gw::Admin::SchedulesController
       @group_id = params[:group_id].to_i
       @group = System::Group.where(id: params[:group_id]).first
     end
-    @items = System::User.get_user_select(@group_id, nil)
+    @items = System::User.get_user_select(@group_id, nil, ldap: 1)
     @groups = System::Group.where(parent_id: @group.id, state: "enabled").order(sort_no: :asc)
   end
 
