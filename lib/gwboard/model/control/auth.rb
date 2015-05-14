@@ -174,7 +174,7 @@ module Gwboard::Model::Control::Auth
   end
 
   def save_sueditors
-    sureaders_json_value.each do |user_value|
+    sueditors_json_value.each do |user_value|
       create_user_role('w', user_value)
     end
   end
