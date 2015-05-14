@@ -8,7 +8,7 @@
 <div class="editingBox cabinets">
   <span class="btEdit"><%= link_to '編集', edit_digitallibrary_cabinet_path(@item) %></span>
   <span class="btDestroy"><%= link_to '削除', digitallibrary_cabinet_path(@item), confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
-  <span class="docLink"><%= link_to '公開画面へ >>', digitallibrary_docs_path(title_id: @item.id, cat: "1") %></span>
+  <span class="docLink"><%= link_to '公開画面へ >>', digitallibrary_docs_path(title_id: @item.id) %></span>
 </div>
 
 <table class="show cabinets">
