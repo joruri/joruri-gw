@@ -92,12 +92,13 @@ module Concerns::System::CustomGroup::Role
   end
 
   def set_selected_ids
-    self.selected_admin_group_ids = selected_admin_group_ids.reject(&:blank?).map(&:to_i)
-    self.selected_admin_user_ids = selected_admin_user_ids.reject(&:blank?).map(&:to_i)
-    self.selected_edit_group_ids = selected_edit_group_ids.reject(&:blank?).map(&:to_i)
-    self.selected_edit_user_ids = selected_edit_user_ids.reject(&:blank?).map(&:to_i)
-    self.selected_read_group_ids = selected_read_group_ids.reject(&:blank?).map(&:to_i)
-    self.selected_read_user_ids = selected_read_user_ids.reject(&:blank?).map(&:to_i)
+    %w(admin edit read).each do |priv|
+      %w(user group).each do |target|
+        ids = send("selected_#{priv}_#{target}_ids")
+        ids = ids.reject(&:blank?).map(&:to_i)
+        self.send("selected_#{priv}_#{target}_ids=", ids)
+      end
+    end
   end
 
   def build_custom_group_roles
