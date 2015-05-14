@@ -81,7 +81,7 @@ end
       <th>希望日（開始）</th>
       <td><%=Gw.date_str(@req1.start_at)%></td>
     </tr>
-    <%if @req1.media_code.to_i == "2" || @req1.media_code.to_i == "3" %>
+    <%if @req1.media_code.to_i == 2 || @req1.media_code.to_i == 3 %>
     <tr>
       <th>希望日（終了）</th>
       <td><%=Gw.date_str(@req1.end_at)%></td>
