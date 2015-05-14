@@ -6,8 +6,8 @@ class System::CustomGroup < ActiveRecord::Base
   belongs_to :parent, :foreign_key => :parent_id, :class_name => 'System::CustomGroup'
   has_many :children, :foreign_key => :parent_id, :class_name => 'System::CustomGroup'
 
-  has_many :user_custom_group, :foreign_key => :custom_group_id, :class_name => 'System::UsersCustomGroup'
-  has_many :custom_group_role, :foreign_key => :custom_group_id, :class_name => 'System::CustomGroupRole'
+  has_many :user_custom_group, :foreign_key => :custom_group_id, :class_name => 'System::UsersCustomGroup', :dependent => :destroy
+  has_many :custom_group_role, :foreign_key => :custom_group_id, :class_name => 'System::CustomGroupRole', :dependent => :destroy
   belongs_to :owner_group, :foreign_key => :owner_gid, :class_name => 'System::Group'
   belongs_to :owner, :foreign_key => :owner_uid, :class_name => 'System::User'
   belongs_to :updater_group, :foreign_key => :updater_gid, :class_name => 'System::Group'
