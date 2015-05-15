@@ -1,0 +1,40 @@
+<div class="bbsDocList workflow">
+<%= render 'piece_header', hide_new_action: true %>
+<div class="pieceBody">
+
+<% if @item.elaboratable? || @item.destroyable? %>
+<div class="editingBox">
+  <% if @item.elaboratable? %>
+    <div class="btEdit"><%= link_to '編集', {action: :elaborate} %></div>
+  <% end %>
+  <% if @item.destroyable? %>
+    <div class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></div>
+  <% end %>
+</div>
+<% end %>
+
+<%= render 'detail', hide_new_action: true %>
+
+<% if @item.reapplyable? %>
+<div class="submitters">
+<div align="center">
+  <%= button_to '再申請', {action: :reapply}, method: :get %>
+</div>
+</div>
+<% end %>
+
+<% if @item.pullbackable? %>
+<div class="submitters">
+<div align="center">
+  <%= button_to '引き戻し', {action: :pullback}, method: :get, data: {confirm: '申請中の文書を引き戻してよろしいですか？'} %>
+</div>
+</div>
+<% end %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%= link_to '一覧へ戻る', {action: :index} %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList workflow-->

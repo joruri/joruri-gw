@@ -202,9 +202,7 @@ table#attach_form {
   padding-top: 20px;
 }
 #contentContainer .editingBox {
-  width: 700px;
-  margin-left: 0;
-  padding-left: 10px;
+  margin: 10px;
 }
 .workflow .editingBox .docLink {
   float:left;

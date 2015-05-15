@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420091308) do
+ActiveRecord::Schema.define(version: 20150515074132) do
 
   create_table "delayed_jobs", force: true do |t|
     t.integer  "priority",   default: 0, null: false
@@ -2399,10 +2399,11 @@ ActiveRecord::Schema.define(version: 20150420091308) do
     t.text     "body",           limit: 16777215
     t.datetime "expired_at"
     t.datetime "applied_at"
-    t.string   "creater_id",     limit: 20
+    t.integer  "creater_id"
     t.string   "creater_name",   limit: 20
     t.string   "creater_gname",  limit: 20
     t.integer  "attachmentfile"
+    t.integer  "current_number",                  default: 0
   end
 
   create_table "gw_workflow_itemdeletes", force: true do |t|

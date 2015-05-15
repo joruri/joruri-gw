@@ -1,7 +1,7 @@
 class Gwworkflow::CustomRoute < Gw::Database
   self.table_name = 'gw_workflow_custom_routes'
 
-  has_many :steps, :class_name => 'Gwworkflow::CustomRouteStep', :foreign_key => :custom_route_id,
+  has_many :steps, ->{ order(number: :asc) }, :class_name => 'Gwworkflow::CustomRouteStep', :foreign_key => :custom_route_id,
     :dependent => :destroy
 
   validates :sort_no, presence: true, numericality: { only_integer: true }, inclusion: { in: 0..9999 }
@@ -21,10 +21,6 @@ class Gwworkflow::CustomRoute < Gw::Database
     state == 'enabled'
   end
 
-  def sorted_steps
-    steps.sort{|a,b|a.number <=> b.number}
-  end
-
   def total_steps
     steps.length
   end
@@ -38,11 +34,7 @@ class Gwworkflow::CustomRoute < Gw::Database
   end
 
   def future_steps
-    sorted_steps
-  end
-
-  def fixed_committees
-    fixed_steps.map{|step| step.committee }
+    steps
   end
 
   def future_committees

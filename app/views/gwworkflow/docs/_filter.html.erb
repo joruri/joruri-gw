@@ -4,16 +4,17 @@
   orders = [['降順', :desc], ['昇順', :asc]]
 %>
 <%= form_tag '', method: :get, name: 'frmSelect', class: 'search', style: 'background-color:white;' do %>
+<%= hidden_field_tag :cond, params[:cond] %>
 <table>
   <tr>
     <% if params[:cond].blank? ||params[:cond] == 'committed' %>
       <td>状態</td>
-      <td><%= select_tag :filter, options_for_select(filters, @filter), onchange: 'document.frmSelect.submit()' %></td>
+      <td><%= select_tag :filter, options_for_select(filters, params[:filter]), onchange: 'document.frmSelect.submit()' %></td>
     <% end %>
     <td>並び順</td>
     <td>
-      <%= select_tag :sort, options_for_select(sorts, @sort), onchange: 'document.frmSelect.submit()' %>
-      <%= select_tag :order, options_for_select(orders, @order), onchange: 'document.frmSelect.submit()' %>
+      <%= select_tag :sort, options_for_select(sorts, params[:sort]), onchange: 'document.frmSelect.submit()' %>
+      <%= select_tag :order, options_for_select(orders, params[:order]), onchange: 'document.frmSelect.submit()' %>
     </td>
   </tr>
 </table>

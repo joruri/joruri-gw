@@ -1,7 +1,9 @@
 class Gwworkflow::View::Doc
+  attr_reader :item
   attr_reader :id, :title, :state, :expired_at, :applied_at, :updated_at
 
   def initialize(item)
+    @item = item
     @id = item.id
     @state = item.real_state
     @title = item.title

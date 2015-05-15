@@ -46,13 +46,13 @@
     <th class="docTitle">コメント</th>
     <th style="width:120px;">更新日時</th>
   </tr>
-  <% @item.sorted_steps.each.with_index do |item, index| %>
+  <% @item.steps.each.with_index do |step, i| %>
     <tr class="<%= cycle 'article', 'article cycle' %>">
-      <td><%= index + 1 %></td>
-      <td class="group"><%= item.committee.user_name %></td>
-      <td style="width:60px;"><%=raw item.committee.state_str %></td>
-      <td class="docTitle"><%=hbr item.committee.comment %></td>
-      <td class="docTitle"><%=l item.committee.decided_at if item.committee.decided_at %></td>
+      <td><%= i + 1 %></td>
+      <td class="group"><%= step.committee.user_name %></td>
+      <td style="width:60px;"><%=raw step.committee.state_str if @item.real_state != :draft %></td>
+      <td class="docTitle"><%=hbr step.committee.comment %></td>
+      <td class="docTitle"><%=l step.committee.decided_at if step.committee.decided_at %></td>
     </tr>
   <% end %>
 </table>

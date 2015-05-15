@@ -6,8 +6,8 @@ module Gw::Model::Workflow
     5.day
   end
 
-  def self.remind(uid = Core.user.id)
-    to_reminders(Gwworkflow::Doc.all, uid).map{|title, date|
+  def self.remind(user = Core.user)
+    to_reminders(user).map{|title, date|
       {
       :date_str => date.strftime("%m/%d %H:%M"),
       :cls => 'ワークフロー',
@@ -16,10 +16,9 @@ module Gw::Model::Workflow
       }
     }
   end
-  
-  
-  def self.remind_xml(uid  , xml_data = nil)
-    to_reminders(Gwworkflow::Doc.all, uid).each{|title, date|
+
+  def self.remind_xml(user, xml_data = nil)
+    to_reminders(user).each{|title, date|
       xml_data  << %Q(<entry>)
       xml_data  << %Q(<link rel="alternate" href="/gwworkflow"/>)
       xml_data  << %Q(<updated>#{date.strftime('%Y-%m-%d %H:%M:%S')}</updated>)
@@ -30,35 +29,31 @@ module Gw::Model::Workflow
     return xml_data
   end
 
-  def self.to_reminders(docs, uid)
-    undecided_workflows(docs,uid) + accepted_workflows(docs,uid) + rejected_workflows(docs,uid)
+  def self.to_reminders(user)
+    undecided_docs(user) + accepted_docs(user) + rejected_docs(user) + remanded_docs(user)
   end
 
-  def self.undecided_workflows(docs, uid)
-    xs = docs.select{|doc|doc.current_step}
-      .select{|doc| doc.real_state == :applying }
-      .map{|doc| doc.current_step.committee }
-      .select{|c| c.user_id.to_i == uid }
-      .select{|c| c.state.to_sym == :undecided }
-    return [] if xs.length == 0
-    [[ "<a href='#{Rails.application.routes.url_helpers.gwworkflow_path}?cond=processing'>承認待ち稟議書が #{xs.length} 件あります。</a>",
-      xs.map{|x|x.updated_at}.max ]]
+  def self.undecided_docs(user)
+    docs = Gwworkflow::Doc.where(state: 'applying').user_processing_docs(user)
+    if docs.length == 0
+      []
+    else
+      [["<a href='/gwworkflow/docs?cond=processing'>承認待ち稟議書が #{docs.length} 件あります。</a>", docs.map(&:updated_at).max]]
+    end
   end
 
-  def self.accepted_workflows(docs, uid)
-    docs.select{|doc| doc.creater_id.to_i == uid }
-      .select{|doc| DateTime.now <= (doc.updated_at + self.how_long_notifying) }
-      .select{|doc| doc.real_state.to_sym == :accepted }
-      .map{|doc|
-        [ "<a href='#{Rails.application.routes.url_helpers.gwworkflow_path}/show/#{doc.id}'>「#{doc.title}」 が決裁されました。</a>", doc.updated_at ]
-      }
+  def self.accepted_docs(user)
+    docs = Gwworkflow::Doc.where(creater_id: user.id, state: 'accepted').updated_after(Time.now - how_long_notifying)
+    docs.map {|doc| ["<a href='/gwworkflow/docs/#{doc.id}'>「#{doc.title}」 が決裁されました。</a>", doc.updated_at] }
   end
-  def self.rejected_workflows(docs, uid)
-    docs.select{|doc| doc.creater_id.to_i == uid }
-      .select{|doc| DateTime.now <= (doc.updated_at + self.how_long_notifying) }
-      .select{|doc| doc.real_state.to_sym == :rejected }
-      .map{|doc|
-        [ "<a href='#{Rails.application.routes.url_helpers.gwworkflow_path}/show/#{doc.id}'>「#{doc.title}」 が却下されました。</a>", doc.updated_at ]
-      }
+
+  def self.rejected_docs(user)
+    docs = Gwworkflow::Doc.where(creater_id: user.id, state: 'rejected').updated_after(Time.now - how_long_notifying)
+    docs.map {|doc| ["<a href='/gwworkflow/docs/#{doc.id}'>「#{doc.title}」 が却下されました。</a>", doc.updated_at] }
+  end
+
+  def self.remanded_docs(user)
+    docs = Gwworkflow::Doc.where(creater_id: user.id, state: 'remanded').updated_after(Time.now - how_long_notifying)
+    docs.map {|doc| ["<a href='/gwworkflow/docs/#{doc.id}'>「#{doc.title}」 が差し戻されました。</a>", doc.updated_at] }
   end
 end

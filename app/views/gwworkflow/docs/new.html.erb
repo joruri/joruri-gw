@@ -5,11 +5,6 @@
 
 <%= form_for :item, url: {action: 'create'}, html: {method: :post, multipart: true, id: 'itemForm'} do |f| %>
   <%= f.error_messages %>
-  <% unless @undeletable %>
-    <div class="editingBox">
-      <div class="btDestroy"><%= link_to '削除', "/gwworkflow/destroy/#{@item.id}", confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></div>
-    </div>
-  <% end %>
   <%= render 'form', f: f %>
   <div class="submitters">
   <div align="center">

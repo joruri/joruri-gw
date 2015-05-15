@@ -1,5 +1,5 @@
 <%
-this_uri = "/gwworkflow/"
+this_uri = "/gwworkflow/docs"
 %>
 <div class="tabBox">
 <table class="tabtable">
@@ -10,7 +10,7 @@ this_uri = "/gwworkflow/"
     <td class="spaceCenter"></td>
     <td class="tab <%= 'current' if params[:cond] == 'processing' %>"><%= link_to "承認待ち一覧", "#{this_uri}?cond=processing" %></td>
     <td class="spaceCenter"></td>
-    <td class="tab <%= 'current' if params[:cond] == 'accepted' %>"><%= link_to "承認済み一覧", "#{this_uri}?cond=accepted" %></td>
+    <td class="tab <%= 'current' if params[:cond] == 'processed' %>"><%= link_to "承認済み一覧", "#{this_uri}?cond=processed" %></td>
     <td class="spaceRight"></td>
   </tr>
 </tbody>

@@ -1,11 +1,17 @@
 class Gwworkflow::Committee < Gw::Database
   self.table_name = 'gw_workflow_route_users'
 
-  belongs_to :step, :class_name => 'Gwworkflow::Step', :foreign_key => :step_id,
-    :autosave => true, :touch => true
+  belongs_to :step, :class_name => 'Gwworkflow::Step', :foreign_key => :step_id
   belongs_to :user, :class_name => 'System::User', :foreign_key => :user_id
 
   #validates :state, :presence => true
+
+  scope :with_committee, ->(user = Core.user) { where(user_id: user.id) }
+  scope :with_undecided, -> { where(state: 'undecided') }
+  scope :with_accepted, -> { where(state: 'accepted') }
+  scope :with_remanded, -> { where(state: 'remanded') }
+  scope :with_rejected, -> { where(state: 'rejected') }
+  scope :with_processed, -> { where(state: ['accepted', 'remanded', 'rejected']) }
 
   def state_str
     case state.to_sym

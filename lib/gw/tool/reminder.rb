@@ -13,7 +13,7 @@ class Gw::Tool::Reminder
     xml_data = Gw::Model::Memo.remind_xml(user,xml_data)
     xml_data = Gw::Model::Monitor.remind_xml(uid,xml_data)
     xml_data = Gw::Model::Circular.remind_xml(uid,xml_data)
-    xml_data = Gw::Model::Workflow.remind_xml(uid,xml_data)
+    xml_data = Gw::Model::Workflow.remind_xml(user,xml_data)
 
     xml_data = Gw::Model::Plus_update.remind_xml(user, xml_data)
     xml_data = Gw::Model::ReminderExternal.remind_xml(ucode,xml_data)

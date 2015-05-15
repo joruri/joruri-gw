@@ -16,7 +16,7 @@ current_step = @item.current_step
     %>
   ];
   var cs = [];
-<% (current_committee && !@remanded ? @item.future_committees : @item.sorted_steps.map{|s|s.committee}).compact.each do |committee| %>
+<% (current_committee && !@remanded ? @item.future_committees : @item.steps.map{|s|s.committee}).compact.each do |committee| %>
   cs.push([<%= committee.user_id %>, "<%= committee.user_name_and_code %>"]);
 <% end %>
   var redraw_rows = function() {
@@ -97,7 +97,7 @@ current_step = @item.current_step
 
   var add_custom_routes = function() {
     var id = $("custom_route").value;
-    url = '/gwworkflow/ajax_custom_route.json?custom_route_id=' + id;
+    url = '/gwworkflow/docs/ajax_custom_route.json?custom_route_id=' + id;
     ajax_request(url, function(r){
       cs = [];
       redraw_rows();
@@ -109,6 +109,17 @@ current_step = @item.current_step
   }
   
   var my_submit = function(state) {
+    switch (state) {
+    case 'accepted':
+      if (!confirm('承認してよろしいですか？')) { return false; }
+      break;
+    case 'rejected':
+      if (!confirm('却下してよろしいですか？')) { return false; }
+      break;
+    case 'remanded':
+      if (!confirm('差し戻してよろしいですか？')) { return false; }
+      break;
+    }
     var to = $('item_committees');
     var xs = new Array();
     for(var i=0; i<cs.length; i++){
@@ -137,7 +148,7 @@ current_step = @item.current_step
   </thead>
   <% if current_committee && !@remanded  %>
   <tbody id="fixed_committees_body">
-    <% @item.steps.select{|s| s.number <= current_step.number}.each do |step| %>
+    <% @item.steps.select{|s| s.number <= @item.current_number}.each do |step| %>
     <tr>
       <td><%= step.number + 1 %></td>
       <td><%= step.committee.user_name_and_code %></td>

@@ -28,7 +28,7 @@ class Gwworkflow::Model::Mail
     return unless creator = System::User.find(doc.creater_id)
     return unless mail_to = creator.email
     return unless should_send?(creator.id)
-    return unless cc = doc.sorted_steps.last.committee.comment
+    return unless cc = doc.steps.last.committee.comment
 
     Gwworkflow::Mailer.reject_mail(from: @sender, to: mail_to, 
       subject: "「#{doc.title}」が却下されました", doc: doc, url: url, cc: cc).deliver

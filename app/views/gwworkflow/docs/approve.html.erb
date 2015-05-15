@@ -19,9 +19,9 @@
   <div align="center">
   <table>
     <tr>
-      <td><%= submit_for f, js_submitter: "my_submit('accepted')", caption: '承認', id: 'item_submit_accept' %></td>
-      <td><%= submit_for f, js_submitter: "my_submit('rejected')", caption: '却下', id: 'item_submit_reject' %></td>
-      <td><%= submit_for f, js_submitter: "my_submit('remanded')", caption: '差し戻し', id: 'item_submit_remand' %></td>
+      <td><%= submit_for f, js_submitter: "return my_submit('accepted')", caption: '承認', id: 'item_submit_accept' %></td>
+      <td><%= submit_for f, js_submitter: "return my_submit('rejected')", caption: '却下', id: 'item_submit_reject' %></td>
+      <td><%= submit_for f, js_submitter: "return my_submit('remanded')", caption: '差し戻し', id: 'item_submit_remand' %></td>
     </tr>
   </table>
   </div>
@@ -30,7 +30,7 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '一覧へ戻る', "/gwworkflow/" %>
+  <%= link_to '一覧へ戻る', {action: :index} %>
 </div>
 
 </div><!--pieceBody-->
