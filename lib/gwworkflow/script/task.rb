@@ -12,21 +12,18 @@ class Gwworkflow::Script::Task < System::Script::Base
       log "管理情報の期間設定が無効: #{item.limit_date}" and next if limit.blank?
 
       log "ワークフロー期限切れデータ削除処理: #{I18n.l(limit)} 以前を削除" do
-        del = destroy_record(limit)
+        del = Gwworkflow::Doc.where(["expired_at < ?", limit]).destroy_all.size
         log "#{del} deleted"
       end
     end
   end
 
-  private
-
-  def self.destroy_record(limit)
-    del = 0
-    Gwworkflow::Doc.where(["expired_at < ?", limit]).find_each do |doc|
-      if doc.destroy
-        del += 1
+  def self.preparation_delete
+    run do
+      log "ワークフロー不要データ削除処理: #{I18n.l(limit_date_for_preparation)} 以前を削除" do
+        del = Gwworkflow::Doc.created_before(limit_date_for_preparation).where(state: 'quantum').destroy_all.size
+        log "#{del} deleted"
       end
     end
-    del
   end
 end

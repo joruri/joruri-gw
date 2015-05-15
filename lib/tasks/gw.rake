@@ -24,6 +24,7 @@ namespace :joruri do
       Rake::Task['joruri:doclibrary:delete_preparation'].invoke
       Rake::Task['joruri:digitallibrary:delete_preparation'].invoke
       Rake::Task['joruri:gwcircular:delete_preparation'].invoke
+      Rake::Task['joruri:gwworkflow:delete_preparation'].invoke
       Rake::Task['joruri:gwsub:sb01:delete_abandoned_files'].invoke
     end
 
