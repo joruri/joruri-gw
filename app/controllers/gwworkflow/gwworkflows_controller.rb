@@ -5,14 +5,10 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     params[:title_id] = 1
-    @title = Gwworkflow::Control.where(:id => params[:title_id]).first
-    return http_error(404) unless @title
+    @title = Gwworkflow::Control.find(params[:title_id])
+
     Page.title = "ワークフロー"
     @css = ["/_common/themes/gw/css/workflow.css"]
-  end
-
-  def jgw_workflow_path
-    return gwworkflow_menus_path
   end
 
   def index

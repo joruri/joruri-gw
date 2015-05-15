@@ -1,0 +1,16 @@
+<table class="show bbsText">
+  <tr>
+    <th>状態<%= required %></th>
+    <td><%= f.radio_buttons :state, [['有効','enabled'],['無効','disabled']] %></td>
+  </tr>
+  <tr>
+    <th>並び順</th>
+    <td><%= f.text_field :sort_no, class: 'sort_no', size: 5, maxlength: 5 %></td>
+  </tr>
+  <tr>
+    <th>名称<%= required %></th>
+    <td><%= f.text_field :name, class: 'name', size: 30 %></td>
+  </tr>
+</table>
+
+<%= render '/gwworkflow/share/users_route_editor', f: f %>

@@ -1,23 +1,20 @@
 <%
-  rs = Gwworkflow::CustomRoute.where(:owner_uid => Core.user.id)
-    .select{|r| r.enabled? }
-    .sort{|a,b|b.sort_no <=> a.sort_no}
-  routes = rs.inject({}){|acc,g| acc.merge({ g.name => g.id }) }
-  initial_route = rs ? rs.max{|g| g.sort_no } : nil
+rs = Gwworkflow::CustomRoute.where(state: 'enabled', owner_uid: Core.user.id).order(sort_no: :asc)
+routes = rs.inject({}){|acc,g| acc.merge({ g.name => g.id }) }
+initial_route = rs ? rs.max{|g| g.sort_no } : nil
 %>
-
 <table width="100%">
   <tr>
     <td style="border:0;" width="100%">
       <div>カスタムルートから選択</div>
       <% if initial_route %>
-        <%= select_tag('custom_route', options_for_select(routes, :selected => initial_route) ) %>
+        <%= select_tag 'custom_route', options_for_select(routes, selected: initial_route) %>
       <% else %>
         カスタムルートが設定されていません。
       <% end %>
     </td>
     <td style="border:0;">
-      <%= button_tag '設定 →',  :onclick =>'add_custom_routes(); return false;' if initial_route %>
+      <%= button_tag '設定 →', onclick: 'add_custom_routes(); return false;' if initial_route %>
     </td>
   </tr>
 </table>

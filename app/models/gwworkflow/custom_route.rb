@@ -4,9 +4,9 @@ class Gwworkflow::CustomRoute < Gw::Database
   has_many :steps, :class_name => 'Gwworkflow::CustomRouteStep', :foreign_key => :custom_route_id,
     :dependent => :destroy
 
-  validates :sort_no, :presence => true, :numericality => {:only_integer => true}, :inclusion => { in: 0..9999 }
-  validates :name, :presence => true
-  validates :state, :presence => true
+  validates :sort_no, presence: true, numericality: { only_integer: true }, inclusion: { in: 0..9999 }
+  validates :name, presence: true
+  validates :state, presence: true
 
   validate :committees_valid?
   def committees_valid?
@@ -64,5 +64,4 @@ class Gwworkflow::CustomRoute < Gw::Database
   def deletable?
     return true
   end
-
 end

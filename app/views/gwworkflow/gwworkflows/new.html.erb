@@ -1,29 +1,26 @@
-<div class="bbsDocList workflow"><%# <div class="bbsDocList workflow"> %>
+<div class="bbsDocList workflow">
 <%= render 'piece_header', hide_new_action: true %>
 <div class="pieceBody">
-	
-<%= form_for :item, :url => {:action => 'create'}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
-<%= f.error_messages %>
-
 <div class="formTitle new">新規作成</div>
-<% unless @undeletable %>
-<div class="editingBox">
-<div class="btDestroy"><%= link_to '削除', "/gwworkflow/destroy/#{@item.id}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></div>
-</div>
-<% end %>
-<%= render 'form', f: f %>
 
-<div class="submitters">
-<div align="center">
-<table>
-<tr>
-  <td><%= raw(submit_for_update(f, :js_submitter => "my_submit('apply')", :caption => '申請', :id => 'item_submit')) %></td>
-  <td><%= raw(submit_for_update(f, :js_submitter => "my_submit('draft')", :caption => '下書き', :id => 'item_submit_draft')) %></td>
-</tr>
-</table>
-</div>
-</div>
-
+<%= form_for :item, url: {action: 'create'}, html: {method: :post, multipart: true, id: 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+  <% unless @undeletable %>
+    <div class="editingBox">
+      <div class="btDestroy"><%= link_to '削除', "/gwworkflow/destroy/#{@item.id}", confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></div>
+    </div>
+  <% end %>
+  <%= render 'form', f: f %>
+  <div class="submitters">
+  <div align="center">
+    <table>
+      <tr>
+        <td><%= submit_for_update f, js_submitter: "my_submit('apply')", caption: '申請', id: 'item_submit' %></td>
+        <td><%= submit_for_update f, js_submitter: "my_submit('draft')", caption: '下書き', id: 'item_submit_draft' %></td>
+      </tr>
+    </table>
+  </div>
+  </div>
 <% end %>
 
 </div><!--pieceBody-->

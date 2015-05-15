@@ -1,17 +1,14 @@
-# 対象データベースは ****_jgw_gw なので Gw::Database を継承
 class Gwworkflow::Doc < Gw::Database
+  self.table_name = 'gw_workflow_docs'
   include System::Model::Base
   include System::Model::Base::Content
   include Gwworkflow::Model::Systemname
-  # テーブル名を明示的に指定
-  self.table_name = 'gw_workflow_docs'
 
   has_many :files, foreign_key: :parent_id, class_name: 'Gwworkflow::File', dependent: :destroy
   has_many :steps, foreign_key: :doc_id, class_name: 'Gwworkflow::Step', dependent: :destroy
 
-  validates :title, :presence => true, :length => { :maximum => 140 }
-
-  validates :expired_at, :presence => true
+  validates :title, presence: true, length: { maximum: 140 }
+  validates :expired_at, presence: true
 
   validate :date_valid?
   def date_valid?

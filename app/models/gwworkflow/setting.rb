@@ -8,5 +8,4 @@ class Gwworkflow::Setting < Gw::Database
   def editable?
     return true
   end
-
 end

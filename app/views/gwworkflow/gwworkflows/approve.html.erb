@@ -1,47 +1,36 @@
-<%
-  s_cond_btn = ''
-  s_cond = '?cond=owner'
-  s_cond = '?cond=void' if params[:cond] == 'void'
-  s_cond = '?cond=admin' if params[:cond] == 'admin'
-  s_cond_btn = '?cond=admin' if params[:cond] == 'admin'
-%>
 <div class="bbsDocList workflow">
 <%= render 'piece_header', hide_new_action: true %>
 <div class="pieceBody">
 
 <%= render 'detail', hide_new_action: true %>
 
-<%= form_for :committee, :url => {:action => 'commit'}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= form_for :committee, url: {action: 'commit'}, html: {method: :post, multipart: true, id: 'itemForm'} do |f| %>
 <%= f.error_messages %>
-
-<table class="show bbsText">
-	<tr>
-		<th>コメント</th>
-	</tr>
-	<tr>
-		<td class="mceEditor"><%= f.text_area :comment, :style => 'width:100%; height:60pt' %></td>
-	</tr>
-</table>
-
-<%= render '/gwworkflow/share/users_route_editor', f: f %>
-
-<div class="submitters">
-<div align="center">
-<table>
-<tr>
-  <td><%= raw(submit_for(f, :js_submitter => "my_submit('accepted')", :caption => '承認', :id => 'item_submit_accept')) %></td>
-  <td><%= raw(submit_for(f, :js_submitter => "my_submit('rejected')", :caption => '却下', :id => 'item_submit_reject')) %></td>
-  <td><%= raw(submit_for(f, :js_submitter => "my_submit('remanded')", :caption => '差し戻し', :id => 'item_submit_remand')) %></td>
-</tr>
-</table>
-</div>
-</div>
-
+  <table class="show bbsText">
+    <tr>
+      <th>コメント</th>
+    </tr>
+    <tr>
+      <td class="mceEditor"><%= f.text_area :comment, style: 'width:100%; height:60pt' %></td>
+    </tr>
+  </table>
+  <%= render '/gwworkflow/share/users_route_editor', f: f %>
+  <div class="submitters">
+  <div align="center">
+  <table>
+    <tr>
+      <td><%= submit_for f, js_submitter: "my_submit('accepted')", caption: '承認', id: 'item_submit_accept' %></td>
+      <td><%= submit_for f, js_submitter: "my_submit('rejected')", caption: '却下', id: 'item_submit_reject' %></td>
+      <td><%= submit_for f, js_submitter: "my_submit('remanded')", caption: '差し戻し', id: 'item_submit_remand' %></td>
+    </tr>
+  </table>
+  </div>
+  </div>
 <% end %>
-		
+
 <!--戻るボタン-->
 <div class="btReturn">
-  <%=link_to '一覧へ戻る', "/gwworkflow" %>
+  <%= link_to '一覧へ戻る', "/gwworkflow/" %>
 </div>
 
 </div><!--pieceBody-->

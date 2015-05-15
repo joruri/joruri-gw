@@ -1,0 +1,48 @@
+<div class="bbsDocList workflow">
+<%= render 'piece_header' %>
+
+<div class="pieceBody">
+<br />
+<%= form_tag url_for(action: :sort_update), {method: :put} do |f| %>
+  <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
+  <%= hidden_field_tag :limit, params[:limit] if params[:limit].present? %>
+  <%= unique_error_messages_for @items %>
+  <table class="index">
+  <colgroup style="width:100px;"></colgroup>
+  <colgroup class="name"></colgroup>
+  <colgroup style="width:200px;"></colgroup>
+  <colgroup style="width:100px;"></colgroup>
+  <colgroup style="width:80px;"></colgroup>
+  <colgroup style="width:80px;"></colgroup>
+  <tr>
+    <th>並び順<input id="item_submit" name="commit" type="submit" value="設定"/></th>
+    <th>名称</th>
+    <th>最終更新日時</th>
+    <th>状態</th>
+    <th></th>
+    <th></th>
+  </tr>
+  <% @items.each do |item| %>
+    <%= fields_for 'items[]', item do |f| %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= f.text_field :sort_no, class: 'string sort_no', style: 'width: 40px;', maxlength: 4 %></td>
+      <td><%= item.name %></td>
+      <td><%=l item.updated_at if item.updated_at %></td>
+      <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+      <td><%= link_to '編集', {action: :edit, id: item.id} %></td>
+      <td><%= link_to '削除', {action: :destroy, id: item.id}, method: :delete, confirm: '削除してよろしいですか？' %></td>
+    </tr>
+    <% end %>
+  <% end %>
+</table>
+<% end %>
+
+<%= paginate @items %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to '設定へ戻る', "/gwworkflow/settings" %>
+</div>
+
+</div><!--pieceBody-->
+</div><!--bbsDocList circular-->

@@ -40,10 +40,10 @@ current_step = @item.current_step
     for (var i = 0; i < idxs.length; i++){
       var eflg = false;
       for(var j=0; j<cs.length; j++){
-      	if(cs[j][0] == fr[idxs[i]].value) { eflg = true; break;}
+        if(cs[j][0] == fr[idxs[i]].value) { eflg = true; break;}
       }
       for(var j=0; j<fixed.length; j++){
-      	if(fixed[j] == fr[idxs[i]].value) { eflg = true; break;}
+        if(fixed[j] == fr[idxs[i]].value) { eflg = true; break;}
       }
       if(!eflg){
         cs.push([fr[idxs[i]].value, fr[idxs[i]].innerHTML]);
@@ -53,23 +53,23 @@ current_step = @item.current_step
   }
   
   var delete_row = function(idx) {
-  	ds = new Array();
-  	for(var i=0; i<cs.length; i++) {
-  	  if(i != idx){ ds.push( cs[i] ); }
-  	}
-  	cs = ds;
+    ds = new Array();
+    for(var i=0; i<cs.length; i++) {
+      if(i != idx){ ds.push( cs[i] ); }
+    }
+    cs = ds;
     redraw_rows();
   }
   var up_row = function(idx) {
-	t = cs[idx];
-	cs[idx] = cs[idx - 1];
-	cs[idx - 1] = t;
+  t = cs[idx];
+  cs[idx] = cs[idx - 1];
+  cs[idx - 1] = t;
     redraw_rows();
   }
   var down_row = function(idx) {
-	t = cs[idx];
-	cs[idx] = cs[idx + 1];
-	cs[idx + 1] = t;
+  t = cs[idx];
+  cs[idx] = cs[idx + 1];
+  cs[idx + 1] = t;
     redraw_rows();
   }
   
@@ -86,11 +86,11 @@ current_step = @item.current_step
       to.options.length = 0;
       for (var i=0, j=0; i<xha.length; i++) {
         xh = xha[i];
-      	if(xh[1] != <%= @item.creater_id %>){
+        if(xh[1] != <%= @item.creater_id %>){
           to.options[j] = new Option(xh[2], xh[1]);
           to.options[j].title = xh[0];
           j++;
-      	}
+        }
       }
     });
   }
@@ -122,7 +122,7 @@ current_step = @item.current_step
   }
 
   document.observe("dom:loaded",function(){
-  	load_cand();
+    load_cand();
     redraw_rows();
   });
 //]]>
@@ -131,14 +131,14 @@ current_step = @item.current_step
 <table width="100%">
   <thead>
   <tr>
-  	<th style="width:30pt">順番</th>
-  	<th colspan=4>名前</th>
+    <th style="width:30pt">順番</th>
+    <th colspan=4>名前</th>
   </tr>
   </thead>
   <% if current_committee && !@remanded  %>
   <tbody id="fixed_committees_body">
     <% @item.steps.select{|s| s.number <= current_step.number}.each do |step| %>
-  	<tr>
+    <tr>
       <td><%= step.number + 1 %></td>
       <td><%= step.committee.user_name_and_code %></td>
       <td colspan=3 class="fixed_committee_state" style="text-align:center"><%= step.committee.state_str %></td>

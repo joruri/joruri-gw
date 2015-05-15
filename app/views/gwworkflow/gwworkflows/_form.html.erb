@@ -1,55 +1,38 @@
-<% _path = '/_attachs/gwworkflow/'%>
 <%
  if !@item.blank?
     mce_base_url = ''
   else
-    mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
+    mce_base_url = '/_attachs/gwworkflow/' + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
+<%= tool_tiny_mce(mce_base_url, leftbar_mode: true) %>
 
 <table class="show bbsText">
   <tr>
-    <th>タイトル<%= raw(required('※')) %> ( 記事件名は140文字以内で入力してください )</th>
+    <th>タイトル<%= required %> ( 記事件名は140文字以内で入力してください )</th>
   </tr>
   <tr>
-    <td><%= f.text_area :title, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px'%></td>
+    <td><%= f.text_area :title, cols: '140', rows: "1", style: 'width:100%; height:45px' %></td>
   </tr>
   <tr>
     <th>内容</th>
   </tr>
   <tr>
-    <td class="mceEditor"><%= f.text_area :body, :style => 'width:100%' %></td>
+    <td><%= f.text_area :body, style: 'width:100%; height: 300px;' %></td>
   </tr>
 </table>
 
 <table class="show bbsText">
   <tr>
-    <th>期限日<%= raw(required('※')) %></th>
+    <th>期限日<%= required %></th>
     <td><%= f.datetimepicker :expired_at %></td>
   </tr>
 </table>
 
-<%= gwworkflow_attachments_form(f, @item)%>
+<%= gwworkflow_attachments_form(f, @item) %>
 
 <%= render '/gwworkflow/share/custom_route_users_route_editor', f: f %>
 
-<%= hidden_field_tag("item[quat_id]", @quat_id, :id=>"quat_id") %>
-<%= hidden_field_tag("item[id]", @item.id, :id=>"item_id") %>
-<%= hidden_field_tag(:cond, params[:cond]) unless params[:cond].blank? %>
-
-<script type="text/javascript">
-  //<![CDATA[
-  function chageDisp(obj, changeObjId) {
-    var display = document.getElementById(changeObjId).style.display;
-    if (display == '') {
-      obj.innerHTML = '開く▼';
-    } else if (display == 'none') {
-      obj.innerHTML = '閉じる▲';
-    }
-    Element.toggle($(changeObjId));
-  }
-
-  //]]>
-</script>
-
+<%= hidden_field_tag "item[quat_id]", @quat_id, id: "quat_id" %>
+<%= hidden_field_tag "item[id]", @item.id, id: "item_id" %>
+<%= hidden_field_tag :cond, params[:cond] unless params[:cond].blank? %>

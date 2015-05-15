@@ -4,47 +4,32 @@ class Gwworkflow::Admin::ItemdeletesController < Gw::Controller::Admin::Base
   layout "admin/template/gwworkflow"
 
   def pre_dispatch
-    Page.title = "回覧板 削除設定"
-    @css = ["/_common/themes/gw/css/workflow.css"]
+    return error_auth unless Core.user.has_role?('_admin/admin')
 
-    check_gw_system_admin
-    return error_auth unless @is_sysadm
+    Page.title = "ワークフロー削除設定"
+    @css = ["/_common/themes/gw/css/workflow.css"]
   end
 
   def index
-    item = Gwworkflow::Itemdelete.new
-    item.and :content_id, 0
-    @item = item.find(:first)
+    @item = load_itemdelete_item
   end
 
   def edit
-    item = Gwworkflow::Itemdelete.new
-    item.and :content_id, 0
-    @item = item.find(:first)
-    return unless @item.blank?
-
-    @item = Gwworkflow::Itemdelete.create({
-      :content_id => 0 ,
-      :admin_code => Core.user.code ,
-      :limit_date => '1.month'
-    })
+    @item = load_itemdelete_item
   end
 
   def update
-    item = Gwworkflow::Itemdelete.new
-    item.and :content_id, 0
-    @item = item.find(:first)
-    return if @item.blank?
+    @item = load_itemdelete_item
     @item.attributes = params[:item]
-    location = '/gw/config_settings?c1=1&c2=7'
-    _update(@item, :success_redirect_uri=>location)
+    _update @item, success_redirect_uri: '/gw/config_settings?c1=1&c2=7'
   end
 
-protected
+  private
 
-  def check_gw_system_admin
-    @is_sysadm = Core.user.has_role?('_admin/admin')
-    @is_bbsadm = true if @is_sysadm
+  def load_itemdelete_item
+    Gwworkflow::Itemdelete.where(content_id: 0).first_or_create(
+      admin_code: Core.user.code,
+      limit_date: '1.month'
+    )
   end
-
 end

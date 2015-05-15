@@ -7,3 +7,5 @@ ja:
       gwworkflow/file:
         file: ファイル
         filename: ファイル名
+      gwworkflow/custom_route:
+        sort_no: 並び順

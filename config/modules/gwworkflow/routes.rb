@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
 
+  namespace 'gwworkflow' do
+    scope :module => 'admin' do
+      resources :itemdeletes
+      resources :settings
+      resources :custom_routes do
+        collection do
+          put :sort_update
+        end
+      end
+    end
+  end
 
   match 'gwworkflow',
     :controller => 'gwworkflow/gwworkflows', :action => :index,  :via => 'get'
@@ -22,23 +33,6 @@ Rails.application.routes.draw do
   match 'gwworkflow/destroy/:id',
     :controller => 'gwworkflow/gwworkflows', :action => :destroy, :via => 'delete'
 
-  match 'gwworkflow/settings',
-    :controller => 'gwworkflow/settings',    :action => :index,    :via => 'get'
-  match 'gwworkflow/custom_routes',
-    :controller => 'gwworkflow/settings',    :action => :custom_routes,    :via => 'get'
-  match 'gwworkflow/custom_routes/sort',
-    :controller => 'gwworkflow/settings',    :action => :custom_routes_sort,    :via => 'put'
-  match 'gwworkflow/custom_routes/new',
-    :controller => 'gwworkflow/settings',    :action => :custom_routes_new,    :via => 'get'
-  match 'gwworkflow/custom_routes',
-    :controller => 'gwworkflow/settings', :action => :custom_routes_create, :via => 'post'
-  match 'gwworkflow/custom_routes/edit/:id',
-    :controller => 'gwworkflow/settings',    :action => :custom_routes_edit,    :via => 'get'
-  match 'gwworkflow/custom_routes',
-    :controller => 'gwworkflow/settings', :action => :custom_routes_update, :via => 'put'
-  match 'gwworkflow/custom_routes/destroy/:id',
-    :controller => 'gwworkflow/settings', :action => :custom_routes_destroy, :via => 'get'
-
   match 'gwworkflow/ajax_custom_route',
     :controller => 'gwworkflow/gwworkflows', :action => :ajax_custom_route, :via => 'get'
 
@@ -48,17 +42,4 @@ Rails.application.routes.draw do
       resources :export_files, :controller => 'gwworkflow/admin/export_files'
     end
   end
-
-  mod = "gwworkflow"
-  scp = "admin"
-  namespace mod do
-    scope :module => scp do
-      resources :itemdeletes
-    end
-  end
-
-  match 'gwworkflow/notifying',
-    :controller => 'gwworkflow/settings',    :action => :notifying,    :via => 'get'
-  match 'gwworkflow/update_notifying',
-    :controller => 'gwworkflow/settings',    :action => :update_notifying,    :via => 'put'
 end

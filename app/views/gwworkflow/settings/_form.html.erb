@@ -1,37 +1,6 @@
-<table class="show bbsText">
-<tr>
-  <th>状態<%= required %></th>
-  <td>
-  <input <% if @item.state == 'enabled' %>checked="checked" <% end %> class="state" id="item_state_enabled" name="item[state]" type="radio" value="enabled" /><label for="item_state_enabled">有効</label>
-  <input <% if @item.state == 'disabled' %>checked="checked" <% end %> class="state" id="item_state_disabled" name="item[state]" type="radio" value="disabled" /><label for="item_state_disabled">無効</label>
-  </td>
-</tr>
-<tr>
-  <th>並び順</th>
-  <td><%= f.text_field :sort_no, :class => 'sort_no', :size => 5, :maxlength => 5 %></td>
-</tr>
-<tr>
-  <th>名称<%= required %></th>
-  <td><%= f.text_field :name, :class => 'name', :size => 30, :maxlength => 30 %></td>
-</tr>
+<table class="show index">
+  <tr>
+    <th>メール通知</th>
+    <td><%= f.select :notifying, options_for_select({'する'=>true, 'しない'=>false}, @item.notifying) %></td>
+  </tr>
 </table>
-
-<%= render '/gwworkflow/share/users_route_editor', f: f %>
-
-<%= hidden_field_tag(:cond, params[:cond]) unless params[:cond].blank? %>
-
-<script type="text/javascript">
-	//<![CDATA[
-	function chageDisp(obj, changeObjId) {
-		var display = document.getElementById(changeObjId).style.display;
-		if (display == '') {
-			obj.innerHTML = '開く▼';
-		} else if (display == 'none') {
-			obj.innerHTML = '閉じる▲';
-		}
-		Element.toggle($(changeObjId));
-	}
-
-	//]]>
-</script>
-

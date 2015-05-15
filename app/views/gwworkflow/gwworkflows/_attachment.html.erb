@@ -1,7 +1,3 @@
-<%
-  #本来は一ヶ所で判別するのが良いが、変更の過渡期なのでわけてある。
-  files_uri = gwworkflow_attachments_path(@item.id)
-%>
 <table class="bbsFile">
   <tr>
     <th>添付ファイル</th>
@@ -13,7 +9,21 @@
 <table id="attach_form" border="0" class="show" style="display: none;">
   <tr>
     <td style="padding: 0px 0px;">
-      <iframe src="<%= files_uri %>" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+      <iframe src="<%= gwworkflow_attachments_path(@item.id) %>" style="width: 100%; height: 300px;" frameborder="0"></iframe>
     </td>
   </tr>
 </table>
+
+<script type="text/javascript">
+  //<![CDATA[
+  function chageDisp(obj, changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
+  }
+  //]]>
+</script>

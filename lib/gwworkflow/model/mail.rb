@@ -35,7 +35,6 @@ class Gwworkflow::Model::Mail
   end
 
   def should_send?(uid)
-    setting = Gwworkflow::Setting.where(:unid => uid).first
-    @notifying =  setting ? setting.notifying : false
+    Gwworkflow::Setting.where(unid: uid, notifying: true).exists?
   end
 end
