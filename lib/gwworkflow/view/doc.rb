@@ -1,18 +1,23 @@
-# 一覧表示のレコード
-class Gw::Model::Workflow::Viewmodel::DocRecord
-  attr_reader :id, :title, :expired_at, :applied_at, :updated_at, :state
-  def initialize params={}
-    @id = params[:id]
-    @state = params[:state]
-    @title = params[:title]
-    @progress = params[:progress]
-    @expired_at = params[:expired_at]
-    @applied_at = params[:applied_at]
-    @updated_at = params[:updated_at]
+class Gwworkflow::View::Doc
+  attr_reader :id, :title, :state, :expired_at, :applied_at, :updated_at
+
+  def initialize(item)
+    @id = item.id
+    @state = item.real_state
+    @title = item.title
+    @progress = {
+      den: item.total_steps,
+      num: item.now_step
+    }
+    @expired_at = item.expired_at
+    @applied_at = item.applied_at
+    @updated_at = item.updated_at
   end
+
   def progress_den # 分母
     @progress[:den]
   end
+
   def progress_num # 分子
     @progress[:num]
   end
@@ -27,6 +32,7 @@ class Gw::Model::Workflow::Viewmodel::DocRecord
     else '不明'
     end
   end
+
   def progress_str
     "(#{@progress[:num]}/#{@progress[:den]})"
   end

@@ -23,12 +23,7 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
     else params[:cond]=''; committed.call
     end
     # View用のモデルを生成
-    @records = items.map{|item|
-      Gw::Model::Workflow::Viewmodel::DocRecord.new(
-        :id => item[:id], :title => item[:title], :state => item.real_state, :progress => {:den => item.total_steps, :num => item.now_step},
-        :updated_at => item[:updated_at], :created_at => item[:created_at],
-        :expired_at => item[:expired_at], :applied_at => item[:applied_at])
-    }
+    @records = items.map {|item| Gwworkflow::View::Doc.new(item) }
     @order = params[:order].blank? ? :desc : params[:order].to_sym
     @sort = params[:sort].blank? ? :applied_at : params[:sort].to_sym
     @filter = params[:filter].blank? ? :all : params[:filter].to_sym
