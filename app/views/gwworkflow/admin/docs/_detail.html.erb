@@ -25,18 +25,25 @@
 <table class="bbsUserformBody">
   <tr><td class="docTitle"><span><%=hbr @item.title %></span></td></tr>
   <tr><td class="spaceBottom"></td></tr>
-  <tr><td><%=hbr @item.body %></td></tr>
+  <tr><td><%=raw @item.body %></td></tr>
+</table>
+</div>
+
+</div><!--docsInnerBox-->
+
+<% if @item.files.present? %>
+<div class="docsInnerBox">
+<table class="bbsUserformBody">
   <tr>
     <td>
-      <% @files.each do |f| %>
+      <% @item.files.each do |f| %>
         <%= link_to f.filename, f.file_uri('gwworkflow'), class: f.icon_type %>
       <% end %>
     </td>
   </tr>
 </table>
 </div>
-
-</div><!--docsInnerBox-->
+<% end %>
 
 <table class="index">
   <tr class="headIndex">

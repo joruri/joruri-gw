@@ -8,8 +8,8 @@ class Gwworkflow::View::Doc
     @state = item.real_state
     @title = item.title
     @progress = {
-      den: item.total_steps,
-      num: item.now_step
+      den: item.steps.size,
+      num: item.current_number
     }
     @expired_at = item.expired_at
     @applied_at = item.applied_at
@@ -36,6 +36,10 @@ class Gwworkflow::View::Doc
   end
 
   def progress_str
-    "(#{@progress[:num]}/#{@progress[:den]})"
+    if @progress[:num] == -1
+      "(-/#{@progress[:den]})"
+    else
+      "(#{@progress[:num]}/#{@progress[:den]})"
+    end
   end
 end

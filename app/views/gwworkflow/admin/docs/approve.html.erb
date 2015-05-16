@@ -11,17 +11,17 @@
       <th>コメント</th>
     </tr>
     <tr>
-      <td class="mceEditor"><%= f.text_area :comment, style: 'width:100%; height:60pt' %></td>
+      <td><%= f.text_area :comment, style: 'width:100%; height:60pt' %></td>
     </tr>
   </table>
-  <%= render '/gwworkflow/share/users_route_editor', f: f %>
+  <%= render '/gwworkflow/admin/share/users_route_editor', f: f %>
   <div class="submitters">
   <div align="center">
   <table>
     <tr>
-      <td><%= submit_for f, js_submitter: "return my_submit('accepted')", caption: '承認', id: 'item_submit_accept' %></td>
-      <td><%= submit_for f, js_submitter: "return my_submit('rejected')", caption: '却下', id: 'item_submit_reject' %></td>
-      <td><%= submit_for f, js_submitter: "return my_submit('remanded')", caption: '差し戻し', id: 'item_submit_remand' %></td>
+      <td><%= f.submit '承認', id: 'item_submit_accept', name: 'accepted', data: { confirm: '承認してよろしいですか？' } %></td>
+      <td><%= f.submit '却下', id: 'item_submit_reject', name: 'rejected', data: { confirm: '却下してよろしいですか？' } %></td>
+      <td><%= f.submit '差し戻し', id: 'item_submit_remand', name: 'remanded', data: { confirm: '差し戻してよろしいですか？' } %></td>
     </tr>
   </table>
   </div>

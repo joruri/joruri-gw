@@ -1,10 +1,10 @@
 class Gwworkflow::Committee < Gw::Database
   self.table_name = 'gw_workflow_route_users'
+  include System::Model::Base
+  include System::Model::Base::Content
 
   belongs_to :step, :class_name => 'Gwworkflow::Step', :foreign_key => :step_id
   belongs_to :user, :class_name => 'System::User', :foreign_key => :user_id
-
-  #validates :state, :presence => true
 
   scope :with_committee, ->(user = Core.user) { where(user_id: user.id) }
   scope :with_undecided, -> { where(state: 'undecided') }
@@ -25,26 +25,5 @@ class Gwworkflow::Committee < Gw::Database
 
   def user_name_and_code
     user.try(:name_and_code)
-  end
-
-  def user_enable?
-    user && user.state == 'enabled'
- end
-
-  def creatable?
-    return true
-  end
-
-  def editable?
-    return true
-  end
-
-  # 条件を指定して取得
-  def self.find_by_conditions options={}
-    uid = options[:user_id] || -1
-    sid = options[:step_id] || -1
-    cnd = arel_table[:user_id].eq(uid)
-    cnd = cnd.and(arel_table[:step_id].eq(sid))
-    where(cnd).first
   end
 end

@@ -1,17 +1,19 @@
 <div class="bbsDocList workflow">
 <%= render 'piece_header', hide_new_action: true %>
 <div class="pieceBody">
+<% if action_name == 'new' %>
 <div class="formTitle new">新規作成</div>
+<% end %>
 
-<%= form_for :item, url: {action: 'create'}, html: {method: :post, multipart: true, id: 'itemForm'} do |f| %>
+<%= form_for :item, url: {action: 'create', id: @item.id}, html: {method: :post, multipart: true, id: 'itemForm'} do |f| %>
   <%= f.error_messages %>
   <%= render 'form', f: f %>
   <div class="submitters">
   <div align="center">
     <table>
       <tr>
-        <td><%= submit_for_update f, js_submitter: "my_submit('apply')", caption: '申請', id: 'item_submit' %></td>
-        <td><%= submit_for_update f, js_submitter: "my_submit('draft')", caption: '下書き', id: 'item_submit_draft' %></td>
+        <td><%= f.submit '申請', id: 'item_submit', name: 'applying' %></td>
+        <td><%= f.submit '下書き', id: 'item_submit_draft', name: 'draft' %></td>
       </tr>
     </table>
   </div>

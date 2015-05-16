@@ -1,12 +1,9 @@
-class Gwworkflow::CustomRoutesController < Gw::Controller::Admin::Base
+class Gwworkflow::Admin::CustomRoutesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   include Gwboard::Controller::Common
   layout "admin/template/gwworkflow"
 
   def pre_dispatch
-    params[:title_id] = 1
-    @title = Gwworkflow::Control.find(params[:title_id])
-
     Page.title = "ワークフロー カスタムルート設定"
     @css = ["/_common/themes/gw/css/workflow.css"]
   end
@@ -25,18 +22,9 @@ class Gwworkflow::CustomRoutesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwworkflow::CustomRoute.new
-    @item.state = params[:item][:state]
-    @item.sort_no = params[:item][:sort_no]
-    @item.name = params[:item][:name]
+    @item = Gwworkflow::CustomRoute.new(params[:item])
     @item.owner_uid = Core.user.id
-
-    (params[:committees]||[]).map{|s| s.to_i }.map{|id|
-      user = System::User.find(id); [ id, user.name, user.group_name ]
-    }.each.with_index{|(id,name,gname),idx|
-      step = @item.steps.build :number => idx
-      step.committees.build :user_id => id, :user_name => name, :user_gname => gname
-    }
+    @item.rebuild_steps_and_committees(params[:committees])
 
     _create @item
   end
@@ -50,17 +38,8 @@ class Gwworkflow::CustomRoutesController < Gw::Controller::Admin::Base
     @item = Gwworkflow::CustomRoute.find(params[:id])
     return error_auth if @item.owner_uid != Core.user.id
 
-    @item.state = params[:item][:state]
-    @item.sort_no = params[:item][:sort_no]
-    @item.name = params[:item][:name]
-
-    @item.steps.each{|s|s.destroy}
-    (params[:committees]||[]).map{|s| s.to_i }.map{|id|
-      user = System::User.find(id); [ id, user.name, user.group_name ]
-    }.each.with_index{|(id,name,gname),idx|
-      step = @item.steps.build :number => idx
-      step.committees.build :user_id => id, :user_name => name, :user_gname => gname
-    }
+    @item.attributes = params[:item]
+    @item.rebuild_steps_and_committees(params[:committees])
 
     _update @item
   end
@@ -80,8 +59,7 @@ class Gwworkflow::CustomRoutesController < Gw::Controller::Admin::Base
 private
 
   def load_items
-    Gwworkflow::CustomRoute.where(owner_uid: Core.user.id)
-      .order(sort_no: :asc)
+    Gwworkflow::CustomRoute.where(owner_uid: Core.user.id).order(sort_no: :asc)
       .paginate(page: params[:page], per_page: params[:limit])
   end
 end

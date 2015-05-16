@@ -22,9 +22,9 @@
       <%= link_to record.title, {action: action, id: record.id} %>
     </td>
     <td style="width:60px;"><%= raw(record.progress_str) %></td>
-    <td class="update"><%= (record.applied_at.blank? ? "未設定" : record.applied_at.strftime('%Y-%m-%d %H:%M')) %></td>
-    <td class="update"><%= (record.expired_at.blank? ? "未設定" : record.expired_at.strftime('%Y-%m-%d %H:%M')) %></td>
-    <td class="update"><%= (record.updated_at.blank? ? "未設定" : record.updated_at.strftime('%Y-%m-%d %H:%M')) %></td>
+    <td class="update"><%=l record.applied_at rescue "未設定" %></td>
+    <td class="update"><%=l record.expired_at rescue "未設定" %></td>
+    <td class="update"><%=l record.updated_at rescue "未設定" %></td>
     </tr>
   <% end %>
 </table>

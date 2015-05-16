@@ -1,12 +1,9 @@
-class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
+class Gwworkflow::Admin::SettingsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   include Gwboard::Controller::Common
   layout "admin/template/gwworkflow"
 
   def pre_dispatch
-    params[:title_id] = 1
-    @title = Gwworkflow::Control.find(params[:title_id])
-
     Page.title = "ワークフロー 機能設定"
     @css = ["/_common/themes/gw/css/workflow.css"]
   end

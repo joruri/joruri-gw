@@ -14,4 +14,10 @@ class Gwworkflow::Control < Gw::Database
   def is_readable?
     true
   end
+
+  class << self
+    def is_admin?
+      Core.user.has_role?('_admin/admin', 'gwworkflow/admin')
+    end
+  end
 end

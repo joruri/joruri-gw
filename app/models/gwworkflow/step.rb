@@ -22,7 +22,7 @@ class Gwworkflow::Step < Gw::Database
     return :rejected if rejected?(options)
     return :remanded if remanded?(options)
     return :accepted if accepted?(options)
-    return :processing
+    return :undecided
   end
 
   def committee

@@ -1,0 +1,18 @@
+<%
+box_width = 'width:400px;'  #承認者設定枠の幅
+group_options = System::Group.enabled_group_options
+user_options = Core.user_group.enabled_user_options(ldap: 1)
+user_options.reject! {|opts| opts[1] == Core.user.id } unless Gwworkflow::Control.is_admin?
+%>
+<table width="100%">
+  <tr>
+    <td style="border:0;" width="100%">
+      <div>個別選択</div>
+      <%= select_tag 'readers[gid]', options_for_select(group_options, Core.user_group.id), onchange: 'update_reader_cand();' %><br />
+      <%= select_tag 'readers[uid]', options_for_select(user_options), size: 14, style: box_width, ondblclick: "add_user('readers_uid');", multiple: true %>
+    </td>
+    <td style="border:0;">
+      <input type="button" value="追加 →" onclick="add_user('readers_uid');"/>
+    </td>
+  </tr>
+</table>

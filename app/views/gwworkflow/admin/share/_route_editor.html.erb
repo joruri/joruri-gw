@@ -1,22 +1,36 @@
 <%
-
-concat hidden_field_tag('init[committees_json]', '')
-current_committee = @item.state.to_sym != :draft  && @item.current_step ? @item.current_step.committee : nil
-current_step = @item.current_step
+readonly_steps = @item.unmarked_steps.select{|s| s.number <= @item.current_number}
+editable_steps = @item.unmarked_steps.select{|s| s.number > @item.current_number}
 %>
+<table width="100%">
+  <thead>
+  <tr>
+    <th style="width:30pt">順番</th>
+    <th colspan=4>名前</th>
+  </tr>
+  </thead>
+  <% if readonly_steps.present?  %>
+  <tbody id="fixed_committees_body">
+    <% readonly_steps.each do |step| %>
+    <tr>
+      <td><%= step.number + 1 %></td>
+      <td><%= step.committee.user_name_and_code %></td>
+      <td colspan=3 class="fixed_committee_state" style="text-align:center"><%= step.committee.state_str %></td>
+    </tr>
+    <% end %>
+  </tbody>
+  <% end %>
+  <tbody id="committees_body"></tbody>
+</table>
+
 <script type="text/javascript">
 //<![CDATA[
-  var initial = <%= if current_step then "#{current_step.number + 1}" else "0" end %>;
+  var initial = <%= @item.current_number + 1 %>;
   var fixed = [
-    <%=
-     if current_committee && !@remanded
-       @item.steps.select{|s| s.number <= current_step.number}.map{|s|s.committee.user_id}
-         .inject(''){|a,i|"#{a}#{a=='' ? '' : ','}#{i}"}
-     end
-    %>
+    <%= readonly_steps.map{|s| s.committee.user_id }.inject(''){|a,i|"#{a}#{a=='' ? '' : ','}#{i}"} %>
   ];
   var cs = [];
-<% (current_committee && !@remanded ? @item.future_committees : @item.steps.map{|s|s.committee}).compact.each do |committee| %>
+<% editable_steps.map{|s|s.committee}.compact.each do |committee| %>
   cs.push([<%= committee.user_id %>, "<%= committee.user_name_and_code %>"]);
 <% end %>
   var redraw_rows = function() {
@@ -73,15 +87,11 @@ current_step = @item.current_step
     redraw_rows();
   }
   
-  var load_cand = function () {
-    update_reader_cand();
-  }
-
   var update_reader_cand = function () {
-    var fr = $('item_readers_gid');
+    var fr = $('readers_gid');
     var genre = fr.options[fr.selectedIndex].value;
     url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
-    var to = $('item_readers_uid');
+    var to = $('readers_uid');
     ajax_request(url, function(r){
       to.options.length = 0;
       for (var i=0, j=0; i<xha.length; i++) {
@@ -108,57 +118,8 @@ current_step = @item.current_step
     });
   }
   
-  var my_submit = function(state) {
-    switch (state) {
-    case 'accepted':
-      if (!confirm('承認してよろしいですか？')) { return false; }
-      break;
-    case 'rejected':
-      if (!confirm('却下してよろしいですか？')) { return false; }
-      break;
-    case 'remanded':
-      if (!confirm('差し戻してよろしいですか？')) { return false; }
-      break;
-    }
-    var to = $('item_committees');
-    var xs = new Array();
-    for(var i=0; i<cs.length; i++){
-      var c = cs[i];
-      xs.push(new Array([i,c[0],c[1]]));
-    }
-    to.value = Object.toJSON(xs);
-    var st = $('committee_state');
-    st.value = state;
-    $('itemForm').submit();
-  }
-
   document.observe("dom:loaded",function(){
-    load_cand();
     redraw_rows();
   });
 //]]>
 </script>
-
-<table width="100%">
-  <thead>
-  <tr>
-    <th style="width:30pt">順番</th>
-    <th colspan=4>名前</th>
-  </tr>
-  </thead>
-  <% if current_committee && !@remanded  %>
-  <tbody id="fixed_committees_body">
-    <% @item.steps.select{|s| s.number <= @item.current_number}.each do |step| %>
-    <tr>
-      <td><%= step.number + 1 %></td>
-      <td><%= step.committee.user_name_and_code %></td>
-      <td colspan=3 class="fixed_committee_state" style="text-align:center"><%= step.committee.state_str %></td>
-    </tr>
-    <% end %>
-  </tbody>
-  <% end %>
-  <tbody id="committees_body"></tbody>
-</table>
-
-<%= hidden_field_tag("submit_type", [], :id=>"committee_state") %>
-<%= hidden_field_tag("item[committees]", [], :id=>"item_committees") %>
