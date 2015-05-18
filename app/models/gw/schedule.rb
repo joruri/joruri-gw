@@ -122,6 +122,7 @@ class Gw::Schedule < Gw::Database
 
     is_pm_admin = options[:is_pm_admin]
     di = par_item.dup
+    di[:allday] = nil unless di[:allday]
 
     di.delete :public_groups
     _public_groups = JSON.parse(par_item[:public_groups_json])
@@ -722,7 +723,6 @@ class Gw::Schedule < Gw::Database
   end
 
   def self.save_with_rels_part(item, params)
-
     _params = params[:item].dup
     if params[:item][:st_at].present? && params[:item][:ed_at].present?
       st_at, ed_at = Gw.get_parsed_date(params[:item][:st_at]), Gw.get_parsed_date(params[:item][:ed_at])
