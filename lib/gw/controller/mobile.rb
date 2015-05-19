@@ -138,7 +138,7 @@ module Gw::Controller::Mobile
     return "-1" if mobile_uri.blank?
 
     require 'net/http'
-    http = Net::HTTP.new(mobile_uri.host, mobile_uri.port)
+    http = Net::HTTP.new(mobile_uri.host, mobile_uri.port, Core.proxy_uri.try(:host), Core.proxy_uri.try(:port))
     if mobile_uri.scheme == 'https'
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -154,5 +154,9 @@ module Gw::Controller::Mobile
     else
       return unseen[0][0]
     end
+
+  rescue Timeout::Error, Errno::ECONNREFUSED => e
+    error_log e
+    return "-1"
   end
 end
