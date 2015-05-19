@@ -5,14 +5,13 @@ class Gw::Admin::ScheduleTodosController < Gw::Controller::Admin::Base
   def pre_dispatch
     Page.title = "ToDo"
     params[:limit] = 10 if request.mobile?
+    params[:s_finished]||= "1"
     @css = %w(/_common/themes/gw/css/schedule.css /_common/themes/gw/css/todo.css)
     @sp_mode = :todo
     @myuid = Core.user.id
     @mygid = Core.user_group.id
     x = System::CustomGroup.get_my_view( {:is_default=>1,:first=>1})
-    if !x.blank?
-      @cgid = x.id
-    end
+    @cgid = x.id if !x.blank?
     @schedule_settings = Gw::Schedule.load_system_and_user_settings(Core.user)
   end
 
