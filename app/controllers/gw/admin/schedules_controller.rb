@@ -385,6 +385,8 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
     public_groups = Array.new
     @item.public_roles.each do |public_role|
+      next if public_role.class_id == 2 && public_role.group.blank?
+      next if public_role.class_id != 2 && public_role.user.blank?
       name = Gw.trim(public_role.class_id == 2 ? public_role.group.name :
           public_role.user.name)
       public_groups.push ["", public_role.uid, name]
@@ -470,7 +472,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if auth_level[:delete_level] != 1
 
-    location = 
+    location =
       if request.mobile?
         gw_schedules_path(dis: params[:dis], gid: params[:gid], cgid: params[:cgid], s_date: params[:s_date])
       else
@@ -500,7 +502,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       end
     end
 
-    redirect_url = 
+    redirect_url =
       if request.mobile?
         gw_schedules_path(dis: params[:dis], gid: params[:gid], cgid: params[:cgid], s_date: params[:s_date])
       else
