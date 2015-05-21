@@ -28,7 +28,7 @@ class Gw::Admin::Piece::SchedulesController < ApplicationController
       @cgid = params[:cgid]
     end
     @sp_mode = :schedule
-
+    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Core.user.code,:first=>1})
     a_qs = []
     a_qs.push "uid=#{@user.id}"
     a_qs.push "gid=#{params[:gid]}" unless params[:gid].nil? && !params[:cgid].nil?
