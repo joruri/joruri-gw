@@ -269,12 +269,12 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     if members.blank? || training.blank? ||skd.blank?
       return redirect_to "@{public_uri}/?t_id=#{params[:t_id]}&t_menu=entries"
     end
-
-    csv = members.to_csv(headers: ["職員番号","役職","受講者名","受講者所属","受講者連絡先","メールアドレス","申込者","申込者所属","申込者連絡先"]) do |item|
+    csv = members.to_csv(headers: ["職員番号","役職","受講者名","受講者所属コード","受講者所属","受講者連絡先","メールアドレス","申込者","申込者所属","申込者連絡先"]) do |item|
       data = []
       data << item.user_rel1.try(:code)
       data << item.user_rel1.try(:official_position)
       data << item.user_rel1.try(:name)
+      data << item.group_rel1.try(:code)
       data << item.group_rel1.try(:name)
       data << item.training_user_tel
       data << item.user_rel1.try(:email)

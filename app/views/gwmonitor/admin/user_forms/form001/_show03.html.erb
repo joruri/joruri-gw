@@ -27,17 +27,18 @@
     </td>
     <% if @item.body.blank? %>
       <td>
-      <% case @title.state %>
-      <% when 'closed' %>
+      <% if @title.state == "closed" %>
         <%= link_to "回答を確認する", @item.edit_path, :class => 'btText' %>
+      <%else%>
+      <% case @item.state %>
       <% when 'public' %>
         <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
       <% when 'editing' %>
         <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+        <%= link_to "受取待ちに戻す", @item.draft_path, :class => 'btText' %>
       <% when 'qNA' %>
         <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
-      <% when 'editing' %>
-        <%= link_to "受取待ちに戻す", @item.draft_path, :class => 'btText' %>
+      <% end %>
       <% end %>
       </td>
     <% else %>
