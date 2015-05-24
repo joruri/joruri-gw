@@ -33,15 +33,6 @@ class Gwworkflow::Doc < Gw::Database
     state.to_sym
   end
 
-  def _real_state
-    if state.to_sym == :applying
-      return :accepted if steps.all?{|step| step.state == :accepted }
-      return :rejected if steps.any?{|step| step.state == :rejected }
-      return :remanded if steps.any?{|step| step.state == :remanded }
-    end
-    return state.to_sym
-  end
-
   def current_step
     steps.detect {|step| step.number == current_number }
   end
@@ -104,6 +95,15 @@ class Gwworkflow::Doc < Gw::Database
     if unmarked_steps.length == 0
       errors.add('承認ステップ', 'を少なくとも1つ設定してください。')
     end
+  end
+
+  def _real_state
+    if state.to_sym == :applying
+      return :accepted if steps.all?{|step| step.state == :accepted }
+      return :rejected if steps.any?{|step| step.state == :rejected }
+      return :remanded if steps.any?{|step| step.state == :remanded }
+    end
+    return state.to_sym
   end
 
   def update_state

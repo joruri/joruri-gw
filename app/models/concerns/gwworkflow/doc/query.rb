@@ -26,18 +26,7 @@ module Concerns::Gwworkflow::Doc::Query
         rel = rel.owner_docs(Core.user)
       end
   
-      case params[:filter]
-      when 'draft'
-        rel = rel.with_draft_docs
-      when 'applying'
-        rel = rel.with_applying_docs
-      when 'accepted'
-        rel = rel.with_accepted_docs
-      when 'rejected'
-        rel = rel.with_rejected_docs
-      when 'remanded'
-        rel = rel.with_remanded_docs
-      end
+      rel = rel.where(state: params[:filter]) if params[:filter].present?
       rel
     }
     scope :index_order_with_params, ->(params) {

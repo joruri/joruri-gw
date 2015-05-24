@@ -1,7 +1,9 @@
 class MigrateCurrentNumberOnGwWorkflowDocs < ActiveRecord::Migration
-  def change
+  def up
     Gwworkflow::Doc.without_preparation.find_each do |doc|
-      doc.update_columns(current_number: doc.current_step.number) if doc.current_step
+      doc.send(:update_current_number)
     end
+  end
+  def down
   end
 end
