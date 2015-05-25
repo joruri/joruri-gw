@@ -5,7 +5,7 @@ class Gw::Admin::SchedulePropsController < Gw::Controller::Admin::Base
   def pre_dispatch
     return if params[:action] == 'getajax'
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
-    
+
     Page.title = "施設予約スケジュール"
 
     @genre = params[:s_genre].to_s.strip.downcase
@@ -229,8 +229,9 @@ class Gw::Admin::SchedulePropsController < Gw::Controller::Admin::Base
       @prop_read_ids = @prop_ids
     else
       if @genre == 'other'
+        @reservable_prop_ids = @props.with_reservable.map(&:id)
         @prop_edit_ids = Gw::PropOtherRole.select(:id, :prop_id)
-          .where(prop_id: @prop_ids, gid: Core.user_group.self_and_ancestors.map(&:id), auth: 'edit')
+          .where(prop_id: @reservable_prop_ids, gid: Core.user_group.self_and_ancestors.map(&:id), auth: 'edit')
           .map(&:prop_id)
         @prop_read_ids = Gw::PropOtherRole.select(:id, :prop_id)
           .where(prop_id: @prop_ids, gid: Core.user_group.self_and_ancestors.map(&:id), auth: 'read')
