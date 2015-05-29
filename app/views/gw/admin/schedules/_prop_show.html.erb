@@ -32,8 +32,8 @@ end
     param = "?ref=show_one&sid=#{item.id}&s_genre=#{genre}&cls=pm"
     %>
     <table class="show">
-    <tr><th colspan="4">管財施設予約</th></tr>
     <% if @is_pm_admin -%>
+    <tr><th colspan="4">管財施設予約</th></tr>
       <tr><th>名称</th><td colspan="3"><%= sp.prop.name %></td></tr>
       <tr><th>施設の状態</th><td colspan="3"><%= sp.prop_stat_s2 %></td></tr>
       <% if sp.meetingroom_related? -%>
@@ -125,7 +125,7 @@ end
         <th>キャンセル</th>
         <td colspan="3"><%= Gw.required(cancel_str) %></td>
       </tr>
-    <% end %>
+    <% end if @is_pm_admin || sp.prop_type == 'Gw::PropMeetingroom'%>
     <% if sp.rentcar_related? && sp.prop_extra_pm_rentcar_actual && params[:sh] != "sh" && @is_pm_admin %>
       <%= render '/gw/admin/schedule_props/actual_table', actual: sp.prop_extra_pm_rentcar_actual %>
     <% end %>
