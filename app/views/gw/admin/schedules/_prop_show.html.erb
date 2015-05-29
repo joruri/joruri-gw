@@ -1,7 +1,7 @@
 <%
 editlending_flg = false
 
-schedule_props = 
+schedule_props =
   if params[:sh] == "sh" && item.schedule_parent_id.present?
     item.collect_readable_schedule_props
   else
@@ -126,7 +126,7 @@ end
         <td colspan="3"><%= Gw.required(cancel_str) %></td>
       </tr>
     <% end %>
-    <% if sp.rentcar_related? && sp.prop_extra_pm_rentcar_actual && params[:sh] != "sh" %>
+    <% if sp.rentcar_related? && sp.prop_extra_pm_rentcar_actual && params[:sh] != "sh" && @is_pm_admin %>
       <%= render '/gw/admin/schedule_props/actual_table', actual: sp.prop_extra_pm_rentcar_actual %>
     <% end %>
     </table>
