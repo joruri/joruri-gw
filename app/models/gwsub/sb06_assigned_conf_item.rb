@@ -3,6 +3,7 @@ class Gwsub::Sb06AssignedConfItem < Gwsub::GwsubPref
   include System::Model::Base::Content
 
   belongs_to :c_kind1    ,:foreign_key=>:conf_kind_id   ,:class_name => 'Gwsub::Sb06AssignedConfKind'
+  belongs_to :fy          ,:foreign_key=>:fyear_id        ,:class_name => 'Gw::YearFiscalJp'
 
   validates_presence_of :conf_kind_id
   validates_presence_of :item_title
@@ -15,9 +16,11 @@ class Gwsub::Sb06AssignedConfItem < Gwsub::GwsubPref
   def before_create_setting_columns
     Gwsub.gwsub_set_creators(self)
     Gwsub.gwsub_set_editors(self)
+    self.fyear_markjp  = self.fy.markjp if self.fy
   end
   def before_update_setting_columns
     Gwsub.gwsub_set_editors(self)
+    self.fyear_markjp  = self.fy.markjp if self.fy
   end
 
   def self.sb06_assign_conf_item_id_select(options={})
