@@ -3,7 +3,7 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    @date = 
+    @date =
       case Gwboard::Synthesetup.where(content_id: 2).first.try(:limit_date)
       when 'today'
         Date.today
@@ -58,7 +58,7 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
   end
 
   def index_gwqa
-    @items = Gwqa::Doc.select(:id, :title_id, :doc_type, :title, :section_name, :latest_updated_at)
+    @items = Gwqa::Doc.select(:id, :title_id, :doc_type, :title, :section_name, :latest_updated_at, :parent_id)
       .public_docs.latest_updated_since(@date).with_notification_enabled
       .tap{|d| break d.with_readable_role(Core.user) unless Gwqa::Control.is_sysadm? }
       .order(latest_updated_at: :desc).distinct
