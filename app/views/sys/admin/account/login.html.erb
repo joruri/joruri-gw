@@ -17,7 +17,7 @@
   <h1>Joruri</h1>
   <div class="notice"><%= flash[:notice] %></div>
   <div class="fields">
-    <span class="head">ユーザID</span><%= text_field_tag 'account', '' %>
+    <span class="head">ユーザID</span><%= text_field_tag 'account', '' , :id=>"accountField"%>
     <br />
     <br style="line-height: 0.8;" />
     <span class="head">パスワード</span><%= password_field_tag 'password', '' %>
@@ -38,5 +38,10 @@
 </div>
 <div class="copyright">Powered by Joruri</div>
 
+<script type="text/javascript">
+//<![CDATA[
+document.getElementById("accountField").focus();
+//]]>
+</script>
 </body>
 </html>

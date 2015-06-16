@@ -4,16 +4,16 @@ module Gwboard::Model::Doc::Auth
   included do
     scope :group_or_creater_docs, ->(user = Core.user) {
       where([
-        arel_table[:section_code].eq(user.groups.first.try(:code)), 
+        arel_table[:section_code].eq(user.groups.first.try(:code)),
         arel_table[:creater_id].eq(user.code)
       ].reduce(:or))
     }
     scope :group_or_recognizer_docs, ->(user = Core.user) {
       joins(:recognizers).where([
-        arel_table[:section_code].eq(user.groups.first.try(:code)), 
+        arel_table[:section_code].eq(user.groups.first.try(:code)),
         arel_table[:creater_id].eq(user.code),
         reflect_on_association(:recognizers).klass.arel_table[:code].eq(user.code)
-      ].reduce(:or))
+      ].reduce(:or)).distinct
     }
     scope :in_public_folder, -> {
       joins(:folder).where(reflect_on_association(:folder).klass.arel_table[:state].eq('public'))
@@ -24,7 +24,7 @@ module Gwboard::Model::Doc::Auth
     scope :with_readable_role, ->(user = Core.user) {
       joins(:roles).merge(reflect_on_association(:roles).klass.with_user_or_groups(user, "r/w"))
     }
-    scope :satisfy_restrict_access, ->(user = Core.user) { 
+    scope :satisfy_restrict_access, ->(user = Core.user) {
       controls = reflect_on_association(:control).klass.arel_table
       joins(:control).where([
         controls[:restrict_access].eq(0),
