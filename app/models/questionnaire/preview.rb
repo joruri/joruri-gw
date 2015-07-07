@@ -53,9 +53,9 @@ private
             else
               case item['permit_type']
               when 'radio'
-                is_error = false if JSON.generate(self[permit_field_name]).index(permit_value)
+                is_error = false if JSON.parse(self[permit_field_name]).index(permit_value)
               when 'checkbox'
-                is_error = false if JSON.generate(self[permit_field_name]).index(permit_value)
+                is_error = false if JSON.parse(self[permit_field_name]).index(permit_value)
               else
                 is_error = false if self[permit_field_name] == permit_value
               end
