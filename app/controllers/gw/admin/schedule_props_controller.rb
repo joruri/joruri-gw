@@ -96,7 +96,7 @@ class Gw::Admin::SchedulePropsController < Gw::Controller::Admin::Base
     @calendar_end_day = @calendar_first_day + 6
     @view = "week"
 
-    @prop_gid = Gw::PropOther.where("id=#{params[:prop_id]}").first.gid if !params[:prop_id].blank?
+    @prop_gid = Gw::PropOther.where(id: params[:prop_id]).first.gid if !params[:prop_id].blank?
     _props
     if @genre != "other"
       @show_flg = true

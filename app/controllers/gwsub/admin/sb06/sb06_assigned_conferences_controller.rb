@@ -1046,8 +1046,8 @@
 
       item = Gwsub::Sb06AssignedConferenceMember.new
       item.and 'sql',"fyear_id       = #{par_item[:fyed_id].to_i}"   unless par_item[:fyed_id].to_i == 0
-      item.and 'sql',"conf_kind_id   = #{par_item[:kind_id]}"
-      item.and 'sql',"categories_id  = #{par_item[:c_cat_id]}"
+      item.and 'sql',"conf_kind_id   = #{par_item[:kind_id].to_i}"
+      item.and 'sql',"categories_id  = #{par_item[:c_cat_id].to_i}"
       item.and 'sql',"user_id <> -1"
 
       # 出力項目指定
