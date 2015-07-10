@@ -248,11 +248,11 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
       if !par_item[:multi_section_flg].blank? && par_item[:multi_section_flg].to_i == 1 # 本務の時、重複チェック
         if mode == :update
           item = self.find(:first,
-            :conditions=>"staff_no = '#{par_item[:staff_no]}' and fyear_id = #{par_item[:fyear_id]} and id != #{self.id} and multi_section_flg = 1")
+            :conditions=>["staff_no = ? and fyear_id = ? and id != ? and multi_section_flg = 1", par_item[:staff_no],par_item[:fyear_id],self.id])
           self.errors.add :staff_no, "は、既に登録されています。" unless item.blank?
         elsif mode == :create
           item = self.find(:first,
-            :conditions=>"staff_no = '#{par_item[:staff_no]}' and fyear_id = #{par_item[:fyear_id]} and multi_section_flg = 1")
+            :conditions=>["staff_no = ? and fyear_id = ? and multi_section_flg = 1", par_item[:staff_no],par_item[:fyear_id]])
           self.errors.add :staff_no, "は、既に登録されています。" unless item.blank?
         end
       end

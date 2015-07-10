@@ -28,7 +28,7 @@ class Gw::ScheduleProp < Gw::Database
   }
   scope :preload_schedule_relations, ->{
     preload(:schedule => {
-      :schedule_events => nil, 
+      :schedule_events => nil,
       :schedule_users => {:user => :user_groups},
       :schedule_props => {:prop => :prop_other_roles},
       :child => {:schedule_users => nil, :schedule_props => {:prop => :prop_other_roles}}})
@@ -170,11 +170,11 @@ class Gw::ScheduleProp < Gw::Database
     types = types.order(sort_no: :asc, id: :asc).map {|type| ["+-#{type.name}", "other:other:#{type.id}"] }
 
     if options[:reverse]
-      [['一般施設', 'other:other:0']] + types + 
+      [['一般施設', 'other:other:0']] + types +
       [['レンタカー(管財課)', "#{key_prefix}rentcar:pm"],
        ['会議室等(管財課)', "#{key_prefix}meetingroom:pm"]]
     else
-      [['会議室等(管財課)', "#{key_prefix}meetingroom:pm"], 
+      [['会議室等(管財課)', "#{key_prefix}meetingroom:pm"],
        ['レンタカー(管財課)', "#{key_prefix}rentcar:pm"],
        ['一般施設', 'other:other:0']] + types
     end
@@ -334,7 +334,7 @@ class Gw::ScheduleProp < Gw::Database
       (self.schedule.schedule_events.blank? || !self.schedule.schedule_events.approved_or_opened?) && self.schedule.guide_state.to_i <= 1
     else
       return true
-    end  
+    end
   end
 
   def cancelled?
@@ -359,10 +359,10 @@ class Gw::ScheduleProp < Gw::Database
 
   def cancelled_user_name
     if cancelled?
-      cancelled_user ? cancelled_user.name : '自動キャンセル' 
+      cancelled_user ? cancelled_user.name : '自動キャンセル'
     else
       ''
-    end 
+    end
   end
 
   def prop_stat
@@ -539,7 +539,7 @@ class Gw::ScheduleProp < Gw::Database
           cond_props_within_terms = "SELECT distinct prop_id FROM gw_schedules"
           cond_props_within_terms += " left join gw_schedule_props on gw_schedules.id =  gw_schedule_props.schedule_id"
           cond_props_within_terms += " where"
-          cond_props_within_terms += " gw_schedules.id <> #{params[:schedule_id]} and " unless params[:schedule_id].blank?
+          cond_props_within_terms += " gw_schedules.id <> #{params[:schedule_id].to_i} and " unless params[:schedule_id].blank?
           cond_props_within_terms += " gw_schedules.ed_at >= '#{Gw.datetime_str(st_at)}'"
           cond_props_within_terms += " and gw_schedules.st_at < '#{Gw.datetime_str(ed_at)}'"
           cond_props_within_terms += " and prop_type = '#{model_name}'"

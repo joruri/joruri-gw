@@ -186,7 +186,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
             when 'sjis'
               '-s -W'
             end
-            fyear = Gw::YearFiscalJp.where("id = #{par_item[:fyed_id]}").order("start_at DESC").first
+            fyear = Gw::YearFiscalJp.where(id: par_item[:fyed_id]).order("start_at DESC").first
             filename =  "#{fyear.markjp}_10職名_エラー箇所追記.csv"
             filename = NKF::nkf('-s -W', filename) if @ie
             send_data(NKF::nkf(nkf_options, file), :type => 'text/csv', :filename => filename)

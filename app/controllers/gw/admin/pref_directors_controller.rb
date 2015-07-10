@@ -73,7 +73,7 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
     @is_kauser = @kucode == @ucode ? true : false
 
     unless params[:cgid].blank?
-      @custom_group = System::CustomGroup.where("id=#{params[:cgid]}").first
+      @custom_group = System::CustomGroup.where(id: params[:cgid]).first
       if !@custom_group.blank?
         Page.title = @custom_group.name
       end

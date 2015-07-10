@@ -4,16 +4,17 @@ class Gw::PropExtraGroupRentcarMaster < Gw::Database
 
   def self.find_uniqueness(_params, action = nil, id = nil, model = Gw::SectionAdminMaster)
     # 重複チェック
-    cond = "management_parent_gid = #{_params[:management_parent_gid]}"
-    cond += " and func_name = 'gw_props'"
-    cond += " and state = 'enabled'"
-    cond += " and management_gid = #{_params[:management_gid]}"
-    cond += " and management_uid = #{_params[:management_uid]}"
-    cond += " and range_class_id = #{_params[:range_class_id]}"
-    cond += " and division_parent_gid = #{_params[:division_parent_gid]}"
-    cond += " and division_gid = #{_params[:division_gid]}" unless _params[:division_gid].blank?
-    cond += " and id <> #{id}" if action == :update
-
+    cond_str = "management_parent_gid = ?"
+    cond_str += " and func_name = 'gw_props'"
+    cond_str += " and state = 'enabled'"
+    cond_str += " and management_gid = ?"
+    cond_str += " and management_uid = ?"
+    cond_str += " and range_class_id = ?"
+    cond_str += " and division_parent_gid = ?"
+    cond_str += " and division_gid = ?" unless _params[:division_gid].blank?
+    cond_str += " and id <> #{id}" if action == :update
+    cond = [cond_str, _params[:management_parent_gid],_params[:management_gid],_params[:management_uid],_params[:range_class_id],_params[:division_parent_gid]]
+    cond << _params[:division_gid] unless _params[:division_gid].blank?
     _item = model.where(cond).first
 
     if _item.blank?

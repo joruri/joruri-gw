@@ -46,11 +46,11 @@ class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
     else
       if mode == :update
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]} and id != #{self.id}")
+          :conditions=>["code = ? and fyear_id = ? and id != ?",par_item[:code],par_item[:fyear_id],self.id ])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       elsif mode == :create
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]}")
+          :conditions=>["code = ? and fyear_id = ?", par_item[:code],par_item[:fyear_id]])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       end
     end
@@ -64,7 +64,7 @@ class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
 
     return save_flg
   end
-  
+
   def self.sb04_official_titles_select(fyear_id = nil)
     selects = []
     return selects << ['年度未選択','0'] if fyear_id.to_i==0

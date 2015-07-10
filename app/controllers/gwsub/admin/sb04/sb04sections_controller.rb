@@ -240,7 +240,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
             when 'sjis'
               '-s -W'
             end
-            fyear = Gw::YearFiscalJp.where("id = #{par_item[:fyed_id]}").order("start_at DESC").first
+            fyear = Gw::YearFiscalJp.where(id: par_item[:fyed_id]).order("start_at DESC").first
             filename = "#{fyear.markjp}_20所属_エラー箇所追記.csv"
             filename = NKF::nkf('-s -W', filename) if @ie
             send_data( NKF::nkf(nkf_options, file) , :filename => filename )
