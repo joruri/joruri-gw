@@ -25,11 +25,11 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
     else
       if mode == :update
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]} and id != #{self.id} and section_id = #{par_item[:section_id]}")
+          :conditions=>["code = ? and fyear_id = ? and id != ? and section_id = ?",par_item[:code],par_item[:fyear_id],self.id,par_item[:section_id]])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       elsif mode == :create
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]} and section_id = #{par_item[:section_id]}")
+          :conditions=>["code = ? and fyear_id = ? and section_id = ?",par_item[:code],par_item[:fyear_id],par_item[:section_id] ])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       end
     end

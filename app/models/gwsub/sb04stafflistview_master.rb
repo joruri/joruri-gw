@@ -4,14 +4,14 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
 
   def self.find_uniqueness(_params, action = nil, id = nil, model = Gw::SectionAdminMaster)
     # 重複チェック
-    cond = "management_uid_sb04 = #{_params[:management_uid_sb04]}"
-    cond += " and state = 'enabled'"
-    cond += " and func_name = 'gwsub_sb04'"
-    cond += " and management_gid_sb04 = #{_params[:management_gid_sb04]}"
-    cond += " and division_gid_sb04 = #{_params[:division_gid_sb04]}"
-    cond += " and fyear_id_sb04 = #{_params[:fyear_id_sb04]}"
-    cond += " and id <> #{id}" if action == :update
-
+    cond_str = "management_uid_sb04 = ?"
+    cond_str += " and state = 'enabled'"
+    cond_str += " and func_name = 'gwsub_sb04'"
+    cond_str += " and management_gid_sb04 = ?"
+    cond_str += " and division_gid_sb04 = ?"
+    cond_str += " and fyear_id_sb04 = ?"
+    cond_str += " and id <> #{id}" if action == :update
+    cond = [cond_str , _params[:management_uid_sb04],_params[:management_gid_sb04],_params[:division_gid_sb04],_params[:fyear_id_sb04],]
     _item = model.where(cond).first
 
     if _item.blank?

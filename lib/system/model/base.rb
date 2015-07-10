@@ -68,5 +68,9 @@ module System::Model::Base
     def optimize_and_analyze_table
       optimize_table && analyze_table
     end
+
+    def escape_like(s)
+      s.gsub(/[\\%_]/) {|r| "\\#{r}"}
+    end
   end
 end

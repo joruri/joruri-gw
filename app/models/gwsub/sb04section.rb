@@ -57,11 +57,11 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
     else
       if mode == :update
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]} and id != #{self.id}")
+          :conditions=>["code = ? and fyear_id = ? and id != ?",par_item[:code],par_item[:fyear_id],self.id])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       elsif mode == :create
         item = self.find(:first,
-          :conditions=>"code = '#{par_item[:code]}' and fyear_id = #{par_item[:fyear_id]}")
+          :conditions=>["code = ? and fyear_id = ?",par_item[:code],par_item[:fyear_id]])
         self.errors.add :code, "は、既に登録されています。" unless item.blank?
       end
     end

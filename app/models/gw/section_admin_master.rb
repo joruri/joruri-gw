@@ -85,14 +85,16 @@ class Gw::SectionAdminMaster < Gw::Database
 
   def self.find_uniqueness(_params, action = nil, id = nil, model = Gw::SectionAdminMaster)
     # 重複チェック
-    cond = "management_parent_gid = #{_params[:management_parent_gid]}"
-    cond.concat " and func_name = #{_params[:func_name]}"
-    cond.concat " and management_gid = #{_params[:management_gid]}"
-    cond.concat " and management_uid = #{_params[:management_uid]}"
-    cond.concat " and range_class_id = #{_params[:range_class_id]}"
-    cond.concat " and division_parent_gid = #{_params[:division_parent_gid]}"
-    cond.concat " and division_gid = #{_params[:division_gid]}" unless _params[:division_gid].blank?
-    cond.concat " and id <> #{id}" if action == :update
+    cond_str = "management_parent_gid = ?"
+    cond_str.concat " and func_name = ?"
+    cond_str.concat " and management_gid = ?"
+    cond_str.concat " and management_uid = ?"
+    cond_str.concat " and range_class_id = ?"
+    cond_str.concat " and division_parent_gid = ?"
+    cond_str.concat " and division_gid = ?" unless _params[:division_gid].blank?
+    cond_str.concat " and id <> #{id}" if action == :update
+    cond = [cond_str, _params[:management_parent_gid], _params[:func_name], _params[:management_gid],_params[:management_uid],_params[:range_class_id],_params[:division_parent_gid]]
+    cond << _params[:division_gid]  unless _params[:division_gid].blank?
 
     _item = model.where(cond).first
 
