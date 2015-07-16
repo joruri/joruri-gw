@@ -3,7 +3,7 @@ class Gwboard::Admin::Piece::PortalsController < ApplicationController
 
   def index
     @portal_mode = Gw::Property::PortalMode.first_or_new
-    @portal_disaster_bbs = Gw::Property::PortalMode.first_or_new
+    @portal_disaster_bbs = Gw::Property::PortalDisasterBbs.first_or_new
 
     ids = [1]
     ids << @portal_disaster_bbs.options.to_i if @portal_mode.disaster_mode?
