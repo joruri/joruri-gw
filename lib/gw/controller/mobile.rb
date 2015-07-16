@@ -6,9 +6,6 @@ module Gw::Controller::Mobile
       '' #remove
     end
 
-    body.gsub!(/[\(]?(([0-9]{2}[-\(\)]+[0-9]{4})|([0-9]{3}[-\(\)]+[0-9]{3,4})|([0-9]{4}[-\(\)]+[0-9]{2}))[-\)]+[0-9]{4}/) do |m|
-      "<a href='tel:#{m.gsub(/\D/, '\1')}'>#{m}</a>"
-    end
 
     body.gsub!(/<img .*?src=".*?".*?>/iom) do |m|
       '' #remove
@@ -34,6 +31,9 @@ module Gw::Controller::Mobile
       end
     end
 
+    body.gsub!(/[\(]?(([0-9]{2}[-\(\)]+[0-9]{4})|([0-9]{3}[-\(\)]+[0-9]{3,4})|([0-9]{4}[-\(\)]+[0-9]{2}))[-\)]+[0-9]{4}/) do |m|
+      "<a href='tel:#{m.gsub(/\D/, '\1')}'>#{m}</a>"
+    end
     if @file_link
       #添付ファイルダウンロード可否を判定
       downloadable_ips = Joruri.config.application['air_watch.downloadable_ips']

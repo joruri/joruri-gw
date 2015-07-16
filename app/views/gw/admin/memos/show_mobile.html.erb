@@ -12,8 +12,8 @@ sid  = params[:_session_id]
 <%= link_to "引用作成", {action: :quote} %>
 <%= link_to '削除', {action: :confirm} %><br />
 時刻　<%= Gw.date_common(@item.ed_at) %><br />
-所属/担当/社名　<%= @item.fr_group.blank? ? '' : "#{convert_for_mobile_body(@item.fr_group, sid)}の" %><br />
-担当者　<%= @item.fr_user.blank? ? '' : "#{convert_for_mobile_body(@item.fr_user, sid)}様から" %><br />
+所属/担当/社名　<%if !@item.fr_group.blank?%><%= convert_for_mobile_body(@item.fr_group, sid) %>の<%end%><br />
+担当者　<%if !@item.fr_user.blank?%><%= convert_for_mobile_body(@item.fr_user, sid) %>様から<%end%><br />
 伝言　<%= convert_for_mobile_body(@item.title, sid) %><br />
 備考　<%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %><br />
 <br />

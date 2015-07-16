@@ -27,11 +27,11 @@ sid  = params[:_session_id]
   </tr>
   <tr>
     <th>所属/担当/社名</th>
-    <td><%= @item.fr_group.blank? ? '' : "#{convert_for_mobile_body(@item.fr_group, sid)}の" %></td>
+    <td><%if !@item.fr_group.blank?%><%= convert_for_mobile_body(@item.fr_group, sid) %>の<%end%></td>
   </tr>
   <tr>
     <th>担当者</th>
-    <td><%= @item.fr_user.blank? ? '' : "#{convert_for_mobile_body(@item.fr_user, sid)}様から" %></td>
+    <td><%if !@item.fr_user.blank?%><%= convert_for_mobile_body(@item.fr_user, sid) %>様から<%end%></td>
   </tr>
   <tr>
     <th>伝言</th>
