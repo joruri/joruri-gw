@@ -214,7 +214,7 @@ private
       else
         current = Questionnaire::TemplateFormField.where(["parent_id = ? AND id != ? AND state = ?",self.parent_id, self.id,"public"]).count
       end
-      self.errors.add_to_base "設問数は64問以内で作成してください。" unless current < 64
+      self.errors.add :base, "設問数は64問以内で作成してください。" unless current < 64
     end
   end
 

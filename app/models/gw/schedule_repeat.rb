@@ -665,7 +665,7 @@ class Gw::ScheduleRepeat < Gw::Database
         _uid = _user[1]
         _u = System::User.where(state: 'enabled', id: _uid, code: AppConfig.gw.schedule_pref_admin['pref_admin_code']).first
         if !_u.blank?
-          item.errors.add_to_base '「全庁予定」が参加者として選択されているが，「公開（誰でも閲覧可）」となっていません。'
+          item.errors.add :base, '「全庁予定」が参加者として選択されているが，「公開（誰でも閲覧可）」となっていません。'
         end
       end
     end
