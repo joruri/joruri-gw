@@ -1,10 +1,10 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "doclibrary"
   scp = "admin"
 
-  match "doclibrary",                                    :to => "doclibrary/admin/menus#index", :via =>  [:post, :get]
-  match "doclibrary/docs/:parent_id/edit_file_memo/:id", :to => "doclibrary/admin/docs#edit_file_memo", :via =>  [:post, :get]
-
+  match "doclibrary",                                    :to => "doclibrary/admin/menus#index"
+  match "doclibrary/docs/:parent_id/edit_file_memo/:id", :to => "doclibrary/admin/docs#edit_file_memo"
+  
   #scope "_#{scp}" do
     namespace mod do
       scope :module => scp do
@@ -19,7 +19,6 @@ Rails.application.routes.draw do
           :path => "docs" do
             member do
               get :recognize_update, :publish_update, :clone
-              get :export_file, :file_exports
             end
             collection do
               get :destroy_void_documents

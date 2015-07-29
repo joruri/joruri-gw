@@ -8,16 +8,16 @@
   #this_path = gwworkflow_menus_path
 %>
 <div class="bbsDocList workflow">
-<%= render 'piece_header', hide_new_action: true %>
+<%= render :partial => 'piece_header', :locals => {:hide_new_action => true} %>
 <div class="pieceBody">
 	
-<% if @item.creater_id.to_i == Core.user.id && (@item.real_state == :accepted || @item.real_state == :rejected || @item.real_state == :remanded) %>
+<% if @item.creater_id.to_i == Site.user.id && (@item.real_state == :accepted || @item.real_state == :rejected || @item.real_state == :remanded) %>
 <div class="editingBox">
 <div class="btDestroy"><%= link_to '削除', "/gwworkflow/destroy/#{@item.id}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></div>
 </div>
 <% end %> 
 
-<%= render 'detail', hide_new_action: true %>
+<%= render :partial => 'detail', :locals => {:hide_new_action => true} %>
 
 <% if @item.real_state == :remanded %>
 <div class="submitters">

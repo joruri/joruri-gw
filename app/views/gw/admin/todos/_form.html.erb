@@ -3,7 +3,7 @@
 <table class="show">
   <tr>
     <th>期限</th>
-    <td><%= f.datepicker :ed_at %></td>
+    <td><%= f.calendar_date_select :ed_at, :popup => "force", :time => false, :value => safe{@item.ed_at.strftime('%Y-%m-%d')} %></td>
   </tr>
   <tr>
     <th>内容 <span class="required">※</span></th>

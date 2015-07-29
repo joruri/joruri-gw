@@ -1,20 +1,49 @@
+<!--<%= @edit_users_json -%>-->
+<%= hidden_field_tag('init[schedule_edit_users_json]',
+  (params[:item] && params[:item][:schedule_edit_users_json] ? params[:item][:schedule_edit_users_json] : nz(@edit_users_json) )) -%> 
 <%
-selected_edit_user_options = @item.selected_edit_user_options
+if @item.id.blank?
+  u = Site::user
+  ucls = 1
+  uid = u.id
+  uname = u.name
+else
+  ucls = nil
+  uid = nil
+  uname =nil
+end
 %>
-<table border="0">
+
+<%= hidden_field_tag('init[edit_user_ucls]', ucls) -%>
+<%= hidden_field_tag('init[edit_user_uid]', uid) -%>
+<%= hidden_field_tag('init[edit_user_uname]', uname) -%>
+
+<%= f.fields_for :schedule_edit_users do |schedule_user| %>
+<table border="0" id="schedule_edit_users_table">
   <tr>
     <td class="userChange">
-      <%= select_tag :edit_user_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
-      <%= select_tag :edit_users, options_for_select(Core.user_group.enabled_user_options), multiple: true, size: 10, style: 'width:300px;' %>
+      <%= select_tag 'item[schedule_edit_users][user_type_id]', Gw.options_for_select(
+  System::Group.get_group_select('','group_', :add_conditions=>"level_no = 3"), 'group_'+Site.user_group.id.to_s, :title=>1), :size=>1,
+  :style => 'width:300px;', :onchange => 'update_edit_user_cand();', :multiple => false -%>
+      <br />
+      <%= select_tag 'item[schedule_edit_users][uid]', Gw.options_for_select(
+  System::User.get_user_select(Site.user_group.id), Site.user.id, :title=>1), :size=>10,
+  :style => 'width:300px;', :multiple => true, :ondblclick => 'add_edit_users()' -%>
     </td>
     <td>
-      <%= button_tag '追加 →', type: :button, id: 'add_edit_users' %><br /><br />
-      <%= button_tag '← 削除', type: :button, id: 'del_edit_users' %>
+      <%= button_to_function '追加 →', 'add_edit_users()' -%><br /><br />
+      <%= button_to_function '← 削除', 'del_edit_users()' -%>
     </td>
     <td>
       <br />
-      <%= select_tag :selected_edit_users, options_for_select(selected_edit_user_options), multiple: true, size: 10, style: 'width:300px;' %>
-      <%= f.select :selected_edit_user_ids, options_for_select(selected_edit_user_options, selected_edit_user_options.map{|o| o[1]}), {}, {multiple: true, style: 'display: none;'} %>
+      <%= select_tag 'item[schedule_edit_users_add_buf]', '', :size=>10, :style => 'width:300px;', :multiple => true, :ondblclick => 'del_edit_users()' -%>
+      <%= hidden_field_tag 'item[schedule_edit_users_json]', '' -%>
     </td>
   </tr>
 </table>
+<% end %>
+
+<%#= javascript_include_tag :defaults %>
+
+
+

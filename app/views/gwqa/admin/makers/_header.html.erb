@@ -1,6 +1,6 @@
 <div class="menu">
-  <%= link_to 'QAを作成する', "/_admin/gwbbs/makers/new" if Gwqa::Control.is_sysadm? %>
-  <%= link_to '管理可能QA', '/_admin/gwqa/makers' %>
-  <%= link_to '管理可能QA（非表示）', '/_admin/gwqa/makers?state=HIDE' %>
-  <%= link_to 'QA一覧', '/gwqa' %>
+  <%=link_to('QAを作成する', gwboard_new_item) if @is_sysadm %>
+  <%=link_to '管理可能QA', '/_admin/gwqa/makers' %>
+  <%=link_to '管理可能QA（非表示）', '/_admin/gwqa/makers?state=HIDE' %>
+  <%=link_to 'QA一覧', '/gwqa' %>
 </div>

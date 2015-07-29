@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
-<meta charset="UTF-8" />
-<link rel="icon" href="/favicon.ico" />
-<title><%= Core.title %> - <%= Site.title -%></title>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<title><%=h Core.title %> - <%= Site.title -%></title>
 <%#= stylesheet_link_tag '/_common/themes/admin/style', :media => 'all' %>
 <%= stylesheet_link_tag '/_common/themes/admin/gw/style', :media => 'all' %>
 <%= javascript_include_tag '/javascripts/prototype' %>
@@ -18,7 +21,7 @@
   <h1><a href="/_admin/gw">Joruri Gw</a></h1>
   <div class="menu">
     <span class="user">
-      <%= safe{Core.user_group.name} %>　<%= safe{Core.user.name_with_account} %></span>
+      <%= safe{Core.user_group.name} %>　<%=h safe{Core.user.name_with_account} %></span>
     <span class="link">
       <a class="logout" href="/_admin/logout">ログアウト</a></span>
 	<span class="previousLogin">
@@ -43,15 +46,17 @@
 
 <div id="main">
 
+<%= render :partial => 'layouts/admin/gw/maintenance' %>
+<% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+
 <div id="content">
 <div id="contentContainer">
 
 <%#*<div id="contentHeader">%>
-  <%#= render controller.controller_path + '/header' %>
+  <%#= render :partial => controller.controller_path + '/header' %>
 <%#*</div>%>
 
 <div id="contentBody">
-<%= render 'layouts/admin/gw/notice' %>
 <%= yield  %>
 </div>
 

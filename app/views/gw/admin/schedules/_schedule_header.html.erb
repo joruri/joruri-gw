@@ -11,20 +11,19 @@ else
   bt_box = '/gw/admin/schedules/schedule_bt_box'
 end
 %>
-<%= render bt_box, d: d, mode: mode -%>
+<%= raw(render(:partial => bt_box, :locals=>{:d=>d, :mode=>mode})) -%>
 
 <% if @custom_group -%>
 <div class="scheduleTableTitle"><%= @custom_group.name -%></div>
 <% end -%>
+
 <% if @show_flg -%>
-  <%= render '/gw/admin/schedules/schedule_line_box', d: d, mode: mode, move_mode: :header -%>
-  <% if @line_box.present? && @schedule_move_url_directive %>
+  <%= raw(render(:partial => '/gw/admin/schedules/schedule_line_box', :locals=>{:d=>d, :mode=>mode, :move_mode=>:header})) -%>
+  <% if @line_box.present? %>
     <%= raw(hidden_field_tag('my_url', @schedule_move_url_directive.sub('%q', "#{@schedule_move_qs}"))) %>
   <% end %>
 <% end %>
-
-<%= render 'gw/admin/schedule_props/pm_legends' %>
-<script type="text/javascript">
+<script language = "JavaScript" type="text/javascript">
 //<![CDATA[
 
 var search_group_search_submit = function () {

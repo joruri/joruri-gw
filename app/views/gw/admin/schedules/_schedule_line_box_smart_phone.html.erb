@@ -10,7 +10,7 @@ class_str = "dateShow"
 
 class_str += " today" if d == today
 date_format_name = 'week'
-if @schedule_move_url_directive.blank? # footer 側での呼び出しで再計算回避のみ、あやしいようなら外してください
+if @schedule_move_url_directive.blank? # note/100221/nkoshiba: footer 側での呼び出しで再計算回避のみ、あやしいようなら外してください
   @schedule_move_url_directive = %Q(/gw/schedules/#{mode == 'day' ? '%d?%q' :
     @sp_mode == :schedule ? '?s_date=%d&%q' :
     @sp_mode == :event ? 'event_week?s_date=%d' : 'show_week?s_date=%d&%q'})
@@ -18,21 +18,17 @@ if @schedule_move_url_directive.blank? # footer 側での呼び出しで再計�
 
   @schedule_move_ab = if @sp_mode == :event
     [
-      [@st_date.months_ago(1), '前月'],
       [@st_date - 7, '前週'],
       [Date.today, '今日'],
       [@st_date + 7, '翌週'],
-      [@st_date.months_since(1), '翌月']
     ]
   else
     [
-      [d.months_ago(1), '前月'],
       [d-7, '前週'],
       [d-1, '前日'],
       [Date.today, '今日'],
       [d+1, '翌日'],
       [d+7, '翌週'],
-      [d.months_since(1), '翌月']
     ]
   end
 end
@@ -43,7 +39,7 @@ dayinfo = d
   <% if move_mode != :header -%>
   <% else -%>
     <div class="dayInformation <%= class_str -%>">
-      <%= date_format(@schedule_settings["#{date_format_name}_view_piecehead_format"], d) -%>
+      <%= date_format(schedule_settings["#{date_format_name}_view_piecehead_format"], d) -%>
     </div>
   <% end -%>
   <div class="scheduleMove">

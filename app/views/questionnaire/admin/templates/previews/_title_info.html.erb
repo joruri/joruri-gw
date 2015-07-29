@@ -1,30 +1,31 @@
 <div class="editingBox">
-<% if @title.admin_setting == 1 %>
-  <span class="docLink"><%= link_to '<< 設問登録', questionnaire_template_form_fields_path(@title) if @is_sysadm %></span>
-<% else %>
-  <span class="docLink"><%= link_to '<< 設問登録', questionnaire_template_form_fields_path(@title) %></span>
-<% end %>
+<%if @title.admin_setting== 1 %>
+<span class="docLink"><%= link_to('<< 設問登録', questionnaire_template_form_fields_path(@title))  if @is_sysadm   %></span>
+<%else%>
+<span class="docLink"><%= link_to('<< 設問登録', questionnaire_template_form_fields_path(@title)) %></span>
+<%end%>
+
 </div>
 
 <div class="docsInnerBox">
 
 <div class="bbsCreatorInf">
 <table>
-  <tr>
-    <td>作成 : &nbsp;</td>
-    <td><%= @title.createrdivision %></td>
-    <td class="space"></td>
-    <td><%= @title.creater %></td>
-    <td class="space"></td>
-    <td><%= @title.createdate %></td>
-  </tr>
+<tr>
+<td>作成 : &nbsp;</td>
+<td><%= @title.createrdivision %></td>
+<td class="space"></td>
+<td><%= @title.creater %></td>
+<td class="space"></td>
+<td><%= @title.createdate %></td>
+</tr>
 </table>
 </div>
 
 <div class="bbsUserform">
-  <table class="bbsUserformBody">
-    <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
-  </table>
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%=hbr(@title.title)%></span></td></tr>
+</table>
 </div>
 
 </div>

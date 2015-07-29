@@ -1,10 +1,13 @@
 <%
+u = Site.user
+g = u.groups[0]
 text_style = 'width:30em;'
+
 box_width = 'width:300px;'
 
 admin_groups = Gwboard::Group.level2_top_blank
 groups = Gwboard::Group.level2
-parent_id = Core.user_group.parent_id
+parent_id = Site.user_group.parent_id
 %>
 <!--#<%= @admin_json -%>-->
 <%= hidden_field_tag('init[admin_json]',
@@ -21,107 +24,103 @@ parent_id = Core.user_group.parent_id
 <%= raw(Gw.required_head) %>
 
 <table class="show">
-  <tr>
-    <th>予約</th>
-    <td><%= f.radio_buttons :reserved_state, @item.reserved_state_options %></td>
-  </tr>
-  <tr>
-    <th>表示順</th>
-    <td><%= f.text_field :sort_no, :style => text_style %></td>
-  </tr>
-  <tr>
-    <th>名称 <%= required %></th>
-    <td><%= f.text_field :name, :style => text_style %></td>
-  </tr>
-  <tr>
-    <th>種別 <%= required %></th>
-    <td><%= f.select :type_id, options_from_collection_for_select(@prop_types, :id, :name, @item.type_id) %></td>
-  </tr>
-  <tr>
-    <th>備考</th>
-    <td><%= form_text_area(f, "comment") %></td>
-  </tr>
-  <% if false %>
-  <tr>
-    <th>公開</th>
-    <td><%= f.radio_buttons :state, I18n.a('enum.gw/prop_other.state'), {}, {onclick: 'state_radio_onclick();'} %></td>
-  </tr>
-  <tr>
-    <th>他所属からの予約</th>
-    <td><%= f.radio_buttons :edit_state, I18n.a('enum.gw/prop_other.edit_state') %></td>
-  </tr>
-  <% end %>
-  <tr>
-    <th>施設管理所属 <%= required %></th>
-    <td>
-      <table border="0">
-        <tr>
-          <td class="userChange">
-            <%= select_tag('item[admin][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_admin_cand();' ) %><br />
-            <%= select_tag('item[admin][uid]', options_for_select(Gwsub.grouplist4(nil, nil , true , nil, parent_id, {:return_pattern => 4})), :size=>5, :style => box_width, :ondblclick => 'add_admin()', :multiple => true) %>
-          </td>
-          <td>
-            <%= button_tag '追加 →', :onclick => 'add_admin(); return false;' %><br /><br />
-            <%= button_tag '← 削除', :onclick => 'del_admin(); return false;' %>
-          </td>
-          <td>
-            <%= select_tag 'item[admin_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_admin()', :multiple => true %>
-            <%= hidden_field_tag 'item[admin_json]', '' %>
-          </td>
-        </tr>
-      </table>
+<tr>
+  <th>予約</th>
+  <td><%= radio f, 'reserved_state', Gw.yaml_to_array_for_select('t1f0_kyoka_fuka') %></td>
+</tr>
+<tr>
+  <th>表示順</th>
+  <td><%= f.text_field("sort_no", :style => text_style) %></td>
+</tr>
+<tr>
+  <th>名称 <%= raw(required) %></th>
+  <td><%= f.text_field("name", :style => text_style) %></td>
+</tr>
+<tr>
+  <th>種別 <%= raw(required) %></th>
+  <td><%= f.select(:type_id, options_from_collection_for_select(@prop_types, :id, :name, @item.type_id)) %></td>
+</tr>
+<tr>
+  <th>備考</th>
+  <td><%= form_text_area(f, "comment") %></td>
+</tr>
+<% if false %>
+<tr>
+  <th>公開</th>
+  <td><%= radio f, 'state', Gw.yaml_to_array_for_select('gw_prop_other_states'), :onclick=>'state_radio_onclick();' %></td>
+</tr>
+<tr>
+  <th>他所属からの予約</th>
+  <td><%= radio f, 'edit_state', Gw.yaml_to_array_for_select('t1f0_kyoka_fuka') %></td>
+</tr>
+<% end %>
+<tr>
+  <th>施設管理所属 <%= raw(required) %></th>
+  <td>
+    <table border="0"><tr>
+    <td class="userChange">
+    <%= select_tag('item[admin][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_admin_cand();' ) %><br />
+    <%= select_tag('item[admin][uid]', options_for_select(Gwsub.grouplist4(nil, nil , true , nil, parent_id, {:return_pattern => 4})), :size=>5, :style => box_width, :ondblclick => 'add_admin()', :multiple => true) %>
     </td>
-  </tr>
-  <tr>
-    <th>予約可能所属 <%= required %></th>
     <td>
-      <table border="0">
-        <tr>
-          <td class="userChange">
-            <%= select_tag('item[editors][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_editor_cand();' ) %><br />
-            <%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_editor()', :multiple => true) %>
-          </td>
-          <td>
-            <%= button_tag '追加 →', :onclick =>'add_editor(); return false;' %><br /><br />
-            <%= button_tag '← 削除', :onclick => 'del_editor(); return false;' %>
-          </td>
-          <td>
-            <%= select_tag 'item[editors_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_editor()', :multiple => true %>
-            <%= hidden_field_tag 'item[editors_json]', '' %>
-          </td>
-        </tr>
-      </table>
+    <%= button_to_function '追加 →', 'add_admin()' %><br /><br />
+    <%= button_to_function '← 削除', 'del_admin()' %>
     </td>
-  </tr>
-  <tr>
-    <th>照会可能所属</th>
     <td>
-      <table border="0">
-        <tr>
-          <td class="userChange">
-            <%= select_tag('item[readers][gid]', options_for_select(groups, parent_id), :onchange=>'update_reader_cand();' ) %><br />
-            <%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
-          </td>
-          <td>
-            <%= button_tag '追加 →', :onclick => 'add_reader(); return false;' %><br /><br />
-            <%= button_tag '← 削除', :onclick => 'del_reader(); return false;' %>
-          </td>
-          <td>
-            <%= select_tag 'item[readers_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_reader()', :multiple => true %>
-            <%= hidden_field_tag 'item[readers_json]', '' %>
-          </td>
-        </tr>
-      </table>
+    <%= select_tag 'item[admin_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_admin()', :multiple => true %>
+    <%= hidden_field_tag 'item[admin_json]', '' %>
     </td>
-  </tr>
+    </tr></table>
+  </td>
+</tr>
+<tr>
+  <th>予約可能所属 <%= raw(required) %></th>
+  <td>
+    <table border="0"><tr>
+    <td class="userChange">
+    <%= select_tag('item[editors][gid]', options_for_select(admin_groups, parent_id), :onchange=>'update_editor_cand();' ) %><br />
+    <%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_editor()', :multiple => true) %>
+    </td>
+    <td>
+    <%= button_to_function '追加 →', 'add_editor()' %><br /><br />
+    <%= button_to_function '← 削除', 'del_editor()' %>
+    </td>
+    <td>
+    <%= select_tag 'item[editors_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_editor()', :multiple => true %>
+    <%= hidden_field_tag 'item[editors_json]', '' %>
+    </td>
+    </tr></table>
+  </td>
+</tr>
+<tr>
+  <th>照会可能所属</th>
+  <td>
+    <table border="0"><tr>
+    <td class="userChange">
+    <%= select_tag('item[readers][gid]', options_for_select(groups, parent_id), :onchange=>'update_reader_cand();' ) %><br />
+    <%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
+    </td>
+    <td>
+    <%= button_to_function '追加 →', 'add_reader()' %><br /><br />
+    <%= button_to_function '← 削除', 'del_reader()' %>
+    </td>
+    <td>
+    <%= select_tag 'item[readers_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_reader()', :multiple => true %>
+    <%= hidden_field_tag 'item[readers_json]', '' %>
+    </td>
+    </tr></table>
+  </td>
+</tr>
 </table>
 
-<%= hidden_field_tag "item[sub][extra_flag]", @cls %>
-<%= hidden_field_tag "item[sub][gid]", Core.user.groups[0].id %>
-<%= hidden_field_tag "item[sub][uid]", Core.user.id %>
+<%= hidden_field_tag("item[sub][extra_flag]", @cls) %>
+<%= hidden_field_tag("item[sub][gid]", g.id) %>
+<%= hidden_field_tag("item[sub][uid]", u.id) %>
+<div id="pp"></div>
 
-<script type="text/javascript">
+<script language = "JavaScript" type="text/javascript">
 <!--
+
 //admin
 var add_admin = function() {
   add_list('item_admin_uid', 'item_admin_add_buf')
@@ -234,7 +233,6 @@ var my_submit = function() {
   fr.selectedIndex = -1; // fr の送信を抑止
 
   $('itemForm').submit();
-  return false;
 }
 
 var load_cand = function () {
@@ -266,11 +264,11 @@ var load_cand = function () {
 
 var state_radio_onclick = function () {
   idx = radio_selected('item[state]');
-  if (idx == 1) {
+  if (idx == 0) {
     $('item_edit_state_0').checked = true;
     $('item_edit_state_0').disabled = true;
     $('item_edit_state_1').disabled = true;
-  } else if (idx == 2) {
+  } else if (idx == 1) {
     $('item_edit_state_0').disabled = false;
     $('item_edit_state_1').disabled = false;
   }
@@ -281,4 +279,5 @@ var my_load = function() {
 }
 window.onload = my_load;
 -->
+
 </script>

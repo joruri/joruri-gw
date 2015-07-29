@@ -1,12 +1,13 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBody">
-<%= render '/gw/admin/edit_link_pieces/menu' %>
+<%= render :partial => 'header_str' %>
 
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, multipart: true} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-<% end %>
+<div class="pieceBody">
+<%= render :partial => '/gw/admin/edit_link_pieces/menu', :locals => {:d => @st_date, :mode => 'month'} %>
+
+<%= div_notice %>
+<%= form_for :item, :url => "/gw/edit_link_piece_csses", :action => :create, :method => :post, :html => {:multipart => true} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
 
 </div>
 </div>

@@ -1,8 +1,11 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01TrainingFile < Gwsub::GwsubPref
   include System::Model::Base
   include System::Model::Base::Content
   include Gwsub::Model::AttachFile
-
+  include Cms::Model::Base::Content
+  
+#  belongs_to :status, :foreign_key => :state,     :class_name => 'Sys::Base::Status'
   belongs_to :parent, :foreign_key => :parent_id, :class_name => 'Gwsub::Sb01Training'
 
   validates_presence_of :filename, :message => "ファイルが指定されていません。"

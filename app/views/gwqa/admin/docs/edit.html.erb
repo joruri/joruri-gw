@@ -1,21 +1,28 @@
 <%= form_for :item, :url => gwqa_doc_path(@item, {:title => params[:title], :parent_id => params[:parent_id]}), :html => {:method => :put} do |f| %>
-  <%= f.error_messages %>
-  <% if params[:p_id] == 'Q' %>
-    <%= render 'form_question', f: f %>
-  <% else %>
-    <%= render 'form_answer', f: f %>
-  <% end %>
-  <div class="submitters">
-    <input id="<%= f.object_name %>_submit_public" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
-    <% if params[:p_id] == 'Q' %>
-      <input id="<%= f.object_name %>_submit_draft" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
-    <% end %>
-    <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
-  </div>
-  <input type="hidden" name="title_id" value="<%= params[:title_id] %>" />
-  <input type="hidden" name="p_id" value="<%= params[:p_id] %>" />
-  <input type="hidden" name="limit" value="<%= params[:limit] %>" />
-  <input type="hidden" name="cat1" value="<%= params[:cat1] %>" />
+
+<%= f.error_messages %>
+
+<% if params[:p_id] == 'Q' %>
+  <%= render :partial => 'form_question', :locals => {:f => f} %>
+<% else %>
+  <%= render :partial => 'form_answer', :locals => {:f => f} %>
 <% end %>
 
-<%= render 'reference_show' if params[:p_id] != 'Q' %>
+<div class="submitters">
+  <input id="<%= f.object_name %>_submit_public" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
+  <% if params[:p_id] == 'Q' %>
+    <input id="<%= f.object_name %>_submit_draft" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
+  <% end %>
+  <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+</div>
+
+<input type="hidden" name="title_id" value="<%= params[:title_id] %>" />
+<input type="hidden" name="p_id" value="<%= params[:p_id] %>" />
+<input type="hidden" name="limit" value="<%= params[:limit] %>" />
+<input type="hidden" name="cat1" value="<%= params[:cat1] %>" />
+
+<% end %>
+
+<% unless params[:p_id] == 'Q' %>
+  <%= render :partial => 'reference_show.html' %>
+<% end %>

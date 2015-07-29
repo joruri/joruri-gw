@@ -1,16 +1,17 @@
 <div class="gwsub sb04">
-  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
   <div class="pieceBanner">
-    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-    <%= render 'menu' %>
-    <%= render 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render :partial => 'menu' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
   </div>
   <div class="pieceBody">
   <div class="pieceBodyBody">
-    <%= render 'search' -%>
+    <%=  render(:partial => 'search') -%>
     <%#= @content_for_search -%>
+    <%= div_notice -%>
     <% if @items.blank? -%>
-      <%= show_notice -%>
+      <%= Gw.div_notice('表示する項目はありません。') -%>
     <% else -%>
     <table class="index">
       <tr>
@@ -25,19 +26,19 @@
       <% @items.each do | item| %>
       <%
         fyear_markjp = ""
-        fyear = Gwsub::Sb04EditableDate.where(:fyear_id=>item.fyear_id_sb04).first
+        fyear = Gwsub::Sb04EditableDate.find_by_fyear_id(item.fyear_id_sb04)
         fyear_markjp = fyear.fyear_markjp if !fyear.blank?
 
         management_uid_sb04_name = ""
-        staff = Gwsub::Sb04stafflist.where(:id=>item.management_uid_sb04).first
+        staff = Gwsub::Sb04stafflist.find_by_id(item.management_uid_sb04)
         management_uid_sb04_name = "#{staff.name}" if !staff.blank?
 
         management_gid_sb04_name = ""
-        section = Gwsub::Sb04section.where(:id=>item.management_gid_sb04).first
+        section = Gwsub::Sb04section.find_by_id(item.management_gid_sb04)
         management_gid_sb04_name = "#{section.name}" if !section.blank?
 
         division_gid_sb04_name = ""
-        section = Gwsub::Sb04section.where(:id=>item.division_gid_sb04).first
+        section = Gwsub::Sb04section.find_by_id(item.division_gid_sb04)
         division_gid_sb04_name = "#{section.name}" if !section.blank?
       %>
       <tr class="<%= cycle '', ' cycle' %>">

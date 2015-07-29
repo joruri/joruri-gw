@@ -1,12 +1,15 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBanner"></div>
+<%= render :partial => 'header_str' %>
+
+<div class="pieceBanner">
+</div>
+
 <div class="pieceBody">
-<%= render 'menu' if @u_role==true %>
+<%= render :partial => 'menu' if @u_role==true %>
 
 <%#= show_notice %>
 <%# 個人設定メニュー %>
-<%= render 'index_ind' %>
+<%= render :partial => 'index_ind' %>
 
 </div>
 </div>

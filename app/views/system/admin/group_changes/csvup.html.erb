@@ -1,20 +1,20 @@
 <div class="piece AdminSetting AdminGroups">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'navi' %>
-
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => 'navi' %>
+    <%= div_notice %>
 <p>データ一覧をCSVファイルで登録します。</p>
-<%= form_for :item, url: {action: :csvup}, html: {method: :post, multipart: true} do |f| %>
-  <%= f.error_messages %>
-  <table class="show">
-    <tr>
-      <th>ファイル</th>
-      <td>
-        <%= f.file_field :file, accept: ".csv" %>
-        <%= f.submit 'データ登録', style: 'width: 120px;' %>
-      </td>
-    </tr>
-  </table>
+<%= form_for(:item, :url => {:action => :csvup}, :html => {:method => :post, :multipart => true}) do |f| %>
+<%= hidden_field_tag :do, 'up' %>
+<table class="show">
+<tr>
+  <th>ファイル</th>
+  <td>
+    <%= f.file_field :file, :accept=>".csv", :id=>"uploadFileFiled" %>
+    <%= f.submit 'データ登録', :style => 'width: 120px;' %>
+  </td>
+</tr>
+</table>
 <% end %>
 
 </div>

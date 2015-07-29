@@ -1,3 +1,15 @@
-<% @items.each do |item| %>
-  <p class="leftPad2"><%= convert_for_mobile_body(item.body, params[:_jgw_session]) %></p>
+<%#*<h1>Gw::Public::Piece::AdminMessages#index</h1>%>
+<%#*<p>Find me in app/views/gw/admin/piece/admin_messages/index.html.erb</p>%>
+<%# メッセージをタブの上に表示するための、render partial用 %>
+<%
+#リンク用セッションIDの取得
+sid  = params[:_jgw_session]
+%>
+<% if @items.length > 0 %>
+  <%  if  @items.length == 1 -%>
+    <p class="leftPad2"><%=   "#{convert_for_mobile_body(@items[0].body,sid)}" %></p>
+  <% else %>
+    <p class="leftPad2"><%=   "#{convert_for_mobile_body(@items[0].body,sid)}" %></p>
+    <p class="leftPad2"><%=   "#{convert_for_mobile_body(@items[1].body,sid)}" %></p>
+  <% end %>
 <% end %>

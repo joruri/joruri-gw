@@ -1,19 +1,17 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
 
-  match '/gw/pref_assembly_member_admins/csvup' => 'gw/admin/pref_assembly_member_admins#csvup', via: [:post, :get]
-  match '/gw/pref_executive_admins/csvup' => 'gw/admin/pref_executive_admins#csvup', via: [:post, :get]
-  match '/gw/pref_director_admins/csvup' => 'gw/admin/pref_director_admins#csvup', via: [:post, :get]
-  match '/gw/reminders/requests' => 'gw/admin/reminders/requests#index', via: [:get]
-  match '/gw/schedules/new' => 'gw/admin/schedules#new', via: [:post]
+  match '/gw/pref_assembly_member_admins/csvup' => 'gw/admin/pref_assembly_member_admins#csvup'
+  match '/gw/pref_executive_admins/csvup' => 'gw/admin/pref_executive_admins#csvup'
+  match '/gw/pref_director_admins/csvup' => 'gw/admin/pref_director_admins#csvup'
 
   mod = "gw"
   scp = "admin"
 
-  #  match '/gw/admin/test/download'  => 'gw/admin/test#download'
+#  match '/gw/admin/test/download'  => 'gw/admin/test#download'
 
   namespace mod do
     scope :module => scp do
-    ## gw
+      ## gw
       resources :portal
       resources :test, :except =>['show','index','destroy','update'] do
         collection do
@@ -26,7 +24,6 @@ Rails.application.routes.draw do
 
       resources :memos do
         collection do
-          get :getajax
           post :list
         end
         member do
@@ -65,9 +62,7 @@ Rails.application.routes.draw do
       resources :year_fiscal_jps
       resources :year_mark_jps
       resources :admin_messages
-      resources :pref_soumu_messages
       resources :admin_modes
-      resources :admin_check_extensions
       resources :countings do
         collection do
           get :memos,:mobiles
@@ -76,7 +71,7 @@ Rails.application.routes.draw do
 
       resources :edit_tabs do
         collection do
-          get :list, :getajax
+          get :list
         end
         member do
           get :updown
@@ -109,57 +104,18 @@ Rails.application.routes.draw do
           get :to_project
         end
       end
-      resources :reminders do
-        member do
-          get :swap
-        end
-      end
-      resources :portal_adds do
-        member do
-          get :updown
-        end
-      end
-      resources :portal_add_configs do
-        member do
-          get :updown
-        end
-      end
-      resources :portal_add_patterns do
-        member do
-          get :g_updown
-          put :sort_update
-        end
-      end
-      resources :portal_ad_accesses
-      resources :portal_add_counts do
-        member do
-          get :count
-        end
-      end
-
-      resources :section_admin_masters do
-        collection do
-          get :clear
-          post :select_clear
-        end
-      end
-      resources :section_admin_master_func_names
     end
   end
 
   namespace mod do
     scope :module => scp do
       resources :holidays
-      resources :prop_types  do
-        resources :users, :controller => 'prop_types/users'
-        resources :messages, :controller => 'prop_types/messages'
-      end
+      resources :prop_types
 
       resources :prop_others do
         member do
-          get :upload
+          get :upload, :image_create, :image_destroy
           post :image_create
-          delete :image_destroy
         end
       end
       resources :prop_other_limits do
@@ -170,29 +126,13 @@ Rails.application.routes.draw do
 
       resources :schedules do
         collection do
-          get :show_month, :setting, :event_week, :event_month, :setting_ind,
-            :setting_ind_schedules, :ical, :search
-          put :edit_ind_schedules
+          get :show_month, :setting, :setting_system, :setting_holidays, :event_week, :event_month, :setting_ind, :setting_ind_schedules, :setting_ind_ssos, :setting_ind_mobiles, :setting_gw_link, :ical, :search
+          put :edit_ind_schedules, :edit_ind_ssos, :edit_ind_mobiles, :edit_gw_link, :editlending, :edit_1, :edit_2
         end
         member do
           get :show_one, :editlending, :edit_1, :edit_2, :quote, :destroy_repeat
-          put :editlending, :edit_1, :edit_2
         end
       end
-      resources :schedule_search_blanks do
-        collection do
-          get :show_day, :show_week
-        end
-      end
-      resources :schedule_todos do
-        collection do
-          get :edit_user_property_schedule
-        end
-        member do
-          get :finish, :quote
-        end
-      end
-
       resources :schedule_props do
         collection do
           get :show_week, :show_month, :setting, :setting_system, :setting_ind, :getajax, :show_guard
@@ -203,7 +143,7 @@ Rails.application.routes.draw do
       end
       resources :schedule_users do
         collection do
-          get :getajax, :user_fields, :group_fields, :getajax_restricted
+          get :getajax, :user_fields, :group_fields
         end
       end
       resources :schedule_lists do
@@ -217,106 +157,12 @@ Rails.application.routes.draw do
       end
       resources :schedule_settings do
         collection do
-          get :admin_deletes, :export, :import, :portal_display
+          get :admin_deletes, :export, :import, :potal_display
           put :edit_admin_deletes
           post :import_file
         end
       end
-      resources :schedule_help_configs
-      resources :schedule_events do
-        collection do
-          post :select_approval_open
-        end
-        member do
-          get :approval, :open, :approval_cancel, :open_cancel
-        end
-      end
-      resources :schedule_event_masters
-      resources :meetings do
-        collection do
-          get :guide,:xmlput,:place_setting
-          post :select
-        end
-        member do
-          get :approval, :open, :approval_cancel, :open_cancel
-        end
-      end
-      resources :meetings_previews
-      resources :meeting_guide_backgrounds do
-        member do
-          get :updown
-        end
-      end
-      resources :meeting_guide_notices do
-        member do
-          get :updown
-        end
-      end
-      resources :meeting_guide_places do
-        collection do
-          get :get_prop_id, :prop_sync
-        end
-        member do
-          get :updown
-        end
-      end
-      resources :meeting_monitor_managers do
-        collection do
-          get :user_fields, :user_addr_fields
-        end
-      end
-      resources :meeting_monitor_settings do
-        collection do
-          get :switch_monitor
-        end
-      end
-      resources :prop_meetingrooms do
-        member do
-          get :upload
-          post :image_create
-          delete :image_destroy
-        end
-      end
-      resources :prop_rentcars do
-        member do
-          get :upload
-          post :image_create
-          delete :image_destroy
-        end
-      end
-      resources :prop_extras do
-        collection do
-          get :csvput, :confirm_all, :timeout_cancelled
-          post :list, :results_delete_list
-        end
-        member do
-          get :confirm, :rent, :return, :pm_create, :cancel
-        end
-      end
-      resources :prop_extra_pm_meetingrooms do
-        member do
-          get :rent, :return, :show_group, :show_group_month, :delete_prop
-        end
-        collection do
-          get :summarize, :csvput
-        end
-      end
-      resources :prop_extra_pm_rentcars do
-        member do
-          get :rent, :return, :show_group, :show_group_month, :delete_prop
-        end
-        collection do
-          get :summarize, :csvput, :show_month
-        end
-      end
-      resources :prop_extra_pm_messages
-      resources :prop_extra_pm_remarks
-      resources :prop_extra_group_rentcar_masters
-      resources :prop_extra_group_rentcars do
-        member do
-          get :show_group, :show_group_month
-        end
-      end
+
       resources :todos do
         member do
           get :finish, :delete, :quote, :delete, :finish, :confirm
@@ -328,11 +174,7 @@ Rails.application.routes.draw do
           put :edit_reminder, :edit_schedule, :edit_admin_deletes
         end
       end
-      resources :todos do
-        member do
-          get :mail_create
-        end
-      end
+
     end
   end
 
@@ -342,12 +184,11 @@ Rails.application.routes.draw do
       scope :module => scp do
         resources :link_sso, :constraints => {:id  => /[0-9]+/}  do
           collection do
-            get :redirect_to_joruri, :redirect_to_external
-            post :redirect_to_joruri
+            post :convert_hash, :import_csv, :download, :params_viewer
+            get :redirect_to_plus
           end
           member do
-            get :redirect_tab, :redirect_link_piece, :redirect_portal_adds, :redirect_to_dcn
-            get :redirect_pref_soumu, :redirect_pref_pieces # deprecated
+            get :redirect_pref_soumu, :redirect_pref_cms, :redirect_pref_pieces, :redirect_to_dcn
           end
         end
       end
@@ -374,11 +215,9 @@ Rails.application.routes.draw do
 
       resources :pref_director_admins do
         collection do
-          get :g_updown, :csvput, :get_users
+          get :g_updown, :csvput
           put :sort_update
-          post :csvup
-          get :temp_pickup, :temp_index, :temp_csv
-          put :temp_pickup_run
+          post :csvup, :get_users
         end
         member do
           get :updown
@@ -386,7 +225,7 @@ Rails.application.routes.draw do
       end
       resources :pref_executive_admins do
         collection do
-          get :g_updown, :csvput, :get_users
+          get :g_updown, :csvput
           put :sort_update
           post :csvup, :get_users
         end
@@ -396,11 +235,11 @@ Rails.application.routes.draw do
       end
       resources :pref_assembly_member_admins do
         collection do
-          get :csvput
+          get :g_updown, :csvput
           post :csvup
         end
         member do
-          get :g_updown, :updown
+          get :updown
         end
       end
       resources :pref_configs do

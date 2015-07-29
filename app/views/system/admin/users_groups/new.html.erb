@@ -1,16 +1,13 @@
 <div class="piece AdminSetting AdminUsersGroups">
-<%= render 'header' %>
-
-<div class="pieceBody">
-<%= render '/system/admin/users/header_menu' %>
-<%= render 'switching' %>
-<%= render '/system/admin/groups/navi' %>
-
-<%= form_for :item, :url => {:action => :create} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for_update f %>
-<% end %>
-
-</div>
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => 'switching' %>
+    <%= render :partial => '/system/admin/groups/navi' %>
+    <%= form_for :item, :url => {:action => :create} do |f| %>
+    <%= f.error_messages %>
+      <%= render :partial => 'form', :locals => {:f => f} %>
+      <%= submit_for_update f %>
+    <% end %>
+  </div>
 </div>

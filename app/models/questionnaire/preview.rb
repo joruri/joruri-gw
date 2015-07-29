@@ -1,22 +1,31 @@
+# -*- encoding: utf-8 -*-
 class Questionnaire::Preview < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Questionnaire::Model::Systemname
 
-  belongs_to :base, :foreign_key => :parent_id, :class_name => 'Questionnaire::Base'
+  belongs_to :base , :foreign_key => :parent_id  ,:class_name=>'Questionnaire::Base'
 
   after_validation :check_field_permit
 
   attr_accessor :_field_lists
   attr_accessor :_item_params
 
+  def edit_path
+    return "/#{self.system_name}/#{self.parent_id}/previews/#{self.id}/edit"
+  end
+  def update_path
+    return "/#{self.system_name}/#{self.parent_id}/previews/#{self.id}"
+  end
+
+  #
   def status_name
     str = ''
     str = '<div align="center"><span class="required">未回答</span></div>' if self.state == 'draft'
     str = '<div align="center"><span class="notice">回答済</span></div>' if self.state == 'public'
     return str
   end
-
+  #
   def target_user_name
     ret = ''
     ret = "#{self.editordivision} #{self.editor}" if self.base.enquete_division
@@ -26,8 +35,6 @@ class Questionnaire::Preview < Gw::Database
   def target_user_code
     return ''
   end
-
-private
 
   #入力許可設定の確認
   def check_field_permit
@@ -53,9 +60,9 @@ private
             else
               case item['permit_type']
               when 'radio'
-                is_error = false if JSON.parse(self[permit_field_name]).index(permit_value)
+                is_error = false if JsonBuilder.new.build(self[permit_field_name]).index(permit_value)
               when 'checkbox'
-                is_error = false if JSON.parse(self[permit_field_name]).index(permit_value)
+                is_error = false if JsonBuilder.new.build(self[permit_field_name]).index(permit_value)
               else
                 is_error = false if self[permit_field_name] == permit_value
               end
@@ -78,6 +85,7 @@ private
     end
   end
 
+  #
   def check_value_array_parameters
     if self._item_params.blank?
       value_array_parameters_reset
@@ -85,7 +93,6 @@ private
       value_array_parameters_set
     end
   end
-
   #送信内容が無ければ全フィールドをクリア
   def value_array_parameters_reset
     for i in 1..64
@@ -93,7 +100,7 @@ private
       self[field_name] = nil
     end
   end
-
+  #
   def value_array_parameters_set
     return if self._field_lists.blank?
 
@@ -105,8 +112,10 @@ private
         field_name = item['field_name']
         self[field_name] = self._item_params[field_name] if item['question_type'] == 'radio' #チェック有->全部なし
         self[field_name] = self._item_params[field_name] if item['question_type'] == 'checkbox' #チェック有->全部なし
-        self[field_name] = JSON.generate(self[field_name]) unless self[field_name].blank?
+        self[field_name] = JsonBuilder.new.build(self[field_name]) unless self[field_name].blank?
       end
     end
+
   end
+
 end

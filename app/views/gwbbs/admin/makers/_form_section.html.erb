@@ -1,123 +1,123 @@
 <%= required_head %>
+<%
+  bg_select = [["背景色を使用する", ""],["背景画像を使用する", "1"]]
+%>
 <table class="show">
-  <tr>
-    <th>承認機能</th>
-    <td><%= f.radio_buttons :recognize, @item.recognize_states_list %></td>
-  </tr>
-  <tr>
-    <th>一覧表示行数</th>
-    <td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
-  </tr>
-  <tr>
-    <th>初期表示状態</th>
-    <td><%= f.select :default_mode, @item.default_mode_name , :class => 'default_mode_name'%></td>
-  </tr>
+<tr>
+<th>承認機能</th>
+<td><%=f.radio_buttons :recognize, @item.recognize_states_list, :class => 'radio recognize' %></td>
+</tr>
+<tr>
+<th>一覧表示行数</th>
+<td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
+</tr>
+<tr>
+<th>初期表示状態</th>
+<td><%= f.select :default_mode, @item.default_mode_name , :class => 'default_mode_name'%></td>
+</tr>
+</table>
+<table class="show">
+<tr>
+<th>重要度使用区分</th>
+<td><%=f.radio_buttons :importance, @item.use_states_list, :class => 'radio importance' %></td>
+</tr>
+<tr>
+<th>分類使用区分</th>
+<td><%=f.radio_buttons :category, @item.use_states_list, :class => 'radio category' %></td>
+</tr>
+<tr>
+<th>分類呼称設定</th>
+<td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
+</tr>
+<tr>
+<th>1行コメント機能</th>
+<td><%=f.radio_buttons :one_line_use, @item.use_states_list, :class => 'radio one_line_use' %></td>
+</tr>
+</table>
+<table class="show">
+<tr>
+<th>掲載期間 初期値<%= required('※') %></th>
+<td class="IMEoff"><%= f.text_field :default_published, :size=>3 %>ヶ月間</td>
+</tr>
+</table>
+<table class="show">
+<tr>
+<th>利用説明<br />(HTML形式可)</th>
+<td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption'%></td>
+</tr>
+</table>
+<table class="show">
+<tr>
+<th>件数表示形式</th>
+<td><%= f.select :left_index_pattern, @item.left_index_pattern_name %></td>
+</tr>
+<tr>
+<th>分類件数表示</th>
+<td><%= f.select :categoey_view, @item.list_view_name %></td>
+</tr>
+<tr>
+<th>所属件数表示</th>
+<td><%= f.select :group_view, @item.list_view_name %></td>
+</tr>
+<tr>
+<th>月別件数表示</th>
+<td><%= f.select :monthly_view, @item.list_view_name %></td>
+</tr>
+<tr>
+<th>月別件数行数<br />(0で全件表示)</th>
+<td class="IMEoff"><%= f.text_field :monthly_view_line, :size=>3 %></td>
+</tr>
 </table>
 
-<table class="show">
-  <tr>
-    <th>重要度使用区分</th>
-    <td><%= f.radio_buttons :importance, @item.use_states_list %></td>
-  </tr>
-  <tr>
-    <th>分類使用区分</th>
-    <td><%= f.radio_buttons :category, @item.use_states_list %></td>
-  </tr>
-  <tr>
-    <th>分類呼称設定</th>
-    <td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
-  </tr>
-  <tr>
-    <th>1行コメント機能</th>
-    <td><%= f.radio_buttons :one_line_use, @item.use_states_list %></td>
-  </tr>
-</table>
-
-<table class="show">
-  <tr>
-    <th>掲載期間 初期値<%= required('※') %></th>
-    <td class="IMEoff"><%= f.text_field :default_published, :size=>3 %>ヶ月間</td>
-  </tr>
-</table>
-
-<table class="show">
-  <tr>
-    <th>利用説明<br />(HTML形式可)</th>
-    <td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption'%></td>
-  </tr>
-</table>
-
-<table class="show">
-  <tr>
-    <th>件数表示形式</th>
-    <td><%= f.select :left_index_pattern, @item.left_index_pattern_name %></td>
-  </tr>
-  <tr>
-    <th>分類件数表示</th>
-    <td><%= f.select :categoey_view, @item.list_view_name %></td>
-  </tr>
-  <tr>
-    <th>所属件数表示</th>
-    <td><%= f.select :group_view, @item.list_view_name %></td>
-  </tr>
-  <tr>
-    <th>月別件数表示</th>
-    <td><%= f.select :monthly_view, @item.list_view_name %></td>
-  </tr>
-  <tr>
-    <th>月別件数行数<br />(0で全件表示)</th>
-    <td class="IMEoff"><%= f.text_field :monthly_view_line, :size=>3 %></td>
-  </tr>
-</table>
-
+<% if false %>
+<!--非表示-->
 <!--タイトル装飾関連 -->
 <table class="show">
-  <tr>
-    <th>デザイン反映設定</th>
-    <td><%= f.select :preview_mode, @item.preview_mode_name %></td>
-  </tr>
-  <% unless @icons.blank? %>
-  <tr>
-    <th>タイトルアイコン指定</th>
-    <td><%= f.radio_buttons :icon_position , [["既存アイコンを使用する", ""],["ファイルをアップロードする", "1"]], {}, {:onclick => 'sel_icon_select()'} %></td>
-  </tr>
-  <tr>
-    <th>タイトルアイコン指定</th>
-    <td>
-      <span id="item_iconselect_type1" style="display:inline;">
-        <% if @icons.present? %>
-          <%= f.select(:icon_id, @icons.collect{|i| [ "#{i.memo}（#{i.width.to_s}x#{i.height.to_s}）" , i.id ]}, {:include_blank => '指定しない'}) %>
-        <% end %>
-      </span>
-      <span id="item_iconselect_type2" style="display:none;"><%= f.file_field :_upload %></span>
-    </td>
-  </tr>
-  <% end %>
-  <tr>
-    <th>タイトルデザイン設定</th>
-    <td><%= f.radio_buttons :banner_position, [["背景色を使用する", ""],["背景画像を使用する", "1"]], {}, {onclick: 'sel_bg_select()'} %></td>
-  </tr>
-  <tr>
-    <th>タイトルフォント色指定</th>
-    <td><%= raw(ug_collection_radio(@item.font_color,'font_color',@font_colors)) if @font_colors.present? %></td>
-  </tr>
+<tr>
+<th>デザイン反映設定</th>
+<td><%= f.select :preview_mode, @item.preview_mode_name %></td>
+</tr>
+<% unless @icons.blank? %>
+<tr>
+<th>タイトルアイコン指定</th>
+<td><%= f.select(:icon_id, @icons.collect{|i| [ "#{i.memo}（#{i.width.to_s}x#{i.height.to_s}）" , i.id ]}, {:include_blank => '指定しない'}) %></td>
+</tr>
+<% end %>
+<tr>
+<th>タイトルデザイン設定</th>
+<td><%=f.radio_buttons :banner_position , bg_select , :class => 'state'  ,:onclick => 'sel_bg_select()' %></td>
+</tr>
+<tr>
+<th>タイトルフォント色指定</th>
+<td>
+<% unless @font_colors.blank? %>
+<%= raw(ug_collection_radio(@item.font_color,'font_color',@font_colors)) %>
+<% end %>
+</td>
+</tr>
 </table>
-
 <div id="item_bgselect_type1" style="display:inline;" >
 <table class="show">
-  <tr>
-    <th>タイトル背景色指定</th>
-    <td><%= raw(ug_collection_radio(@item.css,'css',@bg_colors)) if @bg_colors.present? %></td>
-  </tr>
+<tr>
+<th>タイトル背景色指定</th>
+<td>
+<% unless @bg_colors.blank? %>
+<%= raw(ug_collection_radio(@item.css,'css',@bg_colors)) %>
+<% end %>
+</td>
+</tr>
 </table>
 </div>
-
 <div id="item_bgselect_type2" style="display:none;" >
 <table class="show">
-  <tr>
-    <th>タイトル背景画像指定</th>
-    <td><%= f.select(:wallpaper_id, @wallpapers.collect{|i| [ "#{i.memo}（#{i.width.to_s}x#{i.height.to_s}）" , i.id ]}, {:include_blank => '指定しない'}) if @wallpapers.present? %></td>
-  </tr>
+<tr>
+<th>タイトル背景画像指定</th>
+<td>
+<% unless @wallpapers.blank? %>
+<%= f.select(:wallpaper_id, @wallpapers.collect{|i| [ "#{i.memo}（#{i.width.to_s}x#{i.height.to_s}）" , i.id ]}, {:include_blank => '指定しない'}) %>
+<% end %>
+</td>
+</tr>
 </table>
 </div>
 
@@ -126,33 +126,21 @@
   var sel_bg_select = function() {
     idx =  radio_selected('item[banner_position]')
     switch (idx) {
-    case 1:
+    case 0:
       $('item_bgselect_type1').setStyle("display : inline;");
       $('item_bgselect_type2').setStyle("display : none;");
       break;
-    case 2:
+    case 1:
       $('item_bgselect_type1').setStyle("display : none;");
       $('item_bgselect_type2').setStyle("display : inline;");
     break;
     }
   }
 sel_bg_select();
-  var sel_icon_select = function() {
-    idx =  radio_selected('item[icon_position]')
-    switch (idx) {
-    case 1:
-      $('item_iconselect_type1').setStyle("display : inline;");
-      $('item_iconselect_type2').setStyle("display : none;");
-      break;
-    case 2:
-      $('item_iconselect_type1').setStyle("display : none;");
-      $('item_iconselect_type2').setStyle("display : inline;");
-      break;
-    }
-  }
-sel_icon_select();
 -->
 </script>
 <!--タイトル装飾関連 -->
+<!--非表示-->
+<% end %>
 
-<%= render '/gwboard/admin/adms/form' %>
+<%= render :partial => '/gwboard/admin/adms/form_s' %>

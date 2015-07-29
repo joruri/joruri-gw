@@ -1,7 +1,7 @@
 <%
 if @u_role==true
   fyear_order = "published_at DESC"
-  fyear = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyear = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 elsif @role_sb04_dev && ( @menu_header4 == 'sb04stafflists' || @menu_header4 == 'sb04assignedjobs')
   fyear = Gwsub::Sb04stafflistviewMaster.sb04_dev_fyear_select
   if fyear.rassoc(@fyed_id.to_i).blank?
@@ -10,7 +10,7 @@ elsif @role_sb04_dev && ( @menu_header4 == 'sb04stafflists' || @menu_header4 == 
 else
   fyear_conditions = "published_at <= '#{Gw.date_common(Time.now)}'"
   fyear_order = "published_at DESC"
-  fyear = Gwsub::Sb04EditableDate.where(fyear_conditions).order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyear = Gwsub::Sb04EditableDate.find(:all,:conditions=>fyear_conditions,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 end
 fyears = [['すべて',0]]+fyear
 

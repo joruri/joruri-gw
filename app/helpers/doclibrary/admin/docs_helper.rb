@@ -1,5 +1,9 @@
 module Doclibrary::Admin::DocsHelper
 
+  def new_doclib_category_qstring()
+    return "&cat=#{params[:cat]}"
+  end
+
   def folder_doclib_category_qstring(item)
     ret = "?title_id=#{item.title_id}"
     ret += "&state=#{params[:state]}"
@@ -31,4 +35,5 @@ module Doclibrary::Admin::DocsHelper
     ret = "#{doclibrary_docs_path}/#{item.id}/?title_id=#{item.title_id}&cat=#{item.category1_id}" unless state == 'GROUP' unless state == 'DATE'
     return ret
   end
+
 end

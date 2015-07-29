@@ -218,15 +218,6 @@ a.more{
 .iconXls {
   background-image: url(/_common/images/icons/xls.gif);
 }
-.iconPptx, .pptx {
-  background-image: url(/_common/images/icons/icon24/pptx.png);
-}  
-.iconXlsx, .xlsx {
-  background-image: url(/_common/images/icons/icon24/xlsx.png);
-}
-.iconDocx, .docx {
-  background-image: url(/_common/images/icons/icon24/docx.png);
-}
 
 /* SideMenu
 ------------------------------------------------------------*/

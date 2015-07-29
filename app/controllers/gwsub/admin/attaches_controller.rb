@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #掲示板系板　ファイル添付選択処理
 # gwboard_doc
@@ -12,6 +13,8 @@
 class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
+  rescue_from ActionController::InvalidAuthenticityToken, :with => :invalidtoken
+  #
   def pre_dispatch
     self.class.layout 'admin/gwsub_base'
     params[:parent_id] = params[:gwsub_id]
@@ -55,8 +58,6 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
     case system
     when "sb01_training"
       item = Gwsub::Sb01TrainingFile.new
-    when "sb05_requests"
-      item = Gwsub::Sb05File.new
     else
       item = nil
     end
@@ -103,8 +104,6 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
       case system
       when "sb01_training"
         @item = Gwsub::Sb01TrainingFile.new
-      when "sb05_requests"
-        @item = Gwsub::Sb05File.new
       else
         @item = nil
       end
@@ -120,7 +119,7 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
         @item._upload_file(@uploaded[:upload])
         @item.save
         @item.after_create
-
+        
         if @item.content_type =~ /image/
           begin
             require 'RMagick'
@@ -149,8 +148,6 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
       case system
       when "sb01_training"
         item = Gwsub::Sb01TrainingFile.new
-      when "sb05_requests"
-        item = Gwsub::Sb05File.new
       else
         item = nil
       end
@@ -174,11 +171,17 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
   # 備考欄変更
   def update_file_memo
     file = Gwsub::Sb01TrainingFile
-    @file = file.where(:id => params[:id]).first
+    @file = file.find_by_id(params[:id])
     @file.memo  = params[:file]['memo']
     @file.save
 
     parent_show_path  = "gwsub/sb01/sb01_training_plans/#{@file.parent_id}"
     redirect_to parent_show_path
   end
+
+  private
+  def invalidtoken
+
+  end
+
 end

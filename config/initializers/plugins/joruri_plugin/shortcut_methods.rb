@@ -1,3 +1,4 @@
+# encoding: utf-8
 def dump(data)
   Sys::Lib::Debugger::Dump.dump_log(data)
 end

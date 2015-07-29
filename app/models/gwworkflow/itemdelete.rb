@@ -1,7 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwworkflow::Itemdelete < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
-  self.table_name = 'gw_workflow_itemdeletes'
+  include Cms::Model::Base::Content
+  set_table_name 'gw_workflow_itemdeletes'
 
   def item_home_path
     return '/gwworkflow/itemdeletes'

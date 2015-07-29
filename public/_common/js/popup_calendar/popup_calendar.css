@@ -1,0 +1,95 @@
+/* Calendar CSS */
+
+/* Clear calendar's float, using dialog inbuilt form element */
+.bd form {
+  clear:left;
+}
+
+/* Have calendar squeeze upto bd bounding box */
+.bd {
+  padding:0;
+}
+
+.hd {
+  text-align:left;
+}
+
+/* Center buttons in the footer */
+.ft .button-group {
+  text-align:center;
+}
+
+/* Prevent border-collapse:collapse from bleeding through in IE6, IE7 */
+.yui-overlay-hidden table {
+  *display:none;
+}
+
+.yui-skin-sam .yui-calendar td.wd0 {
+  background-color:#fde0e0;
+}
+.yui-skin-sam .yui-calendar td.wd6 {
+  background-color:#99ccff;
+}
+.yui-skin-sam .yui-calendar td.wd0 a {
+  color:red;
+}
+.yui-skin-sam .yui-calendar td.wd6 a {
+  color:blue;
+}
+
+/* Remove calendar's border and set padding in ems instead of px, so we can specify an width in ems for the container */
+#cal {
+  border:none;
+  padding:1em;
+}
+
+/* Datefield look/feel */
+.datefield {
+  position:relative;
+  top:10px;
+  left:10px;
+  white-space:nowrap;
+  border:1px solid black;
+  background-color:#eee;
+  width:25em;
+  padding:5px;
+}
+
+.datefield input,
+.datefield button,
+.datefield label  {
+  vertical-align:middle;
+}
+
+.datefield label  {
+  font-weight:bold;
+}
+
+.datefield input  {
+  width:15em;
+}
+
+.datefield button  {
+  padding:0 5px 0 5px;
+  margin-left:2px;
+}
+
+.datefield button img {
+  padding:0;
+  margin:0;
+  vertical-align:middle;
+}
+
+/* Example box */
+.show_cal_bt {
+  background: url(/_common/js/popup_calendar/calbtn.gif) no-repeat 0 0;
+  border: 0;
+  width:18px;
+  height: 18px;
+  text-indent: -9999px;
+  cursor: pointer;
+}
+
+.fieldDatetime * {
+    vertical-align: middle;
+}

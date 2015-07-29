@@ -1,99 +1,139 @@
+# encoding: utf-8
 class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gw::Controller::Image
   layout "admin/template/schedule"
 
-  before_action :check_auth, only: [:new, :create, :edit, :update, :destroy, :upload, :image_create, :image_destroy]
-
-  def pre_dispatch
+  def initialize_scaffold
     @sp_mode = :prop
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def init_params
-    # 各種権限取得
-    @is_gw_admin = Gw.is_admin_admin? # GW全体の管理者
-    @is_pm_admin = @is_gw_admin ? true : Gw::ScheduleProp.is_pm_admin? # 管財管理者
-    @is_admin = @is_gw_admin || @is_pm_admin
-
+    @module = 'gw'
+    @genre_prefix = 'prop'
+    @item_image_name = "#{@item_name}画像"
+    @index_order = "delete_state, reserved_state desc, coalesce(extra_flag,'other'), gid, coalesce(sort_no, 0), name"
+    @cls = nz(Gw.trim(nz(params[:cls])).downcase, 'other')
+    @is_gw_admin = Gw.is_admin_admin?
+    @is_admin = if @genre == 'other'
+      @is_gw_admin || (params[:id].blank? || Gw::PropOtherRole.is_admin?(params[:id]))
+    else
+      !@prop_classes[@cls].nil?
+    end
+    @erb_base = '/gw/public/prop_genre_common'
     @css = %w(/_common/themes/gw/css/prop_extra/schedule.css)
-    Page.title = "#{@model.model_name.human}マスタ"
-  end
-
-  def url_options
-    super.merge(params.slice(:cls).symbolize_keys) 
+    @group = Site.user_group
+    @gid = @group.id
   end
 
   def index
-    @items = @model
-    @items = @items.where(delete_state: 0) unless @is_admin 
-    @items = @items.order(delete_state: :asc, reserved_state: :desc, gid: :asc, sort_no: :asc, name: :asc)
-      .paginate(page: params[:page], per_page: params[:limit])
+    init_params
+    item = @model.new
+    item.page  params[:page], params[:limit]
+    item.order @index_order unless @index_order.nil?
+    cond = @cls == 'other' ? "coalesce(extra_flag, 'other') = 'other' and gid=#{@gid}" : "extra_flag='#{@cls}'"
+    if @genre == 'other'
+      cond += "	and delete_state = 0"
+    end
+    @items = item.find(:all, :conditions=>cond)
   end
 
   def show
+    init_params
     @item = @model.find(params[:id])
+    if @item.delete_state == 1
+
+    end
+    @is_admin = (@gid.to_i != @item.gid.to_i && @genre == 'other') ? false : true
   end
 
   def new
-    @item = @model.new(
-      delete_state: 0,
-      reserved_state: 1,
-      extra_flag: 'pm',
-      gid: Joruri.config.application['gw.prop_rentcar_owner_group_id'].presence || Core.user_group.id
-    )
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
+    @item = @model.new({})
   end
 
   def create
-    @item = @model.new(params[:item])
-    _create @item, notice: "#{@model.model_name.human}の登録に成功しました"
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
+    par_item = params[:item]
+
+    item = pre_save_proc(par_item)
+    @item = @model.new(item)
+    _create @item, :success_redirect_uri => "#{@uri_base}?cls=#{@cls}", :notice => "#{@item_name}の登録に成功しました"
   end
 
   def edit
+    init_params
     @item = @model.find(params[:id])
+    raise '管理者権限がありません。' if !@is_admin
   end
 
   def update
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
+    par_item = params[:item]
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
-    _update @item, notice: "#{@model.model_name.human}の更新に成功しました"
+    item = pre_save_proc(par_item)
+    @item.attributes = item
+    _update @item, :success_redirect_uri => "#{@uri_base}?cls=#{@cls}", :notice => "#{@item_name}の更新に成功しました"
   end
 
   def destroy
+    init_params
     @item = @model.find(params[:id])
+    @is_other_admin = Gw::PropOtherRole.is_admin?(params[:id])
+    raise '管理者権限がありません。' if !@is_admin
     @item.delete_state = 1
-    _update @item, notice: "#{@model.model_name.human}の削除に成功しました"
+    _update @item, :success_redirect_uri => "#{@uri_base}?cls=#{@cls}", :notice => "#{@item_name}の削除に成功しました"
   end
 
   def upload
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
     @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
+    @image_upload_qsa = ["cls=#{@cls}"]
   end
 
   def image_create
-    @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
-
-    if @image_item.save
-      redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の追加に成功しました。"
-    else
-      render :upload
-    end
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
+    @image_upload_qsa = ["cls=#{@cls}"]
+    _image_create @model_image, @item_image_name, 'gw', @genre, params, :genre_name_prefix=>'prop'
   end
 
   def image_destroy
-    @item = @model.find(params[:id])
-    @image_item = @item.images.find(params[:image_id])
+    init_params
+    if @genre == 'other' && !@is_admin
+      image = @model_image.find(params[:id])
+      @is_admin = Gw::PropOtherRole.is_admin?(image.parent_id)
+    end
+    raise '管理者権限がありません。' if !@is_admin
+    @image_upload_qsa = ["cls=#{@cls}"]
+    _prop_image_destroy @model_image, @item_image_name, 'gw', @genre, params, :genre_name_prefix=>'prop'
+  end
 
-    if @image_item.destroy
-      redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の削除に成功しました。"
+private
+  def pre_save_proc(item)
+    item[:extra_flag] = nz(item['sub']['extra_flag'], 'other')
+    if @genre == 'other'
+      item[:gid] = nz(item['sub']['gid'])
+      item[:gname] = System::Group.find(:first, :conditions=>["id= ? ", item[:gid]]).name
+      item = item.merge( :edit_state => 0 ) if item[:edit_state].blank?
+    end
+    item.delete 'sub'
+    return item
+  end
+
+  def other_admin(item)
+    if @genre != 'other'
+      return true
+    elsif @gid.to_i == item.gid.to_i
+      return true
     else
-      render :upload
+      return false
     end
   end
 
-  private
-
-  def check_auth
-    return error_auth unless @is_admin
-  end
 end

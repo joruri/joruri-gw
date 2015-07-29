@@ -1,19 +1,20 @@
-<%= render '/gw/admin/todos/header' %>
+<%# app/views/gw/admin/todos/index.html.erb %>
+<%=render(:partial => '/gw/admin/todos/header')%>
 <div class="piece todo show">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render(:partial => '/gw/admin/todos/piece_header')%>
 <div class="pieceBody"><div class="pieceBodyBody">
 <div class="editingBox">
 <div class="btEdit"><%=link_to "編集する", edit_gw_todo_path(@item) if @item.is_finished != 1%></div>
 <div class="btQuote"><%=link_to "引用作成", quote_gw_todo_path(@item)%></div>
-<% if @item.is_finished != 1 %>
+<%if @item.is_finished != 1%>
 <div class="btFinish"><%=link_to  '完了する',  finish_gw_todo_path(@item)%></div>
-<% else %>
+<%else%>
 <div class="btUnfinish"><%=link_to '未完了に戻す', finish_gw_todo_path(@item)%></div>
-<% end %>
+<%end%>
 <div class="btDestroy"><%=link_to "削除する",gw_todo_path(@item),:method=>:delete,
       :confirm=>"このToDoを削除します。よろしいですか？"%></div>
 </div>
-
+<%=raw(div_notice)%>
 <table class="show">
 <tr><th>期限</th><td>
   <%
@@ -47,3 +48,4 @@
 </div>
 </div>
 </div>
+

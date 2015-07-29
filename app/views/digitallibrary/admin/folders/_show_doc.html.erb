@@ -5,104 +5,118 @@
   str_state = ''
   str_state = "&state=#{params[:state]}" unless params[:state].blank?
 %>
-<%= render 'folder_name' unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
+<%= render(:partial => 'folder_name') unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
 
-<% if @item.doc_type == 0 && @title.is_writable? %>
+<%if @item.doc_type == 0%>
+<%if @is_writable%>
 <div class="editingBox">
-  <span class="btEdit"><%= link_to '編集する', "#{edit_digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}" %></span>
-  <% if @item.children.size == 0 %>
-    <span class="btDestroy"><%= link_to '削除する', "#{digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}", confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
-  <% else %>
-   <%= required "直下にフォルダ又は記事が#{@item.children.size}件<br />存在するため削除できません" %>
-  <% end %>
+<span class="btEdit"><%=link_to('編集する', "#{edit_digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}") %></span>
+<% if @item.children.size == 0%>
+  <span class="btDestroy"><%=link_to('削除する', "#{digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete) %></span>
+<%else%>
+ <%= required("直下にフォルダ又は記事が#{@item.children.size}件<br />存在するため削除できません") %>
+<%end%>
 </div>
-<% end %>
+<%end%>
+<%end%>
 
-<% if @item.doc_type != 0 && @item.is_editable? %>
+<%unless @item.doc_type == 0%>
+<%if @is_editable%>
 <div class="editingBox">
-  <span class="btEdit"><%= link_to '編集する', "#{edit_digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}" %></span>
-  <span class="btDestroy"><%= link_to '削除する', "#{digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}", confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
+<span class="btEdit"><%=link_to('編集する', "#{edit_digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}") %></span>
+  <span class="btDestroy"><%=link_to('削除する', "#{digitallibrary_folder_path(@item,{:title_id=>@title.id, :cat=>params[:cat]})}#{str_state}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete) %></span>
 </div>
-<% end %>
+<%end%>
+<%end%>
 
-<% if @item.doc_type == 0 %>
-  <div class="dlDocform">
-    <table class="docformBody">
-      <tr>
-        <th><%=hbr(@item.title)%></th>
-      </tr>
-    </table>
-  </div>
-  <div class="docInf">
-    <table class="docCreator">
-      <tr></tr>
-    </table>
-    <table class="docCreatorInf">
-      <tr></tr>
-      <tr></tr>
-    </table>
-    <% if @title.is_admin? -%>
-    <table class="docImportance">
-      <tr>
-        <th>公開 : </th>
-        <td><%= @item.status_show %></td>
-      </tr>
-      <tr>
-        <th>階層 : </th>
-        <td><%= @item.seq_name%></td>
-      </tr>
-    </table>
-    <% end -%>
-  </div>
-<% else %>
-  <div class="dlDocform">
-  <table class="docformBody">
-    <tr>
-      <th><%=hbr(@item.title)%></th>
-    </tr>
-    <tr>
-      <td><%=raw(@item.body)%></td>
-    </tr>
-  </table>
-  </div>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
-  <div class="docInf">
-    <table class="docCreator">
-      <tr>
-        <th style="text-align: left;">記事管理課 : </th>
-        <td style="text-align: left;"><%= @item.section_name %></td>
-      </tr>
-    </table>
-    <table class="docCreatorInf">
-      <tr>
-        <th>作成者 : </th>
-        <td class="department"><%= @item.createrdivision %></td>
-        <td class="space"></td>
-        <td class="name"><%= @item.creater %></td>
-        <td class="space"></td>
-        <td class="time"><%= @item.createdate %></td>
-      </tr>
-      <tr>
-        <th>編集者 : </th>
-        <td class="department"><%= @item.editordivision %></td>
-        <td class="space"></td>
-        <td class="name"><%= @item.editor %></td>
-        <td class="space"></td>
-        <td class="time"><%= @item.editdate %></td>
-      </tr>
-    </table>
-    <% if @title.is_admin? -%>
-      <table class="docImportance">
-        <tr>
-          <th>公開 : </th>
-          <td><%= @item.status_show %></td>
-        </tr>
-        <tr>
-          <th>階層 : </th>
-          <td><%= @item.seq_name %></td>
-        </tr>
-      </table>
-    <% end -%>
-  </div>
-<% end %>
+<%if @item.doc_type == 0%>
+<div class="dlDocform">
+<table class="docformBody">
+  <tr>
+    <th><%=hbr(@item.title)%></th>
+  </tr>
+</table>
+</div>
+<div class="docInf">
+<table class="docCreator">
+<tr>
+</tr>
+</table>
+
+<table class="docCreatorInf">
+<tr>
+</tr>
+<tr>
+</tr>
+</table>
+
+<% if @is_admin -%>
+<table class="docImportance">
+<tr>
+<th>公開 : </th>
+<td><%=@item.status_show%></td>
+</tr>
+<tr>
+<th>階層 : </th>
+<td><%=@item.seq_name%></td>
+</tr>
+</table>
+<% end -%>
+</div>
+
+<%else%>
+<div class="dlDocform">
+<table class="docformBody">
+  <tr>
+    <th><%=hbr(@item.title)%></th>
+  </tr>
+  <tr>
+    <td><%=raw(@item.body)%></td>
+  </tr>
+</table>
+</div>
+
+<%= render :partial => '/gwboard/admin/docs/upload_index' %>
+
+<div class="docInf">
+<table class="docCreator">
+<tr>
+<th style="text-align: left;">記事管理課 : </th>
+<td style="text-align: left;"><%=@item.section_name%></td>
+</tr>
+</table>
+
+<table class="docCreatorInf">
+<tr>
+<th>作成者 : </th>
+<td class="department"><%=@item.createrdivision %></td>
+<td class="space"></td>
+<td class="name"><%=@item.creater %></td>
+<td class="space"></td>
+<td class="time"><%=@item.createdate %></td>
+</tr>
+<tr>
+<th>編集者 : </th>
+<td class="department"><%= @item.editordivision %></td>
+<td class="space"></td>
+<td class="name"><%= @item.editor %></td>
+<td class="space"></td>
+<td class="time"><%= @item.editdate %></td>
+</tr>
+</table>
+
+<% if @is_admin -%>
+<table class="docImportance">
+<tr>
+<th>公開 : </th>
+<td><%=@item.status_show%></td>
+</tr>
+<tr>
+<th>階層 : </th>
+<td><%=@item.seq_name%></td>
+</tr>
+</table>
+<% end -%>
+</div>
+<%end%>
 </div>

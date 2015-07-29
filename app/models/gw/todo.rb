@@ -1,4 +1,6 @@
+# -*- encoding: utf-8 -*-
 class Gw::Todo < Gw::Database
+  #establish_connection :dev_jgw_gw rescue nil
   include System::Model::Base
   include System::Model::Base::Content
 
@@ -29,7 +31,7 @@ class Gw::Todo < Gw::Database
   end
 
   def self.get_count(uid = Core.user.id)
-    todos = Gw::Todo.where("uid=#{uid}")
+    todos = Gw::Todo.find(:all, :conditions=>"uid=#{uid}")
     return todos.size
   end
 

@@ -1,17 +1,19 @@
-<%= render '/gw/admin/todos/header' %>
-<div class="piece todo form">
-<%= render '/gw/admin/todos/piece_header' %>
-<div class="pieceBody"><div class="pieceBodyBody">
+<%# app/views/gw/admin/todos/index.html.erb %>
 
-<%= form_for :item, :url => gw_todos_path, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
-<%= f.error_messages %>
-<%= render 'form', f: f %>
+<%=render(:partial => '/gw/admin/todos/header')%>
+<div class="piece todo form">
+<%=render(:partial => '/gw/admin/todos/piece_header')%>
+<div class="pieceBody"><div class="pieceBodyBody">
+<%=raw(div_notice)%>
+<%=form_for :item, :url => gw_todos_path, :html => {:multipart => true, :id => 'itemForm'} do |f|%>
+<%=f.error_messages%>
+<%=render(:partial => 'form', :locals => {:f => f})%>
 
 <%= quote_attrs(params) %>
 
-<%=raw(submit_for_create(f)) %>
-<% end %>
+<%=raw(submit_for_create(f))%>
+<%end%>
+</div>
+</div>
+</div>
 
-</div>
-</div>
-</div>

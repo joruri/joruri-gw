@@ -1,11 +1,9 @@
 <div class="piece AdminSetting AdminGroups">
-<%= render 'header' %>
-
-<div class="pieceBody">
-<%= render '/system/admin/users/header_menu' %>
-<%= render 'switching' %>
-<%= render 'navi' %>
-<%= render '/system/admin/users/list_table' %>
-
-</div>
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => 'switching' %>
+    <%= render :partial => 'navi' %>
+    <%= render :partial => '/system/admin/users/list_table' %>
+  </div>
 </div>

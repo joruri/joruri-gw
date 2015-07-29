@@ -1,0 +1,26 @@
+<%
+  #添付ファイル表示
+  item = Gwmonitor::File.new
+  item.and :title_id, @title.id
+  item.and :parent_id, @item.id
+  item.order  'id'
+  @files = item.find(:all)
+%>
+<%unless @files.blank?%>
+<table class="gwboardAttachlist">
+<tr><th colspan="2">添付ファイル名</th></tr>
+<%
+for item in @files
+  download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 1
+  download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 2
+  unless @title.upload_system == 1
+    download_url = "/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}"
+  end unless @title.upload_system == 2
+%>
+ <tr>
+ <td style="width:30px;" class="attachIcon"><%= link_to('',download_url,:class => item.icon_type) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],download_url) %></td>
+ </tr>
+<%end %>
+</table>
+<%end %>

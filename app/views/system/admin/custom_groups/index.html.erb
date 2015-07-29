@@ -1,67 +1,101 @@
 <div class="piece AdminMessage">
-<%= render 'header' -%>
-<%= render 'piece_header' -%>
-<div class="pieceBody">
-<%= render 'search' %>
+  <%= render(:partial => 'header') -%>
+  <%= render(:partial => 'piece_header') -%>
+  <div class="pieceBody">
+  <%= render(:partial => 'search') %>
+    <div class="editingBox">
+      <span class="btNew">
+        <%= link_to '新規作成', '/system/custom_groups/new' %>
+      </span>
+    </div>
 
-<div class="editingBox">
-  <span class="btNew">
-    <%= link_to '新規作成', {action: :new} %>
-  </span>
-</div>
+    <%= form_for :item, :url => "/system/custom_groups/sort_update", :html => {:method => :put} do |f| %>
+      <%= f.error_messages %>
+      <%= div_notice %>
+    <table class="index">
+      <% if @is_gw_admin == true -%>
+      <colgroup class="sort_id"></colgroup>
+      <colgroup class="name"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="pre"></colgroup>
+      <% else -%>
+      <colgroup class="sort_id"></colgroup>
+      <colgroup class="name"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="group"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="action"></colgroup>
+      <colgroup class="pre"></colgroup>
+      <% end -%>
+      <tr>
+	<%if @is_gw_admin == true%>
+	<th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+	<th>名称</th>
+	<th>作成所属</th>
+	<th>最終更新者</th>
+	<th>最終更新日時</th>
+	<th>状態</th>
+	<th></th>
+	<th></th>
+	<th></th>
+	<% else %>
+	<th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+	<th>名称</th>
+	<th>作成所属</th>
+	<th>最終更新者</th>
+	<th>最終更新日時</th>
+	<th>状態</th>
+	<th></th>
+	<th></th>
+	<th></th>
+	<% end%>
+      </tr>
 
-<%= form_tag url_for(action: :sort_update), {method: :put} do %>
-  <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
-  <%= hidden_field_tag :limit, params[:limit] if params[:limit].present? %>
-  <%= unique_error_messages_for @items %>
-  <table class="index">
-    <colgroup class="sort_id"></colgroup>
-    <colgroup class="name"></colgroup>
-    <colgroup class="sort_prefix"></colgroup>
-    <colgroup class="group"></colgroup>
-    <colgroup class="group"></colgroup>
-    <colgroup class="group"></colgroup>
-    <colgroup class="action"></colgroup>
-    <colgroup class="action"></colgroup>
-    <colgroup class="action"></colgroup>
-    <colgroup class="pre"></colgroup>
-    <tr>
-      <th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
-      <th>名称</th>
-      <th>種別</th>
-      <th>作成所属</th>
-      <th>最終更新者</th>
-      <th>最終更新日時</th>
-      <th>状態</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-    <% @items.each do |item| %>
-      <%= fields_for 'items[]', item do |f| %>
-        <tr class="<%= cycle '', 'cycle' %>">
-          <td><%= item.sort_prefix %>&nbsp;
-            <% if @is_gw_admin || item.owner_uid == Core.user.id %>
-              <%= f.text_field :sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
-            <% else %>
-              <%= item.sort_no %>
-            <% end %>
-          <td><%= item.name %></td>
-          <td><%= item.kind_show %></td>
-          <td><%= item.owner_group.ou_name if item.owner_group %></td>
-          <td><%= item.updater.display_name if item.updater %></td>
-          <td><%=l item.updated_at if item.updated_at %></td>
-          <td><%= item.state_label %></td>
-          <td><%= link_to_edit item.id %></td>
-          <td><%= link_to_destroy item.id if @is_gw_admin || item.owner_uid == Core.user.id %></td>
-          <td><%= link_to "プレビュー", "/gw/schedules?cgid=#{item.id}" %></td>
-        </tr>
-      <% end %>
+      <% for item in @items %>
+      <tr>
+	<%if @is_gw_admin == true%>
+	<td><%=item.sort_prefix%>&nbsp;<%= f.text_field "sort_no_#{item.id}", :value => item.sort_no, :class => 'string sort_no', :style => 'width: 40px;', :size=>5 , :maxlength=>4 %></td>
+	<td><%= item.name %></td>
+	<td><%= item.owner_group.ou_name if !item.owner_group.blank? %></td>
+	<td><%= item.updater.display_name if !item.updater.blank? %></td>
+	<td><%= item.updated_at.strftime("%Y/%m/%d %H:%M") if !item.updated_at.blank? %></td>
+	<td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+	<td><%= link_to_edit item.id %></td>
+	<td><%= link_to_destroy item.id %></td>
+	<td><%= link_to "プレビュー", "/gw/schedules?cgid=#{item.id}" %></td>
+	<% else %>
+	<td><%=item.sort_prefix%>&nbsp;
+		<% if item.owner_uid == Site.user.id %>
+			<%= f.text_field "sort_no_#{item.id}", :value => item.sort_no, :class => 'string sort_no', :style => 'width: 40px;', :size=>5 , :maxlength=>4 %>
+		<% else %>
+			<%= item.sort_no %>
+			<%= f.hidden_field "sort_no_#{item.id}", :value => item.sort_no %>
+		<% end %>
+	</td>
+	<td><%= item.name %></td>
+	<td><%= item.owner_group.ou_name if !item.owner_group.blank? %></td>
+	<td><%= item.updater.display_name if !item.updater.blank? %></td>
+	<td><%= item.updated_at.strftime("%Y/%m/%d %H:%M") if !item.updated_at.blank? %></td>
+	<td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+	<td><%= link_to_edit item.id %></td>
+	<td>
+		<% if item.owner_uid == Site.user.id %>
+			<%= link_to_destroy item.id %>
+		<% end %>
+	</td>
+	<td><%= link_to "プレビュー", "/gw/schedules?cgid=#{item.id}" %></td>
+	<% end%>
+      </tr>
     <% end %>
-  </table>
-<% end %>
-
-<%= paginate @items %>
-
-</div><!--pieceBody-->
+    </table>
+  <% end %>
+  <%= paginate @items %>
+  </div><!--pieceBody-->
 </div><!--piece AdminMessage-->

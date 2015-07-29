@@ -46,8 +46,8 @@ else
 end
 %>
   <td><%= raw(date) %></td>
-  <td><%= safe{item.from_start.strftime('%H:%M')} %></td>
-  <td><%= safe{item.from_end.strftime('%H:%M')} %></td>
+  <td><%=h ass{item.from_start.strftime('%H:%M')} %></td>
+  <td><%=h ass{item.from_end.strftime('%H:%M')} %></td>
 <%
 str = Gwsub::Sb01TrainingSchedule.state_show(item.state)
 if item.state == '3'
@@ -60,11 +60,11 @@ else
   end
 end
 %>
-  <td><%= str.html_safe %></td>
-  <td><%= item.members_max %></td>
-  <td><%= item.members_current %></td>
-  <td><%= item.prop_name %></td>
-  <td><%= item.training.group_name %></td>
+  <td><%= raw(str) %></td>
+  <td><%=h item.members_max %></td>
+  <td><%=h item.members_current %></td>
+  <td><%=h item.prop_name %></td>
+  <td><%=h item.training.group_name %></td>
 </tr>
 
 <% end %>

@@ -1,43 +1,27 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
+
+<%= render :partial => 'header_str' %>
 <div class="pieceBody">
-<%= render 'header_new_botton' %>
+  <%= render :partial => 'header_new_botton' %>
+  <div class="editingBox">
+    <span class="btEdit">
+    <%= link_to '編集', "#{@public_uri}/#{@item.id}/edit" %>
+    </span>
+    <span class="btDestroy">
+    <%= link_to '削除', "#{@public_uri}/#{@item.id}" ,:confirm=>"削除してよろしいですか？" , :method=>:delete %>
+    </span>
+  </div>
+  <%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+  <table class="show">
+    <tr><th>状態</th><td><%= Gw::PrefAssemblyMember.state_show(@item.state) %></td></tr>
+    <tr><th>会派表示順</th><td><%= @item.g_order %></td></tr>
+    <tr><th>会派</th><td><%= @item.g_name %></td></tr>
+    <tr><th>議員表示順</th><td><%= @item.u_order %></td></tr>
+    <tr><th>氏名</th><td><%= @item.u_lname %>　<%= @item.u_name %></td></tr>
+    </table>
+    <div class="btReturn">
+      <%=link_to '一覧', @public_uri-%>
+    </div>
 
-<div class="editingBox">
-  <span class="btEdit">
-    <%= link_to '編集', {action: :edit} %>
-  </span>
-  <span class="btDestroy">
-    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: "削除してよろしいですか？" %>
-  </span>
-</div>
-
-<table class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= @item.state_label %></td>
-  </tr>
-  <tr>
-    <th>会派表示順</th>
-    <td><%= @item.g_order %></td>
-  </tr>
-  <tr>
-    <th>会派</th>
-    <td><%= @item.g_name %></td>
-  </tr>
-  <tr>
-    <th>議員表示順</th>
-    <td><%= @item.u_order %></td>
-  </tr>
-  <tr>
-    <th>氏名</th>
-    <td><%= @item.u_lname %>　<%= @item.u_name %></td>
-  </tr>
-</table>
-
-<div class="btReturn">
-  <%= link_to '一覧', action: :index -%>
-</div>
-
-</div>
+  </div>
 </div>

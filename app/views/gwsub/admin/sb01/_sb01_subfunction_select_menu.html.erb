@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_subfunction_select_menu.html.erb</p>%>
 <%
 t01 = %Q(<span>検索・申込</span>)
 t02 = %Q(<span>企画・設定</span>)
@@ -17,8 +18,8 @@ end
 %>
 <div class="menu">
 <p>研修申込・受付</p>
-<%= link_to t01, url_for('/gwsub/sb01/sb01_training_entries')%>
-<%= link_to t02, url_for('/gwsub/sb01/sb01_training_plans')%>
-<%= link_to t03, url_for('/gwsub/sb01/sb01_training_guides')%>
-<%= link_to t04, url_for('/gwsub/sb01/sb01_trainings') if @u_role==true %>
+<%= link_to t01   , url_for('/gwsub/sb01/sb01_training_entries')%>
+<%= link_to t02   , url_for('/gwsub/sb01/sb01_training_plans')%>
+<%= link_to t03   , url_for('/gwsub/sb01/sb01_training_guides')%>
+<%= link_to t04   , url_for('/gwsub/sb01/sb01_trainings') if @u_role==true %>
 </div>

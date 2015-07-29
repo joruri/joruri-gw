@@ -7,12 +7,14 @@ a.sync {display: inline-block; width: 100px; padding: 5px; border: 1px solid #77
 </style>
 
 <div class="piece AdminSetting AdminUsers">
-<%= render 'header' %>
-
-<div class="pieceBody">
-<%= render 'menu' %>
+  <%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => 'menu' %>
 
 <%# 同期：適用開始日における差分の反映：同期対象はフラグのみ更新、LDAPのみのデータは追加 %>
+
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 
 <div style="text-align: center;">
   <%= link_to '同期処理', '?do=synchro', :class => 'sync', :confirm => '同期処理を開始します' %>
@@ -45,5 +47,5 @@ a.sync {display: inline-block; width: 100px; padding: 5px; border: 1px solid #77
   <% end %>
 </div>
 
-</div>
+  </div>
 </div>

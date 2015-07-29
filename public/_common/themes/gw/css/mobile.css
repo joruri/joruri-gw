@@ -2,26 +2,11 @@
 /* =========================================================
    TOP
 ========================================================= */
-/* base
--------------------------------------------------*/
-* {
-  margin: 0;
-  padding: 0;
-}
-
-
 /* header footer
 ----------------------------------------------- */
 h1{
   width:auto;
   margin:0px;
-}
-h2.mobileCircular {
-  display: inline-blcok;
-  padding: 3px 0 3px 0;
-  background-color: #00257F;
-  font-size: 100%;
-  color: #FFF;
 }
 body{
   margin:0px;
@@ -31,60 +16,59 @@ body #container{
 }
 body #smartPhoneContainer{
   font-size: 100%;
-  font-family: ArialMT, "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
 }
 .name{
   margin-bottom:10px;
 }
 form{
-
+  padding-left:6px;
 }
 .headerTop {
-    width: 100%;
-    height: 27px;
-    padding:6px 0px 6px 0px;
+  width: 100%;
+  height: 27px;
+  padding:6px 0px 6px 0px;
   margin:0px 0px 6px 0px;
   border-top:4px solid #00257f;
-    border-bottom:1px solid #00257f;
-    display: inline-block;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    vertical-align: middle;
+  border-bottom:1px solid #00257f;
+  display: inline-block;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  vertical-align: middle;
 }
 .headerTop img{
   margin:0px 0px 0px 6px;
 }
 .headerTop a{
-   display: block;
+  display: block;
 }
 .headerSmall {
-    width: 100%;
-    height: 13px;
-    padding: 6px 0px;
+  width: 100%;
+  height: 13px;
+  padding: 6px 0px;
   margin:0px 0px 6px 0px;
   border-top:4px solid #00257f;
-    border-bottom:1px solid #00257f;
-    display: inline-block;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    vertical-align: middle;
+  border-bottom:1px solid #00257f;
+  display: inline-block;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  vertical-align: middle;
 }
 .headerSmall img{
   margin:0px 0px 0px 6px;
 }
 .footer{
-    width: 100%;
-    height: 14px;
+  width: 100%;
+  height: 14px;
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 0px;
-    background-color:#00257f;
-    display: inline-block;
-    overflow-x: hidden;
-    overflow-y: hidden;
+  padding:0px 0px 0px 0px;
+  background-color:#00257f;
+  display: inline-block;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 .name{
   font-weight: bold;
-    padding:0px 0px 0px 4px;
+  padding:0px 0px 0px 4px;
 }
 .NUM{
   ime-mode: disabled;
@@ -96,253 +80,235 @@ form{
 }
 /* hr
 ----------------------------------------------- */
-hr {
-  margin: 3px 0;
-}
 .borderDash {
   border-width: 1px 0px 0px 0px;
-    border-style:dashed;
-    border-color:#00257f;
-    height:1px;
+  border-style:dashed;
+  border-color:#00257f;
+  height:1px;
 }
 .borderDouble {
   border-width: 3px 0px 0px 0px;
-    border-style:double;
-    border-color:#00257f;
-    height:3px;
+  border-style:double;
+  border-color:#00257f;
+  height:3px;
 }
 .docsPageMove{
-    padding-top:5px;
+  padding-top:5px;
   border-width: 1px 0px 0px 0px;
-    border-style:dashed;
-    border-color:#00257f;
+  border-style:dashed;
+  border-color:#00257f;
 }
 
 /* p
 ----------------------------------------------- */
 .bgAsh{
   margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
-    background-color:#f0f2ff;
+  padding:0px 0px 0px 24px;
+  background-color:#f0f2ff;
 }
 .bgYellow{
   margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
-    background-color:#fff7a4;
+  padding:0px 0px 0px 24px;
+  background-color:#fff7a4;
 }
 .bgBlue{
   margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
-    background-color:#00257f;
+  padding:0px 0px 0px 24px;
+  background-color:#00257f;
 }
 .leftPad1{
   margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
 }
 .leftPad2{
   margin:4px 0px 0px 0px;
-    padding:0px 0px 0px 4px;
+  padding:0px 0px 0px 4px;
 }
 .leftPad3{
   margin:0px 0px 0px 0px;
-    padding:0px 0px 0px 6px;
+  padding:0px 0px 0px 6px;
 }
 .pagination,
 .docsPageMove,
 .btReturn{
   margin:4px 0px 0px 0px;
-    padding:0px 0px 0px 4px;
+  padding:0px 0px 0px 4px;
+}
+.attention{
+  color:#cc0000;
+  margin:6px 0px 6px 0px;
 }
 
 /* image
 ----------------------------------------------- */
-/*
 .mobileMail{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-mail.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
+  background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileMailCurrent{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-mail.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
-    background-color:#00257f;
+  background-repeat: no-repeat;
+  background-color:#00257f;
   color: #ffffff;
   line-height:16px;
 }
 .mobileMemo{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-memo.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
+  background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileMemoCurrent{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-memo.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
-    background-color:#00257f;
+  background-repeat: no-repeat;
+  background-color:#00257f;
   color: #ffffff;
-  line-height:16px;
-}
-.mobileCircular{
-  margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
-  background-image: url("/_common/themes/gw/files/mobile/ic-rem-circulation.gif");
-  background-position: 3px top;
-    background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileRem{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-rem.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
+  background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileRemCurrent{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-rem.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
-    background-color:#00257f;
+  background-repeat: no-repeat;
+  background-color:#00257f;
   color: #ffffff;
   line-height:16px;
 }
 .mobileSchedule{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-schedule.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
+  background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileScheduleCurrent{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-schedule.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
-    background-color:#00257f;
+  background-repeat: no-repeat;
+  background-color:#00257f;
   color: #ffffff;
   line-height:16px;
 }
 .mobileTodo{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-todo.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
+  background-repeat: no-repeat;
   line-height:16px;
 }
 .mobileTodoCurrent{
   margin:3px 0px 0px 0px;
-    padding:0px 0px 0px 24px;
+  padding:0px 0px 0px 24px;
   background-image: url("/_common/themes/gw/files/mobile/ic-mobile-todo.gif");
   background-position: 3px top;
-    background-repeat: no-repeat;
-    background-color:#00257f;
+  background-repeat: no-repeat;
+  background-color:#00257f;
   color: #ffffff;
   line-height:16px;
 }
-*/
-
-/* midashi
-------------------------------------------------*/
-.midashi2,
-p.docTitle {
-  padding: 3px 0;
-  background-color: #F0F2FF;
+.mobileBbs{
+  margin:3px 0px 0px 0px;
+  padding:0px 0px 0px 24px;
+  background-image: url("/_common/themes/gw/files/mobile/ic-mobile-bbsm.gif");
+  background-position: 3px top;
+  background-repeat: no-repeat;
+  line-height:16px;
 }
-p img {
-
+.mobileBbsCurrent{
+  margin:3px 0px 0px 0px;
+  padding:0px 0px 0px 24px;
+  background-image: url("/_common/themes/gw/files/mobile/ic-mobile-bbsm.gif");
+  background-position: 3px top;
+  background-repeat: no-repeat;
+  background-color:#00257f;
+  color: #ffffff;
+  line-height:16px;
 }
-
-/* list
-------------------------------------------------*/
-p.list span{
-  margin-left: 15px;
-}
-
-/* table
-------------------------------------------------*/
-table.bbsExpirydate {
-  width: 100%;
-}
-
 /* category
 ----------------------------------------------- */
-.scheduleCategory {
+.category0, .category100, .category200, .category300, .category400,
+.category500, .category600, .category700, .category800, .category900,
+.category950, .category1000, .category1100, .category1200 {
   margin: 0px 3px 0px 2px;
   padding-top: 2px;
   padding-bottom: 2px;
-  border-left: solid 6px #fff;
   border-bottom: 1px solid #CCC;
   color: #000;
 }
-.category100 {
+.category0 .leftPad1, .category100 .leftPad1, .category200 .leftPad1, .category300 .leftPad1, .category400 .leftPad1,
+.category500 .leftPad1, .category600 .leftPad1, .category700 .leftPad1, .category800 .leftPad1, .category900 .leftPad1,
+.category950 .leftPad1, .category1000 .leftPad1, .category1100 .leftPad1, .category1200 .leftPad1 {
+  padding-left: 10px;
+}
+.category0 {
+  padding-left: 5px;
+}
+.category100{
   border-left: solid 6px #2283E5;
 }
-.category200 {
+.category200{
   border-left: solid 6px #090;
 }
-.category300 {
+.category300{
   border-left: solid 6px #030;
 }
-.category400 {
+.category400{
   border-left: solid 6px #FF3F38;
 }
-.category500 {
+.category500{
   border-left: solid 6px #009;
 }
-.category600 {
+.category600{
   border-left: solid 6px #A17300;
 }
-.category700 {
+.category700{
   border-left: solid 6px #DC6500;
 }
-.category800 {
+.category800{
   border-left: solid 6px #FFC300;
 }
-.category900 {
+.category900{
   border-left: solid 6px #8658B2;
 }
-.category950 {
+.category950{
   border-left: solid 6px #FFF28F;
 }
-.category1000 {
+.category1000{
   border-left: solid 6px #777;
 }
-.category1100 {
+.category1100{
   border-left: solid 6px #633;
 }
-.category1200 {
+.category1200{
   border-left: solid 6px #0A4F1E;
 }
 
-/* button
-------------------------------------------------*/
-a.btConfirmed {
-  display: inline-block;
-  width: 220px;
-  padding: 3px;
-  background-color: #EEE;
-  border: solid 1px #808080;
-  color: red;
-}
-.replyRead {
-  text-align: center;
-}
+
 
 /* link
 ----------------------------------------------- */
@@ -356,16 +322,4 @@ a.btConfirmed {
 ----------------------------------------------- */
 .textRed{
   color: #ff0000;
-}
-.centerText {
-  text-align: center;
-}
-.required {
-  color: red;
-}
-.flashNotice {
-  color: green;
-}
-.notice {
-  color: green;
 }

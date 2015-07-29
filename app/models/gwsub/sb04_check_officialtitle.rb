@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fy_rel     ,:foreign_key=>:fyear_id           ,:class_name=>'Gw::YearFiscalJp'
   has_many :staffs       ,:foreign_key=>:official_title_id  ,:class_name=>'Gwsub::Sb04CheckStafflist'
@@ -18,7 +19,7 @@ class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -82,7 +83,7 @@ class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
         else
           csv = CSV.parse(file)
 
-          year_fiscal = Gw::YearFiscalJp.where(:id =>par_item[:fyed_id]).first
+          year_fiscal = Gw::YearFiscalJp.find_by_id(par_item[:fyed_id])
           csv.each_with_index do |row, i|
             error_msg_row = Array.new
             error_csv_row = row.dup
@@ -117,7 +118,7 @@ class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
               else
                 error_msg_row << 'CSVの列数が不正です。'
               end
-
+              
               # エラーメッセージ
               if error_msg_row.empty?
                 import_csv << row
@@ -169,11 +170,17 @@ class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
 
   def self.check_fyear_id(fyear_id = nil)
     # 指定fyear_idと、違うデータがないかどうかチェックする。
-    items = self.all
+    items = self.find(:all)
     items.each do |item|
       return false if item.fyear_id.to_i != fyear_id.to_i #違うデータがあればfalse
     end
     return true
+  end
+
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `#{self.table_name}` ;"
+    connect.execute(truncate_query)
   end
 
   def self.set_autoincrement_number
@@ -188,7 +195,7 @@ class Gwsub::Sb04CheckOfficialtitle < Gwsub::GwsubPref
   def self.import_table(fyear_id = nil)
     Gwsub::Sb04officialtitle.destroy_all(:fyear_id=>fyear_id)
     fields = Array.new
-    items = self.all.order(:id)
+    items = self.find(:all, :order => 'id')
 
     self.columns.each do |column|
       fields << "#{column.name}"

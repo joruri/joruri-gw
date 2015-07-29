@@ -1,63 +1,77 @@
+<%
+if params[:cond]=="admin"
+  admin_setting = "1"
+else
+  admin_setting = "0"
+end
+%>
 <div class="bbsDocList circular">
 <div class="pieceHeader">
-<h2 class="pieceTitle"><%= Page.title %></h2>
-<div class="btsHeaderLeft"><span class="btNew"><%= link_to '新規作成', {:action => :new} %></span></div>
+<h2 class="pieceTitle"><%=@system_title%></h2>
+<div class="btsHeaderLeft"><span class="btNew"><%=link_to('新規作成', new_questionnaire_menu_path)%></span></div>
 </div>
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
-<% if params[:cond] == 'result' %>
-  <table class="index">
-    <tr>
-      <th style="width: 60px;">状態</th>
-      <th style="width: 50px;">形式</th>
-      <th>タイトル</th>
-      <th style="width: 200px;">作成者</th>
-      <th style="width: 120px;">アンケート終了日時</th>
-    </tr>
-    <% @items.each do |item| %>
-     <tr class="<%= cycle 'article', 'article cycle' %>">
-     <td style="width:60px;"><%= item.state_name %></td>
-     <td style="width:50px;"><%= item.enquete_division_state_name %></td>
-     <td><%= link_to item.title, "#{questionnaire_results_path(item)}?cond=result" %></td>
-     <td><%= item.createrdivision %></td>
-     <td><%=raw item.display_expiry_date %></td>
-     </tr>
-    <% end %>
-  </table>
-<% else %>
-  <table class="index">
-    <tr>
-      <th style="width: 60px; text-align: center;">状態</th>
-      <th>タイトル</th>
-      <%- if @is_sysadm -%>
-      <th style="width: 180px;">作成者</th>
-      <%- end -%>
-      <th style="width: 40px; text-align: center;">設問</th>
-      <th style="width: 120px; text-align: center;" colspan="2">回答確認</th>
-      <th style="width: 40px; text-align: center;">CSV</th>
-      <th style="width: 80px; text-align: center;">テンプレート</th>
-      <th style="width: 120px;">最終更新日</th>
-    </tr>
-    <% @items.each do |item| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td style="text-align: center;"><%= item.state_name %></td>
-      <td style="text-align: left;"><%= link_to item.manage_title, questionnaire_menu_path(item) %></td>
-      <%- if @is_sysadm -%>
-      <td><%= item.createrdivision %></td>
-      <%- end -%>
-      <td style="text-align: center;"><%= link_to '登録', questionnaire_menu_form_fields_path(item) %></td>
-      <td style="text-align: center;"><%= link_to "#{item.answer_count_name}", questionnaire_answers_path(item) %></td>
-      <td style="text-align: center;"><%= link_to '集計', answer_to_details_questionnaire_results_path(item) %></td>
-      <td style="text-align: center;"><%= link_to '出力', questionnaire_csv_exports_path(item) %></td>
-      <td style="text-align: center;"><%= link_to '作成', new_base_questionnaire_menu_templates_path(item) %></td>
-      <td style="text-align: left;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M') %></td>
-    </tr>
-    <% end %>
-  </table>
-<% end %>
+<%if params[:cond]=='result'%>
+
+<table class="index">
+<tr>
+<th style="width: 60px;">状態</th>
+<th style="width: 50px;">形式</th>
+<th>タイトル</th>
+<th style="width: 200px;">作成者</th>
+<th style="width: 120px;">アンケート終了日時</th>
+</tr>
+<%for item in @items%>
+ <tr class="<%= cycle 'article', 'article cycle' %>">
+ <td style="width:60px;"><%=item.state_name%></td>
+ <td style="width:50px;"><%=item.enquete_division_state_name%></td>
+ <td><%=link_to(item.title, "#{questionnaire_results_path(item)}?cond=result")%></td>
+ <td><%="#{item.createrdivision}"%></td>
+ <td><%=raw(item.display_expiry_date)%></td>
+ </tr>
+<%end%>
+</table>
+
+<%else%>
+
+<table class="index">
+<tr>
+<th style="width: 60px; text-align: center;">状態</th>
+<th>タイトル</th>
+
+<%if @is_sysadm%>
+<th style="width: 180px;">作成者</th>
+<%end%>
+
+<th style="width: 40px; text-align: center;">設問</th>
+<th style="width: 120px; text-align: center;" colspan="2">回答確認</th>
+<th style="width: 40px; text-align: center;">CSV</th>
+<th style="width: 80px; text-align: center;">テンプレート</th>
+<th style="width: 120px;">最終更新日</th>
+</tr>
+<%for item in @items %>
+<tr class="<%= cycle '', 'cycle' %>">
+<td style="text-align: center;"><%=item.state_name%></td>
+<td style="text-align: left;"><%=link_to(item.manage_title, questionnaire_menu_path(item)) %></td>
+
+<%if @is_sysadm%>
+ <td><%="#{item.createrdivision}"%></td>
+<%end%>
+
+<td style="text-align: center;"><%= link_to '登録', questionnaire_menu_form_fields_path(item) %></td>
+<td style="text-align: center;"><%= link_to "#{item.answer_count_name}", questionnaire_answers_path(item) %></td>
+<td style="text-align: center;"><%= link_to '集計', answer_to_details_questionnaire_results_path(item) %></td>
+<td style="text-align: center;"><%= link_to '出力', questionnaire_csv_exports_path(item) %></td>
+<td style="text-align: center;"><%= link_to '作成', new_base_questionnaire_menu_templates_path(item) %></td>
+<td style="text-align: left;"><%=item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+</tr>
+<%end %>
+</table>
+
+<%end%>
 
 <%= paginate @items %>
-
 </div>
 </div>

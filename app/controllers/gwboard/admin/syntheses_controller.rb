@@ -1,31 +1,35 @@
+# encoding: utf-8
 class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+  include Gwboard::Controller::Scaffold
+  include Gwboard::Controller::Authorize
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
-    @date =
-      case Gwboard::Synthesetup.where(content_id: 2).first.try(:limit_date)
-      when 'today'
-        Date.today
-      when 'yesterday'
-        Date.yesterday
-      when '3.days'
-        3.days.ago
-      when '4.days'
-        4.days.ago
-      else
-        Date.yesterday
-      end
-
+  def initialize_scaffold
+    item = Gwboard::Synthesetup.new
+    item.and :content_id, 2
+    item = item.find(:first)
+    limit_date = ''
+    limit_date = item.limit_date  unless item.blank?
+    case limit_date
+    when 'today'
+      @date = Date.today.strftime('%Y-%m-%d')
+    when 'yesterday'
+      @date = Date.yesterday.strftime('%Y-%m-%d')
+    when '3.days'
+      @date = 3.days.ago.strftime('%Y-%m-%d')
+    when '4.days'
+      @date = 4.days.ago.strftime('%Y-%m-%d')
+    else
+      @date = Date.yesterday.strftime('%Y-%m-%d')
+    end
     Page.title = "掲示板新着総合案内"
     @css = ["/_common/themes/gw/css/gwbbs_standard.css"]
-
+    @date = @date + " 00:00:00"
     params[:limit] = 50
-    params[:system] ||= 'gwbbs'
   end
 
   def index
-    case params[:system]
+    case params[:system].to_s
     when 'gwbbs'
       index_gwbbs
     when 'gwfaq'
@@ -36,51 +40,55 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
       index_doclib
     when 'digitallibrary'
       index_digitallib
+    else
+      params[:system] = 'gwbbs'
+      index_gwbbs
     end
   end
 
   def index_gwbbs
-    @items = Gwbbs::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
-      .public_docs.latest_updated_since(@date).with_notification_enabled.satisfy_restrict_access
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    item = Gwboard::Synthesis.new
+    item.gwbbs_readable_syntheses(@date)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, 
+      :select => 'gwboard_syntheses.*', 
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
   def index_gwfaq
-    @items = Gwfaq::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
-      .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    item = Gwboard::Synthesis.new
+    item.gwfaq_readable_syntheses(@date)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, 
+      :select => 'gwboard_syntheses.*', 
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
   def index_gwqa
-    @items = Gwqa::Doc.select(:id, :title_id, :doc_type, :title, :section_name, :latest_updated_at, :parent_id)
-      .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwqa::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    item = Gwboard::Synthesis.new
+    item.gwqa_readable_syntheses(@date)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, 
+      :select => 'gwboard_syntheses.*',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
   def index_doclib
-    @items = Doclibrary::Doc.select(:id, :title_id, :category1_id, :title, :section_name, :latest_updated_at)
-      .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    item = Gwboard::Synthesis.new
+    item.doclibrary_readable_syntheses(@date)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, 
+      :select => 'gwboard_syntheses.*',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
   def index_digitallib
-    @items = Digitallibrary::Doc.select(:id, :title_id, :title, :section_name, :latest_updated_at)
-      .public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .order(latest_updated_at: :desc).distinct
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:control)
+    item = Gwboard::Synthesis.new
+    item.digitallibrary_readable_syntheses(@date)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, 
+      :select => 'gwboard_syntheses.*',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
+
 end

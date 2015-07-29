@@ -1,13 +1,31 @@
+# -*- encoding: utf-8 -*-
 class Digitallibrary::File < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::File::Base
-  include Gwboard::Model::SerialNo
+  include Cms::Model::Base::Content
   include Digitallibrary::Model::Systemname
+  include Gwboard::Model::AttachFile
+  include Gwboard::Model::AttachesFile
 
-  belongs_to :doc, :foreign_key => :parent_id
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :db_file, :foreign_key => :db_file_id, :dependent => :destroy
+  belongs_to :parent, :foreign_key => :parent_id, :class_name => 'Doclibrary::Doc'
+
+  validates_presence_of :filename, :message => "ファイルが指定されていません。"
+
+  before_create :before_create
+  after_create :after_create
+  after_destroy :after_destroy
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+      case n
+      when 'kwd'
+        and_keywords v, :filename
+      end
+    end if params.size != 0
+
+    return self
+  end
 
   def edit_memo_path(title,item)
     return "/digitallibrary/docs/#{self.parent_id}/edit_file_memo/#{self.id}?title_id=#{self.title_id}"
@@ -24,4 +42,5 @@ class Digitallibrary::File < Gwboard::CommonDb
   def item_doc_path(title,item)
     return "/digitallibrary/docs/#{self.parent_id}?title_id=#{self.title_id}"
   end
+
 end

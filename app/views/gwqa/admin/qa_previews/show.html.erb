@@ -1,5 +1,5 @@
-<% if @item.doc_type == 0 %>
-  <%= render 'question_show' %>
-<% else %>
-  <%= render 'answer_show' %>
-<% end %>
+<%if @item.doc_type == 0 %>
+  <%=render :partial => 'question_show'%>
+<%else%>
+  <%=render :partial => 'answer_show'%>
+<%end%>

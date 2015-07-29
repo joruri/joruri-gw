@@ -1,7 +1,7 @@
 <%
 fyears = Array.new
 fyears << ['すべて', 0]
-fyears += Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears += Gwsub::Sb04EditableDate.find(:all, :order=>"published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 fyear_id_sb04 = nz(@s_f_id, @fyed_id).to_i
 if fyear_id_sb04 == 0
   groups = [['すべて', 0]]

@@ -1,6 +1,6 @@
-<% if @dis == "week" %>
-<% link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{Core.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"]) %>
-<%= render '/gw/admin/schedules/show_week_mobile', link_params: link_params %>
-<% else %>
-<%= render '/gw/admin/schedules/show_days_mobile' %>
-<% end %>
+<%if @dis == "week"%>
+<%link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{Site.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"])%>
+<%= render(:partial => '/gw/admin/schedules/show_week_mobile', :locals=>{:link_params=>link_params})%>
+<%else%>
+<%= render(:partial => '/gw/admin/schedules/show_days_mobile')%>
+<%end%>

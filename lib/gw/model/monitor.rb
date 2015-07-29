@@ -1,8 +1,9 @@
+# encoding: utf-8
 module Gw::Model::Monitor
 
-  def self.remind(uid = Core.user.id)
+  def self.remind(uid = Site.user.id)
     item = Gw::MonitorReminder.new
-    remind_cond = ["(state=1 AND g_code=?) OR (state=1 AND u_code=?)", Core.user_group.code, Core.user.code]
+    remind_cond = ["(state=1 AND g_code=?) OR (state=1 AND u_code=?)", Site.user_group.code, Site.user.code]
     items = item.find(:all, :conditions=>remind_cond ,  :order => 'ed_at')
     return items.collect{|x|
       delay_s = ''
@@ -21,16 +22,16 @@ module Gw::Model::Monitor
     return xml_data if xml_data.blank?
     u_cond  = "user_id=#{uid} and end_at is null "
     u_order = "job_order , start_at DESC"
-    user  = System::UsersGroup.where("user_id=? and end_at is null ", uid).order("job_order , start_at DESC").first
+    user  = System::UsersGroup.find(:first , :conditions=>u_cond , :order=>u_order)
     return xml_data if user.blank?
     g_code  = user.group_code
 
-    usertbl = System::User.where(:id => uid).first
+    usertbl = System::User.find_by_id(uid)
     return xml_data if usertbl.blank?
     user_code = usertbl.code
 
     item = Gw::MonitorReminder.new
-    remind_cond = "(state=1 AND g_code='#{g_code}') OR (state=1 AND u_code='#{user_code}')"
+    remind_cond = ["(state=1 AND g_code=?) OR (state=1 AND u_code=?)", g_code, user_code]
     items = item.find(:all, :conditions=>remind_cond ,  :order => 'ed_at')
     if items.blank?
       return xml_data

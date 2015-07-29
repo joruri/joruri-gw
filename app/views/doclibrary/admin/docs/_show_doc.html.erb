@@ -1,4 +1,5 @@
-<%= render 'folder_name' unless @title.form_name == 'form002' %>
+<%= render :partial => 'header_help' %>
+<%= render :partial => 'folder_name' unless @title.form_name == 'form002' %>
 
 <%
 params_set = ""
@@ -11,78 +12,52 @@ end
 %>
 <div class="contentMenu bbs">
 <div class="editingBox">
-  <% if @item.is_editable? %>
-    <% unless @title.use_recognize? %><%#承認機能使用しない%>
-      <span class="btEdit"><%=link_to '編集', edit_doclibrary_doc_path(@item,{:title_id => @title.id}) + params_set %></span>
+<% if @is_editable %>
+  <% unless @title.use_recognize %><%#承認機能使用しない%>
+    <span class="btEdit"><%=link_to '編集', edit_doclibrary_doc_path(@item,{:title_id => @title.id}) + params_set %></span>
+  <% else %>
+    <% if @item.category4_id == 1 %>
+      <span class="btAppEdit"><%= link_to '承認あり編集', edit_doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set %></span>
     <% else %>
-      <% if @item.category4_id == 1 %>
-        <span class="btAppEdit"><%= link_to '承認あり編集', edit_doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set %></span>
-      <% else %>
-        <span class="btEdit"><%= link_to '編集', edit_doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set %></span>
-      <% end %>
+      <span class="btEdit"><%= link_to '編集', edit_doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set %></span>
     <% end %>
-    <span class="btDestroy"><%= link_to '削除', doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
   <% end %>
-  <% if @item.is_recognizable? && @item.state == 'recognize' %>
-    <span class="btRecognize"><%= link_to '承認', "#{recognize_update_doclibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
-  <% end %>
-  <% if @item.is_publishable? && @item.state == 'recognized' %>
-    <span class="btPublish"><%= link_to '公開', "#{publish_update_doclibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
-  <% end %>
+  <span class="btDestroy"><%= link_to '削除', doclibrary_doc_path(@item, {:title_id => @title.id}) + params_set, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+<% end %>
+<% if @is_recognize %>
+  <span class="btRecognize"><%= link_to '承認', "#{recognize_update_doclibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
+<% end %>
+<% if @is_publish %>
+  <span class="btPublish"><%= link_to '公開', "#{publish_update_doclibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}" %></span>
+<% end %>
 </div>
 </div>
 
 <table class="docCreator">
-  <tr>
-    <th style="width: 60px; text-align: left;">作成者</th>
-    <td style="width: 120px; text-align: left;"><%= @item.createdate %></td>
-    <td style="text-align: left;"><%= @item.createrdivision %></td>
-    <td style="width: 150px; text-align: left;"><%= @item.creater %></td>
-  </tr>
-  <tr>
-    <th style="width: 60px; text-align: left;">編集者</th>
-    <td style="width: 120px; text-align: left;"><%= @item.editdate %></td>
-    <td style="text-align: left;"><%= @item.editordivision %></td>
-    <td style="width: 150px; text-align: left;"><%= @item.editor %></td>
-  </tr>
+<tr>
+<th style="width: 60px; text-align: left;">作成者</th>
+<td style="width: 120px; text-align: left;"><%= @item.createdate %></td>
+<td style="text-align: left;"><%= @item.createrdivision %></td>
+<td style="width: 150px; text-align: left;"><%= @item.creater %></td>
+</tr>
+<tr>
+<th style="width: 60px; text-align: left;">編集者</th>
+<td style="width: 120px; text-align: left;"><%= @item.editdate %></td>
+<td style="text-align: left;"><%= @item.editordivision %></td>
+<td style="width: 150px; text-align: left;"><%= @item.editor %></td>
+</tr>
 </table>
-
 <div class="doclibDocform">
-<%= render @title.doclib_form_name + 'show' %>
+<%= render :partial => @title.doclib_form_name + 'show' %>
 </div>
-<% if @title.use_old_upload_system? %>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
+<% if attach_use_old %>
+  <%= render :partial => '/gwboard/admin/docs/upload_index' %>
 <% else %>
-  <%= render '/gwboard/admin/docs/library_index', files: @item.display_files %>
+  <%= render :partial => '/gwboard/admin/docs/library_index' %>
 <% end %>
 
-<% if @title.use_recognize? %>
-  <%= render 'recognize_users' if @item.state.in?(%w(draft recognize recognized)) %>
+<% if @title.use_recognize %>
+<%= render :partial => 'recognize_users' if @item.state == 'draft'%>
+<%= render :partial => 'recognize_users' if @item.state == 'recognize'%>
+<%= render :partial => 'recognize_users' if @item.state == 'recognized'%>
 <% end %>
-
-<div class="docListFunctions">
-  <div class="link_to_clip">
-    <a href="javascript:void(0)" onclick="copy_clip(); return false;">お知らせリンク作成</a>
-  </div>
-  <% if @item.display_files.present? %>
-  <div class="link_export_file">
-    <%= link_to "添付ファイル一括ダウンロード(ファイル数：#{@item.display_files.length})", "#{@item.file_exports_path}" -%>
-  </div>
-<% end %>
-</div>
-
-<script type="text/javascript">
-//<![CDATA[
-var copy_clip = function() {
-  var ua = "";
-  ua = navigator.userAgent.toLowerCase();
-  url = "機能名：書庫\n件名：<%= @item.title -%>\nURL：<%= request.url -%>";
-  if(ua.indexOf("msie") != -1) {
-    clipboardData.setData('Text', url);
-    alert("記事の情報をクリップボードにコピーしました。");
-  } else {
-    alert(url);
-  }
-}
-//]]>
-</script>

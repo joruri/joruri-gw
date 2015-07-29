@@ -48,19 +48,19 @@ module Doclibrary::Admin::Piece::MenusHelper
   end
 
   def category_sub_folders(item)
-      parent_grp = Core.user.groups[0].parent unless Core.user.groups[0].parent.blank?
+      parent_grp = Site.user.groups[0].parent unless Site.user.groups[0].parent.blank?
       p_grp_code = ''
       p_grp_code = parent_grp.code unless parent_grp.blank?
-      grp_code = Core.user.groups[0].code unless Core.user.groups.blank?
+      grp_code = Site.user.groups[0].code unless Site.user.groups.blank?
       enabled_children = item.enabled_children
       sub_folders = enabled_children.select{|x|
-        if @title.is_admin?
+        if @is_admin
           ((x.state == 'public') and (x.acl_flag == 0)) || ((x.state == 'public') and (x.acl_flag == 9))
         else
           ((x.state == 'public') and (x.acl_flag == 0)) ||
           ((x.state == 'public') and (x.acl_flag == 1) and (x.acl_section_code == p_grp_code)) ||
           ((x.state == 'public') and (x.acl_flag == 1) and (x.acl_section_code == grp_code)) ||
-          ((x.state == 'public') and (x.acl_flag == 2) and (x.acl_user_code == Core.user.code))
+          ((x.state == 'public') and (x.acl_flag == 2) and (x.acl_user_code == Site.user.code))
         end
       }
     return sub_folders
@@ -70,7 +70,7 @@ module Doclibrary::Admin::Piece::MenusHelper
     @btmfolder = 0
     ret = ''
     sub_folders = category_sub_folders(item)
-    children_count = item.count_children
+    children_count = item.count_children.count
     if item.state == 'public'
       level_no = 'folder'
       level_no = 'f_plus' unless children_count == 0
@@ -104,7 +104,7 @@ module Doclibrary::Admin::Piece::MenusHelper
       if /open/ =~ level_no
         strparam += "&f=op" unless item.id.to_s == '1'
       end unless sub_folders.count == 0
-
+      
       ret  = %Q(<li class="#{level_no}">)
       ret << link_to(item.name, "#{@title.item_home_path}docs?title_id=#{item.title_id}&cat=#{item.id}#{strparam}")
       ret << %Q(</li>)

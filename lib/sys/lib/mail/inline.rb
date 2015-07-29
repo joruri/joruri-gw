@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Mail::Inline
   attr_accessor :seqno
   attr_accessor :content_type

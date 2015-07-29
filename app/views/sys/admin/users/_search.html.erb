@@ -1,0 +1,15 @@
+<%  limits = Gw.limit_select %>
+<%= form_tag '', :method => :get, :class => 'search' do %>
+<table>
+  <tr>
+    <th>表示行数</th>
+    <td><%= select_tag( 'limit', options_for_select(limits, @limits.to_i) ) %></td>
+    <th>検索条件 コード・名前・名前(英)・メールアドレス</th>
+    <td><%= text_field_tag('s_keyword', params[:s_keyword], :size => 50 ) %></td>
+    <td class="submitters">
+      <%= submit_tag '検索',     :name => :search %>
+      <%= submit_tag 'リセット', :name => :reset %>
+    </td>
+  </tr>
+</table>
+<% end %>

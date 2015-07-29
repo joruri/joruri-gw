@@ -1,18 +1,20 @@
+<% update_path = "/gwmonitor/help_configs/#{@item.id}" -%>
+
 <div class="bbsDocList circular">
 <div class="pieceHeader">
-  <h2 class="pieceTitle"><%= Page.title %></h2>
-  <div class="btsHeaderLeft">
-  </div>
-  <div class="btsHeadeRight">
-  </div>
+<h2 class="pieceTitle"><%= @system_title %></h2>
+<div class="btsHeaderLeft">
+</div>
+<div class="btsHeadeRight">
+</div>
 </div><!--pieceHeader-->
 
 <div class="pieceBody">
 
-<%= form_for :item, :url => {:action => :update, :id => 0} ,:html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= form_for :item, :url => update_path ,:html => {:method=>:put, :multipart => true, :id => 'itemForm'} do |f| %>
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters"><%= f.submit "保存" %></div>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  <div class="submitters"><%= f.submit("保存") %></div>
 <% end %>
 
 <!--戻るボタン-->

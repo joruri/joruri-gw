@@ -1,14 +1,16 @@
 <div class="bbsDocList circular setting">
-<div class="pieceHeader"><h2><%= Page.title %></h2></div>
+<div class="pieceHeader"><h2><%=@system_title%></h2></div>
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
-<%= form_for :item, :url => {:action => :create}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, :caption => '確認画面' %>
+<%= form_for :item, :url => "#{@title.answer_path}" ,:html => {:method=>:post , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= submit_for(f ,:caption=>'確認画面') %>
 <% end %>
 <div style="text-align: center;"><%= required('「確認画面」ボタンを押すと確認ページに移動します。') %></div>
-
 </div>
 </div><!--bbsDocList circular setting-->

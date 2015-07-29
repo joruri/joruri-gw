@@ -3,10 +3,6 @@
 <th class="title"><%=hbr(@item.title)%></th>
 </tr>
 <tr>
-  <% if @item.wiki_enabled? -%>
-    <td class="wiki"><%= raw(wiki_show @item.body) -%></td>
-  <% else -%>
-    <td><%=raw @item.body -%></td>
-  <% end -%>
+<td><%=raw(@item.body)%></td>
 </tr>
 </table>

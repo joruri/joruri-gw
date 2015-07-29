@@ -1,61 +1,116 @@
 <%
-@format ||= @schedule_settings["#{@view}_view_dayhead_format"]
-@header_each ||= @schedule_settings[:header_each].to_i
-show_week_header = render '/gw/admin/schedules/show_week_header'
+week_first_day = @calendar_first_day
+@format ||= schedule_settings["#{@view}_view_dayhead_format"]
+parent_groups = Gw::PropOther.get_parent_groups
+@header_each ||= @schedule_settings[:header_each] rescue 5
+header_each = nz(@header_each, 5).to_i
+show_week_header = render(:partial => '/gw/admin/schedules/show_week_header')
 %>
 <div class="piece schedulePiece weekview">
-<div class="pieceHeader">
-  <%= render '/gw/admin/schedules/piece_header', piece_head_title: @piece_head_title -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render '/gw/admin/schedules/schedule_header', d: @st_date, mode: 'week', show_flg: @show_flg -%>
-  <%= render '/gw/admin/schedule_props/other_group_select' if @genre == "other" -%>
-</div>
+  <div class="pieceHeader">
+    <%= render(:partial => '/gw/admin/schedules/piece_header', :locals=>{:piece_head_title => @piece_head_title}) -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/schedules/schedule_header', :locals=>{:d=>@st_date, :mode=>'week', :show_flg => @show_flg}) -%>
+      <%= render(:partial => '/gw/admin/schedule_props/other_group_select') -%>
+    </div>
 
-<div class="pieceBodyBody">
-<% if @show_flg %>
-<table summary="スケジュール詳細" class="scheduleTable <%=@genre%>">
-  <tbody>
-    <% @props.each_with_index do |prop, iprop| %>
-      <%
-      schedule_props = @schedule_props.select {|sp| sp.prop_id == prop.id && sp.prop_type == prop.class.name }
-      %>
-      <%= show_week_header if iprop == 0 || @header_each != 0 && iprop % @header_each == 0 -%>
-      <tr class="scheduleTableBody lineNo1">
-        <th class="scheduleUser">
-          <div class="username <%= prop.get_type_class -%>">
-            <span>
-              <a href="/gw/prop_<%= prop.genre_name.pluralize %>/<%= prop.id -%>"><%= prop.display_prop_name -%></a>
-            </span>
-            <span class="linkBox">
-              <a href="/gw/schedule_props/<%= @calendar_first_day.strftime("%Y%m%d") -%>?s_genre=<%=@genre%>&prop_id=<%= prop.id -%>&cls=<%=params[:cls]%>&type_id=<%= @type_id if @genre == 'other' %>" class="dayLink">日表示</a>
-              <a href="/gw/schedule_props/show_month?s_genre=<%= @genre %>&s_date=<%= @calendar_first_day.strftime("%Y%m01") -%>&prop_id=<%= prop.id -%>&cls=<%= params[:cls] %>&type_id=<%= @type_id if @genre == 'other' %>" class="monthLink">月表示</a>
-            </span>
-          </div>
-        </th>
-        <% 7.times do |i| %>
+    <div class="pieceBodyBody">
+      <table summary="スケジュール詳細" class="scheduleTable ">
+        <tbody>
+
+          <% if @show_flg %>
+
+
+          <% @props.each_with_index do |prop, prop_cnt| %>
+
+          <% if header_each == 0 && prop_cnt == 0 || header_each != 0 && prop_cnt % header_each == 0 %>
+          <%= show_week_header -%>
+          <% end %><!-- header End -->
+
           <%
-          week_add_day = @calendar_first_day + i
-          day_schedule_props = schedule_props.select {|sp| sp.date_between?(week_add_day) }
+            genre_class_s =  prop.get_type_class
+            admin_first_id = prop.get_admin_first_id(parent_groups)
+            group  = System::GroupHistory.find_by_id(admin_first_id)
+            prop_name = "#{prop.name}"
+            prop_name += "(#{group.name})" if group.present?
           %>
-          <td class="<%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
-            <%= render '/gw/admin/schedules/show_week_one', schedules: day_schedule_props.map(&:schedule), week_add_day: week_add_day, display_prop: prop if day_schedule_props.present? %>
-            <%= show_schedule_edit_icon(week_add_day, prop_id: prop.id, s_genre: @genre) if @is_gw_admin || @prop_edit_ids.include?(prop.id) -%>
-          </td>
-        <% end %>
-      </tr>
-    <% end %>
-    <%= show_week_header -%>
-  </tbody>
-</table>
-<% else -%>
-  <%= show_notice -%>
-<% end %>
+
+          <tr class="scheduleTableBody lineNo1">
+            <th class="scheduleUser">
+              <div class="username<%= " #{genre_class_s}" -%>">
+                <span>
+                  <a href="/gw/prop_others/<%= prop.id -%>?cls=other"><%= prop_name -%></a>
+                </span>
+                <span class="linkBox">
+                  <a href="/gw/schedule_props/<%= @calendar_first_day.strftime("%Y%m%d") -%>?s_genre=other&prop_id=<%= prop.id -%>&cls=other" class="dayLink">日表示</a>
+                  <a href="/gw/schedule_props/show_month?s_genre=other&s_date=<%= @calendar_first_day.strftime("%Y%m01") -%>&prop_id=<%= prop.id -%>&cls=other" class="monthLink">月表示</a>
+                </span>
+              </div>
+            </th>
+
+            <% 7.times do |i| %>
+            <%
+            week_add_day = week_first_day + i
+            class_str = create_month_class(week_add_day, @st_date, @holidays, params)
+
+            %>
+            <td class="<%= class_str -%>">
+            <% @schedules.each_with_index do |schedule, j| %>
+            <%
+            schedule_id = "sche#{schedule.id}_#{i + j + prop_cnt}"
+            if schedule.date_between(week_add_day)
+              participant = false
+              schedule.schedule_props.each do |schedule_prop|
+                break if participant
+                participant = schedule_prop.prop_id == prop.id
+              end
+
+              if participant
+            %>
+
+            <%= render(:partial => '/gw/admin/schedules/show_week_one',
+              :locals=>{:schedule => schedule, :week_add_day => week_add_day, :schedule_id => schedule_id}) -%>
+
+            <%
+              end # participant
+            end # date_between
+            %>
+            <% end %><!-- schedule End -->
+
+            <% if @is_gw_admin || (@prop_edit_ids.index(prop.id) && prop.reserved_state != 0 && prop.delete_state != 1) -%>
+            <%= show_schedule_edit_icon(week_add_day, :prop_id=>prop.id, :s_genre => "other") -%>
+            <% end -%>
+            </td>
+
+            <% end %><!-- 7 End -->
+          <% end %><!-- user End -->
+
+          </tr>
+
+          <%= show_week_header -%>
+
+          <% else -%>
+          <%= show_notice -%>
+          <% end %>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pieceBodyFooter">
+      <%= render(:partial => '/gw/admin/schedules/schedule_footer', :locals=>{:d=>@st_date, :mode=>'week', :show_flg => @show_flg}) -%>
+    </div>
+  </div>
 </div>
 
-<div class="pieceBodyFooter">
-  <%= render '/gw/admin/schedules/schedule_footer', d: @st_date, mode: 'week', show_flg: @show_flg -%>
-</div>
-</div>
-</div>
+<%= raw(gw_js_ind_popup) -%>
+<script type="text/javascript">
+//<![CDATA[
+  var my_load = function() {
+    gw_js_ind_popup();
+  }
+  window.onload = my_load;
+//]]>
+</script>

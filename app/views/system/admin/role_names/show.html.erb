@@ -1,11 +1,10 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%= render :partial => 'header' %>
 
+<div class="pieceBody">
 <div class="editingBox">
-  <span class="btEdit"><%= link_to "編集", "/system/role_names/#{@item.id}/edit" if @item.editable? %></span>
-  <span class="btDestroy"><%= link_to "削除", "/system/role_names/#{@item.id}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
+  <span class="btEdit"><%= link_to "編集" , "/system/role_names/#{@item.id}/edit"  if @item.editable? %></span>
+  <span class="btDestroy"><%= link_to "削除" , "/system/role_names/#{@item.id}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
 </div>
 
 <table class="show">

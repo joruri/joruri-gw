@@ -1,31 +1,36 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_members/new.html.erb</p>%>
 <%
 doc_link = %Q(#{@item1.title})
 state = Gwsub::Sb01TrainingSchedule.state_show(@item1.state)
 -%>
 
 <table class="show leftSide">
-  <tr>
-    <th>状況</th>
-    <td><%= state %></td>
-  </tr>
-  <tr>
-    <th>研修名</th>
-    <td><%= doc_link %></td>
-  </tr>
-  <tr>
-    <th>企画所属</th>
-    <td><%= @item1.group_name %></td>
-  </tr>
-  <tr>
-    <th>企画者</th>
-    <td><%= @item1.member_name %></td>
-  </tr>
-  <tr>
-    <th>連絡先電話番号</th>
-    <td><%= @item1.member_tel %></td>
-  </tr>
-  <tr>
-    <th>最終更新日</th>
-    <td><%= @item1.updated_at.strftime('%Y-%m-%d') unless @item1.updated_at.blank? %></td>
-  </tr>
+<tr>
+<th>状況</th>
+<td><%= state%></td>
+</tr>
+<tr>
+<th>研修名</th>
+<td><%= doc_link%></td>
+</tr>
+<!--<tr>
+<th>研修案内</th>
+<td><%#=@item1.body%></td>
+</tr>-->
+<tr>
+<th>企画所属</th>
+<td><%=h @item1.group_name %></td>
+</tr>
+<tr>
+<th>企画者</th>
+<td><%=h @item1.member_name %></td>
+</tr>
+<tr>
+<th>連絡先電話番号</th>
+<td><%=h @item1.member_tel %></td>
+</tr>
+<tr>
+<th>最終更新日</th>
+<td><%=h @item1.updated_at.strftime('%Y-%m-%d') unless @item1.updated_at.blank?%></td>
+</tr>
 </table>

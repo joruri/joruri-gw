@@ -1,15 +1,15 @@
 <div class="bbsDocList circular">
-<%= render 'piece_header', hide_new_action: true %>
-<%= render 'piece_banner' %>
+<%= render :partial => 'piece_header', :locals => {:hide_new_action => true} %>
+<%= render :partial => 'piece_banner' %>
 
 <div class="pieceBody">
 
-<%# render 'header' %>
+<%# render :partial => 'header' %>
 <%= form_for :item, :url => "/gwcircular/custom_groups", :action => :create, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
 
 <%= f.error_messages %>
 <div class="formTitle new">新規作成</div>
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <div class="submitters">
 <%= raw(submit_for_update(f, :js_submitter => "my_submit()", :caption => '登録する')) %>

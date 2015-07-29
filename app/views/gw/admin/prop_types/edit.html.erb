@@ -1,22 +1,21 @@
 <div class="piece prop form">
-<div class="pieceHeader">
-<%= render '/gw/admin/prop_others/piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render '/gw/admin/prop_others/prop_master_menu' %>
-  <%= render 'titleline' %>
-</div>
-<div class="pieceBodyBody">
-
-<%= form_for :item, :url => {:action => :update}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| -%>
-  <%= f.error_messages -%>
-  <%= render 'form', f: f -%>
-  <div class="preserve">
-    <%= f.submit '保存' %>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/prop_others/piece_header' -%>
   </div>
-<% end -%>
-
-</div>
-</div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/prop_others/prop_master_menu') %>
+      <%= render(:partial => 'titleline') %>
+    </div>
+    <div class="pieceBodyBody">
+      <%= div_notice -%>
+      <%= form_for :item, :url => {:action => :update}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| -%>
+        <%= f.error_messages -%>
+        <%= render :partial => 'form', :locals => {:f => f} -%>
+        <div class="preserve">
+          <%= f.submit '保存' %>
+        </div>
+      <% end -%>
+    </div>
+  </div>
 </div>

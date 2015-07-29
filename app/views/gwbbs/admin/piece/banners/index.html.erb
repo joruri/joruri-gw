@@ -1,29 +1,13 @@
 <% if params[:piece_param].blank? %>
 <div class="contentBanner"><%=raw @title.banner %></div>
 <% else %>
-<%
-# デザイン反映設定
-if nz(@title.preview_mode, false) == true && (params[:preview].blank? || params[:preview].to_s != "true")
-  s_style = ""
-  icon = ""
-  font = ""
-else
-  if nz(@title.banner_position, 0) == 0
-    s_style = %Q[style="background-color:#{@title.css}"]
-  else
-    s_style = %Q[style="background-image:url('#{@title.wallpaper}'); background-repeat:repeat;"]
-  end
-  icon = image_tag(@title.icon, alt: 'アイコン画像') if @title.icon.present?
-  font = %Q[style="color:#{@title.font_color}"]
-end
-%>
-<div class="pieceBanner" <%== s_style -%>>
-<h3><%== icon -%><span <%== font -%>><%= @title.title %></span></h3>
+<div class="pieceBanner">
+<h3><%= @title.title %></h3>
 <% unless @title.addnew_forbidden %>
-  <% if @title.is_writable? %>
-    <%= link_to " ", new_gwbbs_doc_path(title_id: params[:title_id], limit: params[:limit]), class: "btNew" %>
-  <% end %>
+<% if @is_writable %>
+  <%= link_to " ", new_gwbbs_doc_path({:title_id=>params[:title_id], :limit=>params[:limit]}), :class=>"btNew" %>
+<% end %>
 <% end %><!--addnew-->
-<%= render 'header_help' %>
+<%= render :partial => '/gwbbs/admin/docs/header_help' %>
 </div>
 <% end %>

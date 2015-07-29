@@ -1,72 +1,100 @@
-class Gw::Admin::PropOtherLimitsController < Gw::Controller::Admin::Base
+# encoding: utf-8
+class Gw::Admin::PropOtherLimitsController < Gw::Admin::PropGenreCommonController
   include System::Controller::Scaffold
   layout "admin/template/schedule"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = %w(/_common/themes/gw/css/prop_extra/schedule.css)
     Page.title = "一般施設マスタ件数制限"
-
     @is_gw_admin = Gw.is_admin_admin?
-    return error_auth unless @is_gw_admin
-
-    @prop_types = Gw::PropType.where(state: "public").select(:id, :name).order(:sort_no, :id)
+    @prop_types = Gw::PropType.find(:all, :conditions => ["state = ?", "public"], :select => "id, name", :order => "sort_no, id")
   end
 
   def index
-    @items = Gw::PropOtherLimit.where(state: 'enabled').order(:sort_no)
-      .paginate(page: params[:page], per_page: 20)
+    return authentication_error(403) unless @is_gw_admin
+
+    item = Gw::PropOtherLimit.new
+    item.page   params[:page], 20
+    item.order  "id"
+    @items = item.find(:all, :conditions => "state = 'enabled'", :order => "sort_no")
   end
 
   def show
-    @item = Gw::PropOtherLimit.find(params[:id])
+    return authentication_error(403) unless @is_gw_admin
+    @item = Gw::PropOtherLimit.new.find(params[:id])
   end
 
   def new
-    redirect_to "/gw/prop_other_limits", notice: "新規登録はできません。"
+    return authentication_error(403) unless @is_gw_admin
+
+    flash[:notice] = "新規登録はできません。"
+    location = "/gw/prop_other_limits"
+    redirect_to location
+    return
   end
 
   def create
-    @item = Gw::PropOtherLimit.find(params[:id])
+    return authentication_error(403) unless @is_gw_admin
+
+    @item = Gw::PropOtherLimit.new.find(params[:id])
     @item.attributes = params[:item]
 
-    _update @item, success_redirect_uri: "/gw/prop_other_limits"
+    location = "/gw/prop_other_limits"
+    options = {
+      :success_redirect_uri=>location}
+    _update @item,options
   end
 
   def edit
-    @item = Gw::PropOtherLimit.find(params[:id])
+    return authentication_error(403) unless @is_gw_admin
+
+    @item = Gw::PropOtherLimit.new.find(params[:id])
   end
 
   def update
-    @item = Gw::PropOtherLimit.find(params[:id])
+    return authentication_error(403) unless @is_gw_admin
+
+    @item = Gw::PropOtherLimit.new.find(params[:id])
     @item.attributes = params[:item]
 
-    _update @item, success_redirect_uri: "/gw/prop_other_limits/#{@item.id}"
+    location = "/gw/prop_other_limits/#{params[:id]}"
+    options = {
+      :success_redirect_uri=>location}
+    _update @item,options
   end
 
   def destroy
+    return authentication_error(403) unless @is_gw_admin
+
     @item = Gw::PropOtherLimit.find(params[:id])
-    _destroy @item, success_redirect_uri: "/gw/prop_other_limits"
+    location = "/gw/prop_other_limits"
+    options = {
+      :success_redirect_uri=>location}
+    _destroy(@item,options)
   end
 
   def synchro
-    items = Gw::PropOtherLimit.update_all(state: 'disabled')
-    groups = System::Group.where(state: 'enabled', level_no: 3).order(:sort_no)
+    return authentication_error(403) unless @is_gw_admin
 
-    groups.each do |group|
-      limit = Gw::PropOtherLimit.where(:gid => group.id).first
-      if limit.blank?
-        limit = Gw::PropOtherLimit.new
-        limit.state = "enabled"
-        limit.gid = group.id
-        limit.sort_no = group.sort_no
-        limit.limit = 20
+    items = Gw::PropOtherLimit.update_all("state = 'disabled'")
+    groups = System::Group.find(:all, :conditions => "state = 'enabled' and level_no = 3", :order => "sort_no")
+
+    groups.each { |group|
+      _model = Gw::PropOtherLimit.find_by_gid(group.id)
+      if _model.blank?
+        _model = Gw::PropOtherLimit.new
+        _model.state = "enabled"
+        _model.gid = group.id
+        _model.sort_no = group.sort_no
+        _model.limit = 20
       else
-        limit.state = "enabled"
-        limit.sort_no = group.sort_no
+        _model.state = "enabled"
+        _model.sort_no = group.sort_no
       end
-      limit.save!
-    end
-
-    redirect_to "/gw/prop_other_limits/", notice: "同期処理は終了しました。"
+      _model.save!
+    }
+    flash[:notice] = "同期処理は終了しました。"
+    redirect_to "/gw/prop_other_limits/"
   end
+
 end

@@ -1,91 +1,69 @@
 <%
-help_item = Questionnaire::Property::HelpLink.first_or_new
+array_help = get_enquete_help
 %>
 <div class="bbsDocList circular">
-<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+<div class="pieceHeader"><h2 class="pieceTitle"><%=@system_title%></h2></div>
 
 <div class="pieceBody">
-<%= render 'header' %>
-
+<%= render :partial => 'header' %>
 <div class="editingBox">
-  <% if @item.state == 'public' %>
-  <span class="btClosed"><%= link_to '締切', {:action => :closed}, :confirm => 'このアンケートの回答を締め切りますか' %></span>
-  <% end %>
-  <% if @item.state == 'closed' %>
-  <span class="btReturnReceipt"><%= link_to '締切解除', {:action => :open_enq}, :confirm => 'このアンケートの締め切りを解除しますか' %></span>
-  <% end %>
-  <% if @item.state == 'draft' %>
-  <span class="btStartReceipt"><%= link_to '公開', {:action => :open_enq}, :method => :get %></span>
-  <% end %>
-  <span class="btEdit"><%= link_to '編集', {:action => :edit} %></span>
-  <span class="btDestroy"><%= link_to '削除', {:action => :destroy}, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+
+<%if @item.state == 'public'%>
+<span class="btClosed"><%=link_to('締切', closed_questionnaire_menu_path(@item) , :confirm => 'このアンケートの回答を締め切りますか')%></span>
+<%end%>
+
+<%if @item.state == 'closed'%>
+<span class="btReturnReceipt"><%=link_to('締切解除', @item.reopen_path , :confirm => 'このアンケートの締め切りを解除しますか')%></span>
+<%end%>
+
+<%if @item.state == 'draft'%>
+<span class="btStartReceipt"><%=link_to('公開', open_enq_questionnaire_menu_path(@item), :method => :get) %></span>
+<%end%>
+
+<span class="btEdit"><%=link_to('編集', @item.edit_path) %></span>
+<span class="btDestroy"><%=link_to '削除', "#{@item.delete_path}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+<span class="docLink"><%#=link_to('&gt;&gt;テンプレート作成', @item.new_template_base_path(params[:cond])) %></span>
 </div>
 
 <table class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= @item.state_name %></td>
-  </tr>
-  <tr>
-    <th>形式<span class="help"><%=raw help_item.options_value[0][0] %></span></th>
-    <td><%= @item.enquete_division_state_name%></td>
-  </tr>
-  <tr>
-    <th>記事管理設定<span class="help"><%=raw help_item.options_value[1][0] %></span></th>
-    <td><%= @item.admin_setting_status %></td>
-  </tr>
-  <tr>
-    <th>配信先設定<span class="help"><%=raw help_item.options_value[6][0] %></span></th>
-    <td><%=@item.send_to_status%></td>
-  </tr>
-  <% if false %><% if @item.send_to == 1 %>
-  <tr>
-    <th>所属回答者区分</th>
-    <td><%= @item.send_to_kind_status %></td>
-  </tr>
-  <% end %><% end %>
-  <tr>
-    <th>一覧に表示<span class="help"><%=raw help_item.options_value[2][0] %></span></th>
-    <td>
-    <%= @item.include_index_states_name %>
-    <% unless @item.include_index %>
-    　集計結果のURLは&nbsp; &nbsp;<%= link_to @item.no_include_result_url, @item.no_include_result_url, :target => "_blank" %>
-    <% end if @item.result_open_state if @item.state == 'closed' %>
-    </td>
-  </tr>
-  <% if @item.state == "public" %>
-  <tr>
-    <th>回答用URL</th>
-    <td><%= link_to @item.no_include_index_answer_url, @item.no_include_index_answer_url, :target => "_blank" %></td>
-  </tr>
-  <% end %>
-  <tr>
-    <th>タイトル</th>
-    <td><%= @item.title %></td>
-  </tr>
-  <tr>
-    <th>回答期限日</th>
-    <td><%= @item.expiry_date.strftime('%Y-%m-%d %H:%M') if @item.expiry_date %></td>
-  </tr>
-  <tr>
-    <th>注意事項</th>
-    <td><%=hbr @item.remarks %></td>
-  </tr>
-  <tr>
-    <th>注意事項　表示<span class="help"><%=raw help_item.options_value[5][0] %></span></th>
-    <td><%= @item.remarks_states_name %></td>
-  </tr>
+<tr><th>状態</th>
+<td><%= @item.state_name%></td></tr>
+<tr><th>形式<span class="help"><%=show_enquete_help(0,array_help)%></span></th>
+<td><%= @item.enquete_division_state_name%></td></tr>
+<tr><th>記事管理設定<span class="help"><%=show_enquete_help(1,array_help)%></span></th>
+<td><%=@item.admin_setting_status%></td></tr>
+<tr><th>一覧に表示<span class="help"><%=show_enquete_help(2,array_help)%></span></th>
+<td>
+<%= h @item.include_index_states_name%>
+<%unless @item.include_index%>
+　回答用のURLは&nbsp; &nbsp;<%=link_to(@item.no_include_index_answer_url,@item.no_include_index_answer_url,:target=>"_blank")%>
+<%end if @item.state == 'public'%>
+<%unless @item.include_index%>
+　集計結果のURLは&nbsp; &nbsp;<%=link_to(@item.no_include_result_url,@item.no_include_result_url,:target=>"_blank")%>
+<%end if @item.result_open_state if @item.state == 'closed'%>
+</td></tr>
+
+<tr><th>タイトル</th>
+<td><%= h @item.title%></td></tr>
+<tr><th>回答期限日</th>
+<td><%=@item.expiry_date.strftime('%Y-%m-%d %H:%M') unless @item.expiry_date.blank?%></td></tr>
+<tr><th>注意事項</th>
+<td><%=hbr @item.remarks %></td></tr>
+<tr><th>注意事項　表示</th>
+<td><%=h @item.remarks_states_name %></td></tr>
+
 </table>
 
-<div align="center">
-<table>
-  <tr>
-    <td><div class="btReturn"><%= link_to 'アンケート管理一覧へ戻る', {:action => :index} %></div></td>
-    <td>&nbsp;&nbsp;</td>
-    <td><div class="btReturn"><%= link_to '設問登録へ進む >>', questionnaire_menu_form_fields_path(@item) %></div></td>
-  </tr>
-</table>
-</div>
+ <div align="center">
+ <table>
+ <tr>
+   <td><div class="btReturn"><%=link_to('アンケート管理一覧へ戻る', "/questionnaire/") %></div></td>
+   <td>&nbsp;&nbsp;</td>
+   <td><div class="btReturn"><%= link_to '設問登録へ進む >>', questionnaire_menu_form_fields_path(@item) %></div></td>
+ </tr>
+ </table>
+ </div>
+
 
 </div>
 </div>

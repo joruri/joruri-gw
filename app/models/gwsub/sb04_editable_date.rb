@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04EditableDate < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fy_rel    ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
 
@@ -80,13 +81,17 @@ class Gwsub::Sb04EditableDate < Gwsub::GwsubPref
     connect.execute(create_query)
     return
   end
-
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `gwsub_sb04_editable_dates` ;"
+    connect.execute(truncate_query)
+  end
   def self.today_published?(fyear_id = 0)
     # 当日が、公開しているかどうか選択
       today = Core.now
       find_cond = "published_at <='#{today}' and fyear_id = #{fyear_id}"
       find_order = "start_at DESC"
-      find_year = Gwsub::Sb04EditableDate.where(find_cond).order(find_order).first
+      find_year = Gwsub::Sb04EditableDate.find(:first,:conditions=>find_cond,:order=>find_order)
       if find_year.blank?
         return false
       else
@@ -98,7 +103,7 @@ class Gwsub::Sb04EditableDate < Gwsub::GwsubPref
       today = Core.now
       find_cond = "start_at <= '#{today}' and '#{today}' <= end_at and fyear_id = #{fyear_id}"
       find_order = "start_at DESC"
-      find_year = Gwsub::Sb04EditableDate.where(find_cond).order(find_order).first
+      find_year = Gwsub::Sb04EditableDate.find(:first,:conditions=>find_cond,:order=>find_order)
       if find_year.blank?
         return false
       else

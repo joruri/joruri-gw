@@ -1,31 +1,31 @@
+<%#*<p>Find me in app/views/gw/admin/year_mark_jp/index.html.erb</p>%>
 <div class="piece YearMarkJp">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
+
 <div class="pieceBody">
-<%= render 'menu' %>
-<%= render 'search' %>
+<%= render :partial => 'menu' %>
 
-<table class="index">
-  <colgroup class="action"></colgroup>
-  <colgroup class="name"></colgroup>
-  <colgroup class="mark"></colgroup>
-  <colgroup class="start_at"></colgroup>
-  <tr>
-    <th></th>
-    <th>年号</th>
-    <th>記号</th>
-    <th>開始日（西暦）</th>
-  </tr>
-  <% @items.each do |item| %>
-    <tr>
-      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
-      <td><%= item.name %></td>
-      <td><%= item.mark %></td>
-      <td><%= item.start_at.strftime('%Y-%m-%d') if item.start_at %></td>
-    </tr>
-  <% end %>
-</table>
-
+<%= render :partial => 'search' %>
+<%
+  #path_index = Gw.chop_with("#{Site.current_node.public_uri}",'/')
+  path_index = "/gw/year_mark_jps"
+  #link_to_action = nil
+  link_to_show = 1
+  options = {
+   'table_name' => 'gw_year_mark_jps' ,
+   'sort_link_options' => {
+    'sort_keys' => @sort_keys,
+    'path_index' => path_index,
+    'other_query_string' => @qs
+    },
+    'link_to_show'    => nz(link_to_show,1)
+  }
+%>
+<br/>
+<%= raw(table_to_index2 @items, options) %>
+<br/>
 <%= paginate @items %>
-
+<br/>
 </div>
+
 </div>

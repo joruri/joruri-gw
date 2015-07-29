@@ -1,7 +1,8 @@
+# encoding: utf-8
 module ApplicationHelper
   ## nl2br
   def br(str)
-    str.to_s.gsub(/\r\n|\r|\n/, '<br />').html_safe
+    str.gsub(/\r\n|\r|\n/, '<br />').html_safe
   end
 
   ## nl2br and escape
@@ -74,7 +75,7 @@ module ApplicationHelper
       links.gsub!(/<a [^>]*?rel="prev( |")/) {|m| m.gsub(/<a /, '<a accesskey="*" ')}
       links.gsub!(/<a [^>]*?rel="next( |")/) {|m| m.gsub(/<a /, '<a accesskey="#" ')}
     end
-    links.html_safe
+    links
   end
 
 ###  ## Emoji
@@ -89,6 +90,21 @@ module ApplicationHelper
 ###    return ruby == true ? Cms::Lib::Navi::Ruby.convert(str) : str
 ###  end
 
+  ## Number format
+  def number_format(num)
+    number_to_currency(num, :unit => '', :precision => 0)
+  end
+
+  #show tag if condition is true.
+  def show_tag_if(tag, cond, options = {}, &block)
+    unless cond
+      options[:style] ||= ''
+      options[:style] += 'display:none;'
+    end
+
+    content_tag(tag, options, &block)
+  end
+
   def div_notice(str=nil)
     str = flash[:notice] || str
     Gw.div_notice(str)
@@ -96,6 +112,10 @@ module ApplicationHelper
 
   def show_notice(str="表示する項目はありません。")
     div_notice(str)
+  end
+  
+  def no_item_notice(str="表示する項目はありません。")
+    Gw.div_notice(str)
   end
 
   def hbf_struct(prefix, options={})
@@ -128,15 +148,84 @@ module ApplicationHelper
     return ret
   end
 
+  def tabbox_struct(tab_captions, selected_tab_idx=nil, options={})
+    tab_current_cls_s = ' ' + Gw.trim(nz(options[:tab_current_cls_s], 'current'))
+    id_prefix = Gw.trim(nz(options[:id_prefix], nz(options[:name_prefix], '')))
+    id_prefix = "[#{id_prefix}]" if !id_prefix.blank?
+    tabs = <<-"EOL"
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+EOL
+    tab_idx = 0
+    tab_captions.each_with_index{|x, idx|
+      tab_idx += 1
+      _name = "tabBox#{id_prefix}[#{tab_idx}]"
+      _id = Gw.idize(_name)
+      tabs += %Q(<td class="tab#{selected_tab_idx - 1 == idx ? tab_current_cls_s : nil}" id="#{_id}">#{x}</td>) +
+        (tab_captions.length - 1 == idx ? '' : '<td class="spaceCenter"></td>')
+    }
+    tabs += <<-"EOL"
+<td class="spaceRight"></td>
+</tr>
+</tbody>
+</table>
+</div><!--tabBox-->
+EOL
+    return tabs
+  end
+  def search_struct(search_fields, options={})
+    submits = <<-EOL
+#{submit_tag '検索',     :name => :search}
+#{submit_tag 'リセット', :name => :reset}
+EOL
+    @content_for_form = ''
+    content_for :form do
+      form_tag '', :method => :get, :class => 'search' do
+        if options[:old].blank?
+          concat <<-EOL
+<div class="indication">
+#{ret=''; search_fields.each{|search_field|
+  ret += search_field
+}; ret}
+#{submits}
+</div>
+EOL
+        else
+          concat <<-EOL
+<table>
+<tr>
+#{ret=''; search_fields.each{|search_field|
+  ret += "<td>#{search_field}</td>"
+}; ret}
+<td class="submitters">
+#{submits}
+</td>
+</tr>
+</table>
+EOL
+        end
+      end
+    end
+    @content_for_form
+  end
+
   def required_head
     Gw.required_head
   end
-
   def required(str='※')
     Gw.required(str)
   end
 
-  def wiki_show(content = '')
-    PikiDoc.to_xhtml(content)
+
+
+  def filter_select_tag(value, relation_name, params, options={})
+    before  = options[:before]  ? options[:before]  : [['全て', :all]]
+    after   = options[:after]   ? options[:after]   : []
+    default = options[:default] ? options[:default] : nil
+    select_tag( value ,options_for_select( Gw.yaml_to_array_for_select_with_additions(before, relation_name, after), params[value] ? params[value] : default) )
   end
+
 end

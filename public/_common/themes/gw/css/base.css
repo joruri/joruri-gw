@@ -98,7 +98,7 @@ br {
   letter-spacing: normal;
 }
 #container {
-  min-width: 980px;
+  min-width: 920px;
   width: 100%;
   height: 100%;
   margin: 0px auto;
@@ -112,7 +112,7 @@ br {
 #navi2 {
   clear: both;
   width: 98%;
-  margin: 10px auto 0;
+  margin: 0px auto;
 }
 #main {
   clear: both;
@@ -131,24 +131,4 @@ br {
 .show .pieceBodyBody, .form .pieceBodyBody {
   width: 700px;
   margin: 0 auto;
-}
-
-/* clearfix
---------------------------------------------------------- */
-.clearfix:after {
-  content: ".";  /* 新しい要素を作る */
-  display: block;  /* ブロックレベル要素に */
-  clear: both;
-  height: 0;
-  visibility: hidden;
-}
-.clearfix {
-  min-height: 1px;
-}
-* html .clearfix {
-  height: 1px;
-  /*¥*//*/
-  height: auto;
-  overflow: hidden;
-  /**/
 }

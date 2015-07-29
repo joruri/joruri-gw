@@ -1,6 +1,6 @@
 <%
 if params[:prop_id].present?
-  type_id = Gw::PropOther.where("id=#{params[:prop_id]} and delete_state = 0").first.type_id
+  type_id = Gw::PropOther.find(:first, :conditions => "id=#{params[:prop_id]} and delete_state = 0").type_id
 else
   if @is_gw_admin
     type_id = nz(params[:type_id], 100).to_i

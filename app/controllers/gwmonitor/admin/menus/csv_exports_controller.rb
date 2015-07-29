@@ -1,79 +1,92 @@
+# -*- encoding: utf-8 -*-
 class Gwmonitor::Admin::Menus::CsvExportsController < Gw::Controller::Admin::Base
+
   include System::Controller::Scaffold
+  include Gwmonitor::Model::Database
   include Gwmonitor::Controller::Systemname
   layout "admin/template/gwmonitor"
 
+  rescue_from ActionController::InvalidAuthenticityToken, :with => :invalidtoken
+
   def pre_dispatch
     Page.title = "照会・回答システム"
+    @title_id = params[:title_id]
     @system_title = disp_system_name
     @css = ["/_common/themes/gw/css/monitor.css"]
 
-    @title = Gwmonitor::Control.find(params[:title_id])
-    return error_auth unless @title.is_admin?
+    @title = Gwmonitor::Control.find_by_id(@title_id)
+    return http_error(404) unless @title
+  end
+
+  def is_admin
+    system_admin_flags
+    ret = false
+    ret = true if @is_sysadm
+    ret = true if @title.creater_id == Site.user.code  if @title.admin_setting == 0
+    ret = true if @title.section_code == Site.user_group.code  if @title.admin_setting == 1
+    return ret
   end
 
   def index
-    @item = System::Model::FileConf.new(encoding: 'sjis')
+    return authentication_error(403) unless is_admin
+    params[:nkf] = 'sjis'
   end
 
   def export_csv
-    @item = System::Model::FileConf.new(encoding: 'sjis')
-    @item.attributes = params[:item]
-
-    main_title = ["",""]
-    enable  =["","","","","","","","","",""]
-    label = ["","","","","","","","","",""]
-
-    if @title.form_name == "form002" && @title.form_configs.present?
-      configs = JSON.parse(@title.form_configs)
-      main_title = configs[0]
-      enable = configs[1]
-      label = configs[2]
-    end
-
-    headers =  ["アンケートid", "アンケート名", "状態", "所属コード", "所属名", "回答者名"]
-    if @title.form_name == "form002"
-      headers << "項目名"
-      10.times do |i|
-        if enable[i] == "enabled"
-          headers << "#{label[i]}"
-          headers << "#{label[i]}（#{main_title[1]}）"
+    return authentication_error(403) unless is_admin
+    filename = "gwmonitor#{Time.now.strftime('%Y%m%d%H%M%S')}"
+    nkf_options = case params[:item][:nkf]
+        when 'utf8'
+          '-w'
+        else
+          '-s'
         end
-      end
-    else
-      headers << "返信欄"
+    item = Gwmonitor::Doc.new
+    item.and :title_id , @title.id
+    item.and 'sql', "state != 'preparation'"
+    item.order 'section_sort, l2_section_code, section_code'
+    items = item.find(:all,:select=>"title_id, id, state, section_code, section_name, editor_id, editor, body, editdate")
+
+    put1 = []
+    items.each do |b|
+      put1 << make_csv(b)
     end
-    headers << "回答日時"
 
-    csv = @title.docs.where.not(state: 'preparation').order(:section_sort, :l2_section_code, :section_code)
-      .select(:title_id, :id, :state, :section_code, :section_name, :editor_id, :editor, :body, :editdate)
-      .to_csv(headers: headers) {|item| make_csv(item, main_title, enable) }
+    csv_header =  []
+    csv_header << "アンケートid"
+    csv_header << "アンケート名"
+    csv_header << "状態"
+    csv_header << "所属コード"
+    csv_header << "所属名"
+    csv_header << "回答者名"
+    csv_header << "返信欄"
+    csv_header << "回答日時"
 
-    send_data @item.encode(csv), type: 'text/csv', filename: "gwmonitor#{Time.now.strftime('%Y%m%d%H%M%S')}.csv"
+    put2 = [csv_header]
+    put1.each do |p|
+      put2 << p
+    end
+
+    options={:force_quotes => true ,:header=>nil }
+    csv_string = Gw::Script::Tool.ary_to_csv(put2, options)
+    send_data(NKF::nkf(nkf_options,csv_string), :type => 'text/csv', :filename => "#{filename}.csv")
   end
 
-  def make_csv(b, main_title, enable)
-    answers   = ["","","","","","","","","",""]
-    remarks   = ["","","","","","","","","",""]
+  def make_csv(b)
+    data = []
+    data << b.title_id.to_s
+    data << @title.title.to_s
+    data << b.status_name_csv.to_s
+    data << b.section_code.to_s
+    data << b.section_name.to_s
+    data << b.editor.to_s
+    data << b.body.to_s
+    data << b.editdate.to_s
+    return data
+  end
 
-    data = [b.title_id, @title.title, b.status_name_csv, b.section_code, b.section_name, b.editor]
-    if @title.form_name == "form002"
-      data << main_title[0]
-      if b.body.present?
-        answer_sets = JSON.parse(b.body)
-        answers = answer_sets[0]
-        remarks = answer_sets[1]
-      end
-      10.times do |i|
-        if enable[i] == "enabled"
-          data << answers[i]
-          data << remarks[i]
-        end
-      end
-    else
-      data << b.body
-    end
-    data << b.editdate
-    data
+  private
+  def invalidtoken
+    return http_error(404)
   end
 end

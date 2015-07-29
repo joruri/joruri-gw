@@ -3,24 +3,27 @@ str_limit = ""
 str_limit = "&limit=#{params[:limit]}" unless params[:limit].blank?
 title_path = digitallibrary_docs_path({:title_id => @title.id})
 %>
-<%= render '/digitallibrary/admin/docs/search' %>
+<%= render :partial => '/digitallibrary/admin/docs/search' %>
 <% unless params[:state] == 'DATE'%>
 <div class="sideMenu" <%=raw @title.sidelist_style %>>
 <%=raw @title.other_system_link unless @title.other_system_link.blank? %>
 <% unless @title.left_index_use == '0' %>
+<%#if @title.importance == 0%>
+<!--<div class="dateIndex"><%= link_to "日付順一覧", "#{title_path}&state=DATE#{str_limit}" %></div> -->
+<%#end%>
 <div id="sideList">
 <ul>
-  <% if @title.left_banner.present? %>
-    <li class="root"><%= link_to @title.left_banner.html_safe, @title.docs_path %></li>
-  <% end %>
-  <% unless params[:fld] == 'fop' %>
-    <li class="all"><span><%= link_to "階層全開 ▼", "#{title_path}#{str_limit}&fld=fop" %></span></li>
-  <% else %>
-    <li class="close"><span><%= link_to "階層全閉 ▲", "#{title_path}#{str_limit}" %></span></li>
-  <% end %>
-  <%= digitallibrary_folder_trees(@items) %>
+<% if @title.left_banner.present? %>
+<li class="root"><%= link_to @title.left_banner.html_safe, @title.docs_path %></li>
+<% end %>
+<% unless params[:fld] == 'fop' %>
+  <li class="all"><span><%= link_to "階層全開 ▼", "#{title_path}#{str_limit}&fld=fop" %></span></li>
+<% else %>
+  <li class="close"><span><%= link_to "階層全閉 ▲", "#{title_path}#{str_limit}" %></span></li>
+<% end %>
+<%= digitallibrary_folder_trees(@items) %>
 </ul>
 </div>
-<% end %>
+<% end %><%# left_index_use %>
 </div>
 <% end %>

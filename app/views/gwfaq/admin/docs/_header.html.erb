@@ -1,5 +1,5 @@
-<% if @title.use_recognize? %>
-  <%= render 'header_recognize' %>
-<% else %>
-  <%= render 'header_normal' %>
-<% end %>
+<%if @title.use_recognize%>
+<%=render(:partial => 'header_recognize')%>
+<%else%>
+<%=render(:partial => 'header_normal')%>
+<%end%>

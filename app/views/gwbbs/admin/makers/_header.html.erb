@@ -1,30 +1,27 @@
 <div class="contentMenu">
-  <% if Gwbbs::Control.is_sysadm? %>
-    <span class="btNew "><%= link_to '掲示板を作成する', action: :new %></span>
-  <% end %>
-  <% if @is_gw_admin %>
-    <span class="docLink"><%= link_to 'アイコン・バナー登録へ >>', gwboard_files_path %></span>
-  <% else %>
-    <span class="docLink"><%= link_to 'アイコン登録へ >>', gwboard_files_path %></span>
-  <% end %>
+<%if @is_sysadm%>
+<span class="btNew "><%=link_to('掲示板を作成する', new_gwbbs_maker_path)%></span>
+<%end%>
 </div>
 
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-    <tr>
-      <td class="spaceLeft"></td>
-      <td class="tab<%= ' current' unless params[:state] == 'SECTION' unless params[:state] == 'HIDE'%>"><%= link_to '管理可能掲示板', gwbbs_makers_path %></td>
-      <td class="spaceCenter"></td>
-      <td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%= link_to '管理可能掲示板（非表示）', gwbbs_makers_path({:state=>"HIDE"}) %></td>
-      <% if Gwbbs::Control.is_sysadm? %>
-      <td class="spaceCenter"></td>
-      <td class="tab<%= ' current' if params[:state] == 'SECTION'%>"><%= link_to '所属課作成掲示板', gwbbs_makers_path({:state=>"SECTION"}) %></td>
-      <% end %>
-      <td class="spaceCenter"></td>
-      <td class="tab"><%= link_to '掲示板一覧', '/gwbbs' %></td>
-      <td class="spaceRight"></td>
-    </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="tab<%= ' current' unless params[:state] == 'SECTION' unless params[:state] == 'HIDE'%>"><%=link_to '管理可能掲示板', gwbbs_makers_path %></td>
+<td class="spaceCenter"></td>
+<td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%=link_to '管理可能掲示板（非表示）', gwbbs_makers_path({:state=>"HIDE"}) %></td>
+<%if @is_sysadm%>
+<td class="spaceCenter"></td>
+<td class="tab<%= ' current' if params[:state] == 'SECTION'%>"><%=link_to '所属課作成掲示板', gwbbs_makers_path({:state=>"SECTION"}) %></td>
+<%end%>
+<td class="spaceCenter"></td>
+<td class="tab"><%=link_to '掲示板一覧', '/gwbbs' %></td>
+<td class="spaceRight"></td>
+</tr>
+</tbody>
 </table>
 </div>
+
+

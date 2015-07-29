@@ -1,9 +1,9 @@
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-  <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-  <%= render 'menu' %>
-  <%= render 'display_name' -%>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+  <%= render :partial => 'menu' %>
+  <%= render :partial => 'display_name' -%>
     <div class="showMenu">
       <%= link_to '編集' , "#{@public_uri}/#{@item.id}/edit" %>
     </div>
@@ -11,6 +11,7 @@
 
 <div class="pieceBody">
   <div class="pieceBodyBody">
+    <%= div_notice -%>
     <table class="show">
       <tr>
         <th>種別</th><td><%= @item.get_type_name  -%></td>

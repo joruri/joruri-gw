@@ -1,0 +1,82 @@
+<%
+#concat <<-EOL
+#{render(:partial => '/gw/admin/schedules/header')}
+#{render(:partial => '/gw/admin/schedules/header_setting')}
+#{render(:partial => '/gw/admin/schedules/header_setting_ind')}
+#EOL
+header = <<-EOL
+#{render :partial => '/gw/admin/schedules/piece_header'}
+#{show_notice}
+EOL
+
+if @key=='ssos'
+  #titles = Gw::NameValue.get_cache('yaml', nil, 'gw_settings')
+  body = {
+  :header => <<-EOL,
+  <div class="titleLine">
+  <span class="title">個人設定</span>
+  </div>
+  EOL
+  :body => <<-EOL
+  <a name="#{@key}"></a><h4>総務事務システムシングルサインオン設定</h4>
+  #{
+    out_form_ind @key
+  }
+  EOL
+  }
+  concat hhbff_struct(:schedulePiece, :setting, :header=>header, :body=>body)
+elsif @key=='mobiles'
+  body = {
+  :header => <<-EOL,
+  <div class="titleLine">
+  <span class="title">個人設定</span>
+  </div>
+  EOL
+  :body => <<-EOL
+  <a name="#{@key}"></a><h4>携帯等メール転送設定</h4>
+  #{
+    out_form_ind @key
+  }
+  EOL
+  }
+  concat hhbff_struct(:schedulePiece, :setting, :header=>header, :body=>body)
+else
+content_for :item do
+  form_for :item, :url => "/gw/schedules/edit_ind_#{@key}", :html => {:method=>:put, :multipart => true} do |f|
+#    concat hidden_field_tag('key', @key)
+#    concat hidden_field_tag('item[week_view_piecehead_format]', @item[:week_view_piecehead_format])
+#    concat hidden_field_tag('item[month_view_piecehead_format]', @item[:month_view_piecehead_format])
+#    concat hidden_field_tag('item[month_view_dayhead_format]', @item[:month_view_dayhead_format])
+#    concat hidden_field_tag('item[header_each]', @item[:header_each])
+    concat '<table class="show">'
+    concat "<tr><th>月表示の開始曜日</th><td>"
+    concat radio(f, :month_view_leftest_weekday, Gw.yaml_to_array_for_select('gw_schedules_month_view_leftest_weekday'),
+        {:force_tag => 1, :selected => @item[:month_view_leftest_weekday].to_i})
+    concat "</td></tr>"
+    concat "<tr><th>場所の表示</th><td>"
+    concat radio(f, :view_place_display, {'0'=>'表示しない', '1'=>'表示する'},
+        {:force_tag => 1, :selected => @item[:view_place_display].to_i})
+    concat "</td></tr>"
+    concat '</table>'
+    concat submit_for(f, {:caption => '保存',:id=>"item_submit_#{@key}"})
+  end
+end
+
+titles = Gw::NameValue.get_cache('yaml', nil, 'gw_settings')
+
+body = {  :header => <<-EOL,
+<div class="titleLine">
+<span class="title">個人設定</span>
+</div><!--titleLine-->
+EOL
+  :body => <<-EOL
+<a name="#{@key}"></a><h4>#{titles[@key]}</h4>
+#{
+  out_form_ind @key if @key != "schedules"
+}
+#{@content_for_item if @key == "schedules"}
+EOL
+}
+concat hhbff_struct(:schedulePiece, :setting, :header=>header, :body=>body)
+end
+%>

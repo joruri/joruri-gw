@@ -1,17 +1,18 @@
 <div class="explainIcon">
-  <span class="title">凡例 ：</span>
-  <% if @title.importance == 1 %>
-  <span class="important">重要必読</span>
-  <% end %>
-  <span class="attach">添付ファイルあり</span>
-  <span class="balloon">コメント可</span>
-</div>
-
-<% if params[:state] == 'VOID' %>
-  <% if @title.is_admin? %>
-    <div class="editingBox">
-      <span class="btDestroy"><%= link_to '一括削除', "#{destroy_void_documents_gwbbs_docs_path({:title_id=>@title.id})}#{gwbbs_params_set}", confirm: '削除をすると元に戻せません。削除しますか' %></span>
-      <%= "(#{@items.total_entries}件の公開期限切れ記事があります)" -%>
-    </div>
-  <% end %>
+<span class="title">凡例 ：</span>
+<%if @title.importance == 1 %>
+<span class="important">重要必読</span>
 <% end %>
+<span class="attach">添付ファイルあり</span>
+<span class="balloon">コメント可</span>
+</div>
+<%if params[:state]=='VOID'%>
+<%if @is_admin%>
+<%unless @void_items.blank?%>
+<div class="editingBox">
+<span class="btDestroy"><%=link_to '一括削除', "#{destroy_void_documents_gwbbs_docs_path({:title_id=>@title.id})}#{gwbbs_params_set}", :confirm => '削除をすると元に戻せません。削除しますか' %></span>
+<%= "(#{@void_items.length}件の公開期限切れ記事があります)" -%>
+</div>
+<%end%>
+<%end%>
+<%end%>

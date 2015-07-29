@@ -1,10 +1,10 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "gwfaq"
   scp = "admin"
 
-  match 'gwfaq',            :to => 'gwboard/admin/knowledges#index', :via =>  [:post, :get]
-  match 'gwfaq/controls',   :to => 'gwboard/admin/knowledge_makers#index', :via =>  [:post, :get]
-
+  match 'gwfaq',            :to => 'gwboard/admin/knowledges#index'
+  match 'gwfaq/controls',   :to => 'gwboard/admin/knowledge_makers#index'
+  
   #scope "_#{scp}" do
     namespace mod do
       scope :module => scp do

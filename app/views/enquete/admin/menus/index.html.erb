@@ -4,34 +4,34 @@ is_state_view = true unless params[:cond].blank?
 %>
 <div class="bbsDocList circular">
 <div class="pieceHeader">
-  <h2 class="pieceTitle"><%= Page.title %></h2>
-  <div class="btsHeaderLeft"><span class="btNew"><%= link_to '新規作成', "/questionnaire/new" %></span></div>
+  <h2 class="pieceTitle"><%=@system_title%></h2>
+  <div class="btsHeaderLeft"><span class="btNew"><%=link_to('新規作成', "/questionnaire/new")%></span></div>
 </div>
 
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
 <table class="index">
-  <tr>
-    <% if is_state_view %>
-    <th style="width: 60px;">状態</th>
-    <% end %>
-    <th style="width: 50px;">形式</th>
-    <th>タイトル</th>
-    <th style="width: 200px;">作成者</th>
-    <th style="width: 120px;">アンケート終了日時</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
-    <% if is_state_view %>
-    <td style="width:60px;"><%= item.base.state_name %></td>
-    <% end %>
-    <td style="width:50px;"><%= item.enquete_division_state_name %></td>
-    <td><%= link_to item.view_title, enquete_link_url(item, is_state_view) %></td>
-    <td><%= item.createrdivision %></td>
-    <td><%=raw item.display_expiry_date %></td>
-  </tr>
-  <% end %>
+<tr>
+<%if is_state_view%>
+<th style="width: 60px;">状態</th>
+<%end%>
+<th style="width: 50px;">形式</th>
+<th>タイトル</th>
+<th style="width: 200px;">作成者</th>
+<th style="width: 120px;">アンケート終了日時</th>
+</tr>
+<%for item in @items%>
+ <tr class="<%= cycle 'article', 'article cycle' %>">
+<%if is_state_view%>
+ <td style="width:60px;"><%=item.base.state_name unless item.base.blank?%></td>
+<%end%>
+ <td style="width:50px;"><%=item.enquete_division_state_name%></td>
+ <td><%=link_to(item.view_title, item.enquete_path)%></td>
+ <td><%="#{item.createrdivision}"%></td>
+ <td><%=raw(item.display_expiry_date)%></td>
+ </tr>
+<%end%>
 </table>
 
 </div>

@@ -1,17 +1,18 @@
+<%# app/views/gw/public/todos/index.html.erb %>
 <%
-#render '/gw/public/todos/header'
-#render 'search'
+#render :partial => '/gw/public/todos/header'
+#render :partial => 'search'
 now = Time.now
 %>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render :partial => '/gw/admin/todos/piece_header'%>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render '/gw/admin/todos/search' %>
+<%=render :partial => '/gw/admin/todos/search'%>
 <% if @items.length== 0 %>
-  <%= show_notice -%>
+  <%= Gw.div_notice('表示する項目はありません。') -%>
 <% else %>
   <table class="index" id="contentTable">
     <tr>
@@ -65,7 +66,7 @@ now = Time.now
   <% end %>
   </table>
 <% end %>
-<%= paginate(@items) %>
+<%= raw(paginate(@items)) %>
 </div>
 <div class="pieceBodyBody"></div>
 <div id="loadImg" style="display: none;">Now Loading...</div>

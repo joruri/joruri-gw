@@ -1,7 +1,12 @@
-<%= render 'folder_name' %>
+<%= render :partial => 'folder_name' %>
 
 <%= form_for :item, :url => "/doclibrary/folders/#{@item.id}?title_id=#{params[:title_id]}&state=#{params[:state]}&cat=#{params[:cat]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}", :html => {:method=>:put, :multipart => true, :id => 'itemForm'} do |f| %>
+
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for(f, :caption=>"編集する",:js_submitter => 'my_submit()') %>
+
+  <%= render :partial => 'form', :locals => {:f => f} %>
+
+  <%= submit_for(f, :caption=>"編集する",:js_submitter => 'my_submit()') unless @parent_config.length == 0 %>
+  <%= submit_for(f, {:js_submitter => 'my_submit()', :caption=>"編集する"}) if @parent_config.length == 0 %>
+
 <% end %>

@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to  :fy_rel     ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
 
@@ -65,7 +66,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
     else
       order = "start_at DESC"
       conditions = "markjp = '#{self.fyear_markjp}'"
-      fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+      fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
       self.fyear_id = fyear.id
     end
 
@@ -176,7 +177,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
         else
           csv = CSV.parse(file)
 
-          year_fiscal = Gw::YearFiscalJp.where(:id =>par_item[:fyed_id]).first
+          year_fiscal = Gw::YearFiscalJp.find_by_id(par_item[:fyed_id])
           csv.each_with_index do |row, i|
             error_msg_row = Array.new
             error_csv_row = row.dup
@@ -299,7 +300,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
 
   def self.check_fyear_id(fyear_id = nil)
     # 指定fyear_idと、違うデータがないかどうかチェックする。
-    items = self.all
+    items = self.find(:all)
     items.each do |item|
       return false if item.fyear_id.to_i != fyear_id.to_i #違うデータがあればfalse
     end
@@ -313,10 +314,9 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
     _msg_count = 'のデータは登録されていません。'
     check = Hash::new
 
-    check_1_count = Gwsub::Sb04CheckOfficialtitle.all.count
+    check_1_count = Gwsub::Sb04CheckOfficialtitle.count(:id)
     if check_1_count > 0
       check_1 = Gwsub::Sb04CheckOfficialtitle.check_fyear_id(fyear_id)
-      dump check_1
       if check_1 != true
         msg << '職名' + _msg
       end
@@ -326,7 +326,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
     end
 
     check_2 = true
-    check_3_count = Gwsub::Sb04CheckSection.all.count
+    check_3_count = Gwsub::Sb04CheckSection.count(:id)
     if check_3_count > 0
       check_3 = Gwsub::Sb04CheckSection.check_fyear_id(fyear_id)
       if check_3 != true
@@ -337,7 +337,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
       msg << '所属' + _msg_count
     end
 
-    check_4_count = Gwsub::Sb04CheckAssignedjob.all.count
+    check_4_count = Gwsub::Sb04CheckAssignedjob.count(:id)
     if check_4_count > 0
       check_4 = Gwsub::Sb04CheckAssignedjob.check_fyear_id(fyear_id)
       if check_4 != true
@@ -348,7 +348,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
       msg << '担当' + _msg_count
     end
 
-    check_5_count = Gwsub::Sb04CheckStafflist.all.count
+    check_5_count = Gwsub::Sb04CheckStafflist.count(:id)
     if check_5_count > 0
       check_5 = Gwsub::Sb04CheckStafflist.check_fyear_id(fyear_id)
       if check_5 != true
@@ -368,6 +368,12 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
     return check
   end
 
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `#{self.table_name}` ;"
+    connect.execute(truncate_query)
+  end
+
   def self.set_autoincrement_number
     # auto_incrementを設定。truncate_tableの後に実行。
     id = Gwsub::Sb04stafflist.maximum(:id)
@@ -380,7 +386,7 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
   def self.import_table(fyear_id = nil)
     Gwsub::Sb04stafflist.destroy_all(:fyear_id=>fyear_id)
     fields = Array.new
-    items = self.all.order(:id)
+    items = self.find(:all, :order => 'id')
 
     self.columns.each do |column|
       fields << "#{column.name}"

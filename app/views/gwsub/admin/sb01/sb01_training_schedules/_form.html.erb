@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_conditions/form.html.erb</p>%>
 <%
 times_st   = Gwsub::Sb01TrainingScheduleCondition.select_times
 times_ed   = Gwsub::Sb01TrainingScheduleCondition.select_times_end
@@ -19,33 +20,31 @@ end
 <%= hidden_field_tag 'limit', @limits %>
 
 <%= f.error_messages %>
-<%= required_head %>
+<%= raw(required_head) %>
 <table class="show">
-  <tr>
-    <th>研修日</th>
-    <td><%= @item.from_start.strftime('%Y-%m-%d') unless @item.from_start.blank? %></td>
-  </tr>
-  <tr>
-    <th>開催時刻<%= required %></th>
-    <td>
-      <%= select_tag("item[st_time]", Gw.options_for_select(times_st, st_time)) %>　：
-      <%= select_tag("item[st_time_min]", Gw.options_for_select(times_min, st_time_min)) %>　～　
-      <span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
-        <%= select_tag("item[ed_time]", Gw.options_for_select(times_ed, ed_time)) %>
-      </span>　：
-      <span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
-        <%= select_tag("item[ed_time_min]", Gw.options_for_select(times_min, ed_time_min)) %>
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <th>場所<%= required %></th>
-    <td><%= f.text_field :prop_name ,:size=>80 %></td>
-  </tr>
-  <tr>
-    <th>定員<%= required %></th>
-    <td><%= f.text_field :members_max ,:size=>30 %>人</td>
-  </tr>
+<tr>
+  <th>研修日</th>
+  <td><%=h @item.from_start.strftime('%Y-%m-%d') unless @item.from_start.blank?%></td>
+</tr>
+<tr>
+  <th>開催時刻<%= raw(required) %></th>
+  <td>
+    <%= select_tag("item[st_time]", Gw.options_for_select(times_st, st_time)) %>　：
+    <%= select_tag("item[st_time_min]", Gw.options_for_select(times_min, st_time_min)) %>　～　
+<span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
+<%= select_tag("item[ed_time]", Gw.options_for_select(times_ed, ed_time)) %></span>　：
+<span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
+  <%= select_tag("item[ed_time_min]", Gw.options_for_select(times_min, ed_time_min)) %></span>
+
+  </td>
+</tr>
+<tr>
+  <th>場所<%= raw(required) %></th>
+  <td><%= f.text_field :prop_name ,:size=>80 %></td>
+</tr>
+<tr><th>定員<%= raw(required) %></th>
+<td><%= f.text_field :members_max ,:size=>30 %>人</td>
+</tr>
 </table>
 <br />
 <div class="preserve">
@@ -53,3 +52,5 @@ end
 </div>
 
 <br />
+<%= raw(gw_js_include_full) %>
+

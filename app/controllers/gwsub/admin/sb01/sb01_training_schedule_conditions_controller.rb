@@ -1,5 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
 
   # 研修　施設予約　条件
   layout "admin/template/sb01_training"
@@ -39,7 +43,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
     @item.from_start_min= "00"
     @item.from_end      = "16"
     @item.from_end_min  = "00"
-    @item.member_id     = Core.user.id
+    @item.member_id     = Site.user.id
     @item.repeat_flg    = '1'
     @item.state         = '2'
     @item.prop_kind     = '9'
@@ -89,10 +93,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
   end
 
   def update_schedule(from_st, from_ed,prop, m_max)
-    t_skd = Gwsub::Sb01TrainingSchedule.where("condition_id = #{@item.id}")
+    t_skd = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => "condition_id = #{@item.id}")
     unless t_skd.blank?
       t_skd.each do |s|
-        skd = Gw::Schedule.where(:id =>s.schedule_id).first
+        skd = Gw::Schedule.find_by_id(s.schedule_id)
         unless skd.blank?
           skd_st = skd.st_at.strftime('%Y-%m-%d ')
           skd_st += from_st
@@ -118,10 +122,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
   end
 
   def update_members_schedule(from_st, from_ed,prop)
-    skd_m = Gwsub::Sb01TrainingScheduleMember.where("condition_id = #{@item.id}")
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "condition_id = #{@item.id}")
     unless skd_m.blank?
       skd_m.each do |s|
-        skd = Gw::Schedule.where(:id =>s.schedule_id).first
+        skd = Gw::Schedule.find_by_id(s.schedule_id)
         unless skd.blank?
           skd_st = skd.st_at.strftime('%Y-%m-%d ')
           skd_st += from_st
@@ -152,20 +156,20 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
   end
 
   def destroy_schedule
-    t_skd = Gwsub::Sb01TrainingSchedule.where("condition_id = #{@item.id}")
+    t_skd = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => "condition_id = #{@item.id}")
     unless t_skd.blank?
       t_skd.each do |t|
-        skd = Gw::Schedule.where(:id =>t.schedule_id).first
+        skd = Gw::Schedule.find_by_id(t.schedule_id)
         skd.destroy unless skd.blank?
         t.destroy
       end
     end
   end
   def destroy_members_shcedule
-    skd_m = Gwsub::Sb01TrainingScheduleMember.where("condition_id = #{@item.id}")
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "condition_id = #{@item.id}")
     unless skd_m.blank?
       skd_m.each do |m|
-        skd = Gw::Schedule.where(:id =>m.schedule_id).first
+        skd = Gw::Schedule.find_by_id(m.schedule_id)
         skd.destroy unless skd.blank?
         m.destroy
       end
@@ -174,12 +178,12 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 研修id
-    @t_id_top = Gwsub::Sb01Training.order("fyear_markjp DESC").first
+    @t_id_top = Gwsub::Sb01Training.find(:first,:order=>"fyear_markjp DESC")
     @t_id = nz(params[:t_id],@t_id_top.id)
     # 予約条件id
     @c_id = nz(params[:c_id],0)
@@ -296,17 +300,20 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
         skd_training.save!
       end
   end
-
+  
   def update_bbs_doc
     init_params
     training = Gwsub::Sb01Training.find(@item.training_id)
-    ts_condition = Gwsub::Sb01TrainingScheduleCondition.where('training_id = ?', @item.training_id)
-    if training.bbs_url.blank? && training.bbs_doc_id.blank?
+    ts_condition = Gwsub::Sb01TrainingScheduleCondition.find(:all, :conditions => ['training_id = ?', @item.training_id])
+    url = training.bbs_url
+    if url.blank?
       return
     end
-    title_id = Gwsub::Property::TrainingBoard.first_or_new.board_id
-    doc_id = training.bbs_doc_id
-    if doc_id.blank? || title_id.blank? || ts_condition.blank?
+    title_id  = url.scan(/title_id=([\d]+)/)
+    title_id  = title_id[0][0]
+    doc_id    = url.scan(/docs\/([\d]+)/)
+    doc_id    = doc_id[0][0]
+    if doc_id.blank?
       return
     end
     if ts_condition.blank?
@@ -334,13 +341,18 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
       end
     end
     expiry += ' 23:59:59'
-    @title = Gwbbs::Control.where(:id =>title_id).first
+    @title = Gwbbs::Control.find_by_id(title_id)
     return if @title.blank?
-    if @title.state == 'public'
-      @bbs = Gwbbs::Doc.where(:id =>doc_id, :title_id => title_id).first
-      return if @bbs.blank?
+    unless (@title.dbname.blank? && @title.state == 'closed')
+      bbs = gwbbs_db_alias(Gwbbs::Doc)
+      @bbs = bbs.find_by_id(training.bbs_doc_id)
+      if @bbs.blank?
+        Gwbbs::Doc.remove_connection
+        return
+      end
       @bbs.expiry_date = expiry
       @bbs.save
+      Gwbbs::Doc.remove_connection
     end
   end
 end

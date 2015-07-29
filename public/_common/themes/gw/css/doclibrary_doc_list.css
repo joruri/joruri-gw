@@ -7,6 +7,7 @@
 ------------------------------------------*/
 #content .doclibraryDocList {
   background-image: url(/_common/themes/gw/files/title/title_library.gif);
+  margin-top: 10px;
 }
 
 /* 書庫名
@@ -152,14 +153,4 @@ form.changeGroup {
   background-image:url(/_common/themes/gw/files/digitallibrary/folder_open_01.gif);
 }
 
-/* docListFunctions
-------------------------------------------*/
-.right .docListFunctions {
-  padding-right: 5px;
-  text-align: right;
-}
-.right .docListFunctions div {
-  display: inline;
-  margin-left: 10px;
-  margin-right: 0;
-}
+

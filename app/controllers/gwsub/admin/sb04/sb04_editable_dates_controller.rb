@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録 期限設定"
   end
@@ -19,7 +20,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
   end
   def show
     init_params
-    @item = Gwsub::Sb04EditableDate.where(:id => params[:id]).first
+    @item = Gwsub::Sb04EditableDate.find_by_id(params[:id])
     return http_error(404) if @item.blank?
   end
 
@@ -41,7 +42,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
 
   def edit
     init_params
-    @item = Gwsub::Sb04EditableDate.where(:id => params[:id]).first
+    @item = Gwsub::Sb04EditableDate.find_by_id(params[:id])
     return http_error(404) if @item.blank?
   end
   def update
@@ -61,7 +62,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
 pp params
     init_params
 
-    @item = Gwsub::Sb04EditableDate.where(:id => params[:id]).first
+    @item = Gwsub::Sb04EditableDate.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     options = { :location=>"/gwsub/sb04/04/sb04_editable_dates?#{@qs}" }
@@ -70,12 +71,12 @@ pp params
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
     @u_role = @role_developer || @role_admin
 
     # 管理者以外には見せない
-    return error_auth unless @u_role==true
+    return authentication_error(403) unless @u_role==true
 
     @menu_header3 = 'sb0404menu'
     @menu_title3  = 'コード管理'

@@ -1,8 +1,10 @@
-<%= required_head %>
-<%= hidden_field_tag :mode, params[:mode] %>
+<%#*<h1>Gw::Public::PrefConfigs#form</h1>%>
+<%#*<p>Find me in app/views/gw/public/pref_configs/_form.html.erb</p>%>
+<%= raw(required_head) %>
+<%= hidden_field_tag(:mode, "#{params[:mode]}") %>
 <table class="show">
   <tr>
-    <th>表示文言<%= required('※') %></th>
-    <td><%= f.text_area :options, :cols => 100, :rows => 5 %></td>
+    <th>表示文言<%= raw(required('※')) %></th>
+    <td><%= f.text_area :options, :cols=> 100 ,:rows=>5 %></td>
   </tr>
 </table>

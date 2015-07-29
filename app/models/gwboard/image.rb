@@ -1,36 +1,18 @@
+#encoding:utf-8
 class Gwboard::Image  < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::Operator
 
   attr_accessor :_upload
   attr_accessor :_update
 
   after_validation :set_fields
-  after_save :file_save
-
-  validates :memo, presence: true
 
   def share_states
     {'0' => '所属用背景画像', '1' => '所属用アイコン', '2' => '全庁用背景画像', '3' => '全庁用アイコン'}
   end
   def share_states_normal
     {'0' => '所属用背景画像', '1' => '所属用アイコン'}
-  end
-  def show_share_states
-    if self.share.blank?
-      ""
-    elsif self.share == 0
-      "所属用背景画像"
-    elsif self.share == 1
-      "所属用アイコン"
-    elsif self.share == 2
-      "全庁用背景画像"
-    elsif self.share == 3
-      "全庁用アイコン"
-    else
-      ""
-    end
   end
   def range_of_use_name
     return [
@@ -43,7 +25,7 @@ class Gwboard::Image  < Gw::Database
     return "/gwboard/images?st=#{self.share.to_s}"
   end
   def item_home_path
-    return "/gwboard/files/"
+    return "/gwboard/images/"
   end
   def show_path
     ret = "#{self.item_home_path}#{self.id}"
@@ -68,7 +50,7 @@ class Gwboard::Image  < Gw::Database
   end
 
   def set_fields
-#    return if self._update
+    return if self._update
 
     if self._upload.blank?
       errors.add :_upload, "ファイルを選択してください。"
@@ -84,15 +66,11 @@ class Gwboard::Image  < Gw::Database
     self.filename = self._upload.original_filename
     self.size = self._upload.size
     self.latest_updated_at = Time.now
-    @tmp = self._upload.read
-
-    if self.content_type =~ /^image/
-      r_magick(@tmp)
-    end
+    @tmp = self._upload
   end
 
   def f_path
-    return "#{Rails.root}/public/_attaches/files/#{self.id}"
+    return "#{RAILS_ROOT}/public/_attaches/files/#{self.id}"
   end
   def f_name
     return "#{f_path}/#{self.filename}"
@@ -114,24 +92,30 @@ class Gwboard::Image  < Gw::Database
     end
   end
 
-  def file_save
-    return true if @tmp.blank?
+  def after_create
     FileUtils.mkdir_p(f_path) unless FileTest.exist?(f_path)
     File.open(f_name, "wb") { |f|
-      f.write @tmp
+      f.write @tmp.read
     }
+
+    unless self.content_type.index("image").blank?
+      f = open(f_name, "rb")
+      r_magick(f.read)
+      f.close
+    end
   end
 
   def r_magick(file)
     begin
-      require 'RMagick'
-      image = Magick::Image.from_blob(file).shift
-      if image.format =~ /(GIF|JPEG|PNG)/
-        self.width = image.columns
-        self.height = image.rows
-      end
+    require 'RMagick'
+    image = Magick::Image.from_blob(file).shift
+    if image.format =~ /(GIF|JPEG|PNG)/
+      self.width = image.columns
+      self.height = image.rows
+    end
     rescue
     end
+    save
   end
 
   def regulate_width(dst_h=nil)
@@ -193,9 +177,5 @@ class Gwboard::Image  < Gw::Database
     end
   end
 
-private
 
-  def set_creater_editor
-    super(force_admin: true)
-  end
 end

@@ -1,7 +1,1 @@
-<% if @items.length > 0 %>
-<div id="message" class="<%= 'emergency' if @portal_mode.disaster_mode? %>">
-  <% @items.each do |item| %>
-    <div><%=raw item.body %></div>
-  <% end %>
-</div>
-<% end %>
+<%= render :partial => 'index' %>

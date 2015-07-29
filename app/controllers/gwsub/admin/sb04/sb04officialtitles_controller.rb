@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録 職名一覧"
   end
@@ -82,8 +83,8 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     @menu_header3 = 'sb0404menu'
@@ -134,28 +135,81 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 
   def csvput
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l3_current = '04'
+    if params[:item].nil?
+      return
+    end
 
-    @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    par_item = params[:item]
+    nkf_options = case par_item[:nkf]
+        when 'utf8'
+          '-w'
+        when 'sjis'
+          '-s'
+        end
+    case par_item[:csv]
+    when 'put'
+      filename = "sb04officialtitles_#{par_item[:nkf]}.csv"
+        items = Gwsub::Sb04officialtitle.find(:all)
+      if items.blank?
+      else
+        file = Gw::Script::Tool.ar_to_csv(items)
+        send_data(NKF::nkf(nkf_options,file) , :filename=>"#{filename}" )
+      end
+    else
+      return
+    end
+    return
+  end
 
-    @item.attributes = params[:item]
+  def csvup
+    init_params
+    return authentication_error(403) unless @u_role == true
+    @l3_current = '05'
+    if params[:item].nil?
+#      return
+    end
 
-    csv = Gwsub::Sb04officialtitle.all.to_csv
-    send_data @item.encode(csv), filename: "sb04officialtitles_#{@item.encoding}.csv"
+    flash[:notice]="現在、CSV出力メニューから出力したデータの再登録機能は提供しておりません。"
+    return redirect_to "#{@csv_base_url}"
+
+    par_item = params[:item]
+    case par_item[:csv]
+    when 'up'
+      if par_item.nil? || par_item[:nkf].nil? || par_item[:file].nil?
+        flash[:notice] = 'ファイル名を指定してください。。'
+      else
+        upload_data = par_item[:file]
+        f = upload_data.read
+        nkf_options = case par_item[:nkf]
+        when 'utf8'
+          '-w -W'
+        when 'sjis'
+          '-w -S'
+        end
+        file =  NKF::nkf(nkf_options,f)
+        if file.blank?
+        else
+#          Gwsub::Sb04officialtitle.truncate_table
+#          s_to = Gw::Script::Tool.import_csv(file, "gwsub_sb04officialtitles")
+        end
+      end
+    else
+    end
+    return
   end
 
   def csvadd_check
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l3_current = '06'
     return
   end
 
   def csvadd_check_run
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     location = "#{@csv_base_url}/csvadd_check?#{@qs}"
 
     @l3_current = '06'
@@ -168,6 +222,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     end
 
     par_item = params[:item]
+    dump par_item
     case par_item[:csv]
     when 'add'
       if par_item[:fyed_id].present?
@@ -186,7 +241,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
             when 'sjis'
               '-s -W'
             end
-            fyear = Gw::YearFiscalJp.where(id: par_item[:fyed_id]).order("start_at DESC").first
+            fyear = Gw::YearFiscalJp.find(:first, :conditions=>["id = ? ", par_item[:fyed_id]],:order=>"start_at DESC")
             filename =  "#{fyear.markjp}_10職名_エラー箇所追記.csv"
             filename = NKF::nkf('-s -W', filename) if @ie
             send_data(NKF::nkf(nkf_options, file), :type => 'text/csv', :filename => filename)
@@ -204,7 +259,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 
   def index_csv
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     item = Gwsub::Sb04CheckOfficialtitle.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
@@ -215,8 +270,8 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 
   def show_csv
     init_params
-    return error_auth unless @u_role == true
-    @item = Gwsub::Sb04CheckOfficialtitle.where(:id => params[:id]).first
+    return authentication_error(403) unless @u_role == true
+    @item = Gwsub::Sb04CheckOfficialtitle.find_by_id(params[:id])
     return http_error(404) if @item.blank?
     @l3_current = '08'
   end

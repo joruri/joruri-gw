@@ -1,0 +1,35 @@
+<!--<%= @edit_roles_json -%>-->
+<%= hidden_field_tag('init[schedule_edit_roles_json]',
+  (params[:item] && params[:item][:schedule_edit_roles_json] ? params[:item][:schedule_edit_roles_json] : nz(@edit_roles_json) )) -%> 
+<%
+u = Site::user_group
+ucls = 2
+uid = u.id
+uname = u.name
+%>
+
+<%= hidden_field_tag('init[ucls]', ucls) -%>
+<%= hidden_field_tag('init[uid]', uid) -%>
+<%= hidden_field_tag('init[uname]', uname) -%>
+
+<%= f.fields_for :schedule_edit_roles do |schedule_role| %>
+
+<table border="0">
+  <tr>
+    <td class="roleChange">
+      <%= select_tag 'item[schedule_edit_roles][uid]', Gw.options_for_select(
+  System::Group.get_group_select('', '', :add_conditions=>"level_no = 3"), Site.user_group.id, :title=>1), :size=>10,
+  :style => 'width:300px;', :ondblclick => 'add_edit_roles()', :multiple => true -%>
+    </td>
+    <td>
+      <%= button_to_function '追加 →', 'add_edit_roles()' -%><br /><br />
+      <%= button_to_function '← 削除', 'del_edit_roles()' -%>
+    </td>
+    <td>
+      <%= select_tag 'item[schedule_edit_roles_add_buf]', '', :size=>10, :style => 'width:300px;', :ondblclick => 'del_edit_roles()', :multiple => true -%>
+      <%= hidden_field_tag 'item[schedule_edit_roles_json]', ''-%>
+    </td>
+  </tr>
+</table>
+<% end %>
+

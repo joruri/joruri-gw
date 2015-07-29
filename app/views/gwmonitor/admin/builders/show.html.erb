@@ -1,88 +1,64 @@
+<%
+  _help = Gw::UserProperty.load_gwmonitor_help_links
+%>
 <div class="bbsDocList circular">
-<%= render 'piece_header' %>
-
-<div class="pieceBody">
-<%= render 'gwmonitor/admin/menus/tabbox' %>
-
-<div class="editingBox">
-  <% if @item.state == 'public' %>
-  <span class="btClosed"><%= link_to '締切', @item.closed_path , confirm: 'この記事を締め切りますか' %></span>
-  <% end %>
-  <% if @item.state == 'closed' %>
-  <span class="btReturnReceipt"><%= link_to '締切解除', @item.reopen_path, confirm: 'この記事の締め切りを解除しますか' %></span>
-  <% end %>
-  <span class="btEdit"><%= link_to '編集', @item.edit_path %></span>
-  <span class="btDestroy"><%= link_to '削除', @item.delete_path, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
-  <span class="docLink" style="margin-right: 10px;">
-    <%= link_to '明細確認 >>', @item.result_path %>
-    <%= link_to 'CSV出力 >>', @item.csv_export_path %>
-    <%= link_to '添付ファイル出力 >>', @item.file_export_path %>
-  </span>
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= @system_title %></h2>
+<div class="btsHeadeRight"><%= raw(gwmonitor_settings) %></div>
 </div>
 
-<%
-help_links = Gwmonitor::Property::HelpLink.first_or_new.help_links
-%>
+<div class="pieceBody">
+
+<div class="editingBox">
+<% if @item.state == 'public' %>
+<span class="btClosed"><%= link_to('締切', @item.closed_path , :confirm => 'この記事を締め切りますか') %></span>
+<% end %>
+<% if @item.state == 'closed' %>
+<span class="btReturnReceipt"><%= link_to('締切解除', @item.reopen_path , :confirm => 'この記事の締め切りを解除しますか') %></span>
+<% end %>
+<span class="btEdit"><%= link_to('編集', @item.edit_path) %></span>
+<span class="btDestroy"><%= link_to('削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete) %></span>
+<span class="docLink"><%= link_to('明細確認 >>', @item.result_path) %>
+<%= link_to('CSV出力 >>', @item.csv_export_path) %><%= link_to '添付ファイル出力 >>', @item.file_export_path %></span>
+</div>
+
 <table class="show bbsText">
-  <tr>
-    <th>状態</th>
-    <td><%= @item.status_name %></td>
-  </tr>
-  <tr>
-    <th>タイトル</th>
-    <td><%= @item.title %></td>
-  </tr>
-  <tr>
-    <th>概要説明</th>
-    <% if @item.wiki_enabled? -%>
-      <td class="wiki"><%=raw wiki_show(@item.caption) -%></td>
-    <% else -%>
-      <td><%=raw @item.caption -%></td>
-    <% end -%>
-  </tr>
-  <tr>
-    <th>記事管理設定<span class="help"><%=raw help_links[0] %></span></th>
-    <td><%= @item.admin_setting_status %></td>
-  </tr>
-  <tr>
-    <th>回答表示設定<span class="help"><%=raw help_links[1] %></span></th>
-    <td><%= @item.spec_config_name_status %></td>
-  </tr>
-  <tr>
-    <th style="width:200px;">所属全員へのリマインダー表示<span class="help"><%=raw help_links[2] %></span></th>
-    <td><%= @item.reminder_start_section_selected_name %></td>
-  </tr>
-  <tr>
-    <th>回答期限日</th>
-    <td><%=l @item.expiry_date if @item.expiry_date %></td>
-  </tr>
-  <tr>
-    <th>回答フォーム設定<span class="help"><%=raw help_links[3] %></span></th>
-    <td><%= @item.form_caption %></td>
-  </tr>
+<tr><th>状態</th>
+<td><%= @item.status_name %></td></tr>
+<tr><th>タイトル</th>
+<td><%= @item.title %></td></tr>
+<tr><th>概要説明</th>
+<td><%= raw(@item.caption) %></td></tr>
+<tr><th>記事管理設定<span class="help"><%= raw(_help[0]) %></span></th>
+<td><%= @item.admin_setting_status %></td></tr>
+<tr><th>回答表示設定<span class="help"><%= raw(_help[1]) %></span></th>
+<td><%= @item.spec_config_name_status %></td></tr>
+<tr><th style="width:200px;">所属全員へのリマインダー表示<span class="help"><%= raw(_help[2]) %></span></th>
+<td><%= @item.reminder_start_section_selected_name %></td></tr>
+<tr><th>回答期限日</th>
+<td><%= @item.expiry_date.strftime('%Y-%m-%d %H:%M') unless @item.expiry_date.blank? %></td></tr>
 </table>
 
 <% if @item.send_change == '1' %>
-  <% if @item.custom_groups_json.present? %>
-    <% custom_groups = JSON.parse(@item.custom_groups_json) %>
-    <%= render 'show_readers', title: '所属カスタム配信先設定', readers: custom_groups if custom_groups.present? %>
+  <% unless @item.custom_groups_json.blank? %>
+    <% customs = JsonParser.new.parse(@item.custom_groups_json) %>
+    <%= raw(monitor_readers_table('所属カスタム配信先設定', customs, 3, 'show', '33%')) unless customs.blank? %>
   <% end %>
-  <% if @item.reader_groups_json.present? %>
-    <% reader_groups = JSON.parse(@item.reader_groups_json) %>
-    <%= render 'show_readers', title: '所属配信先設定', readers: reader_groups if reader_groups.present? %>
+  <% unless @item.reader_groups_json.blank? %>
+    <% groups = JsonParser.new.parse(@item.reader_groups_json) %>
+    <%= raw(monitor_readers_table('所属配信先設定', groups, 3, 'show', '33%')) unless groups.blank? %>
   <% end %>
 <% end %>
 <% if @item.send_change == '2' %>
-  <% if @item.custom_readers_json.present? %>
-    <% custom_readers = JSON.parse(@item.custom_readers_json) %>
-    <%= render 'show_readers', title: 'カスタム配信先設定', readers: custom_readers if custom_readers.present? %>
+  <% unless @item.custom_readers_json.blank? %>
+    <%customs = JsonParser.new.parse(@item.custom_readers_json) %>
+    <%= raw(monitor_readers_table('カスタム配信先設定', customs, 3, 'show', '33%')) unless customs.blank? %>
   <% end %>
-  <% if @item.readers_json.present? %>
-    <% readers = JSON.parse(@item.readers_json) %>
-    <%= render 'show_readers', title: '配信先設定', readers: readers if readers.present? %>
+  <% unless @item.readers_json.blank? %>
+    <% readers = JsonParser.new.parse(@item.readers_json) %>
+    <%= raw(monitor_readers_table('配信先設定', readers, 3, 'show', '33%')) unless readers.blank? %>
   <% end %>
 <% end %>
-
 <!--戻るボタン-->
 <div class="btReturn">
   <%= link_to '一覧へ戻る', @item.builder_path %>

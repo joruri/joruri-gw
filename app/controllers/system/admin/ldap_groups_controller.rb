@@ -1,10 +1,16 @@
+# encoding: utf-8
 class System::Admin::LdapGroupsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
+  def initialize_scaffold
+    Page.title = "LDAP情報管理"
+		@current_no = 2
+
+    return error_auth unless Core.user.has_auth?(:manager)
+    return render(:text=> "LDAPサーバに接続できません。", :layout => true) unless Core.ldap.connection
 		@role_admin = @admin = System::User.is_admin?
-    return error_auth unless @admin
+    return authentication_error(403) unless @admin == true
 
     if params[:parent] == '0'
       @parent  = nil
@@ -13,8 +19,6 @@ class System::Admin::LdapGroupsController < Gw::Controller::Admin::Base
       @parent  = Core.ldap.group.find(params[:parent])
       @parents = @parent.parents
     end
-
-    Page.title = "LDAP同期"
   end
   
   def index

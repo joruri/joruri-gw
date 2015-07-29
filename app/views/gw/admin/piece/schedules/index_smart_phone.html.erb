@@ -1,6 +1,7 @@
 <div id="schedule_part">
-<%= render '/gw/admin/schedules/smartphone_header', mode: 'week' %>
-<%= render '/gw/admin/schedules/schedule_line_box', d: @st_date, mode: 'week', move_mode: :header %>
-<%= render '/gw/admin/schedules/show_week_smart_phone', d: @st_date, mode: 'week' %>
-<%= render '/gw/admin/schedules/schedule_line_box', d: @st_date, mode: 'week', move_mode: :footer %>
+<%=render :partial => '/gw/admin/schedules/smartphone_header', :locals=>{:mode=>'week'}%>
+<%=render(:partial => '/gw/admin/schedules/schedule_line_box', :locals=>{:d=>@st_date, :mode=>'week', :move_mode=>:header})%>
+<%=render :partial => '/gw/admin/schedules/show_week_smart_phone', :locals=>{:d=>@st_date, :mode=>'week'}%>
+<%=render(:partial => '/gw/admin/schedules/schedule_line_box', :locals=>{:d=>@st_date, :mode=>'week', :move_mode=>:footer})%>
 </div>
+

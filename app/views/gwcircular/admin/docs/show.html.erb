@@ -4,99 +4,85 @@
   s_cond = '?cond=already' if params[:cond] == 'already'
 %>
 <div class="bbsDocList circular">
-<%= render 'gwcircular/admin/menus/piece_header' %>
-<%= render 'gwcircular/admin/menus/piece_banner' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_header' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_banner' %>
 
 <div class="pieceBody">
-<%= render 'gwcircular/admin/menus/tabbox' %>
-
-<div class="editingBox">
-  <% if @item.state == 'already' %>
-    <span class="btUnread"><%= link_to "未読に戻す", @item.doc_state_unread_update %></span>
-  <% end %>
-</div>
-
+<%= render :partial => 'header' %>
+  
 <div class="docsInnerBox">
+
 <table class="bbsExpirydate">
   <tr>
     <td>　回覧期限日時 : </td>
     <td class="space"></td>
-    <td><%=l @parent.expiry_date if @parent.expiry_date %></td>
+    <td><%= @parent.expiry_date.strftime('%Y-%m-%d %H:%M') unless @parent.expiry_date.blank? %></td>
   </tr>
 </table>
 
 <div class="bbsCreatorInf">
 <table>
-  <tr>
-    <td>回覧作成 : &nbsp;</td>
-    <td><%= @parent.createrdivision %></td>
-    <td class="space"></td>
-    <td><%= @parent.creater %></td>
-    <td class="space"></td>
-    <td><%= @parent.createdate %></td>
-  </tr>
+<tr>
+<td>回覧作成 : &nbsp;</td>
+<td><%= @parent.createrdivision %></td>
+<td class="space"></td>
+<td><%= @parent.creater %></td>
+<td class="space"></td>
+<td><%= @parent.createdate %></td>
+</tr>
 </table>
 </div>
 
 <div class="bbsUserform">
 <table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr @parent.title %></span></td></tr>
-  <tr><td class="spaceBottom"></td></tr>
-  <tr>
-    <% if @parent.wiki_enabled? -%>
-      <td class="wiki"><%=raw wiki_show(@parent.body) -%></td>
-    <% else -%>
-      <td><%=raw @parent.body -%></td>
-    <% end -%>
-  </tr>
-  <% if @parent.files.present? %>
-  <tr align="right">
-    <td>
-    <span class="btText"><%= link_to "ファイル一括ダウンロード(ファイル数：#{@parent.files.size})", @item.file_export_path %></span>
-    </td>
-  </tr>
-  <% end %>
+<tr><td class="docTitle"><span><%= hbr(@parent.title) %></span></td></tr>
+<tr><td class="spaceBottom"></td></tr>
+<tr><td><%= raw(@parent.body) %></td></tr>
 </table>
 </div>
 
 </div><!--docsInnerBox-->
 
 <% if @item.state == 'unread' %>
-  <div class="centerText"><%= link_to "回覧内容について、確認しました", @item.doc_state_already_update, class: 'btConfirmed' %></div>
+  <div class="centerText"><%= link_to "回覧内容について、確認しました", @item.doc_state_already_update, :class => 'btConfirmed' %></div>
 <% end %>
 
 <table class="index">
-  <tr class="headIndex">
-    <% if @item.state == 'unread' %>
-      <th style="width:80px;">状態</th>
-    <% else %>
-      <th style="width:60px;">状態</th>
-    <% end %>
-    <th class="group">受信者名</th>
-    <th class="docTitle">返信欄</th>
-    <th style="width:120px;">確認日時</th>
-    <th style="width:120px;">最終更新日時</th>
-  </tr>
+<tr class="headIndex">
+<% if @item.state == 'unread' %>
+  <th style="width:80px;">状態</th>
+<% else %>
+  <th style="width:60px;">状態</th>
+<% end %>
+<th class="group">受信者名</th>
+<th class="docTitle">返信欄</th>
+<th style="width:120px;">確認日時</th>
+<th style="width:120px;">最終更新日時</th>
+</tr>
+<tr class="<%= cycle 'article', 'article cycle' %>">
+<td><%= raw(status_name(@item)) %></td>
+<td class="group"><%= "#{@item.target_user_name}(#{@item.target_user_code})" %></td>
+<% if @item.body.blank? %>
+  <td>
+  <%= link_to "返信欄を編集する", doc_edit_path(@item), :class => 'btText' %>
+  </td>
+<% else %>
+  <td class="docTitle">
+  <%= link_to @item.body ,doc_edit_path(@item) %>
+  </td>
+<% end %>
+<td class="update"><%= @item.display_opendocdate %></td>
+<td class="update"><%= @item.display_editdate %></td>
+</tr>
+<% for item in @commissions %>
   <tr class="<%= cycle 'article', 'article cycle' %>">
-    <td><%= @item.status_name %></td>
-    <td class="group"><%= "#{@item.target_user_name}(#{@item.target_user_code})" %></td>
-    <% if @item.body.blank? %>
-      <td><%= link_to "返信欄を編集する", "/gwcircular/docs/#{@item.id}/edit", :class => 'btText' %></td>
-    <% else %>
-      <td class="docTitle"><%= link_to @item.body, "/gwcircular/docs/#{@item.id}/edit" %></td>
-    <% end %>
-    <td class="update"><%= @item.display_opendocdate %></td>
-    <td class="update"><%= @item.display_editdate %></td>
+  <td style="width:65px;"><%= raw(status_name(item)) %></td>
+  <td class="group"><%= "#{item.target_user_name}(#{item.target_user_code})" %></td>
+  <td class="docTitle"><%= item.already_body %></td>
+  <td class="update"><%= item.display_opendocdate %></td>
+  <td class="update"><%= item.display_editdate  %></td>
   </tr>
-  <% @commissions.each do |item| %>
-    <tr class="<%= cycle 'article', 'article cycle' %>">
-      <td style="width:65px;"><%= item.status_name %></td>
-      <td class="group"><%= "#{item.target_user_name}(#{item.target_user_code})" %></td>
-      <td class="docTitle"><%= item.already_body %></td>
-      <td class="update"><%= item.display_opendocdate %></td>
-      <td class="update"><%= item.display_editdate  %></td>
-    </tr>
-  <% end %>
+<% end %>
 </table>
 
 <%= paginate @commissions %>

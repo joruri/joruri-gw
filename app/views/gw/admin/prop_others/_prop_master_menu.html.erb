@@ -1,17 +1,15 @@
 <div class="btBox">
-  <div class="btEtc btHead btRight"><%= link_to '会議室', {controller: '/gw/admin/schedule_props', action: :show_week, s_data: Time.now.strftime("%Y%m%d"), s_genre: "meetingroom"} -%></div>
-  <div class="btEtc btHead btRight"><%= link_to 'レンタカー', {controller: '/gw/admin/schedule_props', action: :show_week, s_data: Time.now.strftime("%Y%m%d"), s_genre: "rentcar"} -%></div>
   <div class="btEtc btHead currentHead">一般施設</div>
-  <div class="btDayLink btIndex"><%=link_to '日表示', {controller: '/gw/admin/schedule_props', action: :show, id: Time.now.strftime("%Y%m%d"), s_genre: "other"} -%></div>
-  <div class="btWeekLink btIndex"><%=link_to '週表示', {controller: '/gw/admin/schedule_props', action: :show_week, s_data: Time.now.strftime("%Y%m%d"), s_genre: "other"} -%></div>
-  <% if controller_path == "gw/admin/prop_others" && %w(show upload).include?(params[:action]) -%>
-  <div class="btMonthLink btIndex"><%=link_to '月表示', {controller: '/gw/admin/schedule_props', action: :show_month, prop_id: @item.id, s_data: Time.now.strftime("%Y%m%d"), type_id: @item.type_id, s_genre: "other"} -%></div>
+  <div class="btDayLink btIndex"><%=link_to '日表示', {:controller=> :schedule_props, :action => :show, :id => Time.now.strftime("%Y%m%d"), :s_genre =>"other"} -%></div>
+  <div class="btWeekLink btIndex"><%=link_to '週表示', {:controller=> :schedule_props, :action => :show_week, :s_data => Time.now.strftime("%Y%m%d"), :s_genre =>"other"} -%></div>
+  <% if params[:controller] == "gw/admin/prop_others" && ["show", "upload"].include?(params[:action]) -%>
+  <div class="btMonthLink btIndex"><%=link_to '月表示', {:controller=> :schedule_props, :action => :show_month, :prop_id => @item.id, :s_data => Time.now.strftime("%Y%m%d"), :type_id => 0, :s_genre =>"other"} -%></div>
   <% end -%>
 </div>
 <div class="menu">
-  <a href="/gw/prop_others"><span class="<%= "current_menu" if controller_path == "gw/admin/prop_others" -%>">一般施設マスタ</span></a>
+  <a href="/gw/prop_others"><span class="<%= "current_menu" if params[:controller] == "gw/admin/prop_others" -%>">一般施設マスタ</span></a>
   <% if @is_gw_admin %>
-  <a href="/gw/prop_other_limits"><span class="<%= "current_menu" if controller_path == "gw/admin/prop_other_limits" -%>">一般施設マスタ件数制限</span></a>
-  <a href="/gw/prop_types"><span class="<%= "current_menu" if controller_path =~ %r(^gw/admin/prop_types) -%>">施設種別マスタ</span></a>
+  <a href="/gw/prop_other_limits"><span class="<%= "current_menu" if params[:controller] == "gw/admin/prop_other_limits" -%>">一般施設マスタ件数制限</span></a>
+  <a href="/gw/prop_types"><span class="<%= "current_menu" if params[:controller] == "gw/admin/prop_types" -%>">施設種別マスタ</span></a>
   <% end %>
 </div>

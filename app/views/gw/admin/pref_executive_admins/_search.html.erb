@@ -1,0 +1,12 @@
+<%
+if @is_gw_admin == true
+ form_tag '', :method => :get, :class => 'search' do
+%>
+<div class="indication">
+検索
+<%= text_field_tag :keyword, @keyword ,  :class => 'name', :size=>20 , :maxlength=>20 %>
+<%= submit_tag '検索',     :name => :search %>
+<%= submit_tag 'リセット', :name => :reset %>
+</div>
+<% end
+end %>

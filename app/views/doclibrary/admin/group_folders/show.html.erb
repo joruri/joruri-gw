@@ -1,0 +1,19 @@
+  <%#
+@cabinet_title は、Doclibrary::Public::GroupFoldersController で初期化しています。
+%>
+<div class="piece docLibrary">
+<div class="pieceHeader">
+<h2><%= @cabinet_title %></h2>
+</div>
+<div class="pieceBody">
+<div class="showMenu">
+  <%=link_to '編集', @item.edit_path %>
+  <%=link_to '削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+  <%=link_to 'フォルダ編集', @item.categorys_path %>
+  <%=link_to '公開画面', @item.docs_path %>
+  <%=link_to '戻る', url_for(:back) %>
+</div>
+
+<%= table_to_show2 @item %>
+</div>
+</div>

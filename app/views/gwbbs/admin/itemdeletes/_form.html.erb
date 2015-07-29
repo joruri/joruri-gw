@@ -1,6 +1,6 @@
 <table class="show">
-  <tr>
-    <th>削除対象</th>
-    <td><%= f.select :limit_date, @item.limit_line, include_blank: true, class: 'select limit' %>  経過した期限切れの記事を削除</td>
-  </tr>
+<tr>
+<th>削除対象</th>
+<td><%= f.select(:limit_date, @item.limit_line, :include_blank => true , :class => 'select limit')%>  経過した期限切れの記事を削除</td>
+</tr>
 </table>

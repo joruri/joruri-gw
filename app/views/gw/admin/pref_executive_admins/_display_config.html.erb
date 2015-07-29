@@ -1,24 +1,26 @@
+<%if @g_cat == '0'%>
 <%
-mode='executives'
+mode='pref_executives'
 config_uri = "/gw/pref_configs/"
-dislapy_view = Gw::PrefConfig.where(state: "enabled", option_type: mode).order(updated_at: :desc).first
+dislapy_view = Gw::UserProperty.find(:first,
+  :conditions=>["name = ?",mode],:order=>"updated_at desc")
 if dislapy_view.blank?
   display_str =  "通常表示"
-  link_str    =  "メンテナンスモード表示"
+  link_str    =  "メンテナンスモード表示に変更"
   link_uri    =  %Q(#{config_uri}new?mode=#{mode})
   state_str   = "在庁表示は現在準備中です。"
   edit_url    =  %Q(#{config_uri}new?mode=#{mode})
 else
-  if dislapy_view.name=="admin"
+  if dislapy_view.type_name=="admin"
     display_str =  "メンテナンスモード表示"
     link_str    =  "通常表示に変更"
-    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?name=normal&mode=#{mode})
+    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?state=normal&mode=#{mode})
     state_str   =  dislapy_view.options
     edit_url    =  %Q(#{config_uri}#{dislapy_view.id}/edit?mode=#{mode})
   else
     display_str =  "通常表示"
     link_str    =  "メンテナンスモード表示に変更"
-    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?name=admin&mode=#{mode})
+    link_uri    =  %Q(#{config_uri}#{dislapy_view.id}/display_change?state=admin&mode=#{mode})
     state_str   =  dislapy_view.options
     edit_url    =  %Q(#{config_uri}#{dislapy_view.id}/edit?mode=#{mode})
   end
@@ -29,12 +31,14 @@ end
 </div>
 
 <table class="index">
-  <tr>
-    <th>現在の状態</th>
-    <th>表示文言[<%= link_to "編集する", edit_url if dislapy_view.present? %>]</th>
-  </tr>
-  <tr>
-    <td><%= display_str %>[<%= link_to link_str, link_uri %>]</td>
-    <td><%=hbr state_str %></td>
-  </tr>
+<tr>
+  <th>現在の状態</th>
+  <th>表示文言[<%=link_to("編集する" , edit_url) unless dislapy_view.blank?%>]</th>
+</tr>
+<tr>
+  <td><%=display_str%>[<%=link_to(link_str , link_uri)%>]</td>
+  <td><%=hbr state_str%></td>
+</tr>
 </table>
+
+<%end%>

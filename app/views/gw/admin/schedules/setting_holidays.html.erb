@@ -1,0 +1,41 @@
+<% # app/views/gw/admin/schedules/setting_holidays.html.erb
+#concat <<-EOL
+#{render :partial => '/gw/admin/schedules/header'}
+#{render :partial => '/gw/admin/schedules/header_setting'}
+#{render :partial => '/gw/admin/holidays/header'}
+#EOL
+header = <<-EOL
+#{show_notice}
+#{render :partial => '/gw/admin/schedules/piece_header'}
+EOL
+#titles = Gw.yaml_to_array_for_select 'gw_settings'
+#hcs = Gw.yaml_to_array_for_select('gw_holiday_categories').collect{|x| %Q(<li>#{link_to x[0], "/gw/holidays?category=#{x[1]}"}</li>)}.join
+body = { :header => <<-EOL,
+#{render(:partial => '/gw/admin/schedules/schedule_bt_box', :locals=>{:d=>Date.today, :mode=>'form'})}
+<div class="titleLine">
+<span class="title">休日管理メニュー</span>
+</div><!--titleLine-->
+EOL
+:body => <<-EOL }
+<ul>
+<li>
+<span class="function"><a href="/gw/holidays?category=1">国民の祝日</a></span>
+<span class="explanation"></span>
+</li>
+<!--
+<li>
+<span class="function"><a href="/gw/holidays?category=2">閉庁日</a></span>
+<span class="explanation"></span>
+</li>
+<li>
+<span class="function"><a href="/gw/holidays?category=3">全庁共通イベント</a></span>
+<span class="explanation"></span>
+</li>
+-->
+#{
+  #hcs
+}
+</ul>
+EOL
+concat hhbff_struct(:schedulePiece, :setting, :header=>header, :body=>body)
+%>

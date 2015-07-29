@@ -1,29 +1,29 @@
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
 <div class="selectFormBox">
 <% 
 case params[:state]
 when 'CATEGORY'
-  concat render 'doclibrary/admin/user_forms/form001/change_group'
+  concat render :partial => 'doclibrary/admin/user_forms/form001/change_group'
 when 'DATE', 'GROUP'
-  concat render 'doclibrary/admin/user_forms/form001/change_group'
-  concat render 'doclibrary/admin/user_forms/form001/change_category'
+  concat render :partial => 'doclibrary/admin/user_forms/form001/change_group'
+  concat render :partial => 'doclibrary/admin/user_forms/form001/change_category'
 end
 %>
 </div>
 
 <!--ファイル一覧-->
-<%= render 'doclibrary/admin/user_forms/form001/index_docs' if @items.present? %>
+<%= render :partial => 'doclibrary/admin/user_forms/form001/index_docs' if @items.present? %>
 
 <!--フォルダ一覧-->
 <% 
 case params[:state]
 when 'CATEGORY'
-  concat render 'doclibrary/admin/user_forms/form001/index_folders' if @folders.present?
+  concat render :partial => 'doclibrary/admin/user_forms/form001/index_folders' if @folders.present?
 when 'DRAFT'
-  concat render 'doclibrary/admin/user_forms/form001/index_folders' if @folders.present? && @title.is_admin?
+  concat render :partial => 'doclibrary/admin/user_forms/form001/index_folders' if @folders.present? && @is_admin
 end
 %>
 
 <!--添付ファイル一覧-->
-<%= render 'doclibrary/admin/user_forms/form001/index_files' if @files.present? %>
+<%= render :partial => 'doclibrary/admin/user_forms/form001/index_files' if @files.present? %>

@@ -1,13 +1,17 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'header_menu' %>
+<%= render :partial => 'header' %>
 
+<div class="pieceBody">
 <div class="editingBox">
   <span class="btNew"><%= link_to '新規作成', "/system/roles/new?#{@qs}" %></span>
+  <% if @is_dev %>
+    <span class="docLink"><%= link_to '開発者権限設定', system_role_developers_path %></span>
+    <span class="docLink"><%= link_to '対象権限追加',  system_priv_names_path %></span>
+    <span class="docLink"><%= link_to '機能名設定',  system_role_names_path %></span>
+    <span class="docLink"><%= link_to '機能権限設定', system_role_name_privs_path %></span>
+  <% end %>
 </div>
-
-<%= render 'search' %>
+<%= render :partial => 'search' %>
 
 <table class="index">
   <tbody>
@@ -20,7 +24,7 @@
       <th>ユーザ/グループ</th>
       <th style="width: 60px; text-align: center;">許可</th>
     </tr>
-    <% @items.each do |item| %>
+    <% for item in @items %>
     <tr class="<%= cycle '', 'cycle' %>">
       <td style="text-align: center;"><%= link_to '詳細', "/system/roles/#{item.id}?#{@qs}" %></td>
       <td><%= item.role_name.display_name %></td>
@@ -34,7 +38,9 @@
   </tbody>
 </table>
 
+<br/>
 <%= paginate @items %>
+<br/>
 
 </div>
 </div>

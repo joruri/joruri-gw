@@ -1,72 +1,103 @@
-class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
+# encoding: utf-8
+class Gw::Admin::PropOthersController < Gw::Admin::PropGenreCommonController
   include System::Controller::Scaffold
   layout "admin/template/schedule"
 
-  before_action :check_auth, only: [:new, :create, :edit, :update, :destroy, :upload, :image_create, :image_destroy]
-
-  def pre_dispatch
+  def initialize_scaffold
+    super
     @genre = 'other'
     @model = Gw::PropOther
-
-    @prop_types = Gw::PropType.where(state: "public").select(:id, :name).order(:sort_no, :id)
-
-    # 各種権限取得
-    @is_gw_admin = Gw.is_admin_admin? # GW全体の管理者
-    @is_pm_admin = @is_gw_admin ? true : Gw::ScheduleProp.is_pm_admin? # 管財管理者
-    @is_admin = @is_gw_admin || (params[:id].blank? || Gw::PropOtherRole.is_admin?(params[:id])) # 一般施設の管理権限
-
-    @css = %w(/_common/themes/gw/css/prop_extra/schedule.css)
+    @model_image = Gw::PropOtherImage
+    @uri_base = '/gw/prop_others'
+    @item_name = '一般施設'
     Page.title = "一般施設マスタ"
+    @prop_types = Gw::PropType.find(:all, :conditions => ["state = ?", "public"], :select => "id, name", :order => 'sort_no, id')
   end
 
-  def url_options
-    super.merge(params.slice(:cls).symbolize_keys) 
+  def get_index_items
+    @s_admin_group = Gw::PropOtherRole.get_search_select("admin", @is_gw_admin)
   end
 
   def index
-    item = @model.distinct.where(delete_state: 0)
-    item = item.with_user_auth(Core.user, 'admin') unless @is_gw_admin
+    init_params
+    get_index_items
+    item = @model.new
+    item.page  params[:page], params[:limit]
 
-    if params[:s_type_id].present?
-      item = item.where(type_id: params[:s_type_id])
-    end
-    if params[:s_admin_gid].present?
-      if g = System::Group.find_by(id: params[:s_admin_gid])
-        gids = [g.id] + g.children.map(&:id)
-        item = item.merge(Gw::PropOtherRole.with_auth_and_gids('admin', gids))
+    @s_type_id = nz(params[:s_type_id], "0").to_i
+    @s_admin_gid = nz(params[:s_admin_gid], "0").to_i
+
+    cond = "delete_state = 0"
+    cond += " and type_id = #{@s_type_id}" if @s_type_id != 0
+
+    if @s_admin_gid != 0 && @is_gw_admin
+      cond_other_admin = ""
+      s_other_admin_group = System::GroupHistory.find_by_id(@s_admin_gid)
+      s_other_admin_group
+      cond_other_admin = "  "
+      if s_other_admin_group.level_no == 2
+        gids = Array.new
+        gids << @s_admin_gid
+        parent_groups = System::GroupHistory.new.find(:all, :conditions => ['parent_id = ?', @s_admin_gid])
+        parent_groups.each do |parent_group|
+          gids << parent_group.id
+        end
+        search_group_ids = Gw.join([gids], ',')
+        cond_other_admin += " and (auth = 'admin' and  gw_prop_other_roles.gid in (#{search_group_ids}))"
+      else
+        cond_other_admin += " and (auth = 'admin' and  gw_prop_other_roles.gid = #{s_other_admin_group.id})"
       end
+      cond += cond_other_admin
+    elsif !@is_gw_admin
+      cond += " and auth = 'admin' and ((gw_prop_other_roles.gid = #{Site.user_group.id}) or (gw_prop_other_roles.gid = 0))" if !@is_gw_admin
     end
 
-    props = Gw::PropOther.arel_table
-    types = Gw::PropType.arel_table
-    roles = Gw::PropOtherRole.arel_table
-    groups = System::Group.arel_table
+    @items = item.find(:all, :conditions=>cond,
+            :joins => :prop_other_roles, :group => "prop_id")
 
-    @items = item.order(props[:reserved_state].desc, types[:sort_no].asc, groups[:sort_no].asc, props[:sort_no].asc)
-      .joins(:prop_type, :prop_other_roles => :group)
-      .paginate(page: params[:page], per_page: params[:limit])
-      .preload(:prop_type, :prop_other_roles => [:group, :group_history])
-  end
+    parent_groups = Gw::PropOther.get_parent_groups
 
-  def show
-    @item = @model.find(params[:id])
-    return http_error(404) if @item.deleted?
+    @items.sort!{|a, b|
+        ag = System::GroupHistory.find_by_id(a.get_admin_first_id(parent_groups))
+        bg = System::GroupHistory.find_by_id(b.get_admin_first_id(parent_groups))
+        flg = (!ag.blank? && !bg.blank?) ? ag.sort_no <=> bg.sort_no : 0
+        (b.reserved_state <=> a.reserved_state).nonzero? or (a.type_id <=> b.type_id).nonzero? or (flg).nonzero? or a.sort_no <=> b.sort_no
+    }
   end
 
   def new
-    @item = @model.new
+    init_params
+    @item = @model.new({})
 
-    @admin_json = [["", Core.user_group.id, Core.user_group.name]].to_json
-    @editors_json = [["", Core.user_group.id, Core.user_group.name]].to_json
+    json = []
+    json.push ["", @group.id, @group.name]
+    json = json.to_json
+    @admin_json = json
+    @editors_json = json
     @readers_json = []
   end
 
+  def show
+    init_params
+    @item = @model.find(params[:id])
+
+    if @item.delete_state == 1
+      if @genre == 'other'
+        raise 'この施設は削除されています。'
+      end
+    end
+
+    @is_other_admin = Gw::PropOtherRole.is_admin?(params[:id])
+  end
+
   def create
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
     @item = @model.new()
 
     if @item.save_with_rels params, :create
       flash_notice '一般設備の登録', true
-      redirect_to url_for(action: :index)
+      redirect_to "#{@uri_base}?cls=#{@cls}"
     else
       respond_to do |format|
         format.html { render :action => "new" }
@@ -75,19 +106,13 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
     end
   end
 
-  def edit
-    @item = @model.find(params[:id])
-
-    @admin_json = @item.admin_role_corrected_group_options.to_json
-    @editors_json = @item.edit_role_corrected_group_options.to_json
-    @readers_json = @item.read_role_corrected_group_options.to_json
-  end
-
   def update
+    init_params
+    raise '管理者権限がありません。' if !@is_admin
     @item = @model.find(params[:id])
     if @item.save_with_rels params, :update
       flash_notice '一般設備の編集', true
-      redirect_to url_for(action: :index)
+      redirect_to "#{@uri_base}?cls=#{@cls}"
     else
       respond_to do |format|
         format.html { render :action => "edit" }
@@ -96,43 +121,15 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
     end
   end
 
-  def destroy
+  def edit
+    init_params
+    parent_groups = Gw::PropOther.get_parent_groups
+
     @item = @model.find(params[:id])
-    @is_other_admin = Gw::PropOtherRole.is_admin?(params[:id])
-    @item.delete_state = 1
-    _update @item, notice: "#{@model.model_name.human}の削除に成功しました"
-  end
+    raise '管理者権限がありません。' if !@is_admin
 
-  def upload
-    @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
-  end
-
-  def image_create
-    @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
-
-    if @image_item.save
-      redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の追加に成功しました。"
-    else
-      render :upload
-    end
-  end
-
-  def image_destroy
-    @item = @model.find(params[:id])
-    @image_item = @item.images.find(params[:image_id])
-
-    if @image_item.destroy
-      redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の削除に成功しました。"
-    else
-      render :upload
-    end
-  end
-
-  private
-
-  def check_auth
-    return error_auth unless @is_admin
+    @admin_json = @item.admin(:select, parent_groups).to_json
+    @editors_json = @item.editor(:select, parent_groups).to_json
+    @readers_json = @item.reader(:select, parent_groups).to_json
   end
 end

@@ -9,12 +9,14 @@
   background-repeat: no-repeat;
   clear: both;
   height: 1%;
+  margin-top: 10px;
 }
 .gwsub.sb11 {
   background-image: url("/_common/themes/gw/files/title/title_tect_new.gif");
   background-repeat: no-repeat;
   clear: both;
   height: 1%;
+  margin-top: 10px;
 }
 .checkup {
   background-image: url("/_common/themes/gw/files/title/title_medical.gif");
@@ -288,7 +290,7 @@ html:not(:target) #content .show_cal_bt {/* for Safari */
 ------------------------------------------------------------------*/
 span.gwsub_current_menu,
 span.current {
-  /* 個別業務系 共通 */ /* メニュー現在選択位置 */
+  /* 県庁 個別業務系 共通 */ /* メニュー現在選択位置 */
   display: inline-block;
   margin-left: -5px;
   margin-right: -5px;

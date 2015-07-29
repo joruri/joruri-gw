@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<%= render :partial => 'layouts/admin/gw/header_tag' %>
+<link rel="stylesheet" type="text/css" href="/layout/admin/style.css" />
+<link rel="stylesheet" type="text/css" href="/_common/themes/gw/css/print.css" media="print"/>
+<body id="page-gw-schedules-showMonth">
+<div id="container">
+<!--ここからヘッダー-->
+<div id="header">
+<div id="headerBody">
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
+</div>
+</div>
+<!--ここまでヘッダー-->
+<!--ここからバナー-->
+<div id="banner">
+<div id="bannerBody">
+<div class="piece headerMenu">
+<div class="pieceBody">
+<%= render :partial => 'layouts/admin/gw/header_menus' %>
+</div>
+</div>
+
+
+</div>
+
+</div>
+<!--ここまでバナー-->
+<!--ここからナビ2-->
+<div id="navi2">
+<div id="navi2Body">
+</div>
+</div>
+<!--ここまでナビ-->
+<!--ここからメインコンテンツ-->
+<div id="main">
+<div id="wrapper">
+<!--ここからコンテンツ-->
+<div id="content">
+<div id="contentContainer">
+<div id="contentHeader"></div>
+<div id="contentBody">
+<%= yield %>
+</div>
+<div id="contentFooter"></div>
+</div>
+</div>
+<!--ここまでコンテンツ-->
+<!--ここから左サイド-->
+<div id="menu">
+<div id="menuContainer">
+<div id="menuHeader"></div>
+<div id="menuBody">
+</div>
+<div id="menuFooter"></div>
+</div>
+</div>
+<!--ここまで左サイド-->
+</div>
+<!--ここから右サイド-->
+<div id="links">
+<div id="linksContainer">
+<div id="linksHeader"></div>
+<div id="linksBody">右サイド</div>
+<div id="linksFooter"></div>
+</div>
+</div>
+<!--ここまで右サイド-->
+</div>
+<!--ここまでメインコンテンツ-->
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
+</div>
+</body>
+</html>

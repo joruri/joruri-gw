@@ -2,7 +2,9 @@ class Questionnaire::TemplateFieldOption < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
 
+
   after_validation :validate_rel_cols
+
 
   def validate_rel_cols
     return true if @skip_validation
@@ -12,4 +14,5 @@ class Questionnaire::TemplateFieldOption < Gw::Database
 
     return true
   end
+
 end

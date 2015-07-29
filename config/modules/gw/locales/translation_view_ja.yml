@@ -1,6 +1,0 @@
-ja:
-  gw:
-    admin:
-      admin_check_extensions:
-        messages:
-          extension_warning: 登録しようとしているファイルは，行政事務用パソコンの標準ソフトではありません。\n本当に登録してよろしいですか？

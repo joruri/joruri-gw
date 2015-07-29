@@ -1,21 +1,20 @@
 <%
-link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{Core.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"])
+link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{Site.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"])
 %>
 <hr class="borderDash" />
-<p class="mobileSchedule">
-<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
-<%= link_to "新規作成", "/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, @item.st_at)}" %>
-</p>
-<%= render '/gw/admin/schedules/mobile_header' %>
+<p class="mobileSchedule"><%=link_to("新規作成", %Q(/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, @item.st_at)}))%></p>
+<%=render(:partial => '/gw/admin/schedules/mobile_header')%>
 <%
 dts = @item.st_at.to_datetime
 dte = @item.ed_at.to_datetime
 %>
 
 <p class="leftPad1">
-<%=l @item.st_at, format: :date_wday2_ja if @item.st_at %>
+<%=@item.st_at.strftime('%Y年%m月%d日') unless @item.st_at.blank?%>(<%=Gw.weekday(@item.st_at.wday) unless @item.st_at.blank?%>)
 </p>
 <%
+title_category = Gw.yaml_to_array_for_select('gw_schedules_title_categories', :include_blank=>1).to_a.rassoc(@item.title_category_id.to_i)
+
 if @item.allday.blank?
   st_at_s = dts.strftime('%H:%M')
   ed_at_s = dte.strftime('%H:%M')
@@ -28,64 +27,75 @@ elsif @item.allday == 1
 elsif @item.allday == 2
   time_str = "終日"
 end
+
 %>
-<p class="bgYellow"><%= time_str %><br />
-<%= @item.title_with_category %><br /></p>
+<p class="bgYellow"><%=h time_str %><br />
+<%= "【#{title_category[0]}】　" unless title_category.blank? %><%= @item.title %><br /></p>
+<%
+is_pref_admin_users = @item.is_schedule_pref_admin_users?
+if is_pref_admin_users && @is_pref_admin
+  quote_flg = true
+elsif is_pref_admin_users && !@is_pref_admin
+  quote_flg = false
+elsif !is_pref_admin_users
+  quote_flg = true
+else
+  quote_flg = true
+end
+%>
 <p class="leftPad2">
-<% if @item.schedule_props.present? %>
-  <p class="attention">施設を予約した予定は、編集・削除を行うことができません。</p>
-<% else %>
-  <%= link_to '編集', "/gw/schedules/#{@item.id}/edit" if @auth_level[:edit_level] == 1 %>
-  <%= link_to '引用作成', "/gw/schedules/#{@item.id}/quote#{"?sh=sh" if !params[:sh].blank?}" if @item.is_quotable? %>
-  <% if @auth_level[:delete_level] == 1 %>
-    <br />
-    <%= link_to '削除', "/gw/mobile_schedules/#{@item.id}/confirm#{link_params}&is_repeat=false" %>
-    <%= link_to '繰返一括削除', "/gw/mobile_schedules/#{@item.id}/confirm#{link_params}&is_repeat=true" if @item.repeated? %>
+<% if @use_prop %>
+<p class="attention">施設を予約した予定は、編集・削除を行うことができません。</p>
+<% else %><%# if @use_prop %>
+<% if @auth_level[:edit_level] == 1 %>
+  <%= link_to('編集', "/gw/schedules/#{@item.id}/edit") %>
+<% end %>
+<%= link_to '引用作成', "/gw/schedules/#{@item.id}/quote#{"?sh=sh" if !params[:sh].blank?}" if quote_flg && @prop_edit %>
+<% if @auth_level[:delete_level] == 1 %>
+<br />
+  <%= link_to '削除', "/gw/mobile_schedules/#{@item.id}/confirm#{link_params}&is_repeat=false" %>
+  <% if @repeated %>
+    <%= link_to '繰返一括削除', "/gw/mobile_schedules/#{@item.id}/confirm#{link_params}&is_repeat=true" %>
   <% end %>
 <% end %>
-<% if @item.todo == 1 && @item.schedule_todo && (@is_gw_admin || @item.is_creator_or_participant?(Core.user)) %>
-  <% unless @item.schedule_todo.is_finished? %>
-    <%= link_to '完了する', "/gw/schedule_todos/#{@item.schedule_todo.id}/finish?link=show_one&topdate=#{@topdate}" %>
-  <% else %>
-    <%= link_to '未完了に戻す', "/gw/schedule_todos/#{@item.schedule_todo.id}/finish?link=show_one&topdate=#{@topdate}" %>
-  <% end %>
-<% end %>
+<% end %><%# if @use_prop %>
 </p>
 <p class="leftPad2">場所</p>
-<p class="leftPad1"><%=hbr @item.place %></p>
+<p class="leftPad1"><%=hbr @item.place%></p>
 <p class="leftPad2">メモ</p><p class="leftPad1"><%=hbr @item.memo %></p>
 <p class="leftPad2">公開</p>
-<p class="leftPad1"><%= @item.is_public_label %></p>
+<p class="leftPad1"><%= @public_show %></p>
 <% if @item.is_public == 2 %>
 <p class="leftPad2">公開所属</p>
 <p class="leftPad1"><%=raw Gw.join([@item.public_groups_display], '<br />') %></p>
 <% end %>
+<%= render(:partial => '/gw/admin/schedules/show_participant', :locals => {:schedule_users => @item.schedule_users}) -%>
 
-<%= render '/gw/admin/schedules/show_participant', item: @item -%>
-
-<% if @item.schedule_props.present? %>
+<% if @schedule_props.present? %>
 <p class="leftPad2">施設</p>
 <p class="leftPad1">
-<% @item.schedule_props.each do |sp| %>
-  <% if sp.prop %>
-  <%= sp.prop.name %><br />
-  <% end %>
-<% end %>
+<% @schedule_props.each do |schedule_prop| %>
+  <% prop = schedule_prop.prop %>
+  <% if prop.present? %>
+  <%= prop.name %><br />
+  <%end%>
+  <%end%>
 </p>
-<% end %>
+<%end%>
 <hr class="borderDash"/>
 
 <%
 if params[:gid].blank?
-  link_str = "/gw/schedules/#{@item.st_at.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}"
+  link_str = %Q(/gw/schedules/#{@item.st_at.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate})
 else
-  link_str = "/gw/schedules/#{@item.st_at.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}"
+  link_str = %Q(/gw/schedules/#{@item.st_at.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate})
 end
 %>
-<p class="leftPad2"><%= link_to "<戻る", link_str %></p>
-<% if @dis == "week" %>
+
+<p class="leftPad2"><%=link_to("<戻る", link_str)%></p>
+<%if @dis=="week"%>
 <hr class="borderDash"/>
 <p class="leftPad2">
-<%= link_to "<<週表示へ", "/gw/schedules/#{link_params}&st_date=#{@topdate}" %>
+<%=link_to("<<週表示へ", %Q(/gw/schedules/#{link_params}&st_date=#{@topdate}))%>
 </p>
-<% end %>
+<%end%>

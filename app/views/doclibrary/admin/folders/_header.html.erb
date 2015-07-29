@@ -1,9 +1,9 @@
-<%= render 'folder_name' %>
+<%= render :partial => 'folder_name' %>
 
-<% if @title.is_admin? %>
+<% if @is_admin %>
 <div class="editingBox">
-  <span class="btNewFolder">
-    <%= link_to 'フォルダ追加', "/doclibrary/folders/new?title_id=#{params[:title_id]}&state=#{params[:state]}&cat=#{params[:cat]}" %>
-  </span>
+<span class="btNewFolder">
+  <%= link_to 'フォルダ追加', "/doclibrary/folders/new?title_id=#{params[:title_id]}&state=#{params[:state]}&cat=#{params[:cat]}" %>
+</span>
 </div>
 <% end %>

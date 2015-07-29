@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04stafflist < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to  :fy_rel     ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
 
@@ -16,14 +17,14 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
   before_update :before_update_setting_columns
   before_save :before_save_setting_columns
 
-  def self.is_dev?(user = Core.user)
-    user.has_role?('gwsub/developer')
+  def self.is_dev?(uid = Core.user.id)
+    ret = System::Model::Role.get(1, uid ,'gwsub', 'developer')
+    return ret
   end
-
-  def self.is_admin?(user = Core.user)
-    user.has_role?('sb04/admin')
+  def self.is_admin?(uid = Core.user.id)
+    ret = System::Model::Role.get(1, uid ,'sb04', 'admin')
+    return ret
   end
-
   def self.is_editor?(org_code , g_code = Core.user_group.code)
     # get section name
     return false if org_code.blank?
@@ -52,7 +53,7 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
     return true   if u_role == true
     return false  if data.blank?
     u_cond = "user_id=#{uid} and end_at IS NULL"
-    user_groups = System::UsersGroup.where(u_cond)
+    user_groups = System::UsersGroup.find(:all,:conditions=>u_cond)
     return false  if user_groups.blank?
     gcodes = []
     user_groups.each do |item|
@@ -60,14 +61,14 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
     end
   return false if data.fyear_id.blank? || data.section_code.blank?
   section_cond = "fyear_id = #{data.fyear_id} and code = '#{data.section_code}'"
-  section = Gwsub::Sb04section.where(section_cond).first
+  section = Gwsub::Sb04section.find(:first,:conditions=>section_cond)
   return false  if section.blank?
     return false  if gcodes.index(section.ldap_code).blank?
     # (2) editable_dates:start_at <= today <= editable_dates:end_at
     today = Core.now
     dates_cond    = "fyear_id = #{data.fyear_id} and start_at <= '#{today}' and '#{today}' <= end_at"
     dates_order   = "start_at DESC"
-    editable_dates = Gwsub::Sb04EditableDate.where(dates_cond).order(dates_order).first
+    editable_dates = Gwsub::Sb04EditableDate.find(:first,:conditions=>dates_cond,:order=>dates_order)
     return false if editable_dates.blank?
     return true
   end
@@ -77,13 +78,13 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
     markjp = ""
     if u_role == true
       find_order = "start_at DESC"
-      find_year = Gwsub::Sb04EditableDate.order(find_order).first
+      find_year = Gwsub::Sb04EditableDate.find(:first,:order=>find_order)
       markjp = find_year.fyear_markjp if find_year.present?
     else
       today = Core.now
       find_cond = "published_at <='#{today}'"
       find_order = "start_at DESC"
-      find_year = Gwsub::Sb04EditableDate.where(find_cond).order(find_order).first
+      find_year = Gwsub::Sb04EditableDate.find(:first,:conditions=>find_cond,:order=>find_order)
       markjp = find_year.fyear_markjp if find_year.present?
     end
     str = "fyear_markjp <= '#{markjp}'"
@@ -138,11 +139,11 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
         # 年号から逆引き
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
-        fyear = Gw::YearFiscalJp.where(:id =>self.fyear_id.to_i).first
+        fyear = Gw::YearFiscalJp.find_by_id(self.fyear_id.to_i)
         if fyear.blank?
           self.fyear_markjp = nil
         else
@@ -165,7 +166,7 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
         self.section_name = sections[0].name
       end
     else
-        section = Gwsub::Sb04section.where(:id =>self.section_id.to_i).first
+        section = Gwsub::Sb04section.find_by_id(self.section_id.to_i)
         if section.blank?
           self.section_code = nil
           self.section_name = nil
@@ -187,7 +188,7 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
         self.assignedjobs_id = assignedjobs[0].id unless assignedjobs.blank?
       end
     else
-        job = Gwsub::Sb04assignedjob.where(:id =>self.assignedjobs_id.to_i).first
+        job = Gwsub::Sb04assignedjob.find_by_id(self.assignedjobs_id.to_i)
         if job.blank?
           self.assignedjobs_id        = 0
           self.assignedjobs_code      = nil
@@ -217,7 +218,7 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
         self.official_title_id = official_titles[0].id unless official_titles.blank?
       end
     else
-        official_title = official_title.where(:id =>self.official_title_id.to_i).first
+        official_title = official_title.find_by_id(self.official_title_id.to_i)
         if official_title.blank?
           self.official_title_code     = nil
           self.official_title_name     = nil
@@ -311,6 +312,12 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
     return self
   end
 
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `gwsub_sb04stafflists` ;"
+    connect.execute(truncate_query)
+  end
+
   def self.stafflists_personal_state_show(personal_state)
     status = [[1,'する'],[2,'しない']]
     show_str = status.assoc(personal_state.to_i)
@@ -335,9 +342,9 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
     ret = Hash::new
     msg = Array.new
 
-    origin_fyear         = Gw::YearFiscalJp.where(:id =>par_item[:origin_fyear_id]).first
-    destination_fyear    = Gw::YearFiscalJp.where(:id =>par_item[:destination_fyear_id]).first
-    destination_section  = Gwsub::Sb04section.where(:id =>par_item[:destination_section_id]).first
+    origin_fyear         = Gw::YearFiscalJp.find_by_id(par_item[:origin_fyear_id])
+    destination_fyear    = Gw::YearFiscalJp.find_by_id(par_item[:destination_fyear_id])
+    destination_section  = Gwsub::Sb04section.find_by_id(par_item[:destination_section_id])
 
     if origin_fyear.start_at >= destination_fyear.start_at
       ret[:result]    = false
@@ -351,14 +358,16 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
       msg << ['エラー' ,"コピー先の所属が、自所属もしくは主管課ではありません。コピー先は、自所属もしくは主管課を指定してください。"]
     end
 
-    assignedjobs = Gwsub::Sb04assignedjob.where("fyear_id = ? and section_id = ?",par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i)
+    assignedjobs = Gwsub::Sb04assignedjob.find(:all, :conditions => ["fyear_id = ? and section_id = ?",
+            par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i ])
 
     if assignedjobs.length == 0
       ret[:result]    = false
       msg << ['エラー' ,"コピー先の担当が存在しません。担当データのコピーを実施してください。"]
     end
 
-    items = self.where("fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ).order("id")
+    items = self.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
+      :order => 'id')
     if items.blank?
       ret[:result]    = false
       msg << ['エラー' ,"コピー元の職員データが存在しません。コピー元の選択を変更してください。"]
@@ -372,7 +381,8 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
       self.destroy_all(["fyear_id = ? and section_id = ?", par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i ])
       # コピー
       fields = Array.new
-      items = self.where("fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i).order("id")
+      items = self.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
+        :order => 'id')
 
       self.columns.each do |column|
         fields << "#{column.name}"
@@ -381,11 +391,11 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
       save_cnt = items.length
       items.each_with_index do |item, i|
         # 担当
-        a_cond = ["fyear_id = ? and section_id = ? and code_int = ?",par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i, item.assignedjobs_code_int]
-        assignedjob = Gwsub::Sb04assignedjob.where(a_cond).first
+        assignedjob = Gwsub::Sb04assignedjob.find(:first, :conditions => ["fyear_id = ? and section_id = ? and code_int = ?",
+            par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i, item.assignedjobs_code_int ])
         # 職名
-        o_cond = ["fyear_id = ? and name = ?",par_item[:destination_fyear_id].to_i, item.official_title_name ]
-        officialtitle = Gwsub::Sb04officialtitle.where(o_cond).first
+        officialtitle = Gwsub::Sb04officialtitle.find(:first, :conditions => ["fyear_id = ? and name = ?",
+            par_item[:destination_fyear_id].to_i, item.official_title_name ])
 
         model = self.new
         model.class.before_save.clear # コールバックをフックして無効化する。
@@ -432,9 +442,9 @@ class Gwsub::Sb04stafflist < Gwsub::GwsubPref
         end
         model.save(:validate=>false)
       end
-      origin_fyear         = Gw::YearFiscalJp.where(:id =>par_item[:origin_fyear_id]).first
-      destination_fyear    = Gw::YearFiscalJp.where(:id =>par_item[:destination_fyear_id]).first
-      destination_section  = Gwsub::Sb04section.where(:id =>par_item[:destination_section_id]).first
+      origin_fyear         = Gw::YearFiscalJp.find_by_id(par_item[:origin_fyear_id])
+      destination_fyear    = Gw::YearFiscalJp.find_by_id(par_item[:destination_fyear_id])
+      destination_section  = Gwsub::Sb04section.find_by_id(par_item[:destination_section_id])
 
       Gwsub::Sb04YearCopyLog.create_log('stafflist',
         par_item[:origin_fyear_id], par_item[:origin_section_id], par_item[:destination_fyear_id], par_item[:destination_section_id])

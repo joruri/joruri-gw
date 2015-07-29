@@ -1,12 +1,15 @@
+<%#*<p>Find me in app/views/gw/admin/year_mark_jp/new.html.erb</p>%>
+<%
+  @create_path = "/gw/year_mark_jps?#{@qs}"
+%>
 <div class="piece YearMarkJp">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
+
 <div class="pieceBody">
-
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, multipart: true} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, caption: '保存' %>
+<%= form_for :item, :url => @create_path, :html => {:method => :post, :multipart => true} do |f| %>
+<%= render :partial => 'form', :locals => {:f => f} %>
+<%= raw(submit_for(f, {:caption => '保存'}) ) %>
 <% end %>
-
 </div>
+
 </div>

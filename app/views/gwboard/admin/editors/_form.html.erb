@@ -10,8 +10,8 @@
 <%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(Core.user_group.parent_id)), :size=>5, :style => 'width:200px;', :ondblclick => 'add_editor()', :multiple => true) %>
 </td>
 <td>
-<%= button_tag '追加 →', :onclick =>'add_editor(); return false;' %><br /><br />
-<%= button_tag '← 削除', :onclick =>'del_editor(); return false;' %>
+<%= button_to_function '追加 →', 'add_editor()' %><br /><br />
+<%= button_to_function '← 削除', 'del_editor()' %>
 </td>
 <td>
 <%= select_tag 'item[editors_add_buf]', [], :size=>6, :style => 'width:200px;', :ondblclick => 'del_editor()', :multiple => true %>

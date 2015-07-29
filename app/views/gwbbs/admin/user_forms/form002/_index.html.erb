@@ -1,10 +1,10 @@
 <%# 自治研修センター 研修案内 -%>
 <table class="index">
 <%brk_code = ''%>
-<% @items.each do |item|
-  i = 0
-  flg = false
-  label_str = case params[:state]
+<% for item in @items
+    i = 0
+    flg = false
+    label_str = case params[:state]
     when "GROUP"
       unless brk_code == item.section_name.to_s
         flg =true
@@ -23,20 +23,21 @@
       end
       item.latest_updated_at.strftime('%Y-%m-%d').to_s
     end
-  %>
-  <% if flg %>
-  <tr>
-    <th style="text-align: left;"><%= label_str %></th>
+    if flg
+%>
+    <th style="text-align: left;"> <%=label_str%> </th>
     <th class="startDate">研修開始日</th>
     <th class="closeDate">申込締切日</th>
     <th class="unit">単位</th>
-  </tr>
-  <% end %>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
+  <%end%>
+  <%# i += 1 %>
+  <%#= (i%2 == 0) ? '<tr>' : '<tr class="cycle">' %>
+   <tr class="<%= cycle 'article', 'article cycle' %>">
     <td><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
-    <td class="startDate"><%= item.inpfld_001 %></td>
-    <td class="closeDate"><%= item.inpfld_002 %></td>
-    <td class="unit"><%= item.inpfld_004 %></td>
-  </tr>
-<% end %>
+    <td class="startDate"><%= item.inpfld_001%></td>
+    <td class="closeDate"><%= item.inpfld_002%></td>
+    <td class="unit"><%= item.inpfld_004%></td>
+   </tr>
+<%end%>
+
 </table>

@@ -1,0 +1,132 @@
+<%
+box_width = 'width:300px;'  #承認者設定枠の幅
+collection = @users_collection
+recognizers  = []
+str = []
+unless @select_recognizers.blank?
+  recognizers = @select_recognizers
+  for i in 1..5
+    str << recognizers[i.to_s]
+  end
+else
+  for i in 1..5
+    str << ""
+  end
+end
+
+recognizers_select_list = []
+recognize_list = []
+collection.each {|u| recognizers.index(u.id.to_s) ? recognizers_select_list << u : recognize_list << u }
+
+_recognize_list = Proc.new do
+  _name  = "recognize_list"
+  select_tag _name, options_from_collection_for_select(recognize_list, :id, :display_name), :multiple => true, :size => 5, :style => box_width, :ondblclick => "fnMoveSelect(this.form, 'recognize_list[]','recognize_select_list[]');"
+end
+
+_select_list = Proc.new do
+  _name  = "recognize_select_list"
+  select_tag _name, options_from_collection_for_select(recognizers_select_list, :id, :display_name), :multiple => true, :size => 5, :style => box_width, :ondblclick => "fnMoveSelect(this.form, 'recognize_select_list[]','recognize_list[]');"
+end
+
+user_groups = Gwboard::Group.level
+%>
+<%scat04 = [["承認なし","0"],["承認あり","1"]]%>
+<table class="show" style="margin-top: 10px;">
+<tr>
+<th>記事の承認</th>
+<td><%= f.radio_buttons :category4_id, scat04, :class => 'state'  ,:onclick => 'sel_class1()' %></td>
+</tr>
+</table>
+
+<div id="item_recog_select1" style="display:none;" >
+<table class="show">
+<tr>
+  <th>承認者</th>
+  <td>
+  <table>
+  <tr>
+    <td style="width: 100px; text-align: left;">
+      <%= select_tag('form[adms][gid]', options_for_select(user_groups, Core.user_group.id ), :onchange=>'update_admin_cand();' ) %>
+      <br /><%= raw(_recognize_list.call()) %>
+    </td>
+    <td style="width: 20px; text-align: left;">
+      <input type="button" name="mv1" value=" → " onclick="fnMoveSelect(this.form, 'recognize_list[]','recognize_select_list[]');" />
+      <br /><br />
+      <input type="button" name="mv2" value=" ← " onclick="fnMoveSelect(this.form, 'recognize_select_list[]','recognize_list[]');" />
+    </td>
+    <td style="width: 1000px; text-align: left;">
+      <div class="<%= 'fieldWithErrors' if @item.errors["承認者"] %>">
+      <br /><%= raw(_select_list.call()) %></div>
+    </td>
+  </tr>
+  </table>
+  </td>
+</tr>
+</table>
+<input type="hidden" id="_recognizers_1" name="<%= f.object_name.to_s + "[_recognizers][1]" %>" value="<%= str[0] %>" />
+<input type="hidden" id="_recognizers_2" name="<%= f.object_name.to_s + "[_recognizers][2]" %>" value="<%= str[1] %>" />
+<input type="hidden" id="_recognizers_3" name="<%= f.object_name.to_s + "[_recognizers][3]" %>" value="<%= str[2] %>" />
+<input type="hidden" id="_recognizers_4" name="<%= f.object_name.to_s + "[_recognizers][4]" %>" value="<%= str[3] %>" />
+<input type="hidden" id="_recognizers_5" name="<%= f.object_name.to_s + "[_recognizers][5]" %>" value="<%= str[4] %>" />
+<input type="hidden" id="<%= f.object_name.to_s + "__recognition_after_process" %>" name="<%= f.object_name.to_s + "[_recognition][after_process]" %>" value="" />
+
+<script type="text/javascript">
+//<![CDATA[
+  // セレクトボックスのリストを移動
+  // 引数（移動元セレクトボックス名, 移動先セレクトボックス名）
+  function fnMoveSelect(fm, sel1, sel2) {
+    selI = 0
+    selForm1 = document.getElementById(sel1);
+    selForm2 = document.getElementById(sel2);
+    for (i = 0; i < fm[sel1].length; i++)
+      if (fm[sel1].options[i].selected)
+        selI++;
+    if (sel2 == "recognize_select_list[]" && (fm[sel2].length + selI) > 5) {
+      alert("承認者の設定はは5人までです")
+      return false;
+    }
+    for (i = 0; i < fm[sel1].length; i++) {
+      if (fm[sel1].options[i].selected) {
+        fm[sel2].options[fm[sel2].length] = new Option(fm[sel1].options[i].text, fm[sel1].options[i].value);
+        fm[sel1].options[fm[sel1].selectedIndex] = null;
+        i--;
+      }
+    }
+    for (i = 0; i < 5; i++)
+      document.getElementById('_recognizers_' + (i+1)).value = "";
+
+    for (i = 0; i < fm["recognize_select_list[]"].options.length; i++) {
+      if (i > 4) return false;
+      document.getElementById('_recognizers_' + (i+1)).value = fm["recognize_select_list[]"].options[i].value;
+    }
+  }
+  //adms
+  var update_admin_cand = function () {
+    var fr = $('form_adms_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    var rg = $('recognize_select_list');
+    var gr1g = ''
+    var gr2g = ''
+    var gr3g = ''
+    var gr4g = ''
+    var gr5g = ''
+    for (i = 0; i < rg.options.length; i++) {
+      if (i == 0) {gr1g = rg.options[0].value}
+      if (i == 1) {gr2g = rg.options[1].value}
+      if (i == 2) {gr3g = rg.options[2].value}
+      if (i == 3) {gr4g = rg.options[3].value}
+      if (i == 4) {gr5g = rg.options[4].value}
+    }
+    url = '/_admin/gwboard/ajaxusers/getajax_recognizer.json?s_genre=' + genre + '&s_gr1g=' + gr1g + '&s_gr2g=' + gr2g + '&s_gr3g=' + gr3g + '&s_gr4g=' + gr4g + '&s_gr5g=' + gr5g;
+    var to = $('recognize_list');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[1], xh[0]);
+      }
+    });
+  }
+//]]>
+</script>
+</div>

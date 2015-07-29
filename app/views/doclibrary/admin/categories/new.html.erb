@@ -3,7 +3,7 @@
 
 <%= f.error_messages %>
 
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <div class="submitters">
   <input id="item_submit" name="commit" onclick="document.getElementById('item_state').value='public';" type="submit" value="登録する" />

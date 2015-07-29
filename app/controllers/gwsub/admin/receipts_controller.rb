@@ -5,10 +5,13 @@
 
 class Gwsub::Admin::ReceiptsController < ApplicationController
   include System::Controller::Scaffold
-  include DownloadHelper
+
+  def initialize_scaffold
+
+  end
 
   def show_object
-    item = Gwsub::Sb05File.where(:id => params[:id]).first
+    item = Gwsub::Sb05File.find_by_id(params[:id])
     object = Gwsub::Sb05DbFile.find(item.db_file_id)
     send_data(object.data, :disposition =>"inline", :type => item.content_type)
   end
@@ -17,7 +20,7 @@ class Gwsub::Admin::ReceiptsController < ApplicationController
 
     #admin_flags
     #get_readable_flag unless @is_readable
-    #return error_auth unless @is_readable    #閲覧権無ければ403
+    #return authentication_error(403) unless @is_readable    #閲覧権無ければ403
 #    if params[:system]=='mailinglist'
 #      item = Gwsub::Sb10ProposalMailinglistFile
 #    elsif params[:system]=='software'
@@ -43,13 +46,23 @@ class Gwsub::Admin::ReceiptsController < ApplicationController
     end
     return if item==nil
 
-#    item = item.where(:id => params[:id]).first
+#    item = item.find_by_id(params[:id])
     item = item.find(params[:id])
+
+    #IE判定
+    user_agent = request.headers['HTTP_USER_AGENT']
+    chk = user_agent.index("MSIE")
+    chk = user_agent.index("Trident") if chk.blank?
+    if chk.blank?
+      item_filename = item.filename
+    else
+      item_filename = item.filename.tosjis
+    end
 
     #制御付き実ファイル
 
     f = open(item.f_name)
-    send_data(f.read, :filename => item.filename, :type => item.content_type)
+    send_data(f.read, :filename => item_filename, :type => item.content_type)
     f.close
 
   end

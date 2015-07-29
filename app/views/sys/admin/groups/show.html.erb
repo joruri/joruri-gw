@@ -1,0 +1,20 @@
+<div>
+ユーザーが所属している所属の削除はできません。
+<br />また、削除は、終了日を設定し、状態を「無効」に変更するだけです。現在は、コード・名称の再利用はできませんので、注意してください。
+</div>
+
+<table class="show">
+  <tbody>
+    <tr><th>状態</th><td><%= System::UsersGroup.state_show(@item.state) %></td></tr>
+    <tr><th>グループID</th><td><%= @item.code %></td></tr>
+    <tr><th>グループ名</th><td><%= @item.name %></td></tr>
+    <tr><th>グループ名(英)</th><td><%= @item.name_en %></td></tr>
+    <tr><th>メールアドレス</th><td><%= @item.email %></td></tr>
+    <tr><th>表示順</th><td><%= @item.sort_no %></td></tr>
+    <tr><th>適用開始日</th><td><%= Gw.date_str(@item.start_at) %></td></tr>
+    <tr><th>適用終了日</th><td><%= Gw.date_str(@item.end_at) %></td></tr>
+    <tr><th>階層レベル</th><td><%= @item.level_no %></td></tr>
+    <tr><th>グループ</th><td><%= safe{@item.parent.ou_name} %></td></tr>
+  </tbody>
+</table>
+

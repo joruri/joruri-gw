@@ -1,0 +1,32 @@
+<%#*<h1>Gw::Public::PrefConfigs#index</h1>%>
+<%#*<p>Find me in app/views/gw/public/pref_configs/index.html.erb</p>%>
+<%
+  options={:table_name=>"gw_admin_messages",:action=>"show"}
+  options['field_td_criteria']={
+    'body'=>Proc.new{|item| item.body }
+  }
+%>
+
+<div class="piece AdminMessage">
+
+<%= render :partial => 'header_str' %>
+
+  <div class="pieceBody">
+<div class="editingBox">
+ <span class="btEdit"><%=link_to('編集', "#{@public_uri}/#{@item.id}/edit")%></span>
+ <span class="btDestroy"><%=  link_to '削除', "#{@public_uri}/#{@item.id}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+ <span class=""><%=  link_to '管理者設定へ >>', @public_uri %></span>
+</div>
+
+<%= raw(table_to_show2(@item,options)) %>
+
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to 'メッセージ一覧へ戻る', @public_uri) %>
+</div>
+
+
+</div>
+
+
+</div><!--piece admin_messages-->

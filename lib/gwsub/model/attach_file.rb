@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 #以下、module Cms::Model::Base::Fileから
 #ファイルサイズの計算等を流用している
 module Gwsub::Model::AttachFile

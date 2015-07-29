@@ -1,23 +1,25 @@
-class Gw::Admin::Piece::SchedulesController < ApplicationController
+# encoding: utf-8
+class Gw::Admin::Piece::SchedulesController < Gw::Admin::SchedulesController
   include System::Controller::Scaffold
-  layout false
+  layout 'base'
 
   def init_params
     @title = 'ユーザー'
     @piece_head_title = 'スケジュール'
+    @js = %w(/_common/js/yui/build/animation/animation-min.js /_common/js/popup_calendar/popup_calendar.js /_common/js/yui/build/calendar/calendar.js /_common/js/dateformat.js)
     @css = %w(/_common/themes/gw/css/schedule.css)
 
-    @users = [Core.user]
+    @users = [Site.user]
     @user   = @users[0]
 
     if @user.blank?
-      @uid = nz(params[:uid], Core.user.id)
+      @uid = nz(params[:uid], Site.user.id)
       @uids = [@uid]
     else
       @uid    = @user.id
       @uids = @users.collect {|x| x.id}
     end
-    @gid = nz(params[:gid], @user.groups[0].id) rescue Core.user_group.id
+    @gid = nz(params[:gid], @user.groups[0].id) rescue Site.user_group.id
 
     if params[:cgid].blank? && @gid != 'me'
       x = System::CustomGroup.get_my_view( {:is_default=>1,:first=>1})
@@ -28,7 +30,7 @@ class Gw::Admin::Piece::SchedulesController < ApplicationController
       @cgid = params[:cgid]
     end
     @sp_mode = :schedule
-    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Core.user.code,:first=>1})
+
     a_qs = []
     a_qs.push "uid=#{@user.id}"
     a_qs.push "gid=#{params[:gid]}" unless params[:gid].nil? && !params[:cgid].nil?
@@ -37,19 +39,19 @@ class Gw::Admin::Piece::SchedulesController < ApplicationController
     @schedule_move_qs = a_qs.join('&')
 
     @is_gw_admin = Gw.is_admin_admin?
+    @up_schedules = nz(Gw::Model::UserProperty.get('schedules'.singularize), {})
 
-    @schedule_settings = Gw::Schedule.load_system_and_user_settings(Core.user)
+    @schedule_settings = Gw::Model::Schedule.get_settings 'schedules', {}
 
     @show_flg = true
 
     @params_set = Gw::Schedule.params_set(params.dup)
     @ref = Gw::Schedule.get_ref(params.dup)
-    @link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{nz(params[:uid], Core.user.id)}", "cgid=#{params[:cgid]}"],{:no_entity=>true})
-    @todo_display = false
-    @todo_display = true if @uid == Core.user.id && Gw::Property::TodoSetting.todos_display?
+    @link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{nz(params[:uid], Site.user.id)}", "cgid=#{params[:cgid]}"],{:no_entity=>true})
+
+    @ie = Gw.ie?(request)
     @hedder2lnk = 1
     @link_format = "%Y%m%d"
-    @link_box = true
     @state_user_or_group = :user
   end
 
@@ -71,21 +73,22 @@ class Gw::Admin::Piece::SchedulesController < ApplicationController
     @show_flg = true
     @edit = true
 
-    if @schedule_settings[:view_portal_schedule_display] == '1' || request.smart_phone? || request.mobile?
-      @schedules = Gw::Schedule.distinct.joins(:schedule_users).only_main_schedule.with_participant_uids(@uids)
-        .scheduled_between(@calendar_first_day, @calendar_end_day)
-        .tap {|s| break s.without_todo if !@todo_display }
-        .order(allday: :desc, st_at: :asc, ed_at: :asc, id: :asc)
-        .preload_schedule_relations
+    if request.smart_phone?
+      # スマートフォン
+      _schedule_data
+    elsif request.mobile?
+      # 携帯
+      _schedule_data
+      _schedule_user_data
+    elsif @schedule_settings.present? && @schedule_settings.key?(:view_portal_schedule_display) && 
+        nz(@schedule_settings[:view_portal_schedule_display], 1).to_i == 0
 
-      @schedules = @schedules.reject {|sche|
-        schedule_props = sche.collect_schedule_props
-        schedule_props.present? && schedule_props.all?(&:cancelled?)
-      }
-
-      @holidays = Gw::Holiday.find_by_range_cache(@calendar_first_day, @calendar_end_day)
-    else
+      # PC
       render :text => ""
+
+    else
+      # PC
+      _schedule_data
     end
   end
 end

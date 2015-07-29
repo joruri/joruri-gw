@@ -1,0 +1,103 @@
+<%
+if params[:cond]=='block'
+  finished_str  = "通知設定"
+  confirm_str   = "通知設定"
+else
+  finished_str  = "非通知設定"
+  confirm_str   = "非通知設定"
+end
+s_redirect = "/_admin/gwcircular/#{@parent.id}/commissions"
+s_action_url = "/_admin/gwcircular/#{@parent.id}/commissions/list?cond=#{params[:cond]}"
+# 一覧表示対象があれば、選択可能とする
+if @items.size > 0
+select_menu = <<-EOL
+<form id="listForm" method="post" enctype="multipart/form-data" action="#{s_action_url}">
+#{hidden_field_tag('authenticity_token', form_authenticity_token)}
+#{hidden_field_tag('redirect_url', s_redirect)}
+<table  class="batchProcess">
+<tbody>
+<tr>
+<td>
+<!--   <div class="submitters"> -->
+　#{submit_tag("#{finished_str} " , :id=>'finished_submit' , :name=>'finished_submit' , :confirm=>"#{confirm_str}にしますか？")}
+<!--   </div> -->
+</td>
+<td>
+　#{link_to('全選択', "javascript:List_Form.checkAll('listForm', 'ids', 1);")  + "　" + link_to('全解除', "javascript:List_Form.checkAll('listForm', 'ids', 0);")}
+</td></tr></tbody></table>
+EOL
+else
+end
+%>
+
+<div class="bbsDocList circular">
+<div class="pieceHeader">
+<h2 class="pieceTitle">回覧板</h2>
+<%if @is_admin %>
+<div class="btsHeadeRight">
+<span class="btManager"><a href="/gwcircular/basics/">管理者</a></span>
+</div>
+<%end%>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+<h3><%=@parent.title%></h3>
+</div>
+<div class="pieceBody">
+<%=render :partial => 'header' %>
+<div class="editingBox">
+<span class="btTransmit"><%=link_to("回覧板を配信する","/gwcircular/#{@parent.id}/circular_publish")-%></span>
+</div>
+<%= raw(select_menu) %>
+<table class="index">
+<tr class="headIndex">
+<th style="width:20px;"></th>
+<th style="width:60px;">状態</th>
+<th class="group">所属</th>
+<th class="">担当者名</th>
+</tr>
+<%for item in @items%>
+ <tr class="<%= cycle 'article', 'article cycle' %>">
+ <td><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+ <td style="width:60px;"><%=raw(status_name(item))%></td>
+ <td class="group"><%=item.section_name%></td>
+ <td class=""><%=item.target_user_name%></td>
+ </tr>
+<%end%>
+</table>
+<%=paginate @items %>
+<!--戻るボタン-->
+<div class="btReturn">
+  <%=link_to '回覧板詳細へ戻る', "#{@title.menus_path}#{@parent.id}" %>
+</div>
+</div><!--pieceBody-->
+</div><!--piece gwbbs-->
+
+<script type="text/javascript">
+//<![CDATA[
+
+/**
+ * List Utility.
+ */
+function List_Form() {
+}
+
+/**
+ * Methods.
+ */
+List_Form.checkAll   = _List_Form_checkAll;
+
+/**
+ * Checks the checkbox.
+ */
+function _List_Form_checkAll(formId, itemId, value) {
+	form = document.getElementById(formId);
+	for (var i = 0; i < form.elements.length; i++) {
+		pattern = new RegExp('^' + itemId + '\\[.*\\]');
+		if(form.elements[i].name.match(pattern)) {
+			form.elements[i].checked = value;
+		}
+	}
+}
+//]]>
+</script>

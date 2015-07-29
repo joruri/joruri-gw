@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_subfunction_select_menu.html.erb</p>%>
 <%
 t01 = %Q(<span>申込</span>)
 t02 = %Q(<span>企画</span>)
@@ -14,7 +15,7 @@ else
 end
 %>
 <div class="menu">
-<%= link_to raw(t01), url_for('/gwsub/sb01/sb01_training_entries') %>
-<%= link_to raw(t02), url_for('/gwsub/sb01/sb01_training_plans') %>
-<%= link_to raw(t03), url_for('/gwsub/sb01/sb01_trainings') if @u_role==true %>
+<%= link_to raw(t01)   , url_for('/gwsub/sb01/sb01_training_entries')%>
+<%= link_to raw(t02)   , url_for('/gwsub/sb01/sb01_training_plans')%>
+<%= link_to raw(t03)   , url_for('/gwsub/sb01/sb01_trainings') if @u_role==true%>
 </div>

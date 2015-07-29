@@ -1,3 +1,4 @@
+# encoding: utf-8
 class System::Inquiry < ActiveRecord::Base
   include System::Model::Base
 
@@ -12,6 +13,6 @@ class System::Inquiry < ActiveRecord::Base
   end
 
   def set_group
-    self.group_id = Core.user_group.id unless group_id
+    self.group_id = Site.user_group.id unless group_id
   end
 end

@@ -1,25 +1,28 @@
 <div class="piece gwfaq">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 <div class="pieceBody">
-<%= render 'header' %>
-
+<%= render :partial => 'header' %>
+<%=div_notice%>
 <table class="index">
+
   <tr>
     <th style="width: 60px; text-align: center;">　</th>
     <th style="width: 60px; text-align: right;">並び順</th>
     <th >名称</th>
     <th style="width: 60px; text-align: center;">　</th>
   </tr>
-  <% @items.each do |item| %>
+
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to '編集', edit_gwqa_category_path(item,{:title_id=>item.title_id}) %></td>
     <td style="text-align: right;"><%= item.sort_no %></td>
-    <td><%= item.name %></td>
+    <td><%=h item.name %></td>
     <td style="width: 60px; text-align: center;">
       <%= link_to '削除', gwqa_category_path(item,{:title_id=>item.title_id}), :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete if item.is_deletable?%>
     </td>
   </tr>
   <% end %>
+
 </table>
 
 <%= paginate @items %>

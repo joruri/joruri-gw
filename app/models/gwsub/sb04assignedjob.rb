@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fy_rel     ,:foreign_key=>:fyear_id           ,:class_name=>'Gw::YearFiscalJp'
   belongs_to :section    ,:foreign_key=>:section_id         ,:class_name=>'Gwsub::Sb04section'
@@ -50,7 +51,7 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -61,7 +62,7 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
       else
         order = "code"
         conditions = "fyear_markjp = '#{self.fyear_markjp}' and code = '#{self.section_code}'"
-        section = Gwsub::Sb04section.where(conditions).order(order).first
+        section = Gwsub::Sb04section.find(:first,:conditions=>conditions,:order=>order)
         if section.blank?
           self.section_id = 0
         else
@@ -136,14 +137,21 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
     return self
   end
 
+
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `gwsub_sb04assignedjobs` ;"
+    connect.execute(truncate_query)
+  end
+
   def self.year_copy_assignedjobs(par_item, auth = Hash::new)
     # 年度の違うデータをコピーする。
     ret = Hash::new
     msg = Array.new
 
-    origin_fyear         = Gw::YearFiscalJp.where(:id =>par_item[:origin_fyear_id]).first
-    destination_fyear    = Gw::YearFiscalJp.where(:id =>par_item[:destination_fyear_id]).first
-    destination_section  = Gwsub::Sb04section.where(:id =>par_item[:destination_section_id]).first
+    origin_fyear         = Gw::YearFiscalJp.find_by_id(par_item[:origin_fyear_id])
+    destination_fyear    = Gw::YearFiscalJp.find_by_id(par_item[:destination_fyear_id])
+    destination_section  = Gwsub::Sb04section.find_by_id(par_item[:destination_section_id])
 
     if origin_fyear.start_at >= destination_fyear.start_at
       ret[:result]    = false
@@ -157,7 +165,7 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
       msg << ['エラー' ,"コピー先の所属が、自所属もしくは主管課ではありません。コピー先は、自所属もしくは主管課を指定してください。"]
     end
 
-    items = self.new.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
+    items = self.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
       :order => 'id')
     if items.blank?
       ret[:result]    = false
@@ -173,7 +181,7 @@ class Gwsub::Sb04assignedjob < Gwsub::GwsubPref
       self.destroy_all(["fyear_id = ? and section_id = ?", par_item[:destination_fyear_id].to_i, par_item[:destination_section_id].to_i ])
       # コピー
       fields = Array.new
-      items = self.new.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
+      items = self.find(:all, :conditions => ["fyear_id = ? and section_id = ?", par_item[:origin_fyear_id].to_i, par_item[:origin_section_id].to_i ],
         :order => 'id')
 
       self.columns.each do |column|

@@ -1,8 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/sb01_training"
-
+  
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_schedule_members"
@@ -48,10 +49,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
       return redirect_to location
     end
     @item.training_schedule_id  = @p_id
-    @item.training_user_id      = Core.user.id
-    @item.training_group_id     = Core.user_group.id
-    @item.entry_user_id         = Core.user.id
-    @item.entry_group_id        = Core.user_group.id
+    @item.training_user_id      = Site.user.id
+    @item.training_group_id     = Site.user_group.id
+    @item.entry_user_id         = Site.user.id
+    @item.entry_group_id        = Site.user_group.id
   end
 
   def create
@@ -106,7 +107,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
           :ed_at           => @ts.from_end
           })
         skd_user.save!
-        @skd_m = Gwsub::Sb01TrainingScheduleMember.where(:id =>@item.id).first
+        @skd_m = Gwsub::Sb01TrainingScheduleMember.find_by_id(@item.id)
         unless @skd_m.blank?
           @skd_m.schedule_id = skd.id
           @skd_m.save
@@ -131,7 +132,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     options = {
       :success_redirect_uri=>location,
       :after_process=>Proc.new{
-        skd = Gw::Schedule.where(:id =>@item.schedule_id).first
+        skd = Gw::Schedule.find_by_id(@item.schedule_id)
         skd.destroy unless skd.blank?
         t_prop = Gwsub::Sb01TrainingSchedule.find(@p_id)
         t_prop.members_current = t_prop.members_current.to_i - 1
@@ -147,19 +148,19 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 表示行数　設定
     @limits = nz(params[:limit],30)
     # 研修id
-    @t_id_top = Gwsub::Sb01Training.order("fyear_markjp DESC").first
+    @t_id_top = Gwsub::Sb01Training.find(:first,:order=>"fyear_markjp DESC")
     @t_id = nz(params[:t_id],@t_id_top.id)
     # 開催日id
     prop_cond = "gwsub_sb01_training_schedules.training_id=#{@t_id}"
     prop_order = "gwsub_sb01_training_schedule_conditions.from_at"
-    @p_id_top = Gwsub::Sb01TrainingSchedule.includes(:condition).where(prop_cond).references(:condition).order(prop_order).first
+    @p_id_top = Gwsub::Sb01TrainingSchedule.find(:first,:include=>[:condition],:conditions=>prop_cond,:order=>prop_order)
     @p_id = nz(params[:p_id],@p_id_top.id)
     # 経路
     @top_menu = nz(params[:t_menu],'entries')
@@ -202,7 +203,15 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
   end
 
   def user_fields
+#pp ['user_fields',params]
     users = System::User.get_user_select(params[:g_id])
-    render text: view_context.options_for_select([['[指定なし]','']] + users), layout: false
+    html_select = "<option value=''>[指定なし]</option>"
+    users.each do |value , key|
+      html_select << "<option value='#{key}'>#{value}</option>"
+    end
+#pp ['user_fields',params,users,html_select]
+    respond_to do |format|
+      format.csv { render :text => html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 end

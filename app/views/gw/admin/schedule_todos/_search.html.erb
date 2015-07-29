@@ -1,7 +1,0 @@
-<%= form_tag '', :method => :get, :class => 'search', :name => 'frmSelect' do %>
-<div class="indication">
-<div class="state">状態
-  <%= select_tag :s_finished ,options_for_select([['未完了',1],['完了',2],['両方',3]], params[:s_finished].to_i),
-    :onchange => 'document.frmSelect.submit()' %></div>
-</div>
-<% end %>

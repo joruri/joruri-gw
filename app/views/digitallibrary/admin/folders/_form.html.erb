@@ -1,49 +1,34 @@
 <table class="show">
-  <tr>
-    <th>公開</th>
-    <td><%= f.radio_buttons :state, @item.status_select %></td>
-  </tr>
+<tr>
+<th>公開</th>
+<td><%=f.radio_buttons :state, @item.status_select, :class => 'state' %></td>
+</tr>
 </table>
 
 <table class="show">
-  <tr>
-    <th>見出し（階層）</th></tr><tr>
-    <td>
-      <%
-      if @item.new_record?
-        folder_options = @title.folders.root.folder_options
-      else
-        folder_options = @item.folder_options
-      end
-      %>
-      <% if folder_options.blank? %>
-        <%= required '見出しが登録されていません' %>
-      <% else %>
-        <%= f.select :chg_parent_id, folder_options, :include_blank => false %>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th>フォルダの順</th></tr><tr>
-    <td>
-      <% seq_no_options = @item.seq_no_options %>
-      <% if seq_no_options.blank? %>
-        <%= required '記事が登録されていません' %>
-      <% else %>
-        <%= f.select :seq_no, seq_no_options, :include_blank => false %>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th class="titleTop">ツリーの並び順　<%= required '※通常は変更しないでください' %></th></tr><tr>
-    <td><%= f.text_field :display_order, :size => '5'%></td>
-  </tr>
+<tr>
+<th>見出し（階層）</th></tr><tr>
+<td>
+<%=required('見出しが登録されていません') if @tree_list == []%>
+<%=f.select(:chg_parent_id, @tree_list, :include_blank => false) unless @tree_list == []%>
+</td>
+</tr>
+<tr>
+<th>フォルダの順</th></tr><tr>
+<td>
+<%=required('記事が登録されていません') if @position == []%>
+<%= f.select(:seq_no, @position, :include_blank => false) unless @position == []%>
+</td>
+</tr>
+<tr>
+<th class="titleTop">ツリーの並び順　<%=required('※通常は変更しないでください')%></th></tr><tr>
+<td><%= f.text_field :display_order, :size => '5'%></td>
+</tr>
 </table>
 <table class="show">
-  <tr>
-    <th>見出し <%= required %></th>
-    <td><%= f.text_field :title, :class => 'string name' %></td>
-  </tr>
+<tr>
+<th>見出し <%= required %></th>
+<td><%= f.text_field :title, :class => 'string name' %></td>
+</tr>
 </table>
-
-<%= render 'digitallibrary/admin/docs/hidden_form' %>
+<%=render :partial => 'digitallibrary/admin/docs/hidden_form' %>

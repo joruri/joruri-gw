@@ -7,7 +7,7 @@ str_state = "?state=#{params[:state]}" unless params[:state].blank?
 <h2>掲示板</h2>
 </div>
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <table class="index">
   <tr>
     <th style="width: 60px; text-align: right;">管理番号</th>
@@ -19,7 +19,8 @@ str_state = "?state=#{params[:state]}" unless params[:state].blank?
     <th style="width: 80px; text-align: center;">ステータス</th>
     <th style="width: 80px; text-align: center;">　</th>
   </tr>
-  <% @items.each do |item| %>
+
+  <% for item in @items %>
   <%
     body_size_capacity = 0
     body_size_currently = 0
@@ -32,12 +33,12 @@ str_state = "?state=#{params[:state]}" unless params[:state].blank?
     s_color = 'color:red;' if 90 < usage
   %>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: right;"><%=h item.id %></td>
     <td style="text-align: left;<%=s_color%>">
     <%if item.preview_mode%>
       <%= link_to "#{item.title} 公開デザイン確認 >>", "#{item.docs_path}&preview=true", :target => "_blank" %>
     <%else%>
-      <%= item.title %>
+      <%=h item.title %>
     <%end%>
     </td>
     <td style="text-align: center;"><%= link_to '詳細確認', "#{gwbbs_maker_path(item)}#{str_state}" %></td>

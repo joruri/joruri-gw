@@ -15,45 +15,57 @@
 
 <div class="pieceBody">
 
-<%= form_for :item, :url => @item.update_path ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <div class="bbsUserform">
-  <table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr(@parent.title)%></span></td></tr>
+<% form_for :item, :url => update_path(@item) ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
+ <%= f.error_messages %>
+
+<div class="bbsUserform">
+
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%=hbr(@parent.title)%></span></td></tr>
+<tr>
+  <td class="bbsExpirydate">
+    <span>回覧期限日時 : <%=@parent.expiry_date.strftime('%Y-%m-%d %H:%M') unless @parent.expiry_date.blank?%></span>
+  </td>
+</tr>
+<tr>
+  <% if nz(@parent.wiki, 0) == 1 -%>
+    <td class="wiki docText"><%=wiki_show @parent.body -%></td>
+  <% else -%>
+    <td class="docText"><%= @parent.body -%></td>
+  <% end -%>
+</tr>
+</table>
+</div>
+
+<div class="notice"><%= flash[:notice] %></div>
+
+<table class="show bbsText">
   <tr>
-    <td class="bbsExpirydate">
-      <span>回覧期限日時 : <%=@parent.expiry_date.strftime('%Y-%m-%d %H:%M') unless @parent.expiry_date.blank?%></span>
+    <th>返信欄</th>
+  </tr>
+  <tr>
+    <td>
+      <%= f.text_area :body, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px'%>
+      <div class="submitters replyRead">
+        <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='<%=form_state%>';" type="submit" value="返信・既読" />
+        <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+      </div>
     </td>
   </tr>
-  <tr>
-    <% if @parent.wiki_enabled? -%>
-      <td class="wiki docText"><%=wiki_show @parent.body -%></td>
-    <% else -%>
-      <td class="docText"><%= @parent.body -%></td>
-    <% end -%>
-  </tr>
-  </table>
-  </div>
-  <table class="show bbsText">
-    <tr>
-      <th>返信欄</th>
-    </tr>
-    <tr>
-      <td>
-        <%= f.text_area :body, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px'%>
-        <div class="submitters replyRead">
-          <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='<%=form_state%>';" type="submit" value="返信・既読" />
-          <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
-        </div>
-      </td>
-    </tr>
-  </table>
-<% end %>
+</table>
 
+
+
+
+<% end %>
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '回覧板一覧へ戻る', "#{@title.menus_path}#{s_cond}" %>
+  <%=link_to '回覧板一覧へ戻る', "#{@title.menus_path}#{s_cond}" %>
 </div>
+
 
 </div>
 </div>
+
+
+

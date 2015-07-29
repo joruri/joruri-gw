@@ -7,6 +7,7 @@
 --------------------------------------------------*/
 .todo {
   height: 1%;
+  margin-top: 10px;
   background-image: url(/_common/themes/gw/files/level_2/title_todo.gif);
 }
 

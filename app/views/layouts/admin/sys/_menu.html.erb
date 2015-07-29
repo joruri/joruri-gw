@@ -1,0 +1,12 @@
+<%
+@current = current
+def menu_link(auth, key, label, uri)
+  return '' unless Core.user.has_auth?(auth)
+  cls = [key.to_s]
+  cls << 'current' if @current == key
+  link_to(label, uri, :class => cls.join(' '))
+end
+
+%><div class="mainMenu">
+<%= menu_link :manager , :user       , 'ユーザー'       , sys_groups_path(0) %>
+</div>

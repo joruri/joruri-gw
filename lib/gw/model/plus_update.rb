@@ -1,10 +1,19 @@
+# encoding: utf-8
 module Gw::Model::Plus_update
   def self.remind(uid = nil)
 
     # リマインダー表示
     model = Gw::PlusUpdate.new
-    @date, @msg = Gw::Property::PlusUpdate.where(uid: Core.user.id).first_or_new.limit_date_and_msg
-    cond = ["project_users_json LIKE ? and state= ? and doc_updated_at >= ?",%Q(%"#{Core.user.code}"%), "enabled", @date]
+#    uid = Site.user.id
+    @item = Gw::UserProperty.find(:first, :conditions=>["class_id = ? and uid = ? and name = ? ",1, Site.user.id,"plus_update"])
+    if @item.blank?
+      @array_config = [['4.days']]
+    else
+      @array_config = Array.new(10, ['', ''])
+      @array_config = JsonParser.new.parse(@item.options) unless @item.blank?
+    end
+    limit_date(@array_config[0][0])
+    cond = ["project_users_json LIKE ? and state= ? and doc_updated_at >= ?",%Q(%"#{Site.user.code}"%), "enabled", @date]
     items = model.find(:all, :order => 'doc_updated_at ASC',
       :conditions => cond)
 
@@ -34,46 +43,24 @@ module Gw::Model::Plus_update
     return ret
   end
 
-  def self.remind_xml(user  , xml_data = nil)
-    return xml_data if xml_data.blank?
-    remind_items = nil
-    unless user.blank?
-      uid = user.id
-      ucode = user.code
-      dump ["Gw::Tool::Reminder.checker_api　plus_update_remind_xml",Time.now.strftime('%Y-%m-%d %H:%M:%S'),uid]
-      model = Gw::PlusUpdate.new
-      @date, @msg = Gw::Property::PlusUpdate.where(uid: uid).first_or_new.limit_date_and_msg
-      cond = ["project_users_json LIKE ? and state= ? and doc_updated_at >= ?",%Q(%"#{user.code}"%), "enabled", @date]
-      remind_items = model.find(:all, :order => 'doc_updated_at ASC',
-        :conditions => cond)
+  def self.limit_date(limit_str)
+    case limit_str
+    when 'today'
+      @msg = '本日'
+      @date = Date.today.strftime('%Y-%m-%d 00:00:00')
+    when 'yesterday'
+      @msg = '前日から'
+      @date = Date.yesterday.strftime('%Y-%m-%d 00:00:00')
+    when '3.days'
+      @msg = '3日前から'
+      @date = 3.days.ago.strftime('%Y-%m-%d 00:00:00')
+    when '4.days'
+      @msg = '4日前から'
+      @date = 4.days.ago.strftime('%Y-%m-%d 00:00:00')
+    else
+      @msg = '本日'
+      @date = Date.yesterday.strftime('%Y-%m-%d 00:00:00')
     end
-    project_data = {}
-    remind_items.each do |item|
-      if project_data.blank?
-        project_data[item.project_code.to_sym] = [1, item.project_code, item.title, item.doc_updated_at,item.id]
-      else
-        if project_data[item.project_code.to_sym]
-          project_params = project_data[item.project_code.to_sym]
-          project_data[item.project_code.to_sym] = [project_params[0] + 1, item.project_code, item.title, item.doc_updated_at ,item.id]
-        else
-          project_data[item.project_code.to_sym] = [1, item.project_code, item.title, item.doc_updated_at,item.id]
-        end
-      end
-    end unless remind_items.blank?
-    project_data.each do |key, value|
-      xml_data  << %Q(<entry>)
-      xml_data  << %Q(<id>#{value[4]}</id>)
-      xml_data  << %Q(<link rel="alternate" href="/gw/plus_update_settings/#{value[4]}/to_project"/>)
-      xml_data  << %Q(<updated>#{value[3].strftime('%Y-%m-%d %H:%M:%S')}</updated>)
-      xml_data  << %Q(<category term="plusUpdate">JoruriPlus+</category>)
-      xml_data  << %Q(<title>#{value[2]}に#{value[0]}件の更新があります。</title>)
-      xml_data  << %Q(<author><name>　</name></author>)
-      xml_data  << %Q(</entry>)
-    end unless project_data.blank?
-#    dump ['monitor_xml' ,xml_data]
-
-    return xml_data
   end
-
 
 end

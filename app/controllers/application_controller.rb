@@ -1,16 +1,30 @@
+# encoding: utf-8
 class ApplicationController < ActionController::Base
 ###  include Cms::Controller::Public
   include Jpmobile::ViewSelector
+  helper  FormHelper
+  helper  LinkHelper
   protect_from_forgery #:secret => '1f0d667235154ecf25eaf90055d99e99'
-  before_action :initialize_application #, :miniprofiler
-  after_action :inline_css_for_mobile, :mobile_access_view
-  #rescue_from Exception, :with => :rescue_exception
+  #before_filter :initialize_application
+  before_filter :initialize_application
+  after_filter :inline_css_for_mobile
+  rescue_from Exception, :with => :rescue_exception
   trans_sid
+  #include System::Controller::SmartphoneView
 
   def initialize_application
 ###    mobile_view if Page.mobile? || request.mobile?
     return false if Core.dispatched?
     return Core.dispatched
+  end
+
+
+  def skip_layout
+    self.class.layout 'base'
+  end
+
+  def query(params = nil)
+    Util::Http::QueryString.get_query(params)
   end
 
   def send_mail(mail_fr, mail_to, subject, message)
@@ -39,7 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def inline_css_for_mobile
-    if request.mobile? && !request.smart_phone? && response.content_type == 'text/html'
+    if request.mobile? && !request.smart_phone?
       begin
         require 'tamtam'
         response.body = TamTam.inline(
@@ -84,17 +98,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def send_data(data, options = {})
-    if options.include?(:filename) && self.class.helpers.file_name_encode?(request.headers['HTTP_USER_AGENT'])
-      options[:filename] = options[:filename].tosjis
-    end
-    super(data, options)
-  end
-
 private
-  def miniprofiler
-    Rack::MiniProfiler.authorize_request
-  end
   def rescue_exception(exception)
     Core.terminate
 
@@ -116,13 +120,23 @@ private
       html += exception.backtrace.join("<br />")
       html += %Q(</div>)
     end
-    render :text => html
-    #render :inline => html, :layout => true, :status => 500
-    #respond_to do |format|
-      # format.html { render :inline => html, :layout => "base"  }
-      #format.html { render :inline => html, :layout => true, :status => 500  }
-      #format.json { render json: @micropost.errors, status: :unprocessable_entity }
-    #end
+    render :inline => html, :layout => true, :status => 500
+  end
+
+  def rescue_action(error)
+    case error
+    when ActionController::InvalidAuthenticityToken
+      http_error(422, error.to_s)
+    else
+      Core.terminate
+      super
+    end
+  end
+
+  ## Production && local
+  def rescue_action_in_public(exception)
+    #exception.each{}
+    http_error(500, nil)
   end
 
   def http_error(status, message = nil)
@@ -163,4 +177,36 @@ private
       return ret
     end
   end
+
+  def authentication_error(code=403 ,message=nil)
+    Page.error = code
+
+    f = File.open(File.join(Rails.root, 'log', code.to_s + '.log'), 'a')
+    f.flock(File::LOCK_EX)
+    f.puts "\n" + '====================='
+    f.puts Time.now.strftime(' %Y-%m-%d %H:%M:%S') + "\n\n"
+    f.puts request.env["REQUEST_URI"]
+    f.puts "\n" + '====================='
+    f.flock(File::LOCK_UN)
+    f.close
+
+    if request.mobile?
+      error_file = "#{Rails.root}/public/500.html"
+      if FileTest.exist?("#{Rails.root}/public/#{code.to_s}_mobile.html")
+        error_file = "#{Rails.root}/public/#{code.to_s}_mobile.html"
+      end
+    else
+      error_file = "#{Rails.root}/public/500.html"
+      if FileTest.exist?("#{Rails.root}/public/#{code.to_s}.html")
+        error_file = "#{Rails.root}/public/#{code.to_s}.html"
+      end
+    end
+
+    @message = message
+    return respond_to do |format|
+      format.html { render(:status => code, :file => error_file, :layout => false) }
+      format.xml  { render :xml => "<errors><error>#{code} #{message}</error></errors>" }
+    end
+  end
+
 end

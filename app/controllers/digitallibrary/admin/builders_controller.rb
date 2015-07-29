@@ -1,8 +1,12 @@
+# -*- encoding: utf-8 -*-
 class Digitallibrary::Admin::BuildersController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+
+  include Gwboard::Controller::Scaffold
+
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
+
     Page.title = "電子図書"
   end
 
@@ -15,10 +19,10 @@ class Digitallibrary::Admin::BuildersController < Gw::Controller::Admin::Base
   end
 
   def create_bbs_board
-    item = Gwboard::Group.where(:id => Core.user_group.id).select('id, code, name')
+    item = Gwboard::Group.find_by_id(Site.user_group.id,:select=>'id, code, name')
     return item if item.blank?
 
-    params[:title] = "電子図書(#{Core.user_group.name})" if params[:title].blank?
+    params[:title] = "電子図書(#{Site.user_group.name})" if params[:title].blank?
     params[:separator_str1] = '.' if params[:separator_str1].blank?
     params[:separator_str2] = '.' if params[:separator_str2].blank?
 
@@ -50,10 +54,19 @@ class Digitallibrary::Admin::BuildersController < Gw::Controller::Admin::Base
       :title => params[:title],
       :separator_str1 => params[:separator_str1],
       :separator_str2 => params[:separator_str2],
+      :createdate => Time.now.strftime("%Y-%m-%d %H:%M"),
+      :creater_id => Site.user.code ,
+      :creater => Site.user.name ,
+      :createrdivision => Site.user_group.name ,
+      :createrdivision_id => Site.user_group.code ,
+      :editor_id => Site.user.code ,
+      :editordivision_id => Site.user_group.code,
       :admingrps_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
       :adms_json => "[]",
       :editors_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
       :readers_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]}
     })
+    item.set_category_folder_root
   end
+
 end

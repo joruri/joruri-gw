@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Gwsub
 
   def self.modelize(table_name)
@@ -89,14 +90,14 @@ class Gwsub
 
 ## ログインユーザーから　作成者・編集者　関連項目の設定
   def self.gwsub_set_creators(item)
-    return if Core.user.blank?
-    item.created_user   = Core.user.name
-    item.created_group  = Core.user_group.code+Core.user_group.name
+    return if Site.user.blank?
+    item.created_user   = Site.user.name
+    item.created_group  = Site.user_group.code+Site.user_group.name
   end
   def self.gwsub_set_editors(item)
-    return if Core.user.blank?
-    item.updated_user   = Core.user.name
-    item.updated_group  = Core.user_group.code+Core.user_group.name
+    return if Site.user.blank?
+    item.updated_user   = Site.user.name
+    item.updated_group  = Site.user_group.code+Site.user_group.name
   end
 
   # 日付を和暦年度に変換
@@ -153,7 +154,7 @@ class Gwsub
     # id指定では、存在チェック　みつかればOK
 #    if id != nil
     if id.to_i != 0
-     fy = Gw::YearFiscalJp.where(:id => id).first
+     fy = Gw::YearFiscalJp.find_by_id(id)
       return id unless fy.blank?
     end
     f_id = nil
@@ -161,7 +162,7 @@ class Gwsub
     if option == nil
       # 開始日が最新の年度idを返す
       order = "start_at DESC"
-      fyear = Gw::YearFiscalJp.order(order).first
+      fyear = Gw::YearFiscalJp.find(:first,:order=>order)
       f_id = fyear.id unless fyear.blank?
       return f_id
     end
@@ -169,17 +170,17 @@ class Gwsub
     when 'fyear'
       cond = "fyear='#{option[:value]}'"
       order = "start_at DESC"
-      fyear = Gw::YearFiscalJp.where(cond).order(order).first
+      fyear = Gw::YearFiscalJp.find(:first,:conditions=>cond,:order=>order)
       f_id = fyear.id unless fyear.blank?
     when 'markjp'
       cond = "markjp='#{option[:value]}'"
       order = "start_at DESC"
-      fyear = Gw::YearFiscalJp.where(cond).order(order).first
+      fyear = Gw::YearFiscalJp.find(:first,:conditions=>cond,:order=>order)
       f_id = fyear.id unless fyear.blank?
     when 'namejp'
       cond = "namejp='#{option[:value]}'"
       order = "start_at DESC"
-      fyear = Gw::YearFiscalJp.where(cond).order(order).first
+      fyear = Gw::YearFiscalJp.find(:first,:conditions=>cond,:order=>order)
       f_id = fyear.id unless fyear.blank?
     else
       #
@@ -207,7 +208,7 @@ class Gwsub
     when 'terminal_admin_memos'
       # 端末管理の管理者メモから取得
       find_order = "fyear_id DESC , id ASC"
-      fyear = Gwsub::TerminalAdminMemo.all.order(find_order)
+      fyear = Gwsub::TerminalAdminMemo.find(:all,:order=>find_order)
       if fyear.blank?
         fyed_id = 0
       else
@@ -216,7 +217,7 @@ class Gwsub
     when 'help'
       # 職員名簿のヘルプから取得
       find_order = "fyear_id DESC , title ASC"
-      help = Gwsub::Sb04help.all.order(find_order)
+      help = Gwsub::Sb04help.find(:all,:order=>find_order)
       if help.blank?
         fyed_id = 0
       else
@@ -228,13 +229,13 @@ class Gwsub
       if u_role == true
         # 管理者は公開前の年度を含む
         find_order = "start_at DESC"
-        find_year = Gwsub::Sb04EditableDate.order(find_order).first
+        find_year = Gwsub::Sb04EditableDate.find(:first,:order=>find_order)
       else
         # 一般は公開後の最新年度
         today = Core.now
         find_cond = "published_at <='#{today}'"
         find_order = "start_at DESC"
-        find_year = Gwsub::Sb04EditableDate.where(find_cond).order(find_order).first
+        find_year = Gwsub::Sb04EditableDate.find(:first,:conditions=>find_cond,:order=>find_order)
       end
       if find_year.present?
         fyed_id = find_year.fyear_id
@@ -259,11 +260,11 @@ class Gwsub
     end
     if fyear_id.to_i  == 0
         find_order = "fyear_id DESC , code ASC"
-        sec = Gwsub::Sb04section.all.order(find_order)
+        sec = Gwsub::Sb04section.find(:all,:order=>find_order)
     else
         find_cond = "fyear_id = #{fyear_id.to_i}"
         find_order = "code ASC"
-        sec = Gwsub::Sb04section.where(find_cond).order(find_order)
+        sec = Gwsub::Sb04section.find(:all,:conditions=>find_cond,:order=>find_order)
     end
     section_selected = 0             if  sec.blank?
     section_selected = sec[0].id unless  sec.blank?
@@ -278,11 +279,11 @@ class Gwsub
 
     # 管理者以外はユーザーの所属
     if role != true
-      return Core.user_group.id
+      return Site.user_group.id
     end
 
     #所属指定時は存在チェック
-    ids = System::Group.all.collect{|x| x.id}
+    ids = System::Group.find(:all).collect{|x| x.id}
     check = ids.index(sec_id.to_i)
     return sec_id  if check != nil
 
@@ -291,7 +292,7 @@ class Gwsub
     return 0 if all=='all'
 
     # 管理者は、「すべて」「指定所属」がなければ、トップ
-    top = System::Group.where("level_no=1").first
+    top = System::Group.find(:first,:conditions=>"level_no=1")
     return 0 if top.blank?
     return top.id
   end
@@ -315,7 +316,7 @@ class Gwsub
       group_cond    << " and start_at <= '#{target_start_at}'"
       group_cond    << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{target_start_at}' ) "
       group_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
-      gid_lists = System::Group.where(group_cond).order(group_order).map{|x| x.id}
+      gid_lists = System::Group.find(:all,:conditions=>group_cond,:order=>group_order).map{|x| x.id}
       check = gid_lists.index(section_id.to_i)
       unless check.blank?
         return section_id
@@ -326,7 +327,7 @@ class Gwsub
     child_cond    << " and start_at <= '#{target_start_at}'"
     child_cond    << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{target_start_at}' ) "
     child_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
-    child1 = System::Group.where(child_cond).order(child_order).first
+    child1 = System::Group.find(:first,:conditions=>child_cond,:order=>child_order)
     if child1.blank?
       sec_id = 0
     else
@@ -352,7 +353,7 @@ class Gwsub
     # 所属指定時は存在・有効チェック
 
     unless section_id.to_i==0
-      section = System::Group.where(:id=>section_id).first
+      section = System::Group.find_by_id(section_id)
       if section.blank?
         # 指定IDが使えない場合は先頭IDの取得に回る
       else
@@ -373,7 +374,7 @@ class Gwsub
     # 有効な所属リストの先頭のidを返す
     child_cond    = "state='enabled' and level_no=3"
     child_order   = "sort_no , code"
-    child1 = System::Group.where(child_cond).order(child_order).first
+    child1 = System::Group.find(:first,:conditions=>child_cond,:order=>child_order)
     if child1.blank?
       sec_id = 0
     else
@@ -602,7 +603,7 @@ class Gwsub
     if fyear_id.to_i==0
       fyear_target = Gw::YearFiscalJp.get_record(Time.now)
       if fyear_target.blank?
-        fyear_target_id = Gw::YearFiscalJp.order("fyear DESC , start_at DESC").first.id
+        fyear_target_id = Gw::YearFiscalJp.find(:first, :order=>"fyear DESC , start_at DESC").id
       else
         fyear_target_id = fyear_target.id
       end
@@ -615,7 +616,7 @@ class Gwsub
       end_at_fyear  = fyear.end_at
     # 管理者権限がなければ、自所属のみ表示
     if role != true
-      grp = Core.user_group
+      grp = Site.user_group
       group_select = []
       if options.has_key?(:code) and options[:code] == 'none'
         group_select << [grp.name,grp.id]
@@ -652,7 +653,7 @@ class Gwsub
     end
 
     group_order   = "code , sort_no , start_at DESC, end_at IS Null ,end_at DESC"
-    group_parents = System::Group.where(group_cond).order(group_order)
+    group_parents = System::Group.find(:all,:conditions=>group_cond,:order=>group_order)
     # 選択DD　作成
     group_select = []
     if group_parents.blank?
@@ -693,7 +694,7 @@ class Gwsub
         child_cond    << " and start_at <= '#{current_time.strftime("%Y-%m-%d 00:00:00")}'"
       end
       child_order   = "code , sort_no , start_at DESC, end_at IS Null ,end_at DESC"
-      children = System::Group.where(child_cond).order(child_order)
+      children = System::Group.find(:all,:conditions=>child_cond,:order=>child_order)
       unless children.blank?
         # level_no = 3
         children.each_with_index do |child , i|
@@ -726,7 +727,7 @@ class Gwsub
     # 管理者権限がなければ、自所属のみ表示
     item = Gwsub::Sb00ConferenceSectionManagerName.new
     item.and :state, 'enabled'
-    item.and :g_code, Core.user_group.code unless role
+    item.and :g_code, Site.user_group.code unless role
     item.order :g_sort_no
     items = item.find(:all, :group=>:gid)
     group_select = []
@@ -740,22 +741,22 @@ class Gwsub
 #pp Time.now , fyear_id , gid , all , role , options
     # ユーザー選択リスト
     # fyear_id 対象年度id
-    # gid   対象の所属id、指定がない場合は、ログインユーザーの所属 (Core.user_group.id)
+    # gid   対象の所属id、指定がない場合は、ログインユーザーの所属 (Site.user_group.id)
     # all   選択リストに'すべて'を含む指定   'all':含む
     # options{}  権限：role=>true/false  、年度末：temp=>true/false
 
     if gid.to_i==0
       if options.has_key?('temp') and options[:temp]==true
-        u_cond  = "user_id=#{Core.user.id} and (end_at is null) "
+        u_cond  = "user_id=#{Site.user.id} and (end_at is null) "
         u_order = "user_code"
-        current_user = System::UsersGroupHistoryTemporary.where(u_cond).order(u_order)
+        current_user = System::UsersGroupHistoryTemporary.find(:first , :conditions=>u_cond ,:order=>u_order)
         if current_user.blank?
-          gid = Core.user_group.id
+          gid = Site.user_group.id
         else
           gid = current_user.group_id
         end
       else
-        gid = Core.user_group.id
+        gid = Site.user_group.id
       end
     else
     end
@@ -763,7 +764,7 @@ class Gwsub
     if fyear_id.to_i==0
       fyear_cond = "start_at <= '#{Time.now.strftime("%Y-%m-%d 00:00:00")}'"
       fyear_order = "markjp DESC"
-      fyear_target = Gw::YearFiscalJp.where(fyear_cond).order(fyear_order).first.id
+      fyear_target = Gw::YearFiscalJp.find(:first,:donditions=>fyear_cond,:order=>fyear_order).id
     else
       fyear_target = fyear_id
     end
@@ -779,14 +780,14 @@ class Gwsub
       users_cond  << " and start_at <= '#{start_at_fyear.strftime("%Y-%m-%d 00:00:00")}'"
       users_cond  << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{start_at_fyear.strftime("%Y-%m-%d 00:00:00")}' ) "
       users_order = "user_code"
-      users = System::UsersGroupHistoryTemporary.where(users_cond).order(users_order)
+      users = System::UsersGroupHistoryTemporary.find(:all,:conditions=>users_cond,:order=>users_order)
       # ユーザーid一覧から選択リスト作成
       user_lists = []
       user_lists << ['すべて',0] if all=='all'
       users.each do |u|
-        us = System::User.where(:id=>u.user_id).first
+        us = System::User.find_by_id(u.user_id)
         unless us.blank?
-          if Core.user.code.size < 4 or Core.user.code == 'gwbbs'
+          if Site.user.code.size < 4 or Site.user.code == 'gwbbs'
             # テストユーザーログインでは、非同期ユーザーも選択
             user_lists << [us.name+'('+us.code+')',us.id] if us.state=='enabled'
           else
@@ -801,12 +802,12 @@ class Gwsub
       users_cond  << " and start_at <= '#{start_at_fyear.strftime("%Y-%m-%d 00:00:00")}'"
       users_cond  << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{start_at_fyear.strftime("%Y-%m-%d 00:00:00")}' ) "
       users_order = "user_code"
-      users = System::UsersGroupHistory.where(users_cond).order(users_order)
+      users = System::UsersGroupHistory.find(:all,:conditions=>users_cond,:order=>users_order)
       # ユーザーid一覧から選択リスト作成
       user_lists = []
       user_lists << ['すべて',0] if all=='all'
       users.each do |u|
-        us = System::User.where(:id=>u.user_id).first
+        us = System::User.find_by_id(u.user_id)
         unless us.blank?
           user_lists << [us.name+'('+us.code+')',us.id] if us.state=='enabled'
         end

@@ -1,5 +1,5 @@
+# encoding: utf-8
 class Gw::Tool::PrefExective
-  require 'builder'
 
   def self.accesslog_save(ip_addr=nil)
 
@@ -93,11 +93,11 @@ class Gw::Tool::PrefExective
 
   def self.secretary_xml_output(mode=nil)
     model = Gw::PrefDirector.new
-  if mode == 2
-      cond  = "deleted_at IS NULL AND is_governor_view = 1 "
-  else
-      cond  = "deleted_at IS NULL AND g_code ='A50000' "
-  end
+	if mode == 2
+	    cond  = "deleted_at IS NULL AND is_governor_view = 1 "
+	else
+	    cond  = "deleted_at IS NULL AND g_code ='A50000' "
+	end
     order = "u_order"
     items = model.find(:all ,:conditions => cond,:order => order )
     xml = Builder::XmlMarkup.new :indent => 2
@@ -120,17 +120,17 @@ class Gw::Tool::PrefExective
             xml.id(m.id)
             xml.category(m.u_order)
 
-      if mode == 2
-        official_title = m.title
-      else
-              if m.title == "局長"
-                official_title = "議会事務局長"
-              elsif m.title == "次長"
-                official_title = "事務局次長"
-              else
-                official_title = m.title
-              end
-      end
+			if mode == 2
+				official_title = m.title
+			else
+	            if m.title == "局長"
+	              official_title = "議会事務局長"
+	            elsif m.title == "次長"
+	              official_title = "事務局次長"
+	            else
+	              official_title = m.title
+	            end
+			end
             xml.title(official_title)
             xml.g_name(m.g_name)
 
@@ -152,7 +152,7 @@ class Gw::Tool::PrefExective
   def self.assembly_access(state=nil,id=nil)
     return "" if (state.blank? || id.blank?)
     result = "false"
-    member = Gw::PrefAssemblyMember.where(:id => id).first
+    member = Gw::PrefAssemblyMember.find_by_id(id)
     unless member.blank?
       member.state = state
       if member.save(:validate=>false)
@@ -174,7 +174,7 @@ class Gw::Tool::PrefExective
     dump id
     return "" if (state.blank? || id.blank?)
     result = "false"
-    member = Gw::PrefExecutive.where(:id => id).first
+    member = Gw::PrefExecutive.find_by_id(id)
     unless member.blank?
       member.state = state
       if member.save(:validate=>false)

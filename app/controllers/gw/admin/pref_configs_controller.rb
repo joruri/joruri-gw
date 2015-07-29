@@ -1,80 +1,125 @@
+#encoding:utf-8
 class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
-	layout "admin/template/pref"
+  layout "admin/template/pref"
 
-  def pre_dispatch
-    init_params
-    return error_auth unless @u_role
+  def initialize_scaffold
+    @public_uri = "/gw/pref_configs"
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
-
-    @css = %w(/_common/themes/gw/css/admin.css)
   end
 
   def init_params
-    @mode = nz(params[:mode],"executives")
-    if @mode == "executives"
+    @mode = nz(params[:mode],"pref_executives")
+    if @mode == "pref_executives"
       @ret = "executive"
-      Page.title = "幹部在庁表示管理"
+      Page.title = @page_title = "全庁幹部在庁表示管理"
       @role_developer  = Gw::PrefExecutive.is_dev?
       @role_admin      = Gw::PrefExecutive.is_admin?
     else
       @ret = "director"
-      Page.title = "所属幹部在庁表示管理"
+      Page.title = @page_title = "部課長在庁表示管理"
       @role_developer  = Gw::PrefDirector.is_dev?
       @role_admin      = Gw::PrefDirector.is_admin?
     end
     @u_role = @role_developer || @role_admin
-    @name = nz(params[:name],"normal")
+    @state = nz(params[:state],"normal")
     @return_uri = "/gw/pref_#{@ret}_admins"
+    @css = %w(/_common/themes/gw/css/admin.css)
   end
 
   def index
-    @items = Gw::PrefConfig.order(:state)
-  end
+    init_params
+    return authentication_error(403) unless @u_role
 
+    item    = Gw::UserProperty.new
+    order   = 'name ASC '
+    @items  = item.find(:all,:order=>order)
+  end
   def show
-    @item = Gw::PrefConfig.find(params[:id])
+    init_params
+    return authentication_error(403) unless @u_role
+    @item = Gw::UserProperty.find(params[:id])
   end
 
   def new
-    item = Gw::PrefConfig.where(:state => "enabled", :option_type => @mode).first_or_create(:name => "admin")
-
-    redirect_to @return_uri
+    init_params
+    return authentication_error(403) unless @u_role
+    item = Gw::UserProperty.find(:first,
+      :conditions=>["name = ? ",@mode])
+    if item.blank?
+      item = Gw::UserProperty.new
+      item.name = @mode
+    end
+    item.type_name        = "admin"
+    item.save
+    location = @return_uri
+    redirect_to location
   end
 
   def create
-    @item = Gw::PrefConfig.new(params[:item])
-
-    _create @item, :success_redirect_uri => @return_uri
+    init_params
+    return authentication_error(403) unless @u_role
+    @item = Gw::UserProperty.new(params[:item])
+    location = @return_uri
+    options = {
+      :success_redirect_uri=>location
+    }
+    _create(@item,options)
   end
 
   def edit
-    @item = Gw::PrefConfig.find(params[:id])
+    init_params
+    return authentication_error(403) unless @u_role
+    @item = Gw::UserProperty.find(params[:id])
   end
 
   def update
-    @item = Gw::PrefConfig.find(params[:id])
-    @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => @return_uri
+    init_params
+    return authentication_error(403) unless @u_role
+	
+    location = @return_uri
+		unless params[:item][:options].blank?
+	    @item = Gw::UserProperty.new.find(params[:id])
+		  @item.attributes = params[:item]
+	    if @item.save
+		  else
+			  flash[:notice]="保存できませんでした。"
+			end
+		else
+		  flash[:notice]="保存できませんでした。"
+		end
+    return redirect_to location
   end
 
   def destroy
-    @item = Gw::PrefConfig.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => @return_uri
+    init_params
+    return authentication_error(403) unless @u_role
+    @item = Gw::UserProperty.new.find(params[:id])
+    location = @return_uri
+    options = {
+      :success_redirect_uri=>location
+    }
+    _destroy(@item,options)
   end
 
   def display_change
-    @item = Gw::PrefConfig.where(:state => "enabled", :option_type => @mode)
-      .first_or_create(:name => @name, :options => "在庁表示は現在準備中です。")
-    @item.name = @name
-
-    if @item.save
-      flash[:notice] = "状態の変更が完了しました。"
+    init_params
+    return authentication_error(403) unless @u_role == true
+    item = Gw::UserProperty.find(:first,
+      :conditions=>["name = ?",@mode])
+    if item.blank?
+      item = Gw::UserProperty.new
+      item.name        = @mode
+      item.type_name   = @state
+      item.options     = "在庁表示は現在準備中です。"
     else
-      flash[:notice] = "状態の変更に失敗しました。"
+      item.type_name = @state
     end
-    redirect_to @return_uri
+    if item.save
+    else
+      flase[:notice]="状態の変更に失敗しました。"
+    end
+      location = @return_uri
+      redirect_to location
   end
 end

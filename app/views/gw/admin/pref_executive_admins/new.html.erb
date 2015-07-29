@@ -1,14 +1,17 @@
-<div class="piece AdminSetting">
+<div class="piece AdminMessage">
 <div class="pieceHeader">
 <h2 class="pieceTitle">全庁幹部在庁表示管理</h2>
 </div><!--pieceHeader-->
 <div class="pieceBody">
-<%= render 'menu' %>
 
-<%= form_tag url_for(action: :create), {method: :post, id: 'itemForm'} do %>
-  <%= unique_error_messages_for @items %>
-  <%= render 'form' %>
-  <div class="submitters"><%= submit_tag '保存' %></div>
+<%= form_for :item, :url => "/gw/pref_executive_admins", :html => {:method => :create, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= submit_for_create f, :js_submitter => 'my_submit()', :caption => '保存' %>
+
 <% end %>
 
 </div><!--pieceBody-->

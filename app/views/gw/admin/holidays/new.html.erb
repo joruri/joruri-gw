@@ -1,19 +1,18 @@
 <div class="piece schedulePiece form">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' %>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyBody">
-<div class="titleLine">
-  <span class="title">休日管理</span>
-</div>
-
-<%= form_for :item, :url => {action: :create}, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, caption: '保存' %>
-<% end %>
-
-</div>
-</div>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/schedules/piece_header' %>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyBody">
+      <div class="titleLine">
+        <span class="title">休日管理</span>
+      </div>
+      <%= div_notice %>
+      <%= form_for :item, :url => "/gw/holidays?category=#{@category_id}", :html => {:multipart => true, :id => 'itemForm'} do |f| %>
+      <%= f.error_messages %>
+      <%= render :partial => '/gw/admin/holidays/form', :locals => {:f => f} %>
+      <%= raw(submit_for(f, {:caption => '保存'})) %>
+      <% end %>
+    </div>
+  </div>
 </div>

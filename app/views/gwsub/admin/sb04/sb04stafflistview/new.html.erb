@@ -11,19 +11,20 @@ end
 @create_path = "#{Site.current_node.public_uri}"+"?show=#{@items[0].id}"
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/public/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/public/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/public/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/public/sb04/sb04_submenu' %>
 </div>
 <div class="pieceBody">
+<%= div_notice %>
 <div class="showMenu">
 <%= link_to_show @items[0].id %>
 </div>
 <% @action = "create" %>
-<%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
-  <%= render 'gwsub/public/sb04/sb04divideduties/form', f: f %>
-<% end %>
-<div><h4><%= header_str %></h4></div>
-<%= render 'gwsub/public/sb04/sb04divideduties/show' %>
+<% form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render :partial => 'gwsub/public/sb04/sb04divideduties/form', :locals => {:f => f} %>
+<% end  %>
+<div><h4><%= h header_str %></h4></div>
+<%= render :partial => 'gwsub/public/sb04/sb04divideduties/show' %>
 </div>
 </div>

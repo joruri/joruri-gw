@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04LimitSetting < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   validates_presence_of :limit
   validates_numericality_of :limit
@@ -24,7 +25,7 @@ class Gwsub::Sb04LimitSetting < Gwsub::GwsubPref
   end
 
   def self.get_stafflistview_limit
-    item = self.where("type_name = 'stafflistview_limit'").first
+    item = self.find(:first, :conditions => "type_name = 'stafflistview_limit'")
     if item.blank? || nz(item.limit, 0) == 0
       lim = 30
     else
@@ -34,7 +35,7 @@ class Gwsub::Sb04LimitSetting < Gwsub::GwsubPref
   end
 
   def self.get_divideduties_limit
-    item = self.where("type_name = 'divideduties_limit'").first
+    item = self.find(:first, :conditions => "type_name = 'divideduties_limit'")
     if item.blank? || nz(item.limit, 0) == 0
       lim = 30
     else

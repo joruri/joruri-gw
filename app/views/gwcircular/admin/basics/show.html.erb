@@ -1,5 +1,5 @@
 <div class="bbsDocList circular">
-<%= render 'piece_header' %>
+<%= render :partial => 'piece_header' %>
 
 <div class="pieceBody">
 <div class="editingBox">
@@ -8,25 +8,74 @@
 </div>
 
 <table class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= @item.states[@item.state] %></td>
-  </tr>
+<tr>
+  <th>状態</th>
+  <td><%= @item.states[@item.state] %></td>
+</tr>
+</table>
+<table class="show">
+<tr>
+  <th>回覧板タイトル</th>
+  <td><%= @item.title%></td>
+</tr>
+<tr>
+  <th>一覧表示行数</th>
+  <td><%= @item.default_limit %></td>
+</tr>
 </table>
 
 <table class="show">
-  <tr>
-    <th>回覧板タイトル</th>
-    <td><%= @item.title%></td>
-  </tr>
-  <tr>
-    <th>一覧表示行数</th>
-    <td><%= @item.default_limit %></td>
-  </tr>
+<tr>
+  <th>管理部門</th>
+  <td>
+  <% for admingrp in @admingrps %>
+  <%= admingrp[2] %><br />
+  <% end if @admingrps %>
+  </td>
+</tr>
+<tr>
+  <th>管理者</th>
+  <td>
+  <% for adm in @adms %>
+  <%= adm[2] %><br />
+  <% end if @adms %>
+  </td>
+</tr>
+<tr>
+  <th>編集部門設定</th>
+  <td>
+  <% for editor in @editors %>
+  <%= editor[2] %><br />
+  <% end if @editors %>
+  </td>
+</tr>
+<tr>
+  <th>編集者設定</th>
+  <td>
+  <% for sueditor in @sueditors %>
+  <%= sueditor[2] %><br />
+  <% end if @sueditors %>
+  </td>
+</tr>
+<tr style="display:none;">
+<%#*GW2.0では設定が反映されない項目%>
+  <th>閲覧部門設定</th>
+  <td>
+  <% for reader in @readers %>
+  <%= reader[2] %><br />
+  <% end if @readers %>
+  </td>
+</tr>
+<tr style="display:none;">
+<%#*GW2.0では設定が反映されない項目%>
+  <th>閲覧者設定</th>
+  <td>
+  <% for sureader in @sureaders %>
+  <%= sureader[2] %><br />
+  <% end if @sureaders %>
+  </td>
+</tr>
 </table>
-
-<%= render '/gwboard/admin/adms/show' %>
-
 <div class="btReturn">
   <%= link_to '回覧板一覧へ戻る', "/gwcircular/" %>
 </div>

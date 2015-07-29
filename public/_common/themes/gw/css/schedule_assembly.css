@@ -10,6 +10,7 @@
 .schedulePiece {
   clear: both;
   height: 1%;
+  margin-top: 10px;
   background-image: url(/_common/themes/gw/files/title/title-giinhikae.gif);
   background-repeat: no-repeat;
 }

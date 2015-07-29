@@ -37,7 +37,7 @@
 }
 #headerBody .personal {
   float: left;
-  width: 42%;
+  width: 45%;
   line-height: 55px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -482,14 +482,8 @@ form table .required {
   margin-bottom: 0;
   display: inline;
 }
-.flashNotice {
- padding: 5px 10px;
- border: 1px solid #8da;
- background-color: #f0fff4;
- color: #073;
-}
 .notice {
-  color: green;
+  color: #080;
 }
 .setting .notice {
   padding-bottom: 0;
@@ -752,10 +746,6 @@ span.att a {
 .editingBox .btEditFolder a {
   width: 85px;
   background-image: url(/_common/themes/gw/files/doclibrary/ic_act_folderedit.gif);
-}
-.editingBox .btDestroyFolder a {
-  width: 85px;
-  background-image: url(/_common/themes/gw/files/doclibrary/ic_act_folder_delete.gif);
 }
 .editingBox .btNewDoc a {
   width: 70px;
@@ -1022,7 +1012,7 @@ h4.docAttachTitle {
 /* 記事ページ　前ページ・次ページ移動リンク（掲示板～電子図書）
 -----------------------------------------------------*/
 .docsPageMove {
-  margin: 20px auto 10px;
+  margin: 20px auto 0;
   text-align: center;
 }
 

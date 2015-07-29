@@ -7,6 +7,7 @@
 ------------------------------------------*/
 #content .DLDocList {
   background-image: url(/_common/themes/gw/files/title/title_electronic-book.gif);
+  margin-top: 10px;
 }
 
 /* 図書名
@@ -211,17 +212,4 @@ table.docformBody th {
 #page-digitallibrary-docs .DLDocList .outer,
 #page-digitallibrary-docs-index .DLDocList .outer {
   width: auto;
-}
-
-/* docListFunctions
-------------------------------------------*/
-.right .docListFunctions {
-  margin-top: 5px;
-  padding-right: 5px;
-  text-align: right;
-}
-.right .docListFunctions div {
-  display: inline;
-  margin-left: 10px;
-  margin-right: 0;
 }

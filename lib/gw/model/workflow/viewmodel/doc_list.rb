@@ -1,3 +1,5 @@
+# encoding:utf-8
+
 # 一覧表示Viewのためのモデル
 class Gw::Model::Workflow::Viewmodel::DocList
   attr_accessor :records

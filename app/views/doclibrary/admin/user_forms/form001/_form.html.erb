@@ -11,11 +11,8 @@
   <tr>
     <th>分類フォルダ<%= required('※') %></th>
     <td>
-      <% if (folder_options = @item.folder_options).present? %>
-        <%= f.select :category1_id, folder_options, include_blank: '分類を選択してください' %>
-      <% else %>
-        <%= required '分類フォルダが登録されていません' %>
-      <% end %>
+      <%= required('分類フォルダが登録されていません') if @category_levels == []%>
+      <%= f.select(:category1_id, @category_levels, :include_blank => '分類を選択してください')  unless @category_levels == []%>
     </td>
   </tr>
 </table>
@@ -26,15 +23,12 @@
   </tr>
 </table>
 
-<%= render '/doclibrary/admin/docs/form_wiki_select', f: f %>
-
-<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
+<table class="show">
   <tr>
     <th>説明</th></tr><tr>
     <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
   </tr>
 </table>
-<%= render '/doclibrary/admin/docs/form_wiki', f: f, title: "説明" %>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -49,13 +43,9 @@
   }
 //]]>
 </script>
-
-<%= render '/gwboard/admin/docs/script_change_body_table' %>
-<%= render '/gwboard/admin/docs/script_wiki_attach_insert' %>
-
-<% if @title.use_old_upload_system? %>
-  <%= gwboard_image_form(f, @item, 'item_body') %>
-  <%= gwboard_attach_form(f, @item) %>
-<% else %>
-  <%= gwboard_attachments_form(f, @item) %>
-<% end %>
+<%if attach_use_old%>
+  <%=gwboard_image_form(f, @item, 'item_body')%>
+  <%=gwboard_attach_form(f, @item)%>
+<%else%>
+  <%=gwboard_attachments_form(f, @item)%>
+<%end%>

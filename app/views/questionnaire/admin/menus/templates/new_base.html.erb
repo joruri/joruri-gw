@@ -1,18 +1,22 @@
+<%
+@create_path = %Q(/questionnaire/#{params[:parent_id]}/templates/create_base)
+%>
 <div class="bbsDocList circular">
 <div class="pieceHeader"><h2 class="pieceTitle">テンプレート作成</h2></div>
 
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
-<%= form_for :item, :url => {:action => :create_base}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters">
-    <div align="center">
-      <table><tr><td><%= submit_for(f, :js_submitter=>"my_submit('draft')", :caption=>'保存') %></td></tr></table>
-    </div>
-  </div>
+<%= form_for :item, :url => "#{@create_path}" ,:action=>:create ,:html => {:method=>:post , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters"><div align="center">
+<table><tr><td><%= submit_for(f, :js_submitter=>"my_submit('draft')",:caption=>'保存') %></td></tr></table>
+</div></div>
+
 <% end %>
-
 </div>
 </div>

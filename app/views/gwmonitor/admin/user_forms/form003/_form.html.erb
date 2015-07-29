@@ -1,20 +1,18 @@
 <table class="show bbsText">
-  <tr>
-    <th>タイトル</th>
-  </tr>
-  <tr>
-    <td><%= f.text_field :title, :style => 'width:99%;' %></td>
-  </tr>
-  <tr>
-    <th>回答</th>
-  </tr>
-  <tr>
-    <td><%= f.text_area :body, :style => 'width:99%; height:100px' %></td>
-  </tr>
+<tr>
+<th>タイトル</th>
+</tr>
+<tr>
+<td><%= f.text_field :title, :style => 'width:99%;' %></td>
+</tr>
+<tr>
+<th>回答</th>
+</tr>
+<tr>
+<td><%= f.text_area :body, :style => 'width:99%; height:100px' %></td>
+</tr>
 </table>
-
-<%= render 'gwmonitor/admin/tool/attachments/form', f: f, item: @item %>
-
+<%=gwmonitor_attachments_form(f, @item)%>
 <script type="text/javascript">
 //<![CDATA[
   function chageDisp(obj,changeObjId) {

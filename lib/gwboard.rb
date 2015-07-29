@@ -1,16 +1,9 @@
+#encoding:utf-8
 class Gwboard
-
-  def self.control_model(system)
-    if system == 'gwmonitor_base'
-      Gwmonitor::Control
-    else
-      "#{system.capitalize}::Control".constantize
-    end
-  end
-
+  
   def self.add_reminder_circular(uid, title, body, options={})
-    fr_u = System::User.where("id=#{uid}").first rescue Core.user
-    fr_u = Core.user if fr_u.blank?
+    fr_u = System::User.find(:first, :conditions=>"id=#{uid}") rescue Site.user
+    fr_u = Site.user if fr_u.blank?
     begin
       Gw::Database.transaction do
         memo = {

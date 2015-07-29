@@ -1,3 +1,5 @@
+<div class="notice"><%= flash[:notice] %></div>
+
 <table class="show bbsText">
 <tr>
   <th>状態<%= required %></th>
@@ -16,7 +18,9 @@
 </tr>
 </table>
 
-<%= render '/gwworkflow/share/users_route_editor', f: f %>
+
+
+<%= render :partial => '/gwworkflow/share/users_route_editor', :locals => {:f => f} %>
 
 <%= hidden_field_tag(:cond, params[:cond]) unless params[:cond].blank? %>
 

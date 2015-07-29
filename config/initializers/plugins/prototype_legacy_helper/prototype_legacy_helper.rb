@@ -4,7 +4,7 @@ module PrototypeHelper
   # The options for specifying the target with :url
   # and defining callbacks is the same as link_to_remote.
   def button_to_remote(name, options = {}, html_options = {})
-    button_tag(name, html_options.merge(type: 'button', onclick: remote_function(options)))
+    button_to_function(name, remote_function(options), html_options)
   end
 
   # Returns a button input tag with the element name of +name+ and a value (i.e., display text) of +value+

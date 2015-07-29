@@ -1,12 +1,12 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%= render :partial => 'header' %>
 
+<div class="pieceBody">
 <div class="editingBox">
   <span class="btNew"><%= link_to '新規作成', "/system/role_name_privs/new#{@params_set}" %></span>
+  <span class="docLink"><%= link_to '管理者権限設定', "/system/roles" %></span>
 </div>
-<%= render 'search' %>
+<%= render :partial => 'search' %>
 
 <table class="index">
   <tbody>
@@ -15,7 +15,7 @@
       <th>機能名</th>
       <th>権限名</th>
     </tr>
-    <% @items.each do |item| %>
+    <% for item in @items %>
     <tr class="<%= cycle '', 'cycle' %>">
       <td style="text-align: center;"><%= link_to '詳細', "/system/role_name_privs/#{item.id}#{@params_set}" %></td>
       <td><%= item.role.display_name %></td>

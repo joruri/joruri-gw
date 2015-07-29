@@ -1,16 +1,33 @@
-<table class="index">
-  <tr>
-    <th style="width: 180px; align: center;"></th>
-    <th class="sort" colspan="2">表示順</th>
+  <table class="index">
+    <tr>
+    <th style="width: 180px; align: center;"><%# 詳細 %></th>
+    <th class="sort" colspan="2" >表示順</th>
     <th>会派</th>
-  </tr>
-  <% @items.each_with_index do |item, idx| -%>
+    </tr>
+    <% @items.each_with_index do |item, cnt| -%>
+    <%#for item in @items%>
+    <%
+      cond_up   = true
+      cond_down = true
+      if length == 1
+        cond_up   = false
+        cond_down = false
+      else
+        if cnt == 0
+          cond_up = false
+        else
+          if cnt == length - 1
+            cond_down = false
+          end
+        end
+      end
+    %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '展開', {action: :index, g_cat: item.g_order} %></td>
-      <td class="up"><%= link_to '▲', {action: :g_updown, id: item.id, order: 'up'} if @items.offset + idx >= 1 %></td>
-      <td class="down"><%= link_to '▼', {action: :g_updown, id: item.id, order: 'down'} if @items.offset + idx < @items.total_entries - 1 %></td>
+      <td><%= link_to '展開' , "#{@public_uri}/?g_cat=#{item.g_order}" %></td>
+      <td class="up" ><%= link_to '▲'   , "#{@public_uri}/g_updown?order=up&gid=#{item.id}"   if cond_up   == true %></td>
+      <td class="down" ><%= link_to '▼'   , "#{@public_uri}/g_updown?order=down&gid=#{item.id}" if cond_down == true %></td>
       <td><%= item.g_name %></td>
     </tr>
-  <% end -%>
-</table>
+    <% end -%>
+  </table>
 

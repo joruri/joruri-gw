@@ -1,12 +1,13 @@
-<hr class="borderDash"/>
-<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">編集</p>
+<%# app/views/gw/public/todos/edit_mobile.html.erb %>
 <hr  class="borderDash"/>
-<%= form_for :item, :url => "/gw/todos/#{@item.id}", :html => {:method => :put, :id => 'itemForm'} do |f| %>
-<%= f.error_messages%>
-<%= render 'form_mobile', f: f %>
-<%= @item.is_finished ? '' : submit_for_update(f, :caption=>'確定する') %>
-<% end %>
+<p class="mobileTodo">編集</p>
+<hr  class="borderDash"/>
+<%=  form_for :item, :url => "/gw/todos/#{@item.id}", :html => {:method => :put, :id => 'itemForm'} do |f|%>
+<%=f.error_messages%>
+<%=render(:partial => 'form_mobile', :locals => {:f => f})%>
+<%=@item.is_finished ? '' : submit_for_update(f, :caption=>'確定する')%>
+<%end%>
 <hr class="borderDash"/>
 <p class="leftPad2">
-<%= link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}" %>
+<%=link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}"%>
 </p>

@@ -1,42 +1,48 @@
 <div class="piece schedulePiece setting">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' %>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyBody">
-<div class="titleLine">
-  <span class="title">休日管理</span>
-</div>
-<div class="editingBox">
-  <div class="btNewHolyday">
-    <%= link_to '休日登録', {action: :new} -%>
+  <div class="pieceHeader">
+    <%= render(:partial => '/gw/admin/schedules/piece_header') %>
   </div>
-</div>
+  <div class="pieceBody">
+    <div class="pieceBodyBody">
+      <div class="titleLine">
+        <span class="title">休日管理</span>
+      </div>
+      <div class="editingBox">
+        <div class="btNewHolyday">
+          <%= link_to('休日登録',"/gw/holidays/new?categoriy=#{@category_id}") -%>
+        </div>
+      </div>
 
-<table class="index">
-  <tbody>
-    <tr>
-      <th class="action"></th>
-      <th class="action"></th>
-      <th class="action"></th>
-      <th>年月日</th>
-      <th>休日名</th>
-    </tr>
-    <% @items.each do |item| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to_show(item.id) %></td>
-      <td><%= link_to_edit(item.id) %></td>
-      <td><%= link_to_destroy(item.id) %></td>
-      <td><%= item.st_at.strftime("%Y-%m-%d") %></td>
-      <td><%= item.title %></td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
-<%= paginate @items -%>
-<div class="btReturn">
-  <%= link_to '管理者設定に戻る' , "/gw/schedules/setting" %>
-</div>
-</div>
-</div>
+      <%= div_notice %>
+      <table class="index">
+        <colgroup class="action"></colgroup>
+        <colgroup class="action"></colgroup>
+        <colgroup class="action"></colgroup>
+        <colgroup class="st_at"></colgroup>
+        <colgroup class="title"></colgroup>
+        <tbody>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>年月日</th>
+            <th>休日名</th>
+          </tr>
+          <% @items.each do |item| %>
+          <tr class="<%= cycle '', 'cycle' %>">
+            <td><%= link_to_show(item.id) %></td>
+            <td><%= link_to_edit(item.id) %></td>
+            <td><%= link_to_destroy(item.id) %></td>
+            <td><%= item.st_at.strftime("%Y-%m-%d") %></td>
+            <td><%= html_escape(item.title) %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <%= paginate @items -%>
+      <div class="btReturn">
+        <%= link_to '管理者設定に戻る' , "/gw/schedules/setting" %>
+      </div>
+    </div>
+  </div>
 </div>

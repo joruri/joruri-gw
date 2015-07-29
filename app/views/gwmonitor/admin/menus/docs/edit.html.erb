@@ -1,9 +1,11 @@
-<% if @item.is_commissioned? %>
-  <% if @title.state == 'closed' %>
-    <%= render 'show_result' %>
-  <% else %>
-    <%= render 'edit' %>
-  <% end %>
-<% else %>
-  <%= render 'show_result' if @title.spec_config == 5 %>
-<% end %>
+<% if @is_editable %>
+  <%= render :partial => 'edit' %>
+<% end unless @title.state == 'closed' %>
+
+<% if @is_editable %>
+  <%= render :partial => "show_result" %>
+<% end if @title.state == 'closed' %>
+
+<% unless @is_editable%>
+  <%= render :partial => "show_result" %>
+<% end if @title.spec_config == 5 %>

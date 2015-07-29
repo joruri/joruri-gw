@@ -1,15 +1,20 @@
 <div class="bbsDocList">
-<%= render 'gwmonitor/admin/menus/piece_header' %>
-
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%=@system_title%></h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%=link_to('新規作成', "/gwmonitor/builders/new")%></span>
+</div>
+<div class="btsHeadeRight"><%=raw(gwmonitor_settings)%></div>
+</div><!--pieceHeader-->
 <div class="pieceBanner">
-<h3><%= @title.title %></h3>
+<h3><%=@title.title%></h3>
 
 <div class="editingBox">
-  <% if @item.blank? %>
-  <span class="btNew"><%= link_to '新規', @title.new_doc_path %></span>
-  <% else %>
-  <span class="btEdit"><%= link_to '編集', @item.edit_path %></span>
-  <% end %>
+<%if @item.blank?%>
+<span class="btNew"><%=link_to('新規',@title.new_doc_path)%></span>
+<%else%>
+<span class="btEdit"><%=link_to('編集', "#{@item.edit_path}")%></span>
+<%end%>
 </div>
 
 <div class="helpBox">
@@ -19,31 +24,33 @@
 <div class="pieceBody">
 
 <div class="docsInnerBox">
+
 <table class="bbsExpirydate">
-  <tr>
-    <td>　回覧期限日時 : </td>
-    <td class="space"></td>
-    <td><%=l @item.expiry_date if @item.expiry_date %></td>
+ <tr>
+  <td>　回覧期限日時 : </td>
+  <td class="space"></td>
+  <td><%=@item.expiry_date.strftime('%Y-%m-%d %H:%M') unless @item.expiry_date.blank?%></td>
  </tr>
 </table>
+
 <div class="bbsCreatorInf">
 <table>
-  <tr>
-    <td>作成 : &nbsp;</td>
-    <td><%= @item.createrdivision %></td>
-    <td class="space"></td>
-    <td><%= @item.creater %></td>
-    <td class="space"></td>
-    <td><%= @item.createdate %></td>
-  </tr>
+<tr>
+<td>作成 : &nbsp;</td>
+<td><%= @item.createrdivision %></td>
+<td class="space"></td>
+<td><%= @item.creater %></td>
+<td class="space"></td>
+<td><%= @item.createdate %></td>
+</tr>
 </table>
 </div>
 
 <div class="bbsUserform">
 <table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr @title.caption %></span></td></tr>
-  <tr><td class="spaceBottom"></td></tr>
-  <tr><td><%=hbr @item.body %></td></tr>
+<tr><td class="docTitle"><span><%=hbr(@title.caption)%></span></td></tr>
+<tr><td class="spaceBottom"></td></tr>
+<tr><td><%=hbr(@item.body) unless @item.blank?%></td></tr>
 </table>
 </div>
 
@@ -51,7 +58,7 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '一覧へ戻る', @title.monitor_path %>
+  <%=link_to '一覧へ戻る', @title.monitor_path %>
 </div>
 
 </div><!--pieceBody-->

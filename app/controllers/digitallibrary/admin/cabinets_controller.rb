@@ -1,31 +1,55 @@
+# -*- encoding: utf-8 -*-
 class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+
+  include Gwboard::Controller::Scaffold
+  include Digitallibrary::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
+  include Gwboard::Controller::Message
+
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @img_path = "public/digitallibrary/docs/"
     @system = 'digitallibrary'
     @css = ["/_common/themes/gw/css/digitallibrary.css"]
     Page.title = "電子図書"
   end
 
-  def index
-    return error_auth unless Digitallibrary::Control.is_admin?
 
-    @items = Digitallibrary::Control.where(view_hide: (params[:state] == "HIDE" ? 0 : 1))
-      .tap {|c| break c.where(state: 'public').with_admin_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .order(sort_no: :asc, updated_at: :desc)
-      .paginate(page: params[:page], per_page: params[:limit]).distinct
+  def index
+    admin_flags('_menu')
+    return http_error(403) unless @is_admin
+    if @is_sysadm
+      sysadm_index
+    else
+      bbsadm_index
+    end
   end
 
   def show
-    @item = Digitallibrary::Control.find(params[:id])
-    return error_auth unless @item.is_admin?
+    admin_flags(params[:id])
+    return http_error(403) unless @is_admin
 
+    @item = Digitallibrary::Control.find(params[:id])
+    return http_error(404) unless @item
+    @admingrps = JsonParser.new.parse(@item.admingrps_json) if @item.admingrps_json
+    @adms = JsonParser.new.parse(@item.adms_json) if @item.adms_json
+    @editors = JsonParser.new.parse(@item.editors_json) if @item.editors_json
+    @readers = JsonParser.new.parse(@item.readers_json) if @item.readers_json
+    @sueditors = JsonParser.new.parse(@item.sueditors_json) if @item.sueditors_json
+    @sureaders = JsonParser.new.parse(@item.sureaders_json) if @item.sureaders_json
+    @image_message = ret_image_message
+    @document_message = ret_document_message
     _show @item
   end
 
   def new
+    admin_flags(params[:id])
+    return http_error(403) unless @is_admin
+
+    @wallpapers = get_wallpapers
+    @csses = get_csses
+
     @item = Digitallibrary::Control.new({
       :state => 'public' ,
       :published_at => Core.now ,
@@ -57,62 +81,93 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
       :separator_str2 => '.',
       :default_limit => '20'
     })
-    return error_auth unless @item.is_admin?
-
-    load_theme_settings
-  end
-
-  def create
-    @item = Digitallibrary::Control.new(params[:item])
-    return error_auth unless @item.is_admin?
-
-    @item.left_index_use = '1'
-    @item.upload_graphic_file_size_currently = 0
-    @item.upload_document_file_size_currently = 0
-    @item.upload_system = 3
-
-    load_theme_settings
-
-    _create @item
   end
 
   def edit
+    admin_flags(params[:id])
+    return http_error(403) unless @is_admin
+
+    @wallpapers = get_wallpapers
+    @csses = get_csses
     @item = Digitallibrary::Control.find(params[:id])
-    return error_auth unless @item.is_admin?
-
+    return http_error(404) unless @item
+    @image_message = ret_image_message
+    @document_message = ret_document_message
     @item.notification = 0 if @item.notification.blank?
+  end
 
-    load_theme_settings
+  def create
+    admin_flags(params[:id])
+    return http_error(403) unless @is_admin
+
+    @item = Digitallibrary::Control.new(params[:item])
+    @item.left_index_use = '1'
+    @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
+    @item.creater_id = Site.user.code unless Site.user.code.blank?
+    @item.creater = Site.user.name unless Site.user.name.blank?
+    @item.createrdivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.createrdivision_id = Site.user_group.code unless Site.user_group.code.blank?
+
+    @item.editor_id = Site.user.code unless Site.user.code.blank?
+    @item.editordivision_id = Site.user_group.code unless Site.user_group.code.blank?
+    @item.upload_graphic_file_size_currently = 0
+    @item.upload_document_file_size_currently = 0
+
+    @item.upload_system = 3
+    _create_doclib(@item, :system_name => 'digitallibrary')
   end
 
   def update
+    admin_flags(params[:id])
+    return http_error(403) unless @is_admin
+
     @item = Digitallibrary::Control.find(params[:id])
-    return error_auth unless @item.is_admin?
-
     @item.attributes = params[:item]
-
-    load_theme_settings
-
-    _update @item
+    @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
+    @item.editor_id = Site.user.code unless Site.user.code.blank?
+    @item.editor = Site.user.name unless Site.user.name.blank?
+    @item.editordivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.editordivision_id = Site.user_group.code unless Site.user_group.code.blank?
+    @title = @item
+    seq_name_update_all
+    _update_doclib @item
   end
 
   def destroy
     @item = Digitallibrary::Control.find(params[:id])
-    return error_auth unless @item.is_admin?
-
     _destroy @item
   end
 
-  private
+  def sysadm_index
+    item = Digitallibrary::Control.new
+    item.and :view_hide, (params[:state] == "HIDE" ? 0 : 1)
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, :order => 'sort_no, updated_at DESC')
+    _index @items
+  end
 
-  def load_theme_settings
-    @wallpapers = get_wallpapers
-    @csses = get_csses
+  def bbsadm_index
+    item = Digitallibrary::Control.new
+    item.and "digitallibrary_controls.state", 'public'
+    item.and "digitallibrary_controls.view_hide", (params[:state] == "HIDE" ? 0 : 1)
+    item.and do |d|
+      d.or do |d2|
+        d2.and "digitallibrary_adms.user_code", Site.user.code
+      end
+      d.or do |d2|
+        d2.and "digitallibrary_adms.user_id", 0
+        d2.and "digitallibrary_adms.group_code", Site.user_group.parent_tree.map{|g| g.code}
+      end
+    end
+    item.join "INNER JOIN digitallibrary_adms ON digitallibrary_controls.id = digitallibrary_adms.title_id"
+    item.page params[:page], params[:limit]
+    @items = item.find(:all, :order => 'sort_no, updated_at DESC', :group => 'digitallibrary_controls.id')
+    _index @items
   end
 
   def get_wallpapers
     wallpapers = nil
-    wallpaper = Gw::IconGroup.find_by(name: 'digitallibrary')
+    wallpaper = Gw::IconGroup.find_by_name('digitallibrary')
     unless wallpaper.blank?
       item = Gw::Icon.new
       item.and :icon_gid, wallpaper.id
@@ -123,7 +178,7 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
 
   def get_csses
     csses = nil
-    css = Gw::IconGroup.find_by(name: 'digitallibrary_CSS')
+    css = Gw::IconGroup.find_by_name('digitallibrary_CSS')
     unless css.blank?
       item = Gw::Icon.new
       item.and :icon_gid, css.id
@@ -131,4 +186,5 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     end
     return csses
   end
+
 end

@@ -1,12 +1,39 @@
-<% if @open_state %>
+
 <div class="adLower">
-<% if @items.blank? %>
-  <%= nobanner_show(@add_limit) %>
-<% else %>
-  <% @items.each do |item| %>
-    <%= display_ad(item) %>
-  <% end %>
-  <%= nobanner_show(@add_limit - @items.size.to_i) %>
-<% end %>
+<% if @items.blank?%>
+  <img SRC="/_common/themes/gw/files/ad/bn_170-50.gif" ALT=""/>
+  <img SRC="/_common/themes/gw/files/ad/bn_170-50.gif" ALT=""/>
+  <img SRC="/_common/themes/gw/files/ad/bn_170-50.gif" ALT=""/>
+  <img SRC="/_common/themes/gw/files/ad/bn_170-50.gif" ALT=""/>
+<%else%>
+<%
+no_banner = 4 - @items.size.to_i
+i=1;
+hour = Time.now.strftime('%H')
+if (hour.to_i >= 12 and hour.to_i < 17)
+  banner_link = true
+else
+  banner_link = false
+end
+%>
+<%if banner_link == true%>
+  <%for item in @items%>
+    <%if item.url.blank?%>
+      <img SRC="<%= item.file_path %>" ALT="<%=item.body%>"/>
+    <%else%>
+       <%= link_to image_tag(item.file_path, { :border => "0", :alt => item.body}), item.url %>
+    <%end%>
+  <%end%>
+<%else%>
+  <%for item in @items%>
+    <img SRC="<%= item.file_path %>" ALT="<%=item.body%>"/>
+  <%end%>
+<%end%>
+<%if no_banner > 0%>
+  <%while i<= no_banner do%>
+     <img SRC="/_common/themes/gw/files/ad/bn_170-50.gif" ALT=""/>
+     <%i = i+1%>
+  <%end%>
+<%end%>
+<%end%>
 </div>
-<% end %>

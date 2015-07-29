@@ -4,42 +4,42 @@
 <%# 知事・副知事・政策監・政策監補　の４名分までの予定 %>
 <div class="unit">
 <% @items1.each do |item| %>
-  <div class="scheduleUser <%= item.state if item.state == 'off'%>">
-  <div class="leftHeader userIcon1">
-  <%
-  swith_enable = @u_role || Core.user_group.id == item.gid
-  swith_enable = false if defined?(disable_switch) && disable_switch
-  %>
-  <% if swith_enable %>
-    <a class="userIcon" href="<%= %Q(#{@public_uri}/#{item.uid}/state_change?p_state=#{item.state}) %>">
-    <%= Gw::PrefExecutive.state_show(item.state) %>
-    </a>
-  <% else %>
-    <span class="userIcon"><%= Gw::PrefExecutive.state_show(item.state) %></span>
-  <% end %>
-  <div class="title"><%= item.title %></div>
-  <div class="username">
-  <span><%= item.u_name %></span>
-  <% if params[:controller] !~ /pref_only/ %>
-    <%
-      td_s = d.strftime("%Y%m%d")
-      td_s = params[:s_date] if !params[:s_date].blank?
-      td1 = Date.new(d.year, d.month, 1)
-      td1_s = td1.strftime("%Y%m%d")
-      link_uid = item.uid
-      day   = "/gw/schedules/#{td_s}?uid=#{link_uid}"
-      week  = "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}"
-      month = "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}"
-    %>
-    <span class="linkBox">
-    <a href="<%= day %>" class="dayLink">日表示</a>
-    <a href="<%= week %>" class="weekLink">週表示</a>
-    <a href="<%= month %>" class="monthLink">月表示</a>
-    </span>
-  <% end %>
-  </div><!--username-->
-  </div><!--leftHeader-->
-  </div><!--scheduleUser-->
+<div class="scheduleUser <%= item.state if item.state=='off'%> ">
+<div class="leftHeader userIcon1  ">
+<%
+swith_enable = false
+swith_enable = true if @u_role == true
+swith_enable = true if Site.user_group.id == item.gid
+%>
+<%if swith_enable == true%>
+  <a class="userIcon" href="<%= %Q(#{@public_uri}/#{item.uid}/state_change?p_state=#{item.state}) %>">
+  <%=Gw::PrefExecutive.state_show(item.state)%>
+  </a>
+
+<%else%>
+<span class="userIcon"><%=Gw::PrefExecutive.state_show(item.state)%></span>
+<%end%>
+<div class="title"><%= item.title %></div>
+<div class="username">
+<span><%= item.u_name %></span>
+<%
+  td_s = d.strftime("%Y%m%d")
+  td_s = params[:s_date] if !params[:s_date].blank?
+  td1 = Date.new(d.year, d.month, 1)
+  td1_s = td1.strftime("%Y%m%d")
+  link_uid = item.uid
+  day   = "/gw/schedules/#{td_s}?uid=#{link_uid}"
+  week  = "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}"
+  month = "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}"
+%>
+<span class="linkBox">
+<a href="<%= day %>" class="dayLink">日表示</a>
+<a href="<%= week %>" class="weekLink">週表示</a>
+<a href="<%= month %>" class="monthLink">月表示</a>
+</span>
+</div><!--username-->
+</div><!--leftHeader-->
+</div><!--scheduleUser-->
 <% end %>
 </div><!--unit-->
 <% end %>
@@ -47,44 +47,42 @@
 <% if @items2.size > 0 %>
 <div class="unit">
 <% @items2.each do |item| %>
-  <div class="scheduleUser <%= item.state if item.state == 'off'%>">
-  <div class="leftHeader userIcon2  ">
-  <%
-  swith_enable = @u_role || Core.user_group.id == item.gid
-  swith_enable = false if defined?(disable_switch) && disable_switch
-  %>
-  <% if swith_enable %>
-    <a class="userIcon" href="<%= %Q(#{@public_uri}/#{item.uid}/state_change?p_state=#{item.state}) %>">
-    <%= Gw::PrefExecutive.state_show(item.state) %>
-    </a>
-  <% else %>
-    <span class="userIcon"><%= Gw::PrefExecutive.state_show(item.state) %></span>
-  <% end %>
-  <div class="title"><%= item.title %></div>
-  <div class="username">
-  <span><%= item.u_name %></span>
-  <% if params[:controller] !~ /pref_only/ %>
-    <%
-      td_s = d.strftime("%Y%m%d")
-      td_s = params[:s_date] if !params[:s_date].blank?
-      td1 = Date.new(d.year, d.month, 1)
-      td1_s = td1.strftime("%Y%m%d")
-      link_uid = item.uid
-      day   = "/gw/schedules/#{td_s}?uid=#{link_uid}"
-      week  = "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}"
-      month = "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}"
-    %>
-    <span class="linkBox">
-    <a href="<%= day %>" class="dayLink">日表示</a>
-    <a href="<%= week %>" class="weekLink">週表示</a>
-    <a href="<%= month %>" class="monthLink">月表示</a>
-    </span>
-  <% end %>
-  </div><!--username-->
-  </div><!--leftHeader-->
-  </div><!--scheduleUser-->
+<div class="scheduleUser <%= item.state if item.state=='off'%>">
+<div class="leftHeader userIcon2  ">
+<%
+swith_enable = false
+swith_enable = true if @u_role == true
+swith_enable = true if Site.user_group.id == item.gid
+%>
+<%if swith_enable == true %>
+  <a class="userIcon" href="<%= %Q(#{@public_uri}/#{item.uid}/state_change?p_state=#{item.state}) %>">
+  <%=Gw::PrefExecutive.state_show(item.state)%>
+  </a>
+<%else%>
+<span class="userIcon"><%=Gw::PrefExecutive.state_show(item.state)%></span>
+<%end%>
+<div class="title"><%= item.title %></div>
+<div class="username">
+<span><%= item.u_name %></span>
+<%
+  td_s = d.strftime("%Y%m%d")
+  td_s = params[:s_date] if !params[:s_date].blank?
+  td1 = Date.new(d.year, d.month, 1)
+  td1_s = td1.strftime("%Y%m%d")
+  link_uid = item.uid
+  day   = "/gw/schedules/#{td_s}?uid=#{link_uid}"
+  week  = "/gw/schedules/?s_date=#{td_s}&uid=#{link_uid}"
+  month = "/gw/schedules/show_month?s_date=#{td1_s}&uid=#{link_uid}"
+%>
+<span class="linkBox">
+<a href="<%= day %>" class="dayLink">日表示</a>
+<a href="<%= week %>" class="weekLink">週表示</a>
+<a href="<%= month %>" class="monthLink">月表示</a>
+</span>
+</div><!--username-->
+</div><!--leftHeader-->
+</div><!--scheduleUser-->
 <% end %>
 </div><!--unit-->
 <% end %>
-
 </div><!--pieceBodyBody-->

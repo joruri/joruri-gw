@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Script::Tool
   require 'csv'
   require 'pp'
@@ -13,7 +14,7 @@ class Gwsub::Script::Tool
       end
       setting = hash_raw[csv_setting_name]
       raise TypeError, 'unknown csv_setting_name' if setting.nil?
-      model = eval(setting['model'])
+      model = eval(setting['model']) #TODO/090616/nkoshiba: eval 危険
       fields = setting['fields']
       csv_titles = csv[0]
       csv.shift
@@ -58,7 +59,7 @@ class Gwsub::Script::Tool
       end
       setting = hash_raw[csv_setting_name]
       raise TypeError, 'unknown csv_setting_name' if setting.nil?
-      model = eval(setting['model'])
+      model = eval(setting['model']) #TODO/090616/nkoshiba: eval 危険
       fields = setting['fields']
       csv_titles = csv[0]
       csv.shift
@@ -106,7 +107,7 @@ class Gwsub::Script::Tool
       end
       setting = hash_raw[csv_setting_name]
       raise TypeError, 'unknown csv_setting_name' if setting.nil?
-      model = eval(setting['model'])
+      model = eval(setting['model']) #TODO/090616/nkoshiba: eval 危険
       fields = setting['fields']
       csv_titles = csv[0]
       csv.shift
@@ -393,7 +394,7 @@ class Gwsub::Script::Tool
   end
 
   def self.get_start_at
-    fyears = Gwsub::Sb0904FiscalYearSetting.order("start_at DESC").first
+    fyears = Gwsub::Sb0904FiscalYearSetting.find(:first , :order=>"start_at DESC")
     if fyears.blank?
       return nil
     end

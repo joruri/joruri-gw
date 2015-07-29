@@ -1,62 +1,107 @@
 <!--掲示板タブ-->
-<%#= render 'header' %>
+<%
+    #編集期限取得
+#  is_editable_dates = true
+#  today = Core.now
+  #dates_cond    = "start_at <= '#{today}' and '#{today}' <= end_at"
+  #dates_order   = "start_at DESC"
+  #editable_dates = Gwsub::Sb04EditableDate.find(:first,:conditions=>dates_cond,:order=>dates_order)
+  #is_editable_dates = false if editable_dates.blank?
+#  pp ['bbs_show',editable_dates]
+# 編集可能日判定（期限切れとなるまで可）
+  if Time.now <= @item.expiry_date
+    is_editable_dates = true
+  else
+    is_editable_dates = false
+  end
+%>
 
-<%= render @title.gwbbs_form_name + 'show' %>
-<% if @title.use_old_upload_system? %>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.files %>
-<% else %>
-  <%= render '/gwboard/admin/docs/library_index', files: @item.files if @title.attachfile_index_use %>
-<% end %>
+<%#= render :partial => 'header' %>
+
+<%=render :partial => @title.gwbbs_form_name + 'show' %>
+<%if attach_use_old%>
+ <%=render(:partial => '/gwboard/admin/docs/upload_index')%>
+<%else%>
+ <%=render(:partial => '/gwboard/admin/docs/library_index') if @title.attachfile_index_use%>
+<%end%>
 </div>
-<%= render 'comment_index' if @item.one_line_note == 1 %>
+<%=render(:partial => 'comment_index') if @item.one_line_note == 1%>
 
-<% if @title.use_recognize? %>
-  <%= render 'recognize_users' if @item.state.in?(%w(draft recognize recognized)) %>
-<% end %>
+<%if @title.use_recognize%>
+<%=render(:partial => 'recognize_users') if @item.state == 'draft'%>
+<%=render(:partial => 'recognize_users') if @item.state == 'recognize'%>
+<%=render(:partial => 'recognize_users') if @item.state == 'recognized'%>
+<%end%>
+
 
 <div class="docsInnerBox">
 
 <table class="show">
-  <tr>
-    <th>公開終了日</th>
-    <td><%= @item.expiry_date.strftime('%Y-%m-%d') if @item.expiry_date %></td>
-  </tr>
-  <tr>
+ <tr>
+  <th>公開終了日</th>
+  <td><%=@item.expiry_date.strftime('%Y-%m-%d') unless @item.expiry_date.blank?%></td>
+ </tr>
+ <tr>
     <th>記事管理課</th>
-    <td><%= @item.section_name %></td>
+    <td><%=@item.section_name%></td>
   </tr>
-  <% if @title.importance == 1 or @title.category == 1 %>
-    <% if @title.importance == 1 %>
+
+<%if @title.importance == 1 or @title.category == 1 %>
+      <%if @title.importance == 1 %>
       <tr>
         <th>ステータス</th>
-        <td style="text-align: left;"><%= @item.importance_name %></td>
+        <td style="text-align: left;"><%=@item.importance_name%></td>
       </tr>
-    <% end %>
-    <% if @title.category == 1 %>
+      <%end%>
+      <%if @title.category == 1 %>
       <tr>
-        <th><%= @title.category1_name unless @title.category1_name.blank? %></th>
+        <th><%= @title.category1_name  unless @title.category1_name.blank? %></th>
         <td style="text-align: left;"><%= gwbd_category_name(@d_categories, @item.category1_id) %></td>
-      </tr>
-    <% end %>
-  <% end %>
-  <tr>
-    <th>作成 </th>
-    <td><%= @item.createrdivision %>:<%= @item.creater %></td>
-  </tr>
-  <tr>
-    <th>作成日 </th>
-    <td><%= @item.createdate %></td>
-  </tr>
-  <% unless @item.editordivision.blank? %>
-  <tr>
-    <th>編集</th>
-    <td><%= @item.editordivision %>:<%= @item.editor %></td>
-  </tr>
-  <tr>
-    <th>編集日</th>
-    <td><%= @item.editdate %></td>
-  </tr>
-  <% end %>
+        </tr>
+      <% end %>
+<% end %>
+
+
+
+<tr>
+<th>作成 </th>
+<td><%= @item.createrdivision %>:<%= @item.creater %></td>
+</tr>
+<tr>
+<th>作成日 </th>
+<td><%= @item.createdate %></td>
+</tr>
+
+<%unless @item.editordivision.blank?%>
+<tr>
+<th>編集</th>
+<td><%= @item.editordivision %>:<%= @item.editor %></td>
+</tr>
+<tr>
+<th>編集日</th>
+<td><%= @item.editdate %></td>
+</tr>
+<%end%>
 </table>
 
-<%= render 'show_prev_next_link' %>
+
+  <%if !@previous.blank? || !@next.blank?%>
+<%#ページ移動データあり -------------------------------------------------------------------------------------- -%>
+<div class="docsPageMove">
+  <%unless @title.use_other_system%>
+    <%#他シスリンクなし%>
+    <% unless @previous.blank? %>
+<span class="left"><%=link_to('< 前のページ', "#{@previous.show_path}&pp=#{@prev_page}#{gwbbs_params_set}")%></span>
+    <% else %>
+<span class="left">先頭ページ</span>
+    <% end %>
+
+<span class="center">|</span>
+    <% unless @next.blank? %>
+<span class="right"><%=link_to("次のページ >", "#{@next.show_path}&pp=#{@next_page}#{gwbbs_params_set}")%></span>
+    <% else %>
+<span class="right">最終ページ</span>
+    <% end %>
+  <%end%>
+</div>
+<%end%>

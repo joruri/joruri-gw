@@ -58,10 +58,3 @@ ja:
         inpfld_023: ""
         inpfld_024: ""
         inpfld_025: ""
-        recognizers: 承認者
-      gwbbs/file:
-        file: ファイル
-        filename: ファイル名
-      gwbbs/image:
-        file: ファイル
-        filename: ファイル名

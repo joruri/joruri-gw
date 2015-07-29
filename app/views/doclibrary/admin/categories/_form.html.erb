@@ -36,8 +36,8 @@
 //]]>
 </script>
 
-<% if @title.use_old_upload_system? %>
-  <%= gwboard_attach_form(f, @item) %>
-<% else %>
-  <%= gwboard_attachments_form(f, @item) %>
-<% end %>
+<%if attach_use_old%>
+  <%=gwboard_attach_form(f, @item)%>
+<%else%>
+  <%=gwboard_attachments_form(f, @item)%>
+<%end%>

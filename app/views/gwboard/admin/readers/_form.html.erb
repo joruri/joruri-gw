@@ -10,8 +10,8 @@
 <%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(0)), :size=>5, :style => 'width:200px;', :ondblclick => 'add_reader()', :multiple => true) %>
 </td>
 <td>
-<%= button_tag '追加 →', :onclick =>'add_reader(); return false;' %><br /><br />
-<%= button_tag '← 削除', :onclick => 'del_reader(); return false;' %>
+<%= button_to_function '追加 →', 'add_reader()' %><br /><br />
+<%= button_to_function '← 削除', 'del_reader()' %>
 </td>
 <td>
 <%= select_tag 'item[readers_add_buf]', [], :size=>6, :style => 'width:200px;', :ondblclick => 'del_reader()', :multiple => true %>

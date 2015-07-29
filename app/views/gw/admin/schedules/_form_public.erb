@@ -1,11 +1,12 @@
 <%
-u = Core.user
-g = Core.user_group
+
+u = Site.user
+g = Site.user_group
 
 box_width = 'width:250px;'
 
 groups = Gwboard::Group.level2_top_blank
-parent_id = Core.user_group.parent_id
+parent_id = Site.user_group.parent_id
 
 _public_groups_json = Array.new
 _public_groups_json.push ["", g.id, g.name]
@@ -18,23 +19,22 @@ hidden_init_public_group = hidden_field_tag('init[public_groups_json]',
 <%= hidden_init_public_group -%>
 
 <table id="public_groups_table" class="show">
-  <tr>
-    <th>公開所属</th>
+  <tr><th>公開所属</th>
     <td>
       <table border="0">
         <tr>
           <td class="userChange">
-            <%= select_tag 'item[public_groups][gid]', options_for_select(groups, parent_id), :onchange=>'update_public_group_cand();' %><br />
-            <%= select_tag 'item[public_groups][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_public_group()', :multiple => true %>
+<%= select_tag('item[public_groups][gid]', options_for_select(groups, parent_id), :onchange=>'update_public_group_cand();' ) %><br />
+<%= select_tag('item[public_groups][uid]', options_for_select(Gwboard::Group.level3(parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_public_group()', :multiple => true) %>
           </td>
           <td>
-            <%= button_tag '追加 →', :onclick =>'add_public_group(); return false;' %><br /><br />
-            <%= button_tag '← 削除', :onclick => 'del_public_group(); return false;' %>
+<%= button_to_function '追加 →', 'add_public_group()' %><br /><br />
+<%= button_to_function '← 削除', 'del_public_group()' %>
           </td>
           <td>
-            <%= select_tag 'item[public_groups_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_public_group()', :multiple => true %>
-            <%= hidden_field_tag 'item[public_groups_json]', '' %>
-          </td>
+<%= select_tag 'item[public_groups_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_public_group()', :multiple => true %>
+<%= hidden_field_tag 'item[public_groups_json]', '' %>
+            </td>
         </tr>
       </table>
     </td>

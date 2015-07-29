@@ -1,0 +1,54 @@
+<div id="item_schedule_users_add_buf_list" />
+<script type="text/javascript">
+function changeUserIcon(id) {
+  var sel = $(id);
+    var elem = $('preview-'+id);
+    elem.className = 'userIcon'+sel.options[sel.selectedIndex].value;
+}
+</script>
+<table border=1>
+<tr>
+  <th>並び順</th>
+  <th>Ｇｗに表示</th>
+  <th>ＡＩＲに表示</th>
+  <th>役職<%= required%></th>
+  <th>氏名</th>
+  <th>削除</th>
+</tr>
+<%
+  if params[:item] && @users_json
+    users = ::JsonParser.new.parse(@users_json)
+    @users = []
+    unless users.blank?
+      users.each{|user|
+        @users.push [user[0], user[1], user[2],
+        params['title_'+user[1].to_s+"_#{user[0]}"],
+        params['icon_'+user[1].to_s+"_#{user[0]}"],
+        params['sort_no_'+user[1].to_s+"_#{user[0]}"],
+        params['is_governor_view_'+user[1].to_s+"_#{user[0]}"],
+        params['is_other_view_'+user[1].to_s+"_#{user[0]}"]]
+      }
+    end
+  end
+%>
+<%unless @users.blank?%>
+<% for user in @users  %>
+<%
+if user[0].blank? || user[0] == " "
+  num = "0"
+else
+  num = user[0]
+end
+%>
+<tr>
+  <td><input type="text" name="sort_no_<%=user[1]%>_<%=num%>" value="<%= user[5] %>" size="2" maxlength="10" ></td>
+  <td><input type="checkbox" name="is_other_view_<%=user[1]%>_<%=num%>" value="1" <%= 'checked' if user[7].to_s =='1' %> /></td>
+  <td><input type="checkbox" name="is_governor_view_<%=user[1]%>_<%=num%>" value="1" <%= 'checked' if user[6].to_s =='1' %> /></td>
+  <td><input type="text" name="title_<%=user[1]%>_<%=num%>" value="<%=user[3]%>" size="25"  maxlength="20" ></td>
+  <td><%=user[2]%></td>
+  <td><%= submit_to_remote "", "削除",:update => "item_schedule_users_add_buf_list" ,:before => "select_options_delete($('item_schedule_users_add_buf'), '#{user[1]}');set_users_json();",  :submit => "schedule_users_table",  :url => "/gw/pref_executive_admins/get_users.xml" %></td>
+</tr>
+<% end %>
+<% end %>
+</table>
+</div>

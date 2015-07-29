@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_plans/edit.html.erb</p> -%>
 <%
 @edit_path = "#{@public_uri}/#{@item.id}"
 @action = "edit"
@@ -7,11 +8,12 @@
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_plans/menu' %>
 </div>
 <div class="pieceBody">
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <%= form_for :item, :url => @edit_path ,:action=>:update, :method => :put, :html => {:multipart => true, :class=>"leftSide"} do |f| %>
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 <% end %>
 <div class="btReturn">
   <%= link_to '詳細に戻る' , url_for(@edit_path) -%>

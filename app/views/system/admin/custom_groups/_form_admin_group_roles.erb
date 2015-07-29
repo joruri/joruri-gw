@@ -1,19 +1,33 @@
+<!--<%= @admin_groups_json -%>-->
+<%= hidden_field_tag('init[schedule_admin_groups_json]',
+  (params[:item] && params[:item][:schedule_admin_groups_json] ? params[:item][:schedule_admin_groups_json] : nz(@admin_groups_json) )) -%> 
 <%
-selected_admin_group_options = @item.selected_admin_group_options
+u = Site::user_group
+ucls = 2
+uid = u.id
+uname = u.name
 %>
+
+<%= hidden_field_tag('init[ucls]', ucls) -%>
+<%= hidden_field_tag('init[uid]', uid) -%>
+<%= hidden_field_tag('init[uname]', uname) -%>
+
+<%= f.fields_for :schedule_admin_groups do |schedule_role| %>
 <table border="0">
   <tr>
-    <td class="userChange">
-      <%= select_tag :admin_groups, options_for_select(System::Group.get_group_select('', '', :add_conditions=>"level_no = 3"), Core.user_group.id), size: 10, style: 'width:300px;', multiple: true -%>
+    <td class="roleChange">
+<%= select_tag 'item[schedule_admin_groups][uid]', Gw.options_for_select(
+  System::Group.get_group_select('', '', :add_conditions=>"level_no = 3"), Site.user_group.id, :title=>1), :size=>10,
+  :style => 'width:300px;', :ondblclick => 'add_admin_groups()', :multiple => true -%>
     </td>
     <td>
-      <%= button_tag '追加 →', type: :button, id: 'add_admin_groups' -%><br /><br />
-      <%= button_tag '← 削除', type: :button, id: 'del_admin_groups' -%>
+      <%= button_to_function '追加 →', 'add_admin_groups()' -%><br /><br />
+      <%= button_to_function '← 削除', 'del_admin_groups()' -%>
     </td>
     <td>
-      <br />
-      <%= select_tag :selected_admin_groups, options_for_select(selected_admin_group_options), size: 10, style: 'width:300px;', multiple: true -%>
-      <%= f.select :selected_admin_group_ids, options_for_select(selected_admin_group_options, selected_admin_group_options.map{|o| o[1]}), {}, {multiple: true, style: 'display: none;'} -%>
+      <%= select_tag 'item[schedule_admin_groups_add_buf]', '', :size=>10, :style => 'width:300px;', :ondblclick => 'del_admin_groups()', :multiple => true -%>
+      <%= hidden_field_tag 'item[schedule_admin_groups_json]', '' -%>
     </td>
   </tr>
 </table>
+<% end %>

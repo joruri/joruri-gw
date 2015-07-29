@@ -9,9 +9,9 @@
 </ul>
 
 <div class="personal">
-<% if Core.user %>
-前回ログイン日時　<%= Core.user.previous_login_date ?
-       Core.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+<% if Site.user %>
+前回ログイン日時　<%= Site.user.previous_login_date ?
+       Site.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
        '---' -%>
 <% end %>
 </div>

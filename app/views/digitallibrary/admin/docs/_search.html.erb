@@ -1,5 +1,5 @@
 <div class="pieceBodyHeader">
-<%= render '/digitallibrary/admin/docs/sort' %>
+<%= render :partial => '/digitallibrary/admin/docs/sort' %>
 <div class="search">
 <%= form_tag digitallibrary_docs_path({:title_id=>@title.id}), :method => :get, :class => 'search' do %>
 <table class="bbsSearch">

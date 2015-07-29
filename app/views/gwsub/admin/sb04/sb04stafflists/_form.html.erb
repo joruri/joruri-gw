@@ -10,7 +10,7 @@ end
 # 年度選択肢
 if @u_role
   fyear_order     = "published_at DESC"
-  fyears          = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyears          = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 elsif @role_sb04_dev
   fyears = Gwsub::Sb04stafflistviewMaster.sb04_dev_fyear_select
   if fyears.rassoc(@fyed_id.to_i).blank?
@@ -63,82 +63,68 @@ officialtitles  = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@fyed_
 <%= f.error_messages %>
 <%= required_head %>
 <table class="show">
-  <tr>
-    <th>年度<%= required %></th>
-    <td><%= f.select :fyear_id, options_for_select(fyears,@fyed_id.to_i), {}, {onchange: "get_fyear();"} %></td>
-  </tr>
-  <tr>
-    <th>職員番号<%= required %></th>
-    <td><%= f.text_field :staff_no, :class => 'num IMEoff' %></td>
-  </tr>
-  <tr>
-    <th>氏名（変換後）<%= required %></th>
-    <td><%= f.text_field :name, :class => 'name' %></td>
-  </tr>
-  <tr>
-    <th>氏名（変換前）</th>
-    <td><%= f.text_field :name_print, :class => 'name' %></td>
-  </tr>
-  <tr>
-    <th>カナ氏名</th>
-    <td><%= f.text_field :kana, :class => 'name' %></td>
-  </tr>
-  <tr>
-    <th>本務・兼務</th>
-    <td><%= f.radio_buttons :multi_section_flg, Gwsub::Sb04stafflist.multi_section_flg %></td>
-  </tr>
-  <tr>
-    <th></th>
-    <td>年度を変更すると、所属・担当・職名の選択肢が変更されます。<br />所属を変更すると、担当の選択肢が変更されます。</td>
-  </tr>
-  <tr>
-    <th>所属<%= required %></th>
-    <td><%= f.select :section_id, options_for_select(sections, grped_id.to_i), {}, {onchange: "get_assigned_job(2);"} %></td>
-  </tr>
-  <tr>
-    <th>担当</th>
-    <td><%= f.select :assignedjobs_id, options_for_select(assignedjobs, @item.assignedjobs_id.to_i) %></td>
-  </tr>
-  <tr>
-    <th>職名</th>
-    <td><%= f.select :official_title_id, options_for_select(officialtitles, @item.official_title_id.to_i), {include_blank: true} %></td>
-  </tr>
-  <tr>
-    <th>個人内線</th>
-    <td><%= f.text_field :extension, :class => 'name' %></td>
-  </tr>
-  <tr>
-    <th>担当電話</th>
-    <td><%= f.text_field :assignedjobs_tel, :class => 'name' %></td>
-  </tr>
-  <tr>
-    <th>担当住所・電話</th>
-    <td><%= f.text_area :assignedjobs_address, :rows => 5, :cols => 50 %></td>
-  </tr>
-  <tr>
-    <th>並び順</th>
-    <td><%= f.text_field :divide_duties_order, :class => 'num IMEoff' %></td>
-  </tr>
-  <tr>
-    <th>事務分掌</th>
-    <td><%= f.text_area :divide_duties, :rows => 10, :cols => 50 %></td>
-  </tr>
-  <tr>
-    <th>備考</th>
-    <td><%= f.text_area :remarks, :rows => 10, :cols => 50 %></td>
-  </tr>
-  <tr>
-    <th>職員録に表示</th>
-    <td><%= f.radio_buttons :personal_state, Gwsub::Sb04stafflist.personal_state %></td>
-  </tr>
-  <tr>
-    <th>事務分掌に表示</th>
-    <td><%= f.radio_buttons :display_state, Gwsub::Sb04stafflist.duties_state %></td>
-  </tr>
+<tr><th>年度<%= required %></th>
+<td><%= f.select(:fyear_id, options_for_select(fyears,@fyed_id.to_i) ) %></td>
+</tr>
+<tr><th>職員番号<%= required %></th>
+<td><%= f.text_field :staff_no ,:class=>'num IMEoff' %></td>
+</tr>
+<tr><th>氏名（変換後）<%= required %></th>
+<td><%= f.text_field :name ,:class=>'name' %></td>
+</tr>
+<tr><th>氏名（変換前）</th>
+<td><%= f.text_field :name_print ,:class=>'name' %></td>
+</tr>
+<tr><th>カナ氏名</th>
+<td><%= f.text_field :kana ,:class=>'name' %></td>
+</tr>
+<tr><th>本務・兼務</th>
+<td><%= radio f ,:multi_section_flg,Gwsub::Sb04stafflist.multi_section_flg,:class=>'state' %></td>
+</tr>
+
+<tr><th></th>
+<td>年度を変更すると、所属・担当・職名の選択肢が変更されます。<br />所属を変更すると、担当の選択肢が変更されます。</td>
+</tr>
+<tr><th>所属<%= required %></th>
+<td><%= f.select :section_id, options_for_select(sections , grped_id.to_i)  %></td>
+</tr>
+<tr><th>担当</th>
+<td><%= f.select :assignedjobs_id, options_for_select(assignedjobs, @item.assignedjobs_id.to_i)  %></td>
+</tr>
+<tr><th>職名</th>
+<td><%= f.select :official_title_id, options_for_select(officialtitles, @item.official_title_id.to_i) , {:include_blank=>true}  %></td>
+</tr>
+<tr><th>個人内線</th>
+<td><%= f.text_field :extension ,:class=>'name' %></td>
+</tr>
+<tr><th>担当電話</th>
+<td><%= f.text_field :assignedjobs_tel ,:class=>'name' %></td>
+</tr>
+<tr><th>担当住所・電話</th>
+<td><%= f.text_area :assignedjobs_address ,:rows=>5 , :cols=>50 %></td>
+</tr>
+<tr><th>並び順</th>
+<td><%= f.text_field :divide_duties_order ,:class=>'num IMEoff'  %></td>
+</tr>
+<tr><th>事務分掌</th>
+<td><%= f.text_area :divide_duties ,:rows=>10 , :cols=>50 %></td>
+</tr>
+<tr><th>備考</th>
+<td><%= f.text_area :remarks ,:rows=>10 , :cols=>50  %></td>
+</tr>
+<tr><th>職員録に表示</th>
+<td><%= radio f ,:personal_state,Gwsub::Sb04stafflist.personal_state,:class=>'state' %></td>
+</tr>
+<tr><th>事務分掌に表示</th>
+<td><%= radio f ,:display_state,Gwsub::Sb04stafflist.duties_state,:class=>'state' %></td>
+</tr>
 </table>
 <div class="preserve"><%= f.submit '保存' %></div>
 
-<script type="text/javascript">
+<%= observe_field "item_fyear_id", :function => "get_fyear();" %>
+<%= observe_field "item_section_id", :function => "get_assigned_job(2);" %>
+
+<script language = "JavaScript" type="text/javascript">
 <!--
   var end_cnt = -1;
   var ed_str = '';
@@ -146,7 +132,7 @@ officialtitles  = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@fyed_
     fyear_id = $("item_fyear_id").value
     document.body.style.cursor = 'wait';
     end_cnt = 0;
-    new Ajax.Request("/gwsub/sb04/04/sb04stafflists/<%= controller_name -%>?fyed_id=" + fyear_id, {method:'get', onComplete: function(x){
+    new Ajax.Request("/gwsub/sb04/04/sb04stafflists/<%= controller_name -%>.csv?fyed_id=" + fyear_id, {method:'get', onComplete: function(x){
       $('item_section_id').update(x.responseText);
       end_cnt = end_cnt + 1;
       ed_str = ed_str + 'section:';
@@ -155,7 +141,7 @@ officialtitles  = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@fyed_
       }
       get_assigned_job(1);
     }})
-    new Ajax.Request("/gwsub/sb04/04/sb04stafflists/officialtitles_fields?fyed_id=" + fyear_id, {method:'get', onComplete: function(x){
+    new Ajax.Request("/gwsub/sb04/04/sb04stafflists/officialtitles_fields.csv?fyed_id=" + fyear_id, {method:'get', onComplete: function(x){
       $('item_official_title_id').update(x.responseText);
       end_cnt = end_cnt + 1;
       ed_str = ed_str + 'official_title:';
@@ -167,7 +153,7 @@ officialtitles  = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@fyed_
   function get_assigned_job(mode) {
     section_id = $("item_section_id").value
     fyear_id = $("item_fyear_id").value
-    url = "/gwsub/sb04/04/sb04stafflists/assignedjobs_fields?fyed_id=" + fyear_id + '&grped_id=' + section_id;
+    url = "/gwsub/sb04/04/sb04stafflists/assignedjobs_fields.csv?fyed_id=" + fyear_id + '&grped_id=' + section_id;
     if ( mode == 2 ) {
       document.body.style.cursor = 'wait';
     }
@@ -182,3 +168,4 @@ officialtitles  = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@fyed_
   }
 -->
 </script>
+<%= raw(gw_js_include_full) %>

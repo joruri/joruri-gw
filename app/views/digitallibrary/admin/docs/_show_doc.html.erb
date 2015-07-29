@@ -1,117 +1,107 @@
 <div class="inner">
-<%= render 'folder_name' unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
+<%= render :partial => 'folder_name' unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
 <div class="editingBox">
-  <% if @item.is_editable? %>
-    <% if @item.category4_id == 1 %>
-      <span class="btAppEdit"><%= link_to '承認あり編集', "#{edit_digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}" %></span>
-    <% else %>
-      <span class="btEdit"><%= link_to '編集する', "#{edit_digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}" %></span>
-    <% end %>
-    <span class="btDestroy"><%= link_to '削除する', "#{digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
-  <% end %><!--editable-->
-  <% if @item.is_recognizable? && @item.state == 'recognize' %>
-    <span class="btRecognize"><%= link_to '承認', "#{recognize_update_digitallibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}#{cat_params(@item)}" %></span>
-  <% end %>
-  <% if @item.is_publishable? && @item.state == 'recognized' %>
-    <span class="btPublish"><%= link_to '公開', "#{publish_update_digitallibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}#{cat_params(@item)}" %></span>
-  <% end %>
+<% if @is_editable %>
+<% if @item.category4_id == 1 %>
+  <span class="btAppEdit"><%= link_to '承認あり編集', "#{edit_digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}" %></span>
+<% else %>
+  <span class="btEdit"><%= link_to '編集する', "#{edit_digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}" %></span>
+<% end %>
+<span class="btDestroy"><%= link_to '削除する', "#{digitallibrary_doc_path(@item,{:title_id=>@title.id})}&state=#{params[:state]}#{cat_params(@item)}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+<% end %><!--editable-->
+<% if @is_recognize %>
+  <span class="btRecognize"><%= link_to '承認', "#{recognize_update_digitallibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}#{cat_params(@item)}" %></span>
+<% end %>
+<% if @is_publish %>
+  <span class="btPublish"><%= link_to '公開', "#{publish_update_digitallibrary_doc_path(@item,{:title_id=>@title.id})}#{gwbbs_params_set}#{cat_params(@item)}" %></span>
+<% end %>
 </div>
-
-<%= show_prev_next_link = render 'show_prev_next_link' %>
-
 <div class="dlDocform">
 <table class="docformBody">
   <tr>
     <th><%= hbr(@item.title) %></th>
   </tr>
   <tr>
-    <% if @item.wiki_enabled? -%>
-      <td class="wiki"><%= raw(wiki_show @item.body) -%></td>
-    <% else -%>
-      <td><%=raw @item.body -%></td>
-    <% end -%>
+    <td><%= raw(@item.body) %></td>
   </tr>
 </table>
 </div>
-
 <% if @title.categoey_view %>
-  <% if @title.use_old_upload_system? %>
-    <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
+  <% if attach_use_old %>
+    <%= render :partial => '/gwboard/admin/docs/upload_index' %>
   <% else %>
-    <%= render '/gwboard/admin/docs/library_index_wm', files: @item.display_files %>
+    <%= render :partial => '/gwboard/admin/docs/library_index_wm' %>
   <% end %>
 <% else %>
-  <% if @title.use_old_upload_system? %>
-    <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
+  <% if attach_use_old %>
+    <%= render :partial => '/gwboard/admin/docs/upload_index' %>
   <% else %>
-    <%= render '/gwboard/admin/docs/library_index', files: @item.display_files %>
+    <%= render :partial => '/gwboard/admin/docs/library_index' %>
   <% end %>
 <% end %>
-
-<% if @title.use_recognize? %>
-  <%= render 'recognize_users' if @item.state.in?(%w(draft recognize recognized)) %>
+<% if @title.use_recognize %>
+  <%= render :partial => 'recognize_users' if @item.state == 'draft' %>
+  <%= render :partial => 'recognize_users' if @item.state == 'recognize' %>
+  <%= render :partial => 'recognize_users' if @item.state == 'recognized' %>
 <% end %>
 
-<div class="docListFunctions">
-  <div class="link_to_clip">
-    <a href="javascript:void(0)" onclick="copy_clip(); return false;">お知らせリンク作成</a>
-  </div>
+<%#ページ移動 ----------------%>
+<% if !@previous.blank? || !@next.blank? %>
+<%#ページ移動データあり ----------------%>
+<div class="docsPageMove">
+<% unless @previous.blank? %>
+  <span class="left"><%= link_to '< 前のページ', "#{digitallibrary_doc_path(@previous,{:title_id=>@title.id})}#{cat_params(@item)}" %></span>
+<% else %>
+  <span class="left">先頭ページ</span>
+<% end %>
+
+<span class="center">|</span>
+<% unless @next.blank? %>
+  <span class="right"><%= link_to "次のページ >", "#{digitallibrary_doc_path(@next,{:title_id=>@title.id})}#{cat_params(@item)}" %></span>
+<% else %>
+  <span class="right">最終ページ</span>
+<% end %>
 </div>
-
-<script type="text/javascript">
-//<![CDATA[
-var copy_clip = function() {
-  var ua = "";
-  ua = navigator.userAgent.toLowerCase();
-  url = "機能名：電子図書\n件名：<%= @item.title -%>\nURL：<%= request.url -%>";
-  if(ua.indexOf("msie") != -1) {
-    clipboardData.setData('Text', url);
-    alert("記事の情報をクリップボードにコピーしました。");
-  } else {
-    alert(url);
-  }
-}
-//]]>
-</script>
-
-<%= show_prev_next_link %>
+<% end %>
+<%#---------------- ページ移動%>
 
 <div class="docInf">
 <table class="docCreator">
-  <tr>
-    <th style="text-align: left;">記事管理課 : </th>
-    <td style="text-align: left;"><%= @item.section_name %></td>
-  </tr>
-</table>
-<table class="docCreatorInf">
-  <tr>
-    <th>作成者 : </th>
-    <td class="department"><%= @item.createrdivision %></td>
-    <td class="space"></td>
-    <td class="name"><%= @item.creater %></td>
-    <td class="space"></td>
-    <td class="time"><%= @item.createdate %></td>
-  </tr>
-  <tr>
-    <th>編集者 : </th>
-    <td class="department"><%= @item.editordivision %></td>
-    <td class="space"></td>
-    <td class="name"><%= @item.editor %></td>
-    <td class="space"></td>
-    <td class="time"><%= @item.editdate %></td>
-  </tr>
+<tr>
+<th style="text-align: left;">記事管理課 : </th>
+<td style="text-align: left;"><%= @item.section_name %></td>
+</tr>
 </table>
 
-<% if @title.is_admin? -%>
+<table class="docCreatorInf">
+<tr>
+<th>作成者 : </th>
+<td class="department"><%= @item.createrdivision %></td>
+<td class="space"></td>
+<td class="name"><%= @item.creater %></td>
+<td class="space"></td>
+<td class="time"><%= @item.createdate %></td>
+</tr>
+<tr>
+<th>編集者 : </th>
+<td class="department"><%= @item.editordivision %></td>
+<td class="space"></td>
+<td class="name"><%= @item.editor %></td>
+<td class="space"></td>
+<td class="time"><%= @item.editdate %></td>
+</tr>
+</table>
+
+<% if @is_admin -%>
 <table class="docImportance">
-  <tr>
-    <th>公開 : </th>
-    <td><%= @item.status_show %></td>
-  </tr>
-  <tr>
-    <th>階層 : </th>
-    <td><%= @item.seq_name %></td>
-  </tr>
+<tr>
+<th>公開 : </th>
+<td><%= @item.status_show %></td>
+</tr>
+<tr>
+<th>階層 : </th>
+<td><%= @item.seq_name %></td>
+</tr>
 </table>
 <% end -%>
 </div>

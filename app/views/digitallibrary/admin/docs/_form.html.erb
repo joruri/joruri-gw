@@ -1,4 +1,5 @@
-<% _path = '/_common/modules/digitallibrary/' %>
+
+<% _path = '/_common/modules/digitallibrary/'%>
 <%
   if @item.blank?
     mce_base_url = ''
@@ -8,7 +9,7 @@
 %>
 <%= raw(tool_tiny_mce(mce_base_url, {:leftbar_mode=>true})) %>
 
-<%= render 'folder_name' %>
+<%= render :partial => 'folder_name' %>
 
 <table class="show">
   <tr>
@@ -25,8 +26,9 @@
   <tr>
     <th class="titleTop">親記事を参照する<%= required('参照する親記事を選択すると、記事の状態・記事内容が登録時コピーされます。') %></th></tr><tr>
     <td>
-      <%= f.select :doc_alias, @item.doc_alias_options, :include_blank => false %>
-      <%= link_to '（親記事の編集を行う）',"#{@item.alias_edit_path}&cat=#{@item.aliased_doc.parent_id}" if @item.doc_alias == 0 && @item.aliased_doc.present? %>
+      <%= required('記事が登録されていません') if @parent_docs == []%>
+      <%= f.select(:doc_alias, @parent_docs, :include_blank => false) unless @parent_docs == []%>
+      <%=link_to('（親記事の編集を行う）',"#{@item.alias_edit_path}&cat=#{@parent_item.parent_id}") unless @parent_item.blank? unless @item.doc_alias == 0%>
     </td>
   </tr>
 </table>
@@ -34,33 +36,19 @@
   <tr>
     <th class="titleTop">見出し（階層）</th></tr><tr>
     <td>
-      <%
-      if @item.new_record?
-        folder_options = @title.folders.root.folder_options
-      else
-        folder_options = @item.folder_options
-      end
-      %>
-      <% if folder_options.blank? %>
-        <%= required '見出しが登録されていません' %>
-      <% else %>
-        <%= f.select :chg_parent_id, folder_options, :include_blank => false %>
-      <% end %>
+      <%= required('見出しが登録されていません') if @tree_list == []%>
+      <%= f.select(:chg_parent_id, @tree_list, :include_blank => false) unless @tree_list == []%>
     </td>
   </tr>
   <tr>
     <th>記事の順</th></tr><tr>
     <td>
-      <% seq_no_options = @item.seq_no_options %>
-      <% if seq_no_options.blank? %>
-        <%= required '記事が登録されていません' %>
-      <% else %>
-        <%= f.select :seq_no, seq_no_options, :include_blank => false %>
-      <% end %>
+      <%= required('記事が登録されていません') if @position == []%>
+      <%= f.select(:seq_no, @position, :include_blank => false) unless @position == []%>
     </td>
   </tr>
   <tr>
-    <th class="titleTop">ツリーの並び順　<%=required('※通常は変更しないでください')%></th></tr><tr>
+  <th class="titleTop">ツリーの並び順　<%=required('※通常は変更しないでください')%></th></tr><tr>
     <td><%= f.text_field :display_order, :size => '5'%></td>
   </tr>
 </table>
@@ -71,42 +59,21 @@
   </tr>
 </table>
 
-<% if @item.doc_alias != 0 %>
-<%= required 'この記事は、親記事を参照して作成されています。<br />記事や添付ファイルの変更を行う時は、親記事から修正を行ってください。' %>
-<%= link_to '（親記事の編集を行う）',"#{@item.alias_edit_path}&cat=#{@item.aliased_doc.parent_id}" if @item.aliased_doc.present? %>
+<%unless @item.doc_alias == 0%>
+<%= required('この記事は、親記事を参照して作成されています。<br />記事や添付ファイルの変更を行う時は、親記事から修正を行ってください。')%>
+<%=link_to('（親記事の編集を行う）',"#{@item.alias_edit_path}&cat=#{@parent_item.parent_id}") unless @parent_item.blank?%>
 <table class="show">
   <tr>
-    <th>記事</th>
-  </tr>
-  <tr>
-    <% if @item.wiki_enabled? -%>
-      <td class="wiki"><%= raw(wiki_show @item.body) -%></td>
-    <% else -%>
-      <td class="docformBody"><%=raw @item.body -%></td>
-    <% end -%>
+    <th>記事</th></tr><tr>
+    <td class="docformBody"><%=@item.body%></td>
   </tr>
 </table>
-<%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
-<% else %>
+<%= render :partial => '/gwboard/admin/docs/upload_index' %>
+<%else%>
 <table class="show">
-  <tr>
-    <th>記事入力方式</th></tr><tr>
-    <td>
-      <%= f.radio_buttons :wiki, Digitallibrary::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="digitallibrary_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
-    </td>
-  </tr>
-</table>
-<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr>
     <th>記事</th></tr><tr>
     <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
-  </tr>
-</table>
-<table class="show" id="wiki_body_table" style="<%= 'display: none;' unless @item.wiki_enabled? -%>">
-  <tr>
-    <th>記事</th></tr><tr>
-    <td class="wikiEditor"><%= f.text_area :wiki_body, {:rows => 20, :cols=>40, :class => 'wikiEditor', :style => 'width:100%'} %></td>
   </tr>
 </table>
 <script type="text/javascript">
@@ -120,191 +87,15 @@
     }
     Element.toggle($(changeObjId));
   }
-
-  var selected_log = <%= @item.wiki.to_i -%>;
-  function change_body_table() {
-    idx = radio_selected('item[wiki]');
-    if (selected_log == idx-1) {
-      return false; // 処理を中止
-    }
-    msg = "記事入力方式を切り替えることにより、現在の記事の内容は失われます。よろしいですか？";
-    if(window.confirm(msg)){ // 確認ダイアログを表示
-//    return true; // 「OK」時は送信を実行
-      selected_log = idx-1;
-    } else { // 「キャンセル」時の処理
-      if (selected_log == 1) {
-        $('item_wiki_1').checked = true;
-      } else {
-        $('item_wiki_0').checked = true;
-      }
-      return false; // 処理を中止
-    }
-
-    //alert(idx);
-  <% if @title.use_old_upload_system? -%>
-    files_uri = "<%= gwboard_images_path(@item.id) + "?system=#{@item.system_name}&form_id=item_body&title_id=#{@item.title_id}" -%>"
-  <% else -%>
-    files_uri = "<%= gwboard_attachments_path(@item.id) + "?system=#{@item.system_name}&title_id=#{@item.title_id}" -%>"
-  <% end -%>
-    if (idx == 2) {
-      Element.hide($('nomal_body_table'));
-      Element.show($('wiki_body_table'));
-      files_uri = files_uri + "&wiki=1"
-      Element.show($('digitallibrary_help'));
-    } else {
-      Element.show($('nomal_body_table'));
-      Element.hide($('wiki_body_table'));
-      Element.hide($('digitallibrary_help'));
-    }
-    tinyMCE.getInstanceById('item_body').setContent('');
-    $('item_wiki_body').value = "";
-    <% if @title.use_old_upload_system? -%>
-    var ifm = $('image_attach_form');
-    <% else -%>
-    var ifm = $('file_attach_form');
-    <% end -%>
-    ifm.src = files_uri;
-  }
 //]]>
 </script>
-  <% if @title.use_old_upload_system? %>
-   <%= gwboard_image_form(f, @item, 'item_body') %>
-   <%= gwboard_attach_form(f, @item) %>
-  <% else %>
-   <%= gwboard_attachments_form(f, @item) %>
-  <% end %>
-<% end %>
+  <%if attach_use_old%>
+   <%=gwboard_image_form(f, @item, 'item_body')%>
+   <%=gwboard_attach_form(f, @item)%>
+  <%else%>
+   <%=gwboard_attachments_form(f, @item)%>
+  <%end%>
+<%end%>
 
-<%= render 'digitallibrary/admin/docs/hidden_form' %>
+<%= render :partial => 'digitallibrary/admin/docs/hidden_form' %>
 
-<script type="text/javascript">
-//<![CDATA[
-
-function wiki_attach_insert(text){
-
-  var body = $('item_wiki_body');
-  var body_text = $('item_wiki_body').value;
-
-  if (typeof text == 'undefined') throw 'ArgumentError';
-
-  // カーソル移動位置（#{cursor}）を取得後、削除
-  var cursor = text.indexOf('#{cursor}');
-  if (cursor == -1) cursor = 0;
-  text = text.replace('#{cursor}', '');
-
-  // focusしないとIEでbodyに挿入されたりする
-  // Firefoxでもボタンで挿入後にfocusが戻らない
-  body.focus();
-
-  // for IE
-  if (document.selection) {
-    // 選択範囲を取得
-    var range = document.selection.createRange();
-
-    // 選択中のテキスト引数textで置き換え（現在のカーソル位置にtextを挿入）
-    range.text = text;
-
-    // 現在のカーソル位置を反映する（これやらないと水の泡）
-    range.select();
-  }
-  // Firefox
-  // inかundefinedあたりで判定しないとselectionStartが0の時ミスる
-  else if ('selectionStart' in body) {
-    // スクロールバーの位置を保存
-    var top = body.scrollTop;
-    // 選択範囲の開始・終了位置を取得
-    var start = body.selectionStart;
-    var end = body.selectionEnd;
-
-    // 開始位置と終了位置の間（現在のカーソル位置）にsを挿入
-    body.value = body.value.slice(0, start) + text + body.value.slice(end);
-
-    // カーソル移動位置に移動させる
-    var index = start + cursor;
-    body.setSelectionRange(index, index);
-    // スクロールバーを戻す
-    body.scrollTop = top;
-  }
-}
-
-//]]>
-</script>
-
-<% if @title.is_admin? && @item.state != 'preparation' && @item.state_was != 'preparation' -%>
-<table class="bbsFile">
-  <tr>
-    <th>記事の更新日時</th>
-    <td>
-      <%= f.check_box :skip_updating_updated_at, {checked: !@item.skip_updating_updated_at}, 0, 1 %>
-      <%= f.label :skip_updating_updated_at, '更新する' %>
-    </td>
-  </tr>
-</table>
-<% end -%>
-
-<% if @title.recognize == 2 %>
-<table class="show" style="margin-top: 10px;">
-  <tr>
-    <th>記事の承認</th>
-    <td><%= f.radio_buttons :category4_id, [["承認なし",0],["承認あり",1]] %></td>
-  </tr>
-</table>
-<% end %>
-
-<% if @title.use_recognize? %>
-<div id="recognizers_form" style="<%= 'display:none;' if @title.recognize == 2 && @item.category4_id == 0 %>" >
-  <%= render 'gwboard/admin/recognizers/form', f: f, item: @item %>
-</div>
-<% end %>
-
-<%= f.hidden_field :state %>
-<div class="submitters">
-  <% case @title.recognize %>
-  <% when 1 %>
-    <%= f.submit '承認待ち', id: 'commit_recognize' %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% when 2 %>
-    <%= f.submit '公開', id: 'commit_public', style: "#{@item.category4_id == 0 ? '' : 'display:none;'}" %>
-    <%= f.submit '承認待ち', id: 'commit_recognize', style: "#{@item.category4_id == 1 ? '' : 'display:none;'}" %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% else %>
-    <%= f.submit '公開', id: 'commit_public' %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% end %>
-</div>
-
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    var supressBeforeUnload = false;
-    window.onbeforeunload = function(event) {
-      if (!supressBeforeUnload) {
-        var e = event || window.event;
-        e.returnValue = "保存していない場合、編集中の内容は失われます";
-        return e.returnValue;
-      }
-    }
-    $('#commit_public').on('click', function() { $('#item_state').val('public'); supressBeforeUnload = true; });
-    $('#commit_recognize').on('click', function() { $('#item_state').val('recognize'); supressBeforeUnload = true; });
-    $('#commit_draft').on('click', function() { $('#item_state').val('draft'); supressBeforeUnload = true; });
-  });
-})(jQuery);
-</script>
-
-<% if @title.recognize == 2 %>
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $('input[name="item[category4_id]"]').on('click', function() {
-      if ($(this).val() == 0) {
-        $('#commit_public').show();
-        $('#commit_recognize, #recognizers_form').hide();
-      } else {
-        $('#commit_public').hide();
-        $('#commit_recognize, #recognizers_form').show();
-      }
-    });
-  });
-})(jQuery);
-</script>
-<% end %>

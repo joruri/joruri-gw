@@ -1,5 +1,11 @@
-<% if @item.is_sysadm? || (@item.is_bbsadm? && @item.create_section.blank?) %>
-  <%= render 'form_admin', f: f %>
+<%
+  admin_form = false
+  admin_form = true if @is_sysadm    #システム管理者ならフル機能入力フォーム
+  admin_form = true if @is_bbsadm    #掲示板管理者ならフル機能入力フォーム
+  admin_form = false unless @item.create_section.blank? if @is_bbsadm unless @is_sysadm   #システム管理者以外の掲示板管理者で、掲示板が課ユーザ作成なら制限入力フォーム
+%>
+<% if admin_form %>
+  <%= render :partial => 'form_admin', :locals => {:f => f} %>
 <% else %>
-  <%= render 'form_section', f: f %>
+  <%= render :partial => 'form_section', :locals => {:f => f} %>
 <% end %>

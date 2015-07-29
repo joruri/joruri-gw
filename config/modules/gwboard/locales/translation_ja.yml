@@ -4,10 +4,6 @@ ja:
       gwboard/theme:
         state: ""
         if_name: "名称"
-      gwboard/image:
-        memo: 画像説明
-        share: 画像種別
-        _upload: 画像
       gwboard/renewal_group:
         incoming_group_id: 新所属ID
         incoming_group_code: 新所属コード

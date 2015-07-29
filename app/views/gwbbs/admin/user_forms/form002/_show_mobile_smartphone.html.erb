@@ -1,0 +1,30 @@
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%=hbr(@item.title)%></span></td></tr>
+</table>
+<table class="show">
+  <tr>
+    <th>研修開始日</th>
+    <td><%=@item.inpfld_001%></td>
+  </tr>
+  <tr>
+    <th>単位数</th>
+    <td><%=@item.inpfld_004%></td>
+  </tr>
+  <tr>
+    <th>申込締切日</th>
+    <td><%=@item.inpfld_002%></td>
+  </tr>
+</table>
+<table class="bbsUserformBody">
+<tr><td><%=convert_for_mobile_body(@item.body,params[:_jgw_session])%></td></tr>
+</table>
+<table class="show">
+  <tr>
+    <th>摘要</th>
+  </tr>
+  <tr>
+    <td><%=@item.inpfld_003%></td>
+  </tr>
+</table>
+</div>

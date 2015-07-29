@@ -1,12 +1,26 @@
+# -*- encoding: utf-8 -*-
 class Digitallibrary::Folder < Digitallibrary::Doc
-  acts_as_tree order: { display_order: :asc, sort_no: :asc }
+  include Cms::Model::Base::Content
+  include Digitallibrary::Model::Systemname
+  include System::Model::Base::Status
 
-  has_many :docs, -> { where(doc_type: 1) }, :foreign_key => :parent_id, :dependent => :destroy
-  belongs_to :control, :foreign_key => :title_id
 
-  def folder_editable?
-    return false if self.parent_id.blank? && self.level_no == 1 && self.doc_type == 0
-    return true
+
+  acts_as_tree :order=>'display_order, sort_no'
+
+  validates_presence_of :state
+  after_validation :validate_title, :parent_change_check
+
+  def validate_title
+    if self.title.blank?
+      errors.add :title, "を入力してください。"
+    end unless self.state == 'preparation'
+  end
+
+  def parent_change_check
+    unless self.parent_id  == self.chg_parent_id
+      errors.add :seq_no, "階層が変更になる時は、先頭・最後尾のいずれかを選択してください" unless self.seq_no == -1 unless self.seq_no == 999999999.0
+    end unless self.state == 'preparation'
   end
 
   def status_select
@@ -24,6 +38,19 @@ class Digitallibrary::Folder < Digitallibrary::Doc
     str = '公開待ち' if self.state == 'recognized'
     str = '公開中' if self.state == 'public'
     return str
+  end
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+      case n
+      when 'kwd'
+        and_keywords v, :title, :body
+
+      end
+    end if params.size != 0
+
+    return self
   end
 
   def link_list_path

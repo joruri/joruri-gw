@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module Digitallibrary::Admin::Piece::MenusHelper
 
   def digitallibrary_folder_trees(items)
@@ -14,7 +15,7 @@ module Digitallibrary::Admin::Piece::MenusHelper
       count[items[0].level_no] = 1
 
       items.each do |item|
-        sub_folders  = item.public_children_for_tree.to_a if item.doc_type == 0
+        sub_folders  = readable_or_writable_sub_folders(item) if item.doc_type == 0
         last[items[0].level_no] = 1 if count[items[0].level_no] == items.select{|x| x.state == 'public' }.size
         html << "#{digitallibrary_folder_li(item,last[items[0].level_no],sub_folders)}\n"
         count[items[0].level_no] =  count[items[0].level_no]+1
@@ -24,12 +25,12 @@ module Digitallibrary::Admin::Piece::MenusHelper
           str_html = ''
           if params[:f] == 'op'
             unless check_code == params[:cat].to_s
-              sub_folders  = item.public_children_for_tree.to_a
-              str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.size == 0
+              sub_folders  = item.children.select{|x| x.state == 'public'}
+              str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.count == 0
             end
           else
-            sub_folders  = item.public_children_for_tree.to_a
-            str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.size == 0
+            sub_folders  = item.children.select{|x| x.state == 'public'}
+            str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.count == 0
           end
           html << str_html unless str_html.blank?
         end if sub_folders.size > 0 unless params[:fld] == 'fop' if item.doc_type == 0
@@ -38,17 +39,17 @@ module Digitallibrary::Admin::Piece::MenusHelper
           str_html = ''
           if params[:f] == 'op'
             if @folders[item.level_no] == item.id
-              sub_folders  = item.public_children_for_tree.to_a
-              str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.size == 0
+              sub_folders  = item.children.select{|x| x.state == 'public'}
+              str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.count == 0
             else
               if item.level_no == 1
-                sub_folders  = item.public_children_for_tree.to_a
-                str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.size == 0
+                sub_folders  = item.children.select{|x| x.state == 'public'}
+                str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.count == 0
               end
             end
           else
-            sub_folders  = item.public_children_for_tree.to_a
-            str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.size == 0
+            sub_folders  = item.children.select{|x| x.state == 'public'}
+            str_html = digitallibrary_folder_trees(sub_folders) unless sub_folders.count == 0
           end
           html << str_html unless str_html.blank?
         end if sub_folders.size > 0 if item.doc_type == 0
@@ -63,9 +64,9 @@ module Digitallibrary::Admin::Piece::MenusHelper
     @btmfolder = 0
     ret = ''
     tree_state = true unless item.state == 'preparation'
-    tree_state = false unless @title.is_writable?
+    tree_state = false unless @is_writable
     tree_state = true if item.state == 'public'
-    #sub_folders  = item.public_children_for_tree
+    #sub_folders  = item.children.select{|x| x.state == 'public'}
     if tree_state
       level_no = 'folder'
       level_no = 'f_plus' unless sub_folders.size == 0 if item.doc_type == 0
@@ -104,7 +105,7 @@ module Digitallibrary::Admin::Piece::MenusHelper
 
       level_no = 'root' if item.level_no == 1
       if level_no == 'open current' || level_no == 'open'
-        level_no = level_no + ' noneFolder' if sub_folders.size == 0 if item.doc_type == 0
+        level_no = level_no + ' noneFolder' if sub_folders.count == 0 if item.doc_type == 0
       end
 
        if last.to_i == 1
@@ -131,7 +132,7 @@ module Digitallibrary::Admin::Piece::MenusHelper
       strparam = ''
       if /open/ =~ level_no
         strparam = "&f=op" unless item.id.to_s == '1'
-      end unless sub_folders.size == 0 if item.doc_type == 0
+      end unless sub_folders.count == 0 if item.doc_type == 0
       strparam = "&f=op" if s_fop == "&fld=fop" if item.doc_type == 1
       lib_show_path = "#{digitallibrary_doc_path(item)}?title_id=#{item.title_id}"
       lib_show_path += "&cat=#{item.id}" if item.doc_type == 1              #記事
@@ -146,5 +147,22 @@ module Digitallibrary::Admin::Piece::MenusHelper
       ret << %Q(</li>)
     end
     return ret
+  end
+
+protected
+
+  def readable_or_writable_sub_folders(item)
+    group_codes = Site.parent_user_groups.map{|x| x.code}
+
+    sub_folders = item.children.select{|x|
+      #if @is_admin
+      #  x.state == 'public'
+      #else
+      #  ((x.state == 'public') and (group_codes.index(x.acl_section_code) != nil)) ||
+      #  ((x.state == 'public') and (x.acl_user_code == Site.user.code))
+      #end
+      x.state == 'public'
+    }
+    sub_folders.uniq
   end
 end

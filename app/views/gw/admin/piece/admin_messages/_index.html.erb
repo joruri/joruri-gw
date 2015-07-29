@@ -1,0 +1,10 @@
+<% if @items.length > 0 %>
+<div id="message" class="<%= 'emergency' if @portal_mode.options == '3' %>">
+  <% if  @items.length == 1 %>
+    <div><%=raw @items[0].body %></div>
+  <% else %>
+    <div><%=raw @items[0].body %></div>
+    <div><%=raw @items[1].body %></div>
+  <% end %>
+</div>
+<% end %>

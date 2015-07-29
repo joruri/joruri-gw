@@ -1,16 +1,16 @@
-## Joruri Gw 3.0.0 インストールマニュアル           作成中：201x.xx.xx
+## Joruri Gw 2.3.1 インストールマニュアル                   2015.7.10
 
 **********************************************************************
  1 想定環境
 **********************************************************************
 
 [システム]
-OS         : CentOS 6.4 (64bit)
+OS         : CentOS 6.2
 Webサーバ  : Apache 2.2
-DBシステム : MySQL 5.6
-Ruby       : Ruby 2.1.5
-Rails      : Rails 4.1.10
-キャッシュ : memcached 1.4.20
+DBシステム : MySQL 5.1
+Ruby       : Ruby 1.9.3
+Rails      : Rails 3.2.7
+キャッシュ : memcached 1.4.13
 
 [設定]
 ※IPアドレス、ドメインは一例です。ご利用の環境に応じて変更してください。
@@ -40,21 +40,19 @@ rootユーザに変更します。
 
 Joruri Gw の実行に必要なパッケージをインストールします。
 
-  # yum -y install wget make gcc-c++ httpd httpd-devel memcached \
-    libjpeg-devel libpng-devel \
-    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel
+  # yum -y install wget make gcc-c++ httpd httpd-devel \
+    mysql-server mysql-devel libjpeg-devel libpng-devel \
+    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel
 
-MySQL5.6をインストールします。
-
-  # yum install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-  # yum install mysql mysql-devel mysql-server mysql-utilities
 
 必要なパッケージをダウンロードします。
 
   # cd /usr/local/src/
-  # wget http://joruri.org/download/jorurigw/jorurigw-3.0.0.tar.gz
-  # wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
-  # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
+  # wget http://joruri.org/download/jorurigw/jorurigw-2.3.0.tar.gz
+  # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p547.tar.gz
+  # wget http://memcached.googlecode.com/files/memcached-1.4.13.tar.gz
+  # wget http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
+
 
 Joruriユーザを作成します。
 
@@ -65,8 +63,7 @@ Joruriユーザを作成します。
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf jorurigw-3.0.0.tar.gz -C /var/share
-  # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
+  # tar xvzf jorurigw-2.3.0.tar.gz -C /var/share
   # chown -R joruri:joruri /var/share/jorurigw
 
 **********************************************************************
@@ -79,6 +76,13 @@ Apacheの設定ファイルを編集します。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #実際のサーバのアドレスを設定します
   ServerName 192.168.0.2
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #PHPを同じ環境で動かす場合は、以下の記述を追加します。
+  <Directory "/var/share/jorurigw/public">
+    php_admin_flag engine off
+  </Directory>
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 設定ファイルにエラーがないことを確認し、Apacheを起動します。
@@ -101,6 +105,7 @@ MySQLの設定を行います。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   [mysqld]
   character-set-server=utf8
+  default-table-type=myisam
 
   [client]
   default-character-set = utf8
@@ -117,56 +122,46 @@ MySQLを起動します。
   # /sbin/chkconfig mysqld on
 
 rootユーザのパスワードを設定します。
-
   # /usr/bin/mysqladmin -u root password "pass"
 
 joruriユーザを作成します。
-
   # /usr/bin/mysql -u root -p \
   #     -e "grant all on *.* to joruri@localhost IDENTIFIED BY 'pass'"
 
 **********************************************************************
- 6 memcached の設定
+ 6 ImageMagick のインストール
 **********************************************************************
 
-memcachedを自動起動に設定します。
-
-  # /sbin/chkconfig memcached on
-
-memcachedを起動します。
-
-  # /sbin/service memcached start
+※旧バージョンからご利用の方へ
+ImageMagickのインストールは yum利用に移行しました。
 
 **********************************************************************
  7 Ruby on Rails のインストール
 **********************************************************************
 
-======================================================================
- 7.1 Ruby のインストール
-======================================================================
-
-yamlライブラリをインストールします。
-
   # cd /usr/local/src
-  # tar -zxvf yaml-0.1.6.tar.gz
-  # cd yaml-0.1.6
+  # tar -zxvf yaml-0.1.4.tar.gz
+  # cd yaml-0.1.4
   # ./configure
   # make
   # make install
 
+======================================================================
+ 7.1 Ruby 1.9.3 のインストール
+======================================================================
+
 Rubyをインストールします。
 
   # cd /usr/local/src
-  # tar xvzf ruby-2.1.5.tar.gz
-  # cd ruby-2.1.5
+  # tar xvzf ruby-1.9.3-p547.tar.gz
+  # cd ruby-1.9.3-p547
   # ./configure -prefix=/usr/local
   # make
   # make install
 
 インストール結果を確認します。
-
   # /usr/local/bin/ruby -v
-   => ruby 2.1.5p273 (2014-11-13 revision 48405) [x86_64-linux]
+   => ruby 1.9.3p547 (2014-05-14 revision 45962) [i686-linux]
 
 ======================================================================
  7.2 Phusion Passenger のインストール
@@ -174,36 +169,34 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 4.0.58
+  # gem install passenger -v 3.0.13
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )
 
 Phusion Passengerの動作環境を設定します。
 
-  # vi /etc/httpd/conf.d/passenger.conf
+  # vi /etc/httpd/conf/httpd.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #下記を追加
-   LoadModule passenger_module /usr/local/lib/ruby/gems/2.1.0/gems/passenger-4.0.58/buildout/apache2/mod_passenger.so
-   <IfModule mod_passenger.c>
-     PassengerRoot /usr/local/lib/ruby/gems/2.1.0/gems/passenger-4.0.58
-     PassengerDefaultRuby /usr/local/bin/ruby
-   </IfModule>
+  LoadModule passenger_module /usr/local/lib/ruby/gems/1.9.1/gems/passenger-3.0.13/ext/apache2/mod_passenger.so
+  PassengerRoot /usr/local/lib/ruby/gems/1.9.1/gems/passenger-3.0.13
+  PassengerRuby /usr/local/bin/ruby
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ======================================================================
  7.3 gemライブラリ のインストール
 ======================================================================
 
-Joruri Gw に必要なライブラリをインストールします。
+Joruri Gw実行に必要なライブラリをインストールします。
 
-  # gem install bundler -v 1.6.3
+  # gem install bundler -v 1.1.4
   # cd /var/share/jorurigw
   # bundle install
 
-  ネットワーク経由でファイルのダウンロードとインストールが行われます。
-  正しく完了すれば次のようなメッセージが表示されます。
-    =>Your bundle is complete! Use `bundle show [gemname]` to see where a bundled gem is installed.
+ネットワーク経由でファイルのダウンロードとインストールが行われます。
+正しく完了すれば次のようなメッセージが表示されます。
+  =>Your bundle is complete! Use `bundle show [gemname]` to see where a bundled gem is installed.
 
 **********************************************************************
   8 Joruri Gw のインストール
@@ -233,7 +226,8 @@ LDAP接続情報
 
 SMTP接続情報
 
-  $ vi config/environments/production.rb
+  $ vi config/environments/development.rb
+  ※ production環境の場合は $ vi config/environments/production.rb
 
   ※連絡メモの「携帯等メール転送設定」などメール機能を利用する場合はSMTPの設定が必要です。
 
@@ -245,74 +239,75 @@ SMTP接続情報
 
 データベースを作成します。
 
-  $ /usr/bin/mysql -u root -p -e "create database production_jorurigw"
+  $ cd /var/share/jorurigw
+
+  $ /usr/bin/mysql -u root -p -e "create database development_jgw_core"
+  $ /usr/bin/mysql -u root -p -e "create database development_jgw_gw"
+  $ /usr/bin/mysql -u root -p -e "create database development_jgw_gw_pref"
+  $ /usr/bin/mysql -u root -p -e "create database development_jgw_bbs_000001"
 
 テーブルを作成します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_core_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_pref_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_bbs_000001_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_dig_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_doc_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_faq_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_qa_000001.sql
+  $ /usr/bin/mysql -u root -p development_jgw_core < ./db/development_jgw_core_schema.sql
+  $ /usr/bin/mysql -u root -p development_jgw_gw < ./db/development_jgw_gw_schema.sql
+  $ /usr/bin/mysql -u root -p development_jgw_gw_pref < ./db/development_jgw_gw_pref_schema.sql
+  $ /usr/bin/mysql -u root -p development_jgw_bbs_000001 < ./db/development_jgw_bbs_000001_schema.sql
 
 初期データを登録します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_core_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_pref_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_bbs_000001_init.sql
+  $ /usr/bin/mysql -u root -p development_jgw_core < ./db/development_jgw_core_init.sql
+  $ /usr/bin/mysql -u root -p development_jgw_gw < ./db/development_jgw_gw_init.sql
+  $ /usr/bin/mysql -u root -p development_jgw_gw_pref < ./db/development_jgw_gw_pref_init.sql
+  $ /usr/bin/mysql -u root -p development_jgw_bbs_000001 < ./db/development_jgw_bbs_000001_init.sql
+
+※Railsの実行環境がproductionの場合、データベース名は下記のようにしてください。
+  (.sqlファイルの名前はそのまま)
+  production_jgw_core
+  production_jgw_gw
+  production_jgw_gw_pref
+  production_jgw_bbs_000001
+  さらに環境設定のために次のSQL文を実行してください。
+  $ /usr/bin/mysql -u root -p -e "UPDATE production_jgw_gw.gwbbs_controls SET dbname = 'production_jgw_bbs_000001' WHERE gwbbs_controls.id =1;"
+
 
 ======================================================================
- 8.3 assetのコンパイル
+ 8.3 memcached のインストール
 ======================================================================
-
-assetをコンパイルします。
-
-  $ rake assets:precompile RAILS_ENV=production
-
-======================================================================
- 8.4 定期実行処理の設定
-======================================================================
-
-cronによる定期実行処理を設定します。
-
-  $ whenever -w --set 'environment=production'
-
-定期実行処理の内容を確認します。
-
-  $ crontab -e
-
-  ※以下のコメントで囲まれた部分が設定内容となります。
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Begin Whenever generated tasks ...
-  (この部分に定期実行処理が設定されます)
-  # End Whenever generated tasks ...
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-======================================================================
- 8.5 delayed_job の起動
-======================================================================
-
-delayed_jobを自動起動に設定します。
-
+スーパーユーザーに戻ります。
+  $ exit
+もしくは
   $ su -
-  # cp /var/share/jorurigw/config/sample/delayed_job /etc/init.d/
-  # /sbin/chkconfig --add delayed_job
-  # /sbin/chkconfig delayed_job on
 
-delayed_jobを起動します。
+memcachedをインストールします。
 
-  # /etc/init.d/delayed_job start
+  # cd /usr/local/src/
+  # tar xvzf memcached-1.4.13.tar.gz
+  # cd memcached-1.4.13
+  # ./configure
+  # make
+  # make install
+
+自動起動に設定します。
+
+  # cp /usr/local/src/memcached-1.4.13/scripts/memcached.sysv /etc/rc.d/init.d/memcached
+  # vi /etc/rc.d/init.d/memcached
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #16行目に下記を追加
+  PATH=$PATH:/usr/local/bin ; export PATH
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # mkdir /var/run/memcached
+  # /sbin/chkconfig --add memcached
+  # chkconfig --level 35 memcached on
+
+memcachedを起動します。
+
+  # /sbin/service memcached start
 
 ======================================================================
- 8.6 VirtualHost の反映
+ 8.4 VirtualHost の反映
 ======================================================================
 
 Apacheに設定を追加します。
-
   # vi /etc/httpd/conf.d/vhosts.conf
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   NameVirtualHost *:80
@@ -320,15 +315,146 @@ Apacheに設定を追加します。
   <VirtualHost *:80>
       ServerName default
       DocumentRoot /var/share/jorurigw/public
-      RackEnv production
+      RackEnv development
       PassengerHighPerformance on
   </VirtualHost>
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Apache を再起動します。
+※Railsの実行環境がproductionの場合、RackEnvは下記のようにしてください。
+      RackEnv production
 
+Apache を再起動します。
   # /sbin/service httpd configtest
   # /sbin/service httpd restart
 
+以上でJoruri Gwのインストールが完了しました。
 
-以上でJoruri Gwのインストールが完了です。
+
+**********************************************************************
+ 9 定期実行設定
+**********************************************************************
+
+ここではcrontabによる定期実行に関する設定例を説明しています。
+
+削除期間が過ぎた情報を削除します。
+以下の例は毎日3時～4時にかけて削除しています。
+動作環境が development 以外の場合は -e development の箇所をご利用の環境に書き換えてください。
+例）
+rails runner -e development 'Scriptname' → rails runner -e production 'Scriptname'
+
+　　# su - joruri
+
+削除期間が過ぎたスケジュールを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  00 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gw::Script::Schedule.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+完了済みで削除期間が過ぎたTODOを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  05 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gw::Script::Todo.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+既読で削除期間が過ぎた連絡メモを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  10 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gw::Script::Memo.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+期限切れで削除期間が過ぎた掲示板を削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  15 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwbbs::Script::Task.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+期限切れで削除期間が過ぎた回覧板を削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  20 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwcircular::Script::Task.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+期限切れで削除期間が過ぎた稟議書を削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  25 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'GWworkflow::Script::Task.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+削除期間が過ぎたアンケートを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  30 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Questionnaire::Script::Task.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となったセッションのデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  35 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'System::Script::Session.delete_expired_sessions'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となった掲示板のデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  40 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwbbs::Script::Task.preparation_delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となった電子図書のデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  45 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Digitallibrary::Script::Task.preparation_delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となった書庫のデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  50 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Doclibrary::Script::Task.preparation_delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となったQ&Aのデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  55 3 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwqa::Script::Task.preparation_delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となったFAQのデータを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  00 4 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwfaq::Script::Task.preparation_delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+不要となった研修申込・受付のテンポラリファイルを削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  05 4 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwsub::Script::Sb01_training.delete_abandoned_files'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+期限切れで削除期間が過ぎた照会回答を削除します。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  10 4 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gwmonitor::Script::Task.delete'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+幹部・部課長の在席表示を全てoffにします。
+
+  $ crontab -e
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  0 0 * * * /usr/local/bin/ruby /var/share/jorurigw/script/rails runner -e development 'Gw::Script::PrefExective.state_all_off'
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+**********************************************************************

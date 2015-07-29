@@ -4,21 +4,21 @@
   s_cond = '?cond=admin' if params[:cond] == 'admin'
 %>
 <div class="bbsDocList circular">
-<%= render 'gwcircular/admin/menus/piece_header' %>
-<%= render 'gwcircular/admin/menus/piece_banner' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_header' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_banner' %>
 
 <div class="pieceBody">
-<%= render 'gwcircular/admin/menus/tabbox' %>
-
+<%= render :partial => 'header' %>
 <div class="docsInnerBox">
+
 <div class="bbsUserform">
 <table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr @parent.title %></span></td></tr>
+<tr><td class="docTitle"><span><%= hbr(@parent.title) %></span></td></tr>
 </table>
 </div>
 </div>
 
-<%= render 'form' %>
+<%= render :partial => 'form' %>
 <!--戻るボタン-->
 <div class="btReturn">
   <%= link_to '回覧板一覧へ戻る', "#{@title.menus_path}#{s_cond}" %>

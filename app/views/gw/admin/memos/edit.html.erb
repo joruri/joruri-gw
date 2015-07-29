@@ -1,17 +1,27 @@
+<%# app/views/gw/admin/memos/edit.html.erb %>
+<%=render(:partial => '/gw/admin/memos/header')%>
 <div class="piece memo form">
-<%= render '/gw/admin/memos/piece_header' %>
+<%=render(:partial => '/gw/admin/memos/piece_header')%>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'tabmenu' %>
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="tab" id="tabBox_1"><a href="/gw/memos?s_send_cls=1">受信</a></td><td class="spaceCenter"></td><td class="tab" id="tabBox_2"><a href="/gw/memos?s_send_cls=2">送信</a></td><td class="spaceRight"></td>
+</tr>
+</tbody>
+</table>
+</div><!--tabBox-->
 </div>
-
 <div class="pieceBodyBody">
-<%= form_for :item, :url => {action: :update}, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters"><%= f.submit '確定する' %></div>
-<% end %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+<%=form_for :item, :url => gw_memo_path(@item), :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f|%>
+<%#=f.error_messages%>
+<%=render(:partial => 'form', :locals => {:f => f})%>
+<%=raw(submit_for_update(f, :caption=>'確定する', :js_submitter => 'my_submit()'))%>
+<%end%>
 </div>
-
 </div>
 </div>

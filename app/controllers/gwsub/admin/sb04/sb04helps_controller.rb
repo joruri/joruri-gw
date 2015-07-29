@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録 ヘルプ"
   end
@@ -20,18 +21,18 @@ class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
 
   def show
     init_params
-    @item = Gwsub::Sb04help.where(:id => params[:id]).first
+    @item = Gwsub::Sb04help.find_by_id(params[:id])
     return http_error(404) if @item.blank?
   end
 
   def edit
     init_params
-    @item = Gwsub::Sb04help.where(:id => params[:id]).first #.readable
+    @item = Gwsub::Sb04help.find_by_id(params[:id]) #.readable
     return http_error(404) if @item.blank?
   end
   def update
     init_params
-    @item = Gwsub::Sb04help.where(:id => params[:id]).first
+    @item = Gwsub::Sb04help.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     @item.attributes = params[:item]
@@ -53,15 +54,15 @@ class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
 
   def destroy
     init_params
-    @item = Gwsub::Sb04help.where(:id => params[:id]).first
+    @item = Gwsub::Sb04help.find_by_id(params[:id])
     return http_error(404) if @item.blank?
     _destroy(@item,{:location=>"/gwsub/sb04/05/sb04helps?#{@qs}"})
   end
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 電子職員録 主管課権限設定

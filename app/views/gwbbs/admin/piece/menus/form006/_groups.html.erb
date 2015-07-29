@@ -1,11 +1,7 @@
-<h3 class="iconSideGroup">区分別
-  <span class="<%= 'current' if params[:state] == 'GROUP'%>">
-    <%= link_to '区分別', "#{@title.docs_path}&state=GROUP" %>
-  </span>
-</h3>
+<h3 class="iconSideGroup">区分別<span class="<%= 'current' if params[:state] == 'GROUP'%>"><%=link_to('区分別', "#{@title.docs_path}&state=GROUP")%></span></h3>
 <ul>
-<% @grp_items.each do |grp| %>
-  <% group_name = "・#{grp.inpfld_002}(#{grp.cnt})" %>
-  <%= link_to group_name, @title.docs_path + "&state=GROUP&grp=#{URI.encode(grp.inpfld_002)}" %><br />
+<% for grp_item in @grp_items %>
+  <%group_name = "・#{grp_item.inpfld_002}(#{grp_item.cnt})"%>
+  <%=link_to(group_name, @title.docs_path + "&state=GROUP&grp=#{URI.encode(grp_item.inpfld_002)}")%><br />
 <% end %>
 </ul>

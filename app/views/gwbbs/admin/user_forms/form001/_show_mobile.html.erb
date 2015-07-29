@@ -1,2 +1,2 @@
-<p class="bgYellow"><%=hbr @item.title %></p>
-<%= convert_for_mobile_body(@item.body, params[:_session_id]) %>
+<p class="bgYellow"><%=hbr(@item.title)%></p>
+<%=convert_for_mobile_body(@item.body,params[:_session_id])%>

@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb0404menuController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録 コード管理"
   end
@@ -14,7 +15,7 @@ class Gwsub::Admin::Sb04::Sb0404menuController < Gw::Controller::Admin::Base
     else
       if @role_sb04_dev==true
       else
-        return error_auth
+        return authentication_error(403)
       end
     end
     @items = []
@@ -30,8 +31,8 @@ class Gwsub::Admin::Sb04::Sb0404menuController < Gw::Controller::Admin::Base
   def init_params
     # ユーザー権限設定
 
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
 
     @u_role = @role_developer || @role_admin
 

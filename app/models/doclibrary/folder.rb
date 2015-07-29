@@ -1,64 +1,130 @@
+# -*- encoding: utf-8 -*-
 class Doclibrary::Folder < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
   include System::Model::Tree
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::Folder::Auth
+  include Cms::Model::Base::Content
   include Doclibrary::Model::Systemname
 
-  acts_as_tree order: { sort_no: :asc }, :dependent => :destroy
 
-  has_many :docs, :foreign_key => :category1_id, :dependent => :destroy
-  has_many :folder_acls, :foreign_key => :folder_id, :dependent => :destroy
-  belongs_to :control, :foreign_key => :title_id
+  acts_as_tree :order=>'sort_no'
 
-  before_save :sync_to_parent_readers_and_reader_groups
-  before_save :sync_to_parent_state
-  after_save :update_level_no
-  after_save :close_folders_and_docs
+  validates_presence_of :state, :name
 
-  validates :state, :name, presence: true
+  before_destroy :delete_acl_records
 
-  scope :search_with_params, ->(control, params) {
-    rel = all
-    rel = rel.search_with_text(:name, params[:kwd]) if params[:kwd].present?
-    rel
-  }
-  scope :index_folders_with_params, ->(control, params) {
-    rel = all
-    case params[:state]
-    when 'DRAFT'
-      rel = rel.where(state: 'closed')
-    else
-      rel = rel.where(state: 'public').where(parent_id: params[:cat])
+  after_save :save_acl_records
+
+  attr_accessor :_acl_create_skip
+
+  def delete_acl_records
+    Doclibrary::FolderAcl.destroy_all("title_id=#{self.title_id} AND folder_id=#{self.id}")
+  end
+
+  def save_acl_records
+    return if self._acl_create_skip
+    save_reader_groups_json
+    save_readers_json
+    save_reader_all
+  end
+
+  def save_reader_groups_json
+    @rec_count = 0
+    unless self.reader_groups_json.blank?
+      Doclibrary::FolderAcl.destroy_all("title_id=#{self.title_id} AND folder_id=#{self.id}")
+      groups = JsonParser.new.parse(self.reader_groups_json)
+      groups.each do |group|
+        item = Doclibrary::FolderAcl.new
+        item.title_id = self.title_id
+        item.folder_id = self.id
+        item.acl_flag = 1
+        item.acl_section_id = group[1]
+        item.acl_section_code = group_code(group[1])
+        item.acl_section_name = group[2]
+        item.save!
+        @rec_count += 1
+      end
     end
-    rel = rel.with_readable_acl(control, Core.user).joins(:folder_acls) unless control.is_admin?
-    rel
-  }
+  end
+
+  def save_readers_json
+    unless self.readers_json.blank?
+      users = JsonParser.new.parse(self.readers_json)
+      users.each do |user|
+        item = Doclibrary::FolderAcl.new
+        item.title_id = self.title_id
+        item.folder_id = self.id
+        item.acl_flag = 2
+        item.acl_user_id = user[1].to_i
+        item_user = System::User.find(item.acl_user_id)
+        if item_user
+          item.acl_user_id = item_user[:id]
+          item.acl_user_code = item_user[:code]
+        end
+        item.acl_user_name = user[2]
+        item.save!
+        @rec_count += 1
+      end
+    end
+  end
+
+  def save_reader_all
+    if @rec_count == 0
+      item = Doclibrary::FolderAcl.new
+      item.acl_flag = 0
+      item.title_id = self.title_id
+      item.folder_id = self.id
+      item.save!
+    else
+      item = Doclibrary::FolderAcl.new
+      item.acl_flag = 9
+      item.title_id = self.title_id
+      item.folder_id = self.id
+      item.save!
+    end
+  end
+
+  def group_code(id)
+    item = System::Group.find_by_id(id)
+    ret = ''
+    ret = item.code if item
+    return ret
+  end
 
   def status_select
     [['公開','public'], ['非公開','closed']]
   end
 
+
   def status_name
     {'public' => '公開', 'closed' => '非公開'}
   end
 
-  def editable?
-    !root?
+  def level1
+    self.and :level_no, 1
+    return self
   end
 
-  def deletable?
-    !root?
+  def level2
+    self.and :level_no, 2
+    return self
   end
 
-  def parent_options
-    root = control.folders.root
-    ([root] + root.readable_public_descendants(control, without: self.id)).map do |folder|
-      prefix = '+'
-      prefix += "-" * (folder.level_no - 2) if folder.level_no - 2 > 0
-      ["#{prefix}#{folder.name}", folder.id]
-    end
+  def level3
+    self.and :level_no, 3
+    return self
+  end
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+      case n
+      when 'kwd'
+        and_keywords v, :name
+      end
+    end if params.size != 0
+
+    return self
   end
 
   def link_list_path
@@ -85,76 +151,42 @@ class Doclibrary::Folder < Gwboard::CommonDb
     return "#{self.item_home_path}folders/#{self.id}/update?title_id=#{self.title_id}&state=CATEGORY&cat=#{self.parent_id}"
   end
 
-  def public_children
-    children.where(state: 'public')
-  end
+  def child_count
+    file_base  = Doclibrary::Doc.new
+    file_cond  = "state!='preparation' and category1_id=#{self.id}"
+    file_count = file_base.count(:all,:conditions=>file_cond)
 
-  def public_descendants
-    public_children.inject([]) {|arr, c| arr << c; arr += c.public_descendants }
-  end
+    folder_base = Doclibrary::Folder.new
+    folder_cond = "state!='preparation' and parent_id=#{self.id}"
+    folder_count  = folder_base.count(:all,:conditions=>folder_cond)
 
-  def public_descendant_ids
-    public_children.select(:id, :parent_id).inject([]) do |arr, c|
-      arr << c.id
-      arr += c.public_descendant_ids
+    child_count =file_count + folder_count
+    return child_count
+  end
+  
+  def readable_public_children(is_admin = false)
+    item = Doclibrary::Folder.new
+    item.and 'doclibrary_folders.parent_id', id
+    item.and 'doclibrary_folders.title_id', title_id
+    item.and 'doclibrary_folders.state', 'public'
+    item.and do |c|
+      c.or do |c2|
+        c2.and 'doclibrary_folder_acls.acl_flag', 0
+      end
+      c.or do |c2|
+        c2.and 'doclibrary_folder_acls.acl_flag', 9
+      end if is_admin
+      c.or do |c2|
+        c2.and 'doclibrary_folder_acls.acl_flag', 1
+        c2.and 'doclibrary_folder_acls.acl_section_code', Site.parent_user_groups.map(&:code)
+      end
+      c.or do |c2|
+        c2.and 'doclibrary_folder_acls.acl_flag', 2
+        c2.and 'doclibrary_folder_acls.acl_user_code', Core.user.code
+      end
     end
-  end
-
-  def self_and_readable_public_descendant_options
-    ([self] + readable_public_descendants).map {|c| ["+" + "-"*(c.level_no - 1) + c.name, c.id] }
-  end
-
-  def readable_public_descendants(ctrl = control, options = {})
-    public_children.with_readable_acl(ctrl).inject([]) do |arr, c|
-      next arr if options[:without] && options[:without] == c.id
-      arr << c
-      arr += c.readable_public_descendants(ctrl)
-    end
-  end
-
-  def enabled_children
-    folders = self.class.new.find(:all, :conditions=>["parent_id = ? AND state = ? AND doclibrary_folders.title_id = ?", self.id, "public", self.title_id], :joins=>:folder_acls,
-      :select => 'doclibrary_folders.id, parent_id, state, doclibrary_folders.created_at, doclibrary_folders.updated_at, doclibrary_folders.title_id, sort_no, level_no, name, acl_flag, acl_section_code, acl_user_code',
-      :order=>"sort_no")
-  end
-
-  def count_children
-    folders = self.class.where(:parent_id => self.id, :title_id => self.title_id).order('sort_no').count
-  end
-
-  def update_level_no_for_descendants
-    children.update_all(level_no: self.level_no + 1)
-    children.each(&:update_level_no_for_descendants)
-  end
-
-  def close_folders_and_docs_for_descendants
-    docs.without_preparation.update_all(state: 'draft')
-    children.update_all(state: 'closed')
-    children.each(&:close_folders_and_docs_for_descendants)
-  end
-
-  private
-
-  def sync_to_parent_readers_and_reader_groups
-    return unless parent
-    self.readers_json = parent.readers_json if self.readers_json.blank? && !parent.readers_json.blank?
-    self.reader_groups_json = parent.reader_groups_json if self.reader_groups_json.blank? && !parent.reader_groups_json.blank?
-  end
-
-  def sync_to_parent_state
-    return unless parent
-    self.state = 'closed' if parent.state == 'closed'
-  end
-
-  def update_level_no
-    if parent_id_changed? && parent
-      parent.update_level_no_for_descendants
-    end
-  end
-
-  def close_folders_and_docs
-    if state_changed? && state == 'closed'
-      close_folders_and_docs_for_descendants
-    end
+    item.join 'INNER JOIN doclibrary_folder_acls on doclibrary_folders.id = doclibrary_folder_acls.folder_id'
+    item.order 'doclibrary_folders.sort_no'
+    item.find(:all, :select => 'DISTINCT doclibrary_folders.*')
   end
 end

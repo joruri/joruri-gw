@@ -1,10 +1,10 @@
 <%
-  if @is_dev
-    roles = System::RoleName.all.order(:sort_no)
+  if @is_dev == true
+    roles = System::RoleName.find(:all, :order => :sort_no)
   else
-    roles = System::RoleName.where.not(:table_name => "gwsub").order(:sort_no)
+    roles = System::RoleName.find(:all, :conditions => ['table_name != "gwsub"'], :order => :sort_no)
   end
-  privs = System::PrivName.where(:state => "public").order(:sort_no)
+  privs = System::PrivName.find(:all, :conditions => ['state = "public"'], :order => :sort_no)
 %>
 
 <%= required_head %>

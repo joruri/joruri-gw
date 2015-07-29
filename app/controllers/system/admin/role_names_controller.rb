@@ -1,56 +1,89 @@
+# encoding: utf-8
 class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
-
-    search_condition
-
-    Page.title = "機能名設定"
+  def initialize_scaffold
+    @css = %w(/layout/admin/style.css)
   end
 
   def index
-    @items = System::RoleName.order(:sort_no).paginate(page: params[:page], per_page: params[:limit])
+    init_params
+    return authentication_error(403) unless @is_dev
+    item = System::RoleName.new
+    item.page  params[:page], params[:limit]
+    @items = item.find(:all, :order => [:sort_no])
   end
 
   def show
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::RoleName.find(params[:id])
   end
 
   def new
-    @item = System::RoleName.new
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleName.new({
+      #:class_id => '1',
+      #:priv => '1'
+      })
   end
 
   def create
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::RoleName.new(params[:item])
-
-    _create @item, :success_redirect_uri => "/system/role_names?#{@qs}"
+    location = "/system/role_names?#{@qs}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _create(@item,options)
   end
 
   def edit
-    @item = System::RoleName.where(:id => params[:id]).first
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleName.find_by_id(params[:id])
   end
 
   def update
-    @item = System::RoleName.find(params[:id])
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleName.new.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => "/system/role_names#{@qs}" 
+    location = "/system/role_names#{@qs}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _update(@item,options)
   end
 
   def destroy
-    @item = System::RoleName.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => "/system/role_names?#{@qs}"
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleName.new.find(params[:id])
+    location = "/system/role_names?#{@qs}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _destroy(@item,options)
   end
 
-  def search_condition
-    params[:role_id] = nz(params[:role_id], @role_id)
+  def init_params
+    @is_dev = System::Role.is_dev?
+    @is_admin = System::Role.is_admin?
 
-    qsa = ['role_id', 'priv_id', 'role', 'priv_user']
+    Page.title = "機能名設定"
+
+    search_condition
+  end
+  def search_condition
+    params[:role_id]    = nz(params[:role_id], @role_id)
+#    params[:priv_id]    = nz(params[:priv_id], @priv_id)
+
+    qsa = ['role_id' , 'priv_id' , 'role' , 'priv_user']
     @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
   end
+
 end

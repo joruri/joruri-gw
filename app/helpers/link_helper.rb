@@ -1,3 +1,4 @@
+# encoding: utf-8
 module LinkHelper
   def action_menu(type, link = nil, options = {})
     action = params[:action]
@@ -46,9 +47,7 @@ module LinkHelper
       :close     => '非公開'
     }
     params[0] = labels[params[0]] if labels.key?(params[0])
-    if request && request.mobile? && !request.mobile.supports_cookie?
-      params[1] = jpmobile_url(params[1])
-    end
+
     options = params[2]
 
     if options && options[:method] == :delete
@@ -78,46 +77,8 @@ module LinkHelper
       end
       options[:onclick] = onclick + "return false;"
     end
-    if options && options[:confirm]
-      opt_confirm = options[:confirm]
-      options.delete(:confirm)
-      if options[:data]
-        opt_data = options[:data]
-        opt_data[:confirm] = opt_confirm
-        options[:data] = opt_data
-      else
-        options[:data] = {:confirm => opt_confirm}
-      end
-    end
 
     super(*params)
-  end
-
-  def jpmobile_session_key
-    key = request.session_options[:key]
-    key = "_session_id" if key.blank?
-    return key
-  end
-
-  def jpmobile_session_id
-    request.session_options[:id] rescue session.session_id
-  end
-
-  def jpmobile_url(url)
-    begin
-      url_parse = URI.parse(url)
-      skey = jpmobile_session_key
-      sid  = jpmobile_session_id
-      if url_parse.query
-        url_parse.query += "&#{skey}=#{sid}"
-      else
-        url_parse.query = "#{skey}=#{sid}"
-      end
-      session_url = url_parse.to_s
-    rescue URI::InvalidURIError
-      session_url = url
-    end
-    return session_url
   end
 
   ## E-mail to entity
@@ -138,6 +99,15 @@ module LinkHelper
     link_to text, "tel:#{tel}"
   end
 
+  #memos
+  def sort_link_memo(sort_keys, path_index, field_name, other_query_string='')
+    other_query_string = nz(other_query_string, '')
+    ret = sort_keys == "#{field_name}%20asc" ? '▲' : link_to_with_external_check('▲', path_index + "?sort_keys=" + "#{field_name}%20asc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
+    ret += ' '
+    ret += sort_keys == "#{field_name}%20desc" ? '▼' : link_to_with_external_check('▼', path_index + "?sort_keys=" + "#{field_name}%20desc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
+    return ret
+  end
+
   def link_to_with_external_check(caption, uri, options={})
     options_wrk = options.dup
     options_wrk['class'] = 'ext' if link_external?(uri)
@@ -154,30 +124,43 @@ module LinkHelper
     when 'URI::HTTP'
       rails_env = ENV['RAILS_ENV']
       rails_env = 'development' if rails_env == 'test'
-      trans_hash_raw = YAML.load_file('config/core.yml')
-      return ( parsed.host != trans_hash_raw[rails_env]['uri'] ) rescue raise 'site.yml の設定を見直してください。'
+      trans_hash_raw = YAML.load_file('config/site.yml')
+      return ( parsed.host != trans_hash_raw[rails_env]['domain'] ) rescue raise 'site.yml の設定を見直してください。'
     else
       return true
     end
   end
 
   def link_to_list(item, caption = '展開', options={})
-    link_to_with_external_check caption, url_for(:action => :index, :parent => item)
+    case Site.mode
+    when 'admin'
+      link_to_with_external_check caption, url_for(:action => :index, :parent => item)
+    when 'public'
+      return nil if options[:vri].nil?
+    end
   end
 
   alias :link_to_explore :link_to_list
 
   def link_to_show(item, caption = '詳細', options={})
     caption = nz(caption, '詳細')
-
-    uri = url_for(:action => :show, :id => item)
+    case Site.mode
+    when 'admin'
+      uri = url_for(:action => :show, :id => item)
+    when 'public'
+      uri = url_for("#{Site.current_node.public_uri}#{item}")
+    end
     link_to_with_external_check caption, uri, options
   end
 
   def link_to_edit(item, caption = '編集', options={})
     caption = nz(caption, '編集')
-
-    uri = url_for(:action => :edit, :id => item)
+    case Site.mode
+    when 'admin'
+      uri = url_for(:action => :edit, :id => item)
+    when 'public'
+      uri = url_for("#{Site.current_node.public_uri}#{item}/edit")
+    end
     opt = options.dup
     uri = "#{uri}?#{opt[:qs]}" if !opt[:qs].blank?
     opt.delete :qs
@@ -189,8 +172,12 @@ module LinkHelper
     opt = HashWithIndifferentAccess.new(options)
     opt[:confirm] = nz(options[:confirm], '削除してよろしいですか？')
     opt[:method] = :delete
-
-    uri = url_for(:action => :destroy, :id => item)
+    case Site.mode
+    when 'admin'
+      uri = url_for(:action => :destroy, :id => item)
+    when 'public'
+      uri = url_for("#{Site.current_node.public_uri}#{item}")
+    end
     uri = "#{uri}?#{opt[:qs]}" if !opt[:qs].blank?
     opt.delete :qs
     link_to_with_external_check caption, uri, opt
@@ -202,22 +189,13 @@ module LinkHelper
 
   def sort_link(title, sort_keys, path_index, field_name, other_query_string='')
     other_query_string = nz(other_query_string, '')
-    ret = sort_keys == "#{field_name}%20asc" ? '▲' : link_to('▲', path_index + "?sort_keys=" + "#{field_name}%20asc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
+    ret = sort_keys == "#{field_name}%20asc" ? '▲' : link_to_with_external_check('▲', path_index + "?sort_keys=" + "#{field_name}%20asc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
     ret += ' '
-    ret += sort_keys == "#{field_name}%20desc" ? '▼' : link_to('▼', path_index + "?sort_keys=" + "#{field_name}%20desc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
+    ret += sort_keys == "#{field_name}%20desc" ? '▼' : link_to_with_external_check('▼', path_index + "?sort_keys=" + "#{field_name}%20desc" + (other_query_string=='' ? '' : '&amp;' + other_query_string ))
 #    ret += "<br />"
     ret += ' '
     ret += title
     return ret
   end
 
-  def link_with_sort_keys(title, url_options, field_name)
-    ret = params[:sort_keys] == "#{field_name} asc" ? '▲' : link_to('▲', url_options.merge(sort_keys: "#{field_name} asc"))
-    ret += ' '
-    ret += params[:sort_keys] == "#{field_name} desc" ? '▼' : link_to('▼', url_options.merge(sort_keys: "#{field_name} desc"))
-    ret += "<br />".html_safe
-    ret += ' '
-    ret += title
-    ret.html_safe
-  end
 end

@@ -1,17 +1,21 @@
 <div class="piece AdminSetting">
-<%= render '/gw/admin/config_settings/header_str' %>
-<div class="pieceBanner"></div>
-<div class="pieceBody">
-<%= render '/gw/admin/config_settings/menu' if @u_role==true %>
+<%= render :partial => '/gw/admin/config_settings/header_str' %>
 
-<% if @u_role == true %>
+<div class="pieceBanner">
+</div>
+
+<div class="pieceBody">
+<%= render :partial => '/gw/admin/config_settings/menu' if @u_role==true %>
+
+<%if @u_role == true %>
   <% if @admin_role == true %>
-    <%= render '/gw/admin/config_settings/tabs_admin' %>
+    <%= render :partial => '/gw/admin/config_settings/tabs_admin' %>
   <% else %>
-    <%= render '/gw/admin/config_settings/tabs_editor' %>
+    <%= render :partial => '/gw/admin/config_settings/tabs_editor' %>
   <% end %>
 <% end %>
 
+<%= div_notice %>
 <% if @admin_role == true %>
 <div class="titleLine">
   <p class="title">モバイルパスワードの設定状況</p>

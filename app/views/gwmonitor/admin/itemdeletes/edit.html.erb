@@ -1,29 +1,33 @@
 <div class="bbsDocList circular setting">
 <div class="pieceHeader">
-<h2 class="pieceTitle"><%= @system_title %> 削除設定</h2>
+<h2 class="pieceTitle"><%=@system_title%> 削除設定</h2>
 </div><!--pieceHeader-->
 <!--カラム用タグ-->
 <div class="pieceBanner">
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<div class="titleLine">
-<span class="title"><%= @system_title %> 削除設定</span>
+  <div class="titleLine">
+<span class="title"><%=@system_title%> 削除設定</span>
 </div>
 </div>
 <div class="pieceBodyBody">
-<%= form_for :item, :url => {action: :update} ,:html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters">
-  <%= f.submit "保存" %>
-  </div>
+<%= form_for :item, :url => gwmonitor_itemdelete_path ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters">
+<%=f.submit("保存")%>
+</div>
+
 <% end %>
 
 </div>
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+  <%=link_to '管理者設定へ戻る', config_url(:config_settings_sakujo) %>
 </div>
 </div><!--pieceBody-->
 </div>

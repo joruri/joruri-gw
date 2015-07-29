@@ -2,10 +2,10 @@
 <div class="contentBanner"><%=raw @title.banner %></div>
 <% else %>
 <div class="pieceBanner">
-  <h3><%= @title.title %></h3>
-  <%= render 'header_help' %>
-  <% if @title.is_writable? %>
-    <%= link_to "　　　　　　", new_gwqa_doc_path(title_id: params[:title_id], parent_id: params[:parent_id], p_id: "Q"), class: "btNew" %>
-  <% end %>
+<h3><%= @title.title %></h3>
+<%= render :partial => '/gwqa/admin/docs/header_help' %>
+<% if @is_writable %>
+<%= link_to "　　　　　　", new_gwqa_doc_path({:title_id=>params[:title_id],:parent_id=>params[:parent_id], :p_id=>"Q"}), :class=>"btNew" %>
+<% end %>
 </div>
 <% end %>

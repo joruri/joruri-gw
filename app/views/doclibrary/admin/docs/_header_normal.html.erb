@@ -10,18 +10,20 @@ strparam  = "?title_id=#{params[:title_id]}#{strparam}"
 str_state = "&state=#{params[:state]}" unless params[:state] == 'DRAFT' unless params[:state].blank?
 %>
 
-<% if @title.is_writable? %>
+<%if @is_writable%>
+
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-    <tr>
-      <td class="spaceLeft"></td>
-      <td class="tab<%= ' current' if params[:state] == 'CATEGORY' || params[:state] == 'GROUP'  || params[:state] == 'DATE' %>"><%= link_to "内容一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}#{str_state}#{strcat}" %></td>
-      <td class="spaceCenter"></td>
-      <td class="tab<%= ' current' if params[:state] == 'DRAFT' %>"><%= link_to "下書一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}&state=DRAFT#{strcat}" %></td>
-      <td class="spaceRight"></td>
-    </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="tab<%= ' current' if params[:state] == 'CATEGORY' || params[:state] == 'GROUP'  || params[:state] == 'DATE' %>"><%=link_to("内容一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}#{str_state}#{strcat}") %></td>
+<td class="spaceCenter"></td>
+<td class="tab<%= ' current' if params[:state] == 'DRAFT' %>"><%=link_to("下書一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}&state=DRAFT#{strcat}") %></td>
+<td class="spaceRight"></td>
+</tr>
+</tbody>
 </table>
 </div>
-<% end %>
+
+<%end%>

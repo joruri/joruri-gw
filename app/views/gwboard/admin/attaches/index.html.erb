@@ -7,46 +7,40 @@ html {
   _form_id = 'item_body'  #デフォルト値
   _form_id = params[:form_id].to_s unless params[:form_id].blank?
 %>
-<%= form_for :item, :url => {:action => :create, :system => params[:system],:title_id => params[:title_id]}, :html => {:multipart => true} do |f| %>
-  <%- if @title.upload_document_file_size_full? -%>
-    <div style="color: red;">
-      <%= @title.upload_document_file_size_capacity_message %><br />
-      <span>制限を超過しています。不要なファイルを削除するか、管理者にご連絡ください。</span>
-    </div>
-  <%- else -%>
-    <div><%= @title.upload_document_file_size_capacity_message %></div>
-  <%- end -%>
-  <% unless @title.upload_document_file_size_full? %>
+<% form_for :item, :url => {:action => :create, :system => params[:system],:title_id => params[:title_id]}, :html => {:multipart => true} do |f| %>
+  <%=@capacity_message%>
+  <% unless @disk_full %>
     <p>
       <label for="item">ファイル指定:</label>
-      <%= f.file_field :upload %><%= submit_tag 'ファイルを登録する' %><br />
-      <%= @title.upload_document_file_size_max_message %>
+      <%= f.file_field :upload%><%= submit_tag 'ファイルを登録する' %>
+      <%=@max_file_message%>
     </p>
     <p>
       <label for="item">ファイル備考:</label>
       <%= f.text_field :memo, :size=>'60'%>
     </p>
   <% end %>
+  <%= %Q(<div class="notice">#{flash[:notice]}</div>) if flash[:notice] %>
   <input type="hidden" name="system" value='<%="#{params[:system]}"%>' />
   <input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
 <% end -%>
 
-<hr />
+  <hr />
 <table class="list">
-  <tr>
-    <th style="width: 25px; text-align: center;"></th>
-    <th style="text-align: left;">ファイル名</th>
-    <th style="width: 280px; text-align: left;">備考</th>
-    <th style="width: 40px; text-align: center;">削除</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td><%= link_to('',"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}",:class => item.icon_type ) %></td>
-    <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}") %></td>
-    <td style="text-align: left;"><%=item.memo%></td>
-    <td style="width: 30px; text-align: center;">
-      <%=link_to '削除',{:action => :destroy, :id => item, :system => params[:system], :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete%>
-    </td>
-  </tr>
-  <% end %>
+<tr>
+<th style="width: 25px; text-align: center;"></th>
+<th style="text-align: left;">ファイル名</th>
+<th style="width: 280px; text-align: left;">備考</th>
+<th style="width: 40px; text-align: center;">削除</th>
+</tr>
+<% for item in @items %>
+ <tr>
+ <td><%= link_to('',"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}",:class => item.icon_type ) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],"/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}") %></td>
+ <td style="text-align: left;"><%=item.memo%></td>
+ <td style="width: 30px; text-align: center;">
+ <%=link_to '削除',{:action => :destroy, :id => item, :system => params[:system], :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete%>
+</td>
+</tr>
+<% end %>
 </table>

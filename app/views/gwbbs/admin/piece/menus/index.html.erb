@@ -1,11 +1,12 @@
-<%
-no = @title.left_index_pattern == 1 ? 1 : 0
-%>
-<% case @title.form_name %>
-<% when 'form006' %>
-<%= render "gwbbs/admin/piece/menus/form006/index_#{no}" %>
-<% when 'form007'%>
-<%= render "gwbbs/admin/piece/menus/form007/index_#{no}" %>
-<% else %>
-<%= render "index_#{no}" %>
-<% end %>
+<%if @title.form_name == 'form006'%>
+<%=render(:partial => 'gwbbs/admin/piece/menus/form006/index_0') unless @title.left_index_pattern == 1%>
+<%=render(:partial => 'gwbbs/admin/piece/menus/form006/index_1') if @title.left_index_pattern == 1%>
+<%end%>
+<%if @title.form_name == 'form007'%>
+<%=render(:partial => 'gwbbs/admin/piece/menus/form007/index_0') unless @title.left_index_pattern == 1%>
+<%=render(:partial => 'gwbbs/admin/piece/menus/form007/index_1') if @title.left_index_pattern == 1%>
+<%end%>
+<%unless @title.form_name == 'form006'%>
+<%=render(:partial => 'index_0') unless @title.form_name == 'form007' unless @title.left_index_pattern == 1%>
+<%=render(:partial => 'index_1') unless @title.form_name == 'form007' if @title.left_index_pattern == 1%>
+<%end%>

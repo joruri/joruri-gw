@@ -1,8 +1,9 @@
+#encoding:utf-8
 class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/pref"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "議会議員在庁表示"
     @public_uri = '/gw/pref_assembly'
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
@@ -10,15 +11,13 @@ class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
 
   def index
     init_params
-    @items1 = Gw::PrefAssemblyMember.get_chairman.order(@sort_keys)
-    @items2 = Gw::PrefAssemblyMember.get_vicechairmen.order(@sort_keys)
-    @items3 = Gw::PrefAssemblyMember.get_members.order(@sort_keys)
+		@items1 = Gw::PrefAssemblyMember.get_chairman().order(@sort_keys)
+		@items2 = Gw::PrefAssemblyMember.get_vicechairmen().order(@sort_keys)
+		@items3 = Gw::PrefAssemblyMember.get_members().order(@sort_keys)
   end
 
   def state_change
-    @item = Gw::PrefAssemblyMember.find(params[:id])
-    @item.toggle_state
-
+		@item = Gw::PrefAssemblyMember.state_change(params[:id])
     location  = @public_uri
     location += "##{params[:locate]}" unless params[:locate].blank?
     return redirect_to(location)
@@ -37,10 +36,10 @@ class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
     @users = Gw::Model::Schedule.get_users(params)
     @user   = @users[0]
     @uid    = @user.id if !@user.blank?
-    @uid = nz(params[:uid], Core.user.id) if @uid.blank?
-    @myuid = Core.user.id
-    @gid = nz(params[:gid], @user.groups[0].id) rescue Core.user_group.id
-    @mygid = Core.user_group.id
+    @uid = nz(params[:uid], Site.user.id) if @uid.blank?
+    @myuid = Site.user.id
+    @gid = nz(params[:gid], @user.groups[0].id) rescue Site.user_group.id
+    @mygid = Site.user_group.id
 
     if params[:cgid].blank? && @gid != 'me'
       x = System::CustomGroup.get_my_view( {:is_default=>1,:first=>1})
@@ -51,10 +50,10 @@ class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
       @cgid = params[:cgid]
     end
 
-    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Core.user.code,:first=>1})
+    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Site.user.code,:first=>1})
 
-    @ucode = Core.user.code
-    @gcode = Core.user_group.code
+    @ucode = Site.user.code
+    @gcode = Site.user_group.code
 
     @state_user_or_group = params[:cgid].blank? ? ( params[:gid].blank? ? :user : :group ) : :custom_group
 
@@ -73,13 +72,15 @@ class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
     @is_kauser = @kucode == @ucode ? true : false
 
     unless params[:cgid].blank?
-      @custom_group = System::CustomGroup.where(id: params[:cgid]).first
+      @custom_group = System::CustomGroup.find(:first, :conditions=>["id= ? ", params[:cgid]])
       if !@custom_group.blank?
         Page.title = @custom_group.name
       end
     end
 
-    @schedule_settings = Gw::Schedule.load_system_and_user_settings(Core.user)
+    @up_schedules = nz(Gw::Model::UserProperty.get('schedules'.singularize), {})
+
+    @schedule_settings = Gw::Model::Schedule.get_settings 'schedules', {}
 
   end
 

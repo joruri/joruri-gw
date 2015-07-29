@@ -1,4 +1,24 @@
+# encoding: utf-8
 module Gwbbs::Admin::DocsHelper
+
+  def is_comment_delete(section_code, editor_id, is_admin)
+    ret = false
+    ret = true if is_admin
+    ret = true if section_code == Core.user_group.code
+    ret = true if editor_id == Core.user.code
+    return ret
+  end
+
+  def section_bbs_create_link
+    title = Gwbbs::Control.find_by_create_section(Core.user_group.code)
+    str = ''
+    if title.blank?
+      str += '<div class="btsHeaderLeft"><span class="btSectionNew">'
+      str += link_to('自所属掲示板の新規作成','/gwbbs/builders/')
+      str += '</span></div>'
+    end
+    return str.html_safe
+  end
 
   def doc_size_usage_rate
     body_size_capacity = 0

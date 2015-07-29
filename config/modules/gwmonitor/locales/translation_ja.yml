@@ -11,9 +11,3 @@ ja:
         able_date: 開始日
         expiry_date: 期限日
         title: ""
-      gwmonitor/file:
-        file: ファイル
-        filename: ファイル名
-      gwmonitor/base_file:
-        file: ファイル
-        filename: ファイル名

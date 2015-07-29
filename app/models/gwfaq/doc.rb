@@ -1,87 +1,34 @@
+# -*- encoding: utf-8 -*-
 class Gwfaq::Doc < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::Operator
-  include Gwboard::Model::Doc::Base
-  include Gwboard::Model::Doc::Auth
-  include Gwboard::Model::Doc::Recognizer
-  include Gwboard::Model::Doc::Wiki
+  include Cms::Model::Base::Content
+  include Gwboard::Model::Recognition
   include Gwfaq::Model::Systemname
 
-  has_many :files, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :images, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :db_files, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :recognizers, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :category, :foreign_key => :category1_id
+  belongs_to :content,   :foreign_key => :content_id,   :class_name => 'Cms::Content'
+  belongs_to :control,   :foreign_key => :title_id,     :class_name => 'Gwfaq::Control'
 
-  has_many :roles, :foreign_key => :title_id, :primary_key => :title_id
-  has_one :section, :foreign_key => :code, :primary_key => :section_code, :class_name => 'System::Group'
+  validates_presence_of :state
+  after_validation  :validate_title
+  before_destroy :notification_destroy
+  after_save :check_digit, :send_reminder, :title_update_save, :notification_update
 
-  after_create :save_name_with_check_digit
+  attr_accessor :_notification
+  attr_accessor :_bbs_title_name
+  attr_accessor :_note_section
 
-  validates :state, presence: true
-  with_options unless: :state_preparation? do |f|
-    f.validates :title, presence: { message: "を入力してください。" }
-    f.validates :category1_id, presence: { message: "を設定してください。" }, if: :category_use?
+  def validate_title
+
+    if title.blank?
+      errors.add :title, "を入力してください。"
+    end unless state == 'preparation'
+
+    if category1_id.blank?
+        errors.add :category1_id, "を設定してください。"
+    end if category_use == 1 unless state == 'preparation'
+
   end
-
-  scope :public_docs, -> { where(state: 'public') }
-  scope :today_public_docs, -> { where(state: 'public').latest_updated_since(Date.today) }
-  scope :draft_docs, -> { where(state: 'draft') }
-  scope :recognizable_docs, -> { where(state: 'recognize') }
-  scope :recognized_docs, -> { where(state: 'recognized') }
-
-  scope :search_with_params, ->(control, params) {
-    rel = all
-    rel = rel.search_with_text(:title, :body, params[:kwd]) if params[:kwd].present?
-    rel = rel.where(category1_id: params[:cat1]) if params[:cat1].present?
-    rel = rel.where(category2_id: params[:cat2]) if params[:cat2].present?
-    rel = rel.where(category3_id: params[:cat3]) if params[:cat3].present?
-    rel = rel.where(section_code: params[:grp]) if params[:grp].present?
-
-    if params[:yyyy].present? && params[:mm].present?
-      from_date = Date.new(params[:yyyy].to_i, params[:mm].to_i, 1).beginning_of_day
-      to_date = Date.new(params[:yyyy].to_i, params[:mm].to_i, -1).end_of_day
-      rel = rel.where(arel_table[:latest_updated_at].gteq(from_date)).where(arel_table[:latest_updated_at].lteq(to_date))
-    end
-    rel
-  }
-  scope :index_select, ->(control = nil) {
-    select(:id, :title_id, :category1_id, :state, :title, :section_name, :section_code, :latest_updated_at)
-  }
-  scope :index_docs_with_params, ->(control, params) {
-    rel = all
-    case params[:state]
-    when "TODAY"
-      rel = rel.today_public_docs
-    when "DRAFT"
-      rel = rel.draft_docs
-      rel = rel.group_or_creater_docs unless control.is_admin?
-    when "RECOGNIZE"
-      rel = rel.recognizable_docs
-      rel = rel.group_or_recognizer_docs unless control.is_admin?
-    when "PUBLISH"
-      rel = rel.recognized_docs
-      rel = rel.group_or_recognizer_docs unless control.is_admin?
-    else
-      rel = rel.public_docs
-    end
-    rel
-  }
-  scope :index_order_with_params, ->(control, params) {
-    case params[:state]
-    when "GROUP"
-      order(section_code: :asc, latest_updated_at: :desc)
-    when "CATEGORY"
-      docs = arel_table
-      cats = Gwfaq::Category.arel_table
-      order(cats[:sort_no].asc, docs[:category1_id].asc, docs[:title].asc, docs[:latest_updated_at].desc).joins(:category)
-    else
-      order(latest_updated_at: :desc)
-    end
-  }
 
   def no_recog_states
     {'draft' => '下書き保存', 'recognized' => '公開待ち'}
@@ -98,6 +45,111 @@ class Gwfaq::Doc < Gwboard::CommonDb
     str = '公開待ち' if self.state == 'recognized'
     str = '公開中' if self.state == 'public'
     return str
+  end
+
+  def public_path
+    if name =~ /^[0-9]{8}$/
+      _name = name
+    else
+      _name = File.join(name[0..0], name[0..1], name[0..2], name)
+    end
+    Site.public_path + content.public_uri + _name + '/index.html'
+  end
+
+  def public_uri
+    content.public_uri + name + '/'
+  end
+
+  def check_digit
+    return true if name.to_s != ''
+    return true if @check_digit == true
+
+    @check_digit = true
+
+    self.name = Util::CheckDigit.check(format('%07d', id))
+    save
+  end
+
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+
+      case n
+      when 'cat1'
+        self.and :category1_id, v
+      when 'cat2'
+        self.and :category2_id, v
+      when 'cat3'
+        self.and :category3_id, v
+      when 'kwd'
+        and_keywords v, :title, :body
+      end
+    end if params.size != 0
+
+    return self
+  end
+
+  def notification_delete_old_records
+    Gwboard::Synthesis.destroy_all(["latest_updated_at < ?", 5.days.ago])
+  end
+
+  def notification_create
+    return nil unless self._notification == 1
+
+    notification_delete_old_records
+    Gwboard::Synthesis.destroy_all(["latest_updated_at < ?", 5.days.ago])
+
+    Gwboard::Synthesis.create({
+      :system_name => self.system_name,
+      :state => self.state,
+      :title_id => self.title_id,
+      :parent_id => self.id,
+      :latest_updated_at => self.latest_updated_at ,
+      :board_name => self._bbs_title_name,
+      :title => self.title,
+      :url => self.portal_show_path,
+      :editordivision => self._note_section,
+      :editor => self.editor || self.creater
+    })
+  end
+
+  def notification_update
+    return nil unless self._notification == 1
+
+    notification_delete_old_records
+
+    item = Gwboard::Synthesis.new
+    item.and :title_id, self.title_id
+    item.and :parent_id, self.id
+    item.and :system_name , self.system_name
+    item = item.find(:first)
+    unless item.blank?
+      item.system_name = self.system_name
+      item.state = self.state
+      item.title_id = self.title_id
+      item.parent_id = self.id
+      item.latest_updated_at = self.latest_updated_at
+      item.board_name = self._bbs_title_name
+      item.title = self.title
+      item.url = self.portal_show_path
+      item.editordivision = self._note_section
+      item.editor = self.editor || self.creater
+      item.save
+    else
+      notification_create
+    end
+  end
+
+  def notification_destroy
+    return nil unless self._notification == 1
+
+    item = Gwboard::Synthesis.new
+    item.and :title_id, self.title_id
+    item.and :parent_id, self.id
+    item.and :system_name, self.system_name
+    item = item.find(:first)
+    item.destroy if item
   end
 
   def image_edit_path
@@ -144,9 +196,21 @@ class Gwfaq::Doc < Gwboard::CommonDb
     return self.item_home_path + "docs?title_id=#{self.title_id}"
   end
 
-  private
+  def send_reminder
+    self._recognizers.each do |k, v|
+      Gw.add_memo(v.to_s, "FAQ承認依頼[#{self.control.title}]", "<a href='/gwfaq/docs/#{self.id}/?title_id=#{self.title_id}'>記事承認依頼[#{self.title}]</a>")
+    end if self._recognizers if self.state == 'recognize'
+  end
 
-  def save_name_with_check_digit
-    update_columns(name: Util::CheckDigit.check(format('%07d', self.id))) if self.name.blank?
+  def title_update_save
+    if self.state=='public'
+      item = Gwfaq::Control.find(self.title_id)
+      item.docslast_updated_at = Time.now
+      item.save(:validate=>false)
+    end
+  end
+
+  def _execute_sql(strsql)
+    return connection.execute(strsql)
   end
 end

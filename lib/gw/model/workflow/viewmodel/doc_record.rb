@@ -1,3 +1,5 @@
+# encoding:utf-8
+
 # 一覧表示のレコード
 class Gw::Model::Workflow::Viewmodel::DocRecord
   attr_reader :id, :title, :expired_at, :applied_at, :updated_at, :state

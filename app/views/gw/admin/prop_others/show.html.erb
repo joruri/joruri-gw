@@ -1,89 +1,95 @@
+<%
+parent_groups = Gw::PropOther.get_parent_groups
+
+images = @item.images
+images_t = ''
+images_s = ''
+images.each do |img|
+  images_s += %Q(<img src="#{img.path}" alt="#{img.note}" />)
+end
+reserved_state = Gw.yaml_to_array_for_select("gw_prop_other_reserved_states")
+-%>
+
 <div class="piece prop show">
-<div class="pieceHeader">
-<%= render 'piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-<%= render 'prop_master_menu' %>
-<%= render 'titleline' %>
-</div>
-<div class="pieceBodyBody">
-
-<% if @is_admin %>
-<div class="editingBox">
-  <span class="btEdit">
-    <%= link_to '編集', {action: :edit} -%>
-  </span>
-  <span class="btDestroy">
-    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' -%>
-  </span>
-  <span class="btAttach">
-    <%= link_to '添付', {action: :upload} -%>
-  </span>
-</div>
-<% end %>
-
-<div class="imgBox <%= "noImage" if @item.images.length == 0 %>">
-  <% @item.images.each do |img| %>
-    <img src="<%= img.path %>" alt="<%= img.note %>" />
-  <% end %>
-</div>
-<div class="tableBox">
-  <table class="show rentDetails">
-    <tr>
-      <th>予約</th>
-      <td><%= @item.reserved_state_label -%></td>
-    </tr>
-    <tr>
-      <th>表示順</th>
-      <td><%= @item.sort_no -%></td>
-    </tr>
-    <tr>
-      <th>名称</th>
-      <td><%= @item.name -%></td>
-    </tr>
-    <tr>
-      <th>種別</th>
-      <td><%= safe{@item.prop_type.name} -%></td>
-    </tr>
-    <tr>
-      <th>備考</th>
-      <td><%=br @item.comment if  @item.comment-%></td>
-    </tr>
-    <tr>
-      <th>作成日</th>
-      <td><%=l @item.created_at if @item.created_at -%></td>
-    </tr>
-    <tr>
-      <th>更新日</th>
-      <td><%=l @item.updated_at if @item.updated_at -%></td>
-    </tr>
-    <tr>
-      <th>管理区分</th>
-      <td>一般</td>
-    </tr>
-    <tr>
-      <th>施設管理所属</th>
-      <td><%=raw @item.admin_role_corrected_group_names.join('<br />') -%></td>
-    </tr>
-    <tr>
-      <th>予約可能所属</th>
-      <td><%=raw @item.edit_role_corrected_group_names.join('<br />') -%></td>
-    </tr>
-    <tr>
-      <th>照会可能所属</th>
-      <td><%=raw @item.read_role_corrected_group_names.join('<br />') -%></td>
-    </tr>
-  </table>
-</div>
-<div class="imgBox2">
-</div>
-<br class="clear" />
-
-<div class="btReturn">
-  <%= link_to '一覧へ戻る', {action: :index} -%>
-</div>
-
-</div>
-</div>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/prop_others/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/prop_others/prop_master_menu') %>
+      <%= render(:partial => '/gw/admin/prop_others/titleline') %>
+    </div>
+    <div class="pieceBodyBody">
+      <%= div_notice -%>
+      <div class="editingBox">
+        <span class="btEdit">
+          <%= link_to_edit @item.id, nil, :qs=>"cls=#{@cls}" if @is_admin -%>
+        </span>
+        <span class="btDestroy">
+          <%= link_to_destroy @item.id, nil, :qs=>"cls=#{@cls}" if @is_admin -%>
+        </span>
+        <span class="btAttach">
+          <%= link_to '添付', "/gw/prop_#{@genre}s/#{@item.id}/upload?cls=#{@cls}" if @is_admin -%>
+        </span>
+      </div>
+      <div class="imgBox<%= images.length == 0 ? " noImage" : "" -%>">
+        <%= raw(images_s) -%>
+      </div>
+      <div class="tableBox">
+        <table class="show rentDetails">
+          <tr>
+            <th>予約</th>
+            <td><%= reserved_state[@item.reserved_state][0] -%></td>
+          </tr>
+          <tr>
+            <th>表示順</th>
+            <td><%= @item.sort_no -%></td>
+          </tr>
+          <tr>
+            <th>名称</th>
+            <td><%= @item.name -%></td>
+          </tr>
+          <tr>
+            <th>種別</th>
+            <td><%= safe{@item.prop_type.name} -%></td>
+          </tr>
+          <tr>
+            <th>備考</th>
+            <td><%= br(@item.comment) if @item.comment-%></td>
+          </tr>
+          <tr>
+            <th>作成日</th>
+            <td><%= @item.created_at.strftime('%Y-%m-%d %H:%M') if @item.created_at.present? -%></td>
+          </tr>
+          <tr>
+            <th>更新日</th>
+            <td><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') if @item.updated_at.present? -%></td>
+          </tr>
+          <tr>
+            <th>管理区分</th>
+            <td>一般</td>
+          </tr>
+          <tr>
+            <th>施設管理所属</th>
+            <td><%= raw(Gw.join [@item.admin(:show, parent_groups)], '<br />') -%></td>
+          </tr>
+          <tr>
+            <th>予約可能所属</th>
+            <td><%= raw(Gw.join [@item.editor(:show, parent_groups)], '<br />') -%></td>
+          </tr>
+          <tr>
+            <th>照会可能所属</th>
+            <td><%= raw(Gw.join [@item.reader(:show, parent_groups)], '<br />') -%></td>
+          </tr>
+        </table>
+      </div>
+      <div class="imgBox2">
+        <%= images_t -%>
+      </div>
+      <br class="clear" />
+      <div class="btReturn">
+        <%= link_to('スケジューラーへ戻る', "/gw/schedule_props/show_week?s_genre=#{@genre}&cls=#{@cls}") -%>
+      </div>
+    </div>
+  </div>
 </div>

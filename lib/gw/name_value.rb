@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gw::NameValue
   PATH_SEPARATOR = '/'
 
@@ -39,7 +40,7 @@ module Gw::NameValue
       ::Ar rescue eval('::Ar = Class.new ActiveRecord::Base')
       if split_section.length==1
         _section = section
-        _ec = Rails.env
+        _ec = RAILS_ENV
       else
         _section = split_section[1]
         _ec = split_section[0]
@@ -47,8 +48,8 @@ module Gw::NameValue
         raise TypeError, %Q[unknown database descriptor(#{_ec}), please set standard model manually.] unless db_config.has_key?(_ec)
       end
       ::Ar.establish_connection _ec
-      ::Ar.table_name = _section
-      items = ::Ar.select(key).where(criteria)
+      ::Ar.set_table_name _section
+      items = ::Ar.find(:all, :select => key, :conditions => criteria)
       items.length == 1 ? items[0].send(key) : items
     else
       raise TypeError, "unknown type(#{type})"

@@ -1,9 +1,10 @@
 <div class="gwsub sb04">
-  <%= render 'gwsub/admin/sb04/sb04_piece_header' -%>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' -%>
   <div class="pieceBanner">
-    <%= render 'gwsub/admin/sb04/sb04_submenu' -%>
+    <%= render :partial => 'gwsub/admin/sb04/sb04_submenu' -%>
   </div>
   <div class="pieceBody">
+    <%= div_notice -%>
     <table class ="index">
       <tr>
         <th>表示</th>
@@ -17,8 +18,8 @@
         <td>
           <%= link_to '一覧' , url_for("/gwsub/sb04/04/#{item[1]}") -%>
         </td>
-        <td><%= item[0] -%></td>
-        <td><%= _columns -%></td>
+        <td><%=h item[0] -%></td>
+        <td><%=h _columns -%></td>
         <% end -%>
       </tr>
       <% end unless @items.blank? -%>

@@ -1,6 +1,52 @@
 <%= form_for :item, :url => digitallibrary_doc_path(@item, {:title_id => @title.id}) + digitallib_uri_params, :html => {:method => :put} do |f| %>
-  <%= f.error_messages %>
-  <div class="inner">
-  <%= render 'form', f: f %>
-  </div>
+
+<%= f.error_messages %>
+<div class="inner">
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= gwboard_recognizer_form(f, @item) if @title.recognize.to_s == '1' %>
+<%= gwboard_recognizer_form_type2(f, @item) if @title.recognize.to_s == '2' %>
+
+<div class="submitters">
+  <% if @title.use_free_public %>
+    <div id="item_recog_select3" style="display:inline;" >
+    <input id="<%= f.object_name %>_submit_public" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
+    </div>
+  <% end %>
+  <% if @title.recognize.to_s == '1' %>
+    <input id="<%= f.object_name %>_submit_recognize" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognize';" type="submit" value="承認待ち" />
+  <% end %>
+
+  <% if @title.recognize.to_s == '2' %>
+    <div id="item_recog_select2" style="display:none;" >
+    <input id="<%= f.object_name %>_submit_recognize" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognize';" type="submit" value="承認待ち" />
+    </div>
+  <% end %>
+  <input id="<%= f.object_name %>_submit_draft" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
+  <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+</div>
+</div><!--inner-->
+<% end %>
+
+<% if @title.recognize.to_s == '2' %>
+<script language = "JavaScript" type="text/javascript">
+<!--
+  var sel_class1 = function() {
+    idx =  radio_selected('item[category4_id]')
+    switch (idx) {
+    case 1:
+      document.getElementById('item_recog_select1').style.display = "none";
+      document.getElementById('item_recog_select2').style.display = "none";
+      document.getElementById('item_recog_select3').style.display = "inline";
+      break;
+    case 2:
+      document.getElementById('item_recog_select1').style.display = "inline";
+      document.getElementById('item_recog_select2').style.display = "inline";
+      document.getElementById('item_recog_select3').style.display = "none";
+    break;
+    }
+  }
+sel_class1();
+-->
+</script>
 <% end %>

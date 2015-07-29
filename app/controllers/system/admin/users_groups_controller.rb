@@ -1,18 +1,17 @@
+# encoding: utf-8
 class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    @role_admin = System::User.is_admin?
-    return error_auth unless @role_admin
-
-    @current_no = 2
+  def initialize_scaffold
+		@current_no = 2
     id      = params[:parent] == '0' ? 1 : params[:parent]
-    @parent = System::Group.where(:id => id).first
+    @parent = System::Group.find_by_id(id)
     return http_error(404) if @parent.blank?
-
     params[:limit] = Gw.nz(params[:limit],30)
     Page.title = "ユーザー・グループ管理"
+    @role_admin      = System::User.is_admin?
+    return authentication_error(403) unless @role_admin == true
   end
 
   def index
@@ -34,7 +33,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
     @item = System::UsersGroup.new({
       :group_id  => @parent.id,
       :job_order => 0,
-      :start_at  => Time.now
+      :start_at  => Time.now 
     })
   end
 
@@ -66,6 +65,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   end
 
   def list
+    return authentication_error(403) unless @role_admin == true
     Page.title = "ユーザー・グループ 全一覧画面"
 
     @groups = System::Group.get_level2_groups

@@ -6,24 +6,18 @@
   <p class="title">ポータル設定</p>
 </div>
 <ul>
-  <% if @role_soumu_msg -%>
-  <li>
-    <span class="function"><%= link_to 'タブメッセージ編集' , "/gw/pref_soumu_messages" %></span>
-    <span class="explanation">ポータル画面のタブ選択時に表示するメッセージを設定します。</span>
-  </li>
-  <% end -%>
-  <% if @role_tabs %>
+  <% if @role_tabs == true %>
   <li>
     <span class="function"><%= link_to 'タブ編集' , "/gw/edit_tabs?pid=0" %></span>
     <span class="explanation">タブ内のリンク配置編集およびリンク先登録を行います。</span>
   </li>
   <% end %>
-  <%- if @role_disaster_admin_users || @role_disaster_editor_users -%>
+  <% if @role_disaster_admin_users == true || @role_disaster_editor_users == true -%>
   <li>
     <span class="function"><%= link_to '表示モード切替', "/gw/admin_modes" %></span>
     <span class="explanation">ポータル表示を、通常モード・災害モードで切替えます。</span>
   </li>
-  <%- end -%>
+  <% end -%>
 </ul>
 <% end %>
 <% end %>

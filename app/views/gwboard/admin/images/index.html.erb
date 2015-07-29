@@ -4,28 +4,21 @@ html {
 }
 </style>
 <%
-  wiki_state = false
-  wiki_state = true if params[:wiki] == "1"
   _form_id = 'item_body'  #デフォルト値
   _form_id = params[:form_id].to_s unless params[:form_id].blank?
 %>
-<%= form_for :item, :url => {:action => :create, :wiki => params[:wiki], :system => params[:system],:title_id => params[:title_id], :form_id => params[:form_id]}, :html => {:multipart => true} do |f| %>
+<% form_for :item, :url => {:action => :create, :system => params[:system],:title_id => params[:title_id], :form_id => params[:form_id]}, :html => {:multipart => true} do |f| %>
+
+  <%=@capacity_message%>
   <%= f.error_messages %>
-  <%- if @title.upload_graphic_file_size_full? -%>
-    <div style="color: red;">
-      <%= @title.upload_graphic_file_size_capacity_message %><br />
-      <span>制限を超過しています。不要なファイルを削除するか、管理者にご連絡ください。</span>
-    </div>
-  <%- else -%>
-    <div><%= @title.upload_graphic_file_size_capacity_message %></div>
-  <%- end -%>
-  <% unless @title.upload_graphic_file_size_full? %>
+  <% unless @disk_full %>
     <p>
       <label>画像ファイル:</label>
-      <%= f.file_field :upload %><%= submit_tag 'アップロード' %><br />
-      <%= @title.upload_graphic_file_size_max_message %>
+      <%= f.file_field :uploaded_data %><%= submit_tag 'アップロード' %>
+      <%=@max_file_message%>
     </p>
   <% end %>
+  <%= %Q(<div class="notice">#{flash[:notice]}</div>) if flash[:notice] %>
   <input type="hidden" name="system" value='<%="#{params[:system]}"%>' />
   <input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
 
@@ -47,56 +40,47 @@ html {
         }
       }
   }
-
-  function wikiInsert(text){
-    parent.wiki_attach_insert(text);
-  }
 //]]>
 </script>
 
 <table class="list" style="margin-right: 18px; margin-bottom:0px;">
-  <tr>
-    <th style="width: 100px; text-align: center;">画像</th>
-    <th>画像ファイル名</th>
-    <th style="width: 120px; text-align: center;">サイズ（幅x高さ）</th>
-    <th style="width: 80px; text-align: center;">画像貼付</th>
-    <th style="width: 40px;  text-align: center;">削除</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td style="text-align: center;">
-      <img src="<%= item.file_uri %>" style="<%= item.reduced_size(:width => 80, :height => 40, :output => :css) %>" alt= ''/>
-    </td>
-    <td style="text-align: left;"><%= item.filename %></td>
-    <td style="text-align: center;"><%= item.eng_unit %><br /><%= item.graphic_size_label %></td>
-    <td style="text-align: center;">
-    <% if item.is_image %>
-      <%
-      if item.width > 720
-        if @title.system_name == 'doclibrary'
-          rst = item.regulate_size(700)
-        else
-          rst = item.regulate_size(720)
-        end
-        img_tag = "<img src=\\'#{item.file_uri}\\' alt=\\'#{item.filename}\\' height=\\'#{rst[:height]}\\' width=\\'#{rst[:width]}\\'>"
-        %>
-        <% if wiki_state == true %>
-          <a href="#" id="link_image_regulate" onclick="wikiInsert('<UN>>\n<%= img_tag -%>\n<<UN>'); return false;">貼付</a>
-        <% else %>
-          <a href="#" id="link_image_regulate" onclick="mceInsertContent('<%= img_tag -%>'); return false;">貼付</a>
-        <% end %>
-      <% else %>
-        <% if wiki_state == true %>
-          <a href="#" id="link_image_regulate" onclick="wikiInsert('<%= "[[#{item.filename}|#{item.file_uri}]]" -%>'); return false;">貼付</a>
-        <% else %>
-          <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%= item.file_uri %>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
-        <% end %>
-      <% end %>
-    <% end %>
-    </td>
-    <td style="text-align: center;">
-      <%= link_to '削除', {action: :destroy, id: item, system: params[:system], wiki: params[:wiki], title_id: item.title_id, form_id: params[:form_id]}, confirm: '削除してよろしいですか？', method: :delete %>
-    </td>
-  </tr>
+<tr>
+<th style="width: 100px; text-align: center;">画像</th>
+<th>画像ファイル名</th>
+<th style="width: 120px; text-align: center;">サイズ（幅x高さ）</th>
+<th style="width: 80px; text-align: center;">画像貼付</th>
+<th style="width: 40px;  text-align: center;">削除</th>
+</tr>
+
+<% for item in @items %>
+ <tr>
+ <td style="text-align: center;">
+ <img src="<%=item.image_file_path%>" style="<%= item.reduced_size(:width => 80, :height => 40, :output => :css) %>" alt= ''/>
+ </td>
+ <td style="text-align: left;"><%=item.filename%></td>
+ <td style="text-align: center;"><%= item.eng_unit %>
+ <%= '<br />（' + item.width.to_s + ' x ' + item.height.to_s + '）' %>
+ </td>
+ <td style="text-align: center;">
+ <% if item.image? %>
+  <%
+  if item.is_big_width
+    if @title.system_name == 'doclibrary'
+      #書庫のみ画像幅680pc
+      rst = item.regulate_size(700)
+    else
+      rst = item.regulate_size
+    end
+  %>
+    <a href="#" id="link_image_regulate" onclick="mceInsertContent('<img src=\'<%=item.image_file_path%>\' alt=\'<%= item.filename %>\' height=\'<%="#{rst[:height]}"%>\' width=\'<%="#{rst[:width]}"%>\' >'); return false;">貼付</a>
+   <%else%>
+    <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%=item.image_file_path%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+   <% end %>
   <% end %>
+ </td>
+ <td style="text-align: center;">
+ <%=link_to '削除',{:action => :destroy, :id => item, :system => params[:system], :title_id => item.title_id, :form_id => params[:form_id]}, :confirm => '削除してよろしいですか？', :method => :delete%>
+ </td>
+ </tr>
+<% end %>
 </table>

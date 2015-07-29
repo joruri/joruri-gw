@@ -1,11 +1,11 @@
 <div class="piece AdminMassages">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
 
-<%= form_for :item, :url => {:action => :update}, :html => {:method => :put} do |f| %>
+<%= form_for :item, :url => "/gw/admin_modes/#{@item.id}?#{@qs}", :html => {:method => :put} do |f| %>
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
   <%= submit_for(f, {:caption => '保存'}) %>
 <% end %>
 

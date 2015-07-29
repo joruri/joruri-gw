@@ -1,10 +1,15 @@
-<%= form_tag '', :method => :get, :class => 'search', :name => 'frmSelect' do %>
+<%# app/views/gwcircular/public/menus/_search_mobile_smartphone.html.erb %>
+<%
+s_finished_cls = [['未読','unread'],['既読','already']]
+%>
+<% form_tag('', :method => :get, :class => 'search', :name => 'frmSelect') do %>
 <div class="indication">
-<div class="state">状態<%= select_tag :cond, options_for_select([['未読','unread'],['既読','already']], params[:cond]), :onchange=>'loadImg_display();' %></div>
+<div class="state">状態<%= select_tag('cond',options_for_select(s_finished_cls,params[:cond]),
+  :onchange=>'loadImg_display();') %></div>
 </div>
 <% end %>
-
-<script type="text/javascript">
+<%#= observe_field "s_finished", :function => "loadImg_display();" %>
+<script language = "JavaScript" type="text/javascript">
 <!--
   window.onload=pgLoad;
    function pgLoad(){ //要素'loading'を非表示

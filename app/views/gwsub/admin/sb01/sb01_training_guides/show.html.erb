@@ -1,12 +1,14 @@
-<%#= render 'gwsub/admin/sb01/sb01_trainings/menu' %>
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_trainings/show.html.erb</p>%>
+<%#= render :partial => 'gwsub/admin/sb01/sb01_trainings/menu' %>
 <div class="gwsub sb01">
 <div class="pieceHeader">
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_guides/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_guides/menu' %>
 </div>
 <div class="pieceBody">
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <div class="editingBox leftSide">
 <span class="btEdit"><%= link_to_edit @item.id %></span>
 <span class="btDestroy"><%= link_to_destroy @item.id %></span>
@@ -14,11 +16,11 @@
 <br />
 <table class="show leftSide">
 <tbody>
-  <tr><th>年度</th><td><%= @item.fyear_markjp%></td></tr>
-  <tr><th>記事分類</th><td><%= safe{@item.category_label}%></td></tr>
-  <tr><th>記事名</th><td><%= @item.title%></td></tr>
-  <tr><th>記事内容(url)</th><td><%= @item.bbs_url%></td></tr>
-  <tr><th>備考</th><td><%= @item.remarks%></td></tr>
+  <tr><th>年度</th><td><%=h @item.fyear_markjp%></td></tr>
+  <tr><th>記事分類</th><td><%=h ass{@item.category_label}%></td></tr>
+  <tr><th>記事名</th><td><%=h @item.title%></td></tr>
+  <tr><th>記事内容(url)</th><td><%=h @item.bbs_url%></td></tr>
+  <tr><th>備考</th><td><%=h @item.remarks%></td></tr>
 </tbody>
 </table>
 

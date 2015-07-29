@@ -8,18 +8,24 @@
 %>
 <%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
 
-<%= form_for :item, :url => "#{Site.current_node.public_uri}#{params[:p_id]}/update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
+<%= gw_js_include_full %>
+
+<% form_for :item, :url => "#{Site.current_node.public_uri}#{params[:p_id]}/update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
+
   <%= f.error_messages %>
+
   <table class="show">
     <tr>
      <th>回答</th></tr><tr>
     <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
     </tr>
   </table>
+
   <div class="submitters">
     <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
     <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
     <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognized';" type="submit" value="添付ファイル" />
     <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
   </div>
+
 <% end %>

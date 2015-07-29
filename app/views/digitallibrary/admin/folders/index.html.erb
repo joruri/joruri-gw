@@ -1,5 +1,5 @@
 <div class="inner">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <table class="docFolder">
   <tr>
     <th style="width: 40px; text-align: center;">索引</th>
@@ -8,7 +8,7 @@
     <th style="width: 30px; text-align: center;">　</th>
     <th style="width: 60px; text-align: center;">　</th>
   </tr>
-  <% @items.each do |item| %>
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: left;"><%= item.seq_name %></td>
     <td><%= item.title %></td>

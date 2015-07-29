@@ -1,8 +1,8 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "gwboard"
   scp = "admin"
 # GWBOARD 共通
-
+  
   scope "_#{scp}" do
     namespace mod do
       scope :module => scp do
@@ -51,12 +51,6 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace mod do
-    scope :module => scp do
-      resources "files",
-        :controller => "files",
-        :path => "files"
-    end
-  end
+
 
 end

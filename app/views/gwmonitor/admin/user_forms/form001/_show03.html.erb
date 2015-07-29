@@ -1,62 +1,107 @@
 <div class="bbsDocList circular">
-<%= render 'gwmonitor/admin/menus/piece_header' %>
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%= @system_title %></h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%= link_to '新規作成', "/gwmonitor/builders/new" %></span>
+</div>
+<div class="btsHeadeRight"><%= raw(gwmonitor_settings) %></div>
+</div><!--pieceHeader-->
 
 <div class="pieceBody">
-<%= render 'gwmonitor/admin/menus/tabbox' %>
-<%= render 'gwmonitor/admin/menus/title_info' %>
-<%= render 'board_config' %>
+
+<%= render :partial => 'header' %>
+
+<div class="docsInnerBox">
+
+<div class="editingBox">
+<div class="docLink"><%= button_to "転送する", @item.clone_path, {:method => :get, :data => {:confirm => 'この照会記事を他所属に転送しますか？'}, :style => "background:cornflowerblue;color:white;"} %></div>
+</div>
+
+<table class="bbsExpirydate">
+ <tr>
+  <td>　回答期限日時 : </td>
+  <td class="space"></td>
+  <td><%= @title.expiry_date.strftime('%Y-%m-%d %H:%M') unless @title.expiry_date.blank? %></td>
+ </tr>
+</table>
+
+<div class="bbsCreatorInf">
+<table>
+<tr>
+<td>作成 : &nbsp;</td>
+<td><%= @title.createrdivision %></td>
+<td class="space"></td>
+<td><%= @title.creater %></td>
+<td class="space"></td>
+<td><%= @title.createdate %></td>
+</tr>
+</table>
+</div>
+
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%= hbr(@title.title) %></span></td></tr>
+<tr><td class="spaceBottom"></td></tr>
+<tr><td><%= raw(@title.caption) %></td></tr>
+</table>
+</div>
+
+</div><!--docsInnerBox-->
+
+<%= render :partial => 'board_config' %>
 
 <table class="index">
-  <tr class="headIndex">
-    <th style="width:70px;">状態</th>
-    <th class="group">受信所属</th>
-    <th style="width: 100px;">回答者</th>
-    <th class="docTitle">回答欄</th>
-    <th style="width: 30px;">添付</th>
-    <th style="width:120px;">最終更新日時</th>
-  </tr>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
-    <td><%=raw @item.status_name %></td>
-    <td class="group"><%= "#{@item.target_user_name}#{@item.target_user_code}" %></td>
-    <td>
-      <% if @item.state == 'draft' %>
-        <%= link_to "受け取る", @item.editing_path, :class => 'btText' %>
-      <% else %>
-        <%= @item.editor %>
-      <% end %>
-    </td>
-    <% if @item.body.blank? %>
-      <td>
-      <% if @title.state == "closed" %>
-        <%= link_to "回答を確認する", @item.edit_path, :class => 'btText' %>
-      <%else%>
-      <% case @item.state %>
-      <% when 'public' %>
-        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
-      <% when 'editing' %>
-        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
-        <%= link_to "受取待ちに戻す", @item.draft_path, :class => 'btText' %>
-      <% when 'qNA' %>
-        <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
-      <% end %>
-      <% end %>
-      </td>
-    <% else %>
-      <td class="docTitle"><%= link_to @item.body, @item.edit_path %></td>
-    <% end %>
-    <td class="bbsAttach"><%=raw @item.str_attache_span if @item.str_attache_span.present? %></td>
-    <td class="update"><%= @item.display_editdate %></td>
-  </tr>
-  <% @items.each do |item| %>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
-    <td style="width:65px;"><%=raw item.status_name %></td>
-    <td class="group"><%= "#{item.target_user_name}#{item.target_user_code}" %></td>
-    <td><%= item.editor %></td>
-    <td class="docTitle"></td>
-    <td class="bbsAttach"></td>
-    <td class="update"><%= item.display_editdate %></td>
-  </tr>
+<tr class="headIndex">
+<th style="width:70px;">状態</th>
+<th class="group">受信所属</th>
+<th style="width: 100px;">回答者</th>
+<th class="docTitle">回答欄</th>
+<th style="width: 30px;">添付</th>
+<th style="width:120px;">最終更新日時</th>
+</tr>
+<tr class="<%= cycle 'article', 'article cycle' %>">
+<td><%= raw(@item.status_name) %></td>
+<td class="group"><%= "#{@item.target_user_name}#{@item.target_user_code}" %></td>
+<td>
+  <% if @item.state == 'draft' %>
+    <%= link_to "受け取る", @item.editing_path, :class=>'btText' %>
+  <% else %>
+    <%= @item.editor %>
   <% end %>
+</td>
+<% if @item.body.blank? %>
+  <td>
+  <% case @title.state %>
+  <% when 'closed' %>
+    <%= link_to "回答を確認する", @item.edit_path, :class => 'btText' %>
+  <% when 'public' %>
+    <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+  <% when 'editing' %>
+    <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+  <% when 'qNA' %>
+    <%= link_to "回答を編集する", @item.edit_path, :class => 'btText' %>
+  <% when 'editing' %>
+    <%= link_to "受取待ちに戻す", @item.draft_path, :class => 'btText' %>
+  <% end %>
+  </td>
+<% else %>
+  <td class="docTitle"><%= link_to @item.body ,@item.edit_path %></td>
+<% end %>
+<td class="bbsAttach"><%= raw(@item.str_attache_span) unless @item.str_attache_span.blank? %></td>
+<td class="update"><%= @item.display_editdate %></td>
+</tr>
+
+<% for item in @items %>
+ <tr class="<%= cycle 'article', 'article cycle' %>">
+ <td style="width:65px;"><%= raw(item.status_name) %></td>
+ <td class="group"><%= "#{item.target_user_name}#{item.target_user_code}" %></td>
+ <td><%= item.editor %></td>
+ <td class="docTitle"></td>
+ <td class="bbsAttach"></td>
+ <td class="update"><%= item.display_editdate %></td>
+ </tr>
+<% end %>
+
 </table>
 
 <%= paginate @items %>

@@ -1,22 +1,34 @@
-<% if answer.files.present? && answer.files.any? {|file| !file.is_image} %>
+<%if @title.content_id == 9%>
+<!--用地保証Q&Aのみcontent_id == 9を設定-->
+<%
+@answer_files = answer_attach_files(@answer.id)
+dsp_flag = false
+for item in @answer_files
+  dsp_flag = true unless item.is_image  #画像以外のファイルがある時は表示する
+end unless @answer_files.blank?
+%>
+<%if dsp_flag %>
 <div class="docsInnerBox2">
 <table class="gwboardAttachlist">
 <tr><th colspan="2">添付ファイル名</th></tr>
-<% answer.files.each do |file| %>
-  <%
-  download_url = if @title.upload_system == 1 && @title.upload_system == 2
-    "#{file.file_uri(file.system_name)}"
-  else
-    "/_admin/gwboard/receipts/#{file.id}/download_object?system=#{file.system_name}&title_id=#{file.title_id}"
-  end 
-  %>
-  <% unless file.is_image %>
-    <tr>
-      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
-      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
-    </tr>
-  <% end %>
-<% end %>
+<%
+for item in @answer_files
+  download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 1
+  download_url = "#{item.file_uri(item.system_name)}" if @title.upload_system == 2
+  unless @title.upload_system == 1
+    download_url = "/_admin/gwboard/receipts/#{item.id}/download_object?system=#{item.system_name}&title_id=#{item.title_id}"
+  end unless @title.upload_system == 2
+%>
+<%unless item.is_image %>
+ <tr>
+ <td style="width:30px;" class="attachIcon"><%= link_to('',download_url,:class => item.icon_type) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],download_url) %></td>
+ </tr>
+<%end%>
+<%
+end %>
 </table>
 </div>
-<% end %>
+<%end%>
+
+<%end%>

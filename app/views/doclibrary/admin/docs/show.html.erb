@@ -1,4 +1,4 @@
-<%= render 'show_doc' %>
+<%= render :partial => 'show_doc' %>
 
 <div class="btReturn">
   <%= link_to '一覧へ戻る', "#{doclibrary_docs_path({:title_id=>@title.id})}#{doclib_params_set}" %>

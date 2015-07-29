@@ -11,7 +11,10 @@
 <table class="show">
 <tr>
   <th>文字コード</th>
-  <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %></td>
+  <td>
+    <%= radio_button_tag('item[nkf]', 'sjis',true   ) %><label for="item_nkf_sjis" >SJIS</label>
+    <%= radio_button_tag('item[nkf]', 'utf8',false  ) %><label for="item_nkf_utf8" >UTF8</label>
+  </td>
 </tr>
 <tr>
   <th>対象ファイル</th>

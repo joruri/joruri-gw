@@ -1,6 +1,6 @@
 <%
 fyear_order = "published_at DESC"
-fyears = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 %>
 <%= hidden_field_tag 'pre_fyear'  , @fyed_id %>
 <%= hidden_field_tag 'fyed_id'    , @fyed_id %>

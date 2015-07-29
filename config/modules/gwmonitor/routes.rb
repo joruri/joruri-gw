@@ -1,4 +1,4 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
 
   scope '_admin' do
     resources 'gwmonitor' do
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
       end
     end
   end
-
+    
   namespace :gwmonitor do
     scope :module => :admin do
         resources :docs, :controller => 'menus/docs', :path => ':title_id/docs'
@@ -53,11 +53,11 @@ Rails.application.routes.draw do
 
   resources :gwmonitor,  :controller => 'gwmonitor/admin/menus'
 
-
-  match 'gwmonitor/builders/:id/closed' => 'gwmonitor/admin/builders#closed', :via =>  [:post, :get]
-  match 'gwmonitor/builders/:id/reopen' => 'gwmonitor/admin/builders#reopen', :via =>  [:post, :get]
-  match 'gwmonitor/:title_id/docs/:id/editing_state_setting' => 'gwmonitor/admin/menus/docs#editing_state_setting', :via =>  [:post, :get]
-  match 'gwmonitor/:title_id/docs/:id/draft_state_setting' => 'gwmonitor/admin/menus/docs#draft_state_setting', :via =>  [:post, :get]
-  match 'gwmonitor/:title_id/docs/:id/clone' => 'gwmonitor/admin/menus/docs#clone', :via =>  [:post, :get]
+  
+  match 'gwmonitor/builders/:id/closed' => 'gwmonitor/admin/builders#closed'
+  match 'gwmonitor/builders/:id/reopen' => 'gwmonitor/admin/builders#reopen'
+  match 'gwmonitor/:title_id/docs/:id/editing_state_setting' => 'gwmonitor/admin/menus/docs#editing_state_setting'
+  match 'gwmonitor/:title_id/docs/:id/draft_state_setting' => 'gwmonitor/admin/menus/docs#draft_state_setting'
+  match 'gwmonitor/:title_id/docs/:id/clone' => 'gwmonitor/admin/menus/docs#clone'
 
 end

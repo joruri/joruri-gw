@@ -1,4 +1,4 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "questionnaire"
   scp = "admin"
 

@@ -1,8 +1,9 @@
-<% case params[:state] %>
-<% when 'DRAFT' %>
-  <%= render 'index_draft' %>
-<% when 'DATE' %>
-  <%= render 'index_date' %>
-<% else %>
-  <%= render 'index_normal' %>
-<% end %>
+<%
+is_normal_idx = false
+is_normal_idx = true if params[:state].blank?
+is_normal_idx = true if params[:state].to_s == 'DRAFT'
+%>
+
+<%= render :partial => 'index_normal' if is_normal_idx unless params[:state].to_s == 'DRAFT' %>
+<%= render :partial => 'index_draft' if is_normal_idx if params[:state].to_s == 'DRAFT' %>
+<%= render :partial => 'index_date' unless is_normal_idx %>

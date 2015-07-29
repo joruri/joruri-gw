@@ -1,34 +1,54 @@
+<% # app/views/gw/public/schedules/setting_ind_schedules.html.erb
+@key = 'schedules'
+%>
+
 <div class="piece schedulePiece setting">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-<div class="titleLine">
-  <span class="title">個人設定</span>
-</div><!--titleLine-->
-</div>
-<div class="pieceBodyBody">
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/schedules/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <%= raw(div_notice) -%>
+    <div class="pieceBodyHeader">
+      <div class="titleLine">
+        <span class="title">個人設定</span>
+      </div><!--titleLine-->
+    </div>
+    <div class="pieceBodyBody">
+      <a name="<%= @key -%>"></a>
+      <%= form_for :item, :url => "/gw/schedules/edit_ind_#{@key}", :html => {:method=>:put, :multipart => true} do |f| %>
+        <h4>予定表設定</h4>
+        <table class="show">
+          <tr>
+            <th>
+              月表示の開始曜日
+            </th>
+            <td>
+              <%= raw(radio(f, :month_view_leftest_weekday, Gw.yaml_to_array_for_select('gw_schedules_month_view_leftest_weekday'),
+        {:force_tag => 1, :selected => @item[:month_view_leftest_weekday].to_i})) -%>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              場所の表示
+            </th>
+            <td>
+              <%= raw(radio(f, :view_place_display, [['表示する', 1], ['表示しない', 0]],
+        {:force_tag => 1, :selected => nz(@item[:view_place_display], 0).to_i})) -%>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              ポータル表示設定
+            </th>
+            <td>
+              <%= raw(radio(f, :view_portal_schedule_display, {'0'=>'表示しない', '1'=>'表示する'},
+          {:force_tag => 1, :selected => @item[:view_portal_schedule_display].to_i})) -%>
+            </td>
+          </tr>
+        </table>
+        <%= raw(submit_for(f, {:caption => '保存',:id=>"item_submit_#{@key}"})) -%>
+      <% end -%>
 
-<%= form_for :item, :url => "/gw/schedules/edit_ind_schedules", :html => {method: :put, multipart: true} do |f| %>
-  <h4>予定表設定</h4>
-  <table class="show">
-    <tr>
-      <th>月表示の開始曜日</th>
-      <td><%= radio_button_tags 'item[schedules][month_view_leftest_weekday]', @item.month_view_leftest_weekday_options, @item.month_view_leftest_weekday %></td>
-    </tr>
-    <tr>
-      <th>場所の表示</th>
-      <td><%= radio_button_tags 'item[schedules][view_place_display]', @item.view_place_display_options, @item.view_place_display %></td>
-    </tr>
-    <tr>
-      <th>ポータル表示設定</th>
-      <td><%= radio_button_tags 'item[schedules][view_portal_schedule_display]', @item.view_portal_schedule_display_options, @item.view_portal_schedule_display %></td>
-    </tr>
-  </table>
-  <%= f.submit '保存' -%>
-<% end -%>
-
-</div>
-</div>
+    </div>
+  </div>
 </div>

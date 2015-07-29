@@ -1,0 +1,27 @@
+<br />
+<p class="form">公開日時設定</p>
+
+<table class="show">
+  
+	<tr>
+		<th>表示日時</th>
+    <td><%= f.calendar_date_select :published_at, :class => 'dateTime', :time=> true %></td>
+	</tr><tr>
+    <th>公開開始日時</th>
+    <td>
+    	<%= f.array_text_field 'in_tasks[publish]', :class => 'dateTime',
+        :onchange => "$('hidden_tasks_publish').value = this.value;"
+    	%><%= calendar_date_select_tag nil, item.find_task_by_name(:publish), :class => 'dateTime',
+        :id => "hidden_tasks_publish", :time=> true, :hidden => true, :minute_interval => 15,
+        :onchange => "$('#{f.object_name}_in_tasks_publish').value = this.value;" %></td>
+  </tr><tr>
+    <th>公開終了日時</th>
+    <td>
+    	<%= f.array_text_field 'in_tasks[close]', :class => 'dateTime',
+        :onchange => "$('hidden_tasks_close').value = this.value;" 
+      %><%= calendar_date_select_tag nil, item.find_task_by_name(:close), :class => 'dateTime',
+        :id => "hidden_tasks_close", :time=> true, :hidden => true, :minute_interval => 15,
+        :onchange => "$('#{f.object_name}_in_tasks_close').value = this.value;" %></td>
+  </tr>
+  
+</table>

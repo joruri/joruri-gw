@@ -1,3 +1,4 @@
+
 <% _path = '/_attachs/gwmonitor_base/'%>
 <%
   if @item.blank?
@@ -6,87 +7,54 @@
     mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 
-  user_forms = Gwmonitor::Form.new.find(:all, :order => :sort_no)
-  extra_style = ""
-  extra_style = "display: none;" if @item.form_name != "form002"
-  extra_style = "" if params[:item][:form_id].to_i == 2 if params[:item]
+  _help = Gw::UserProperty.load_gwmonitor_help_links
 %>
 <%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>false}) %>
 
+<%= raw(gw_js_include_full) %>
+
+<div class="notice"><%= flash[:notice] %></div>
+
 <table class="show bbsText">
-  <tr>
-    <th>タイトル<%= raw(required('※')) %></th>
-  </tr>
-  <tr>
-    <td><%= f.text_area :title, :cols => '140', :rows=>"1", :style => 'width:100%; height:40px'%></td>
-  </tr>
+<tr>
+<th>タイトル<%= raw(required('※')) %></th>
+</tr>
+<tr>
+<td><%= f.text_area :title, :cols => '140', :rows=>"1", :style => 'width:100%; height:40px'%></td>
+</tr>
+<tr>
+<th>概要説明</th>
+</tr>
+<tr>
+<td class="mceEditor"><%= f.text_area :caption, :class => 'mceEditor', :style => 'width:100%; height:350px;' %></td>
+</tr>
 </table>
-
-<%= render 'form_wiki_select', f: f %>
-
-<table class="show bbsText" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
-  <tr>
-    <th>概要説明</th>
-  </tr>
-  <tr>
-    <td class="mceEditor"><%= f.text_area :caption, :class => 'mceEditor', :style => 'width:100%; height:350px;' %></td>
-  </tr>
-</table>
-
-<table class="show bbsText" id="wiki_body_table" style="<%= 'display: none;' unless @item.wiki_enabled? -%>">
-  <tr>
-    <th>概要説明</th>
-  </tr>
-  <tr>
-    <td class="wikiEditor">
-      <%= f.text_area :wiki_caption, {:rows => 20, :cols=>40, :class => 'wikiEditor', :style =>'width:100%; height:350px;'} %>
-    </td>
-  </tr>
-</table>
-<%= render 'gwmonitor/admin/tool/base_attachments/form', f: f, item: @item %>
+<%= gwmonitor_base_attachments_form(f, @item) %>
 
 <%= hidden_field_tag("item[state]", @item.state, :id=>"item_state") %>
-<% help_links = Gwmonitor::Property::HelpLink.first_or_new.help_links %>
 <table class="show bbsText">
-  <tr>
-    <th>記事管理設定</th>
-    <td><%= f.select :admin_setting, @item.admin_setting_name, :class => 'admin_setting' %><span class="help"><%=raw help_links[0] %></span></td>
-  </tr>
-  <tr>
-    <th>回答表示設定</th>
-    <td><%= f.select :spec_config, @item.spec_config_name, :class => 'admin_setting' %><span class="help"><%=raw help_links[1] %></span></td>
-  </tr>
-  <tr>
-    <th style="width:180px;">所属全員へのリマインダー表示</th>
-    <td><%= f.select :reminder_start_section, @item.reminder_start_name, :class => 'admin_setting' %><span class="help"><%=raw help_links[2] %></span></td>
-  </tr>
-  <tr>
-    <th>回答期限日時<%= required('※') %></th>
-    <td>
-      <%
-        dd = Gw.date8_to_date(params[:expiry_date], :default=>'')
-        d_load_org = params[:expiry_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
-        @item.expiry_date = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
-      %>
-      <%= f.datetimepicker :expiry_date %>
-    </td>
-  </tr>
-  <tr>
-    <th>回答フォーム設定<%= required('※') %></th>
-    <td>
-      <%= f.collection_select :form_id, user_forms, :id, :form_caption, { include_blank: false, selected: @item.form_id }, { onchange: 'check_option_display();' } %>
-      <span class="help"><%=raw help_links[3] %></span>
-    </td>
-  </tr>
-</table>
+<tr><th>記事管理設定</th>
+<td><%= f.select :admin_setting, @item.admin_setting_name, :class => 'admin_setting'%><span class="help"><%= raw(_help[0]) %></span></td></tr>
+<tr><th>回答表示設定</th>
+<td><%= f.select :spec_config, @item.spec_config_name, :class => 'admin_setting'%><span class="help"><%= raw(_help[1]) %></span></td></tr>
+<tr><th style="width:180px;">所属全員へのリマインダー表示</th>
+<td><%= f.select :reminder_start_section, @item.reminder_start_name, :class => 'admin_setting' %><span class="help"><%= raw(_help[2]) %></span></td></tr>
+<tr><th>回答期限日時<%= required('※') %></th>
+<td>
+<%
+  dd = Gw.date8_to_date(params[:expiry_date], :default=>'')
+  d_load_org = params[:expiry_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
+  d_load = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
+%>
+<%= f.calendar_date_select :expiry_date, :value => d_load, :time => true, :popup => "force" %>
 
-<div id="extraForm" style="<%=extra_style%>">
-  <%= render '/gwmonitor/admin/builders/extra_form' %>
-</div>
+</td>
+</tr>
+</table>
 
 <%= f.hidden_field :send_change, :value => @item.send_change %>
 
-<%= render '/gwmonitor/admin/commissions/form' %>
+<%= render :partial => '/gwmonitor/admin/commissions/form' %>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -99,115 +67,5 @@
     }
     Element.toggle($(changeObjId));
   }
-
-  function check_option_display() {
-    question_type = $("item_form_id").value;
-    option_display(question_type);
-    // alert(question_type );
-  }
-
-  function option_display(idx){
-    if(idx==1){
-      Element.hide($('extraForm'));
-    } else{
-      Element.show($('extraForm'));
-    }
-
-  }
-
-//]]>
-</script>
-
-<script type="text/javascript">
-//<![CDATA[
-  var selected_log = <%= @item.wiki.to_i -%>;
-  function change_body_table() {
-    idx = radio_selected('item[wiki]');
-    if (selected_log == idx-1) {
-      return false; // 処理を中止
-    }
-    msg = "記事入力方式を切り替えることにより、現在の記事の内容は失われます。よろしいですか？";
-    if(window.confirm(msg)){ // 確認ダイアログを表示
-//    return true; // 「OK」時は送信を実行
-      selected_log = idx-1;
-    } else { // 「キャンセル」時の処理
-      if (selected_log == 2) {
-        $('item_wiki_1').checked = true;
-      } else {
-        $('item_wiki_0').checked = true;
-      }
-      return false; // 処理を中止
-    }
-
-    //alert(idx);
-    files_uri = "<%= "#{gwmonitor_base_attachments_path(@item.id)}?title_id=#{@item.id}" -%>"
-
-    if (idx == 2) {
-      Element.hide($('nomal_body_table'));
-      Element.show($('wiki_body_table'));
-      files_uri = files_uri + "&wiki=1"
-      Element.show($('wiki_help'));
-    } else {
-      Element.show($('nomal_body_table'));
-      Element.hide($('wiki_body_table'));
-      Element.hide($('wiki_help'));
-    }
-    tinyMCE.getInstanceById('item_caption').setContent('');
-    $('item_wiki_caption').value = "";
-    var ifm = $('file_attach_form');
-    ifm.src = files_uri;
-  }
-
-//]]>
-</script>
-
-<script type="text/javascript">
-//<![CDATA[
-function wiki_attach_insert(text){
-
-  var body = $('item_wiki_caption');
-  var body_text = $('item_wiki_caption').value;
-
-  if (typeof text == 'undefined') throw 'ArgumentError';
-
-  // カーソル移動位置（#{cursor}）を取得後、削除
-  var cursor = text.indexOf('#{cursor}');
-  if (cursor == -1) cursor = 0;
-  text = text.replace('#{cursor}', '');
-
-  // focusしないとIEでcaptionに挿入されたりする
-  // Firefoxでもボタンで挿入後にfocusが戻らない
-  body.focus();
-
-  // for IE
-  if (document.selection) {
-    // 選択範囲を取得
-    var range = document.selection.createRange();
-
-    // 選択中のテキスト引数textで置き換え（現在のカーソル位置にtextを挿入）
-    range.text = text;
-
-    // 現在のカーソル位置を反映する（これやらないと水の泡）
-    range.select();
-  }
-  // Firefox
-  // inかundefinedあたりで判定しないとselectionStartが0の時ミスる
-  else if ('selectionStart' in body) {
-    // スクロールバーの位置を保存
-    var top = body.scrollTop;
-    // 選択範囲の開始・終了位置を取得
-    var start = body.selectionStart;
-    var end = body.selectionEnd;
-
-    // 開始位置と終了位置の間（現在のカーソル位置）にsを挿入
-    body.value = body.value.slice(0, start) + text + body.value.slice(end);
-
-    // カーソル移動位置に移動させる
-    var index = start + cursor;
-    body.setSelectionRange(index, index);
-    // スクロールバーを戻す
-    body.scrollTop = top;
-  }
-}
 //]]>
 </script>

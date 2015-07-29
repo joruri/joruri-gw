@@ -23,7 +23,8 @@ def group_selection(group)
   if group != @root
     array << [name_with_prefix(group), group.id]
   end
-  enabled_children= group_enabled_children(group.id)
+  enabled_children= System::Group.find(:all,
+    :conditions=>["parent_id = ? AND state = ?",group.id,"enabled"],:order=>:sort_no)
   enabled_children.each do |g|
     array << [name_with_prefix(g), g.id]
   end
@@ -41,14 +42,14 @@ elsif params[:view] == "edit"
 else
  @str = "作成"
 end
-u = Core.user
+u = Site.user
 uid = u.id
 link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{uid}", "cgid=#{params[:cgid]}","dis=#{params[:dis]}"])
 no_user_msg = "次の階層を選択してください。"
 %>
 <div id="schedule_part">
-<%= render '/gw/admin/schedules/smartphone_header' %>
-
+<%=render(:partial => '/gw/admin/schedules/smartphone_header')%>
+<%= div_notice -%>
 <%= form_tag '', :method => :get, :class => 'search', :name => 'groupForm' do %>
   <%= select_tag( 'group_id',options_for_select(group_selection(@group), @group.id) ,:style=>'width:200px;margin-top: 5px;',
      :onchange => 'loadList_display()') %>
@@ -86,7 +87,7 @@ no_user_msg = "次の階層を選択してください。"
       <% session[:mobile][t].each_with_index do |u,idx| %>
       <tr><td>
       <%= submit_tag '削除', :class => 'deleteItem', :name => "deleteMember[#{t}_#{idx}]" %>
-      <%to_user = System::User.where(:id => u).first%>
+      <%to_user = System::User.find_by_id(u)%>
       <%= to_user.display_name unless to_user.blank? %>
       </td></tr>
       <% end %>

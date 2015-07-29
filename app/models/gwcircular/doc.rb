@@ -1,83 +1,309 @@
+# -*- encoding: utf-8 -*-
 class Gwcircular::Doc < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::Doc::Base
-  include Gwboard::Model::Doc::Wiki
-  include Gwcircular::Model::Doc::Auth
+  include Cms::Model::Base::Content
+  include Gwboard::Model::Recognition
   include Gwcircular::Model::Systemname
 
-  acts_as_tree dependent: :destroy
+#  belongs_to :status,    :foreign_key => :state,        :class_name => 'Sys::Base::Status'
+  has_many :files, :foreign_key => :parent_id, :class_name => 'Gwcircular::File', :dependent => :destroy
+  belongs_to :control,   :foreign_key => :title_id,     :class_name => 'Gwcircular::Control'
 
-  attr_accessor :skip_update_commission_count
+  validates_presence_of :state, :able_date, :expiry_date
+  after_validation :validate_title
+  after_save :check_digit, :create_delivery, :update_commission_count, :update_circular_reminder
+  after_destroy :commission_delete
+  attr_accessor :_inner_process
+  attr_accessor :_commission_count
+  attr_accessor :_commission_state
+  attr_accessor :_commission_limit
 
-  has_many :files, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :reminders, :foreign_key => :class_id, :class_name => 'Gw::Circular', :dependent => :destroy
-  has_many :commission_reminders, :foreign_key => :gid, :class_name => 'Gw::Circular', :dependent => :destroy
-  belongs_to :control, :foreign_key => :title_id
-
-  after_create :save_name_with_check_digit
-  with_options unless: :state_preparation? do |f|
-    f.after_save :update_commission_count, unless: :skip_update_commission_count
-    f.with_options if: :doc_type_circular? do |f2|
-      f2.after_save :save_commissions
-      f2.after_save :publish_commissions, if: :state_public?
-    end
-    f.with_options if: :doc_type_commission? do |f2|
-      f2.after_save :disable_commission_reminders
-    end
-  end
-
-  with_options unless: :state_preparation? do |f|
-    f.validates :state, :able_date, :expiry_date, presence: true
-    f.validate :validate_date_order
-    f.with_options if: :doc_type_circular? do |f2|
-      f2.validates :title, presence: { message: "件名を入力してください。" }, length: { maximum: 140, message: "タイトルは140文字以内で記入してください。" }
-      f2.validate :validate_commission_limit
-    end
-    f.with_options if: :doc_type_commission? do |f2|
-      f2.validates :body, length: { maximum: 140, message: "返信内容は140文字以内で記入してください。" }
-    end
-  end
-
-  scope :circular_docs, -> { where(doc_type: 0) }
-  scope :commission_docs, -> { where(doc_type: 1) }
-  scope :abled_docs, ->(time = Time.now) { where(arel_table[:able_date].lteq(time)) }
-  scope :expired_docs, ->(time = Time.now) { where(arel_table[:expiry_date].lt(time)) }
-  scope :with_target_user, ->(user = Core.user) { where(target_user_code: user.code) }
-
-  scope :index_docs_with_params_and_request, ->(params, request) {
-    case params[:cond]
-    when 'unread'
-      commission_docs.abled_docs.with_target_user(Core.user)
-        .where(state: request.mobile? ? 'unread' : %w(unread mobile))
-    when 'already'
-      commission_docs.abled_docs.with_target_user(Core.user)
-        .where(state: request.mobile? ? %w(already mobile) : 'already')
-    when 'owner'
-      circular_docs.abled_docs.with_target_user(Core.user).without_preparation
-    when 'void'
-      circular_docs.expired_docs.with_target_user(Core.user).without_preparation
-    when 'admin'
-      circular_docs.abled_docs.without_preparation
+  def validate_title
+    if self.title.blank?
+      errors.add :title, "件名を入力してください。"
+      self.state = 'draft' unless self._commission_state == 'public'
     else
-      none
-    end
-  }
-  scope :index_order_with_params, ->(params) {
-    case params[:cond]
-    when 'unread', 'already'
-      order(expiry_date: :desc)
-    else
-      order(latest_updated_at: :desc)
-    end
-  }
+      str = self.title.to_s.gsub(/　/, '').strip
+      if str.blank?
+        errors.add :title, "スペースのみのタイトルは登録できません。"
+        self.state = 'draft' unless self._commission_state == 'public'
+      end
+      unless str.blank?
 
-  def doc_type_circular?
-    doc_type == 0
+        s_chk = self.title.gsub(/\r\n|\r|\n/, '')
+        self.title = s_chk
+        if 140 <= s_chk.split(//).size
+          errors.add :title, "件名は140文字以内で記入してください。"
+          self.state = 'draft' unless self._commission_state == 'public'  #入力エラーが発生した時に下書きボタンが消えてしまう現象の対応：送信前が公開以外なら下書きボタンを表示させる
+        end
+      end
+    end if self.doc_type == 0 unless self.state == 'preparation'
+
+    unless self.body.blank?
+      errors.add :body, "返信内容は140文字以内で記入してください。" if 140 <= self.body.split(//).size
+    end if self.doc_type == 1
+
+    if self.able_date > self.expiry_date
+      errors.add :expiry_date, "を確認してください。（期限日が作成日より前になっています。）"
+      self.state = 'draft' unless self._commission_state == 'public'  #入力エラーが発生した時に下書きボタンが消えてしまう現象の対応：送信前が公開以外なら下書きボタンを表示させる
+    end unless self.able_date.blank? unless self.expiry_date.blank?
+
+    if self.doc_type == 0
+      cnt = 0
+      a_grp = []
+      a_usr = []
+      unless self.reader_groups_json.blank?
+        objects = JsonParser.new.parse(self.reader_groups_json)
+        for object in objects
+          a_grp << object[1]
+        end
+      end
+      unless self.readers_json.blank?
+        objects = JsonParser.new.parse(self.readers_json)
+        for obj in objects
+          a_usr << obj[1]
+        end
+      end
+      chk_array = a_grp | a_usr
+      cnt = chk_array.count
+
+      if self._commission_limit < cnt
+        self.state = 'draft' unless self._commission_state == 'public'  #入力エラーが発生した時に下書きボタンが消えてしまう現象の対応：送信前が公開以外なら下書きボタンを表示させる
+        errors.add :state, "配信先に#{cnt}人設定されていますが、回覧人数の制限値を越えています。最大#{self._commission_limit}人まで登録可能です。"
+      end
+    end unless self._commission_limit.blank? unless self.state == 'preparation'
   end
 
-  def doc_type_commission?
-    doc_type == 1
+  def update_circular_reminder
+    return nil unless self._commission_count
+    return nil unless self.doc_type == 1
+
+    Gw::Circular.update_all("state=0", "gid=#{self.id}")
+  end
+
+  def create_delivery
+    return nil unless self._commission_count
+
+    before_create_delivery
+    save_reader_groups_json
+    save_readers_json
+    after_create_delivery
+  end
+
+  def before_create_delivery
+    return nil if self.doc_type == 1
+
+    condition = "title_id=#{self.title_id} AND parent_id=#{self.id} AND doc_type=1"
+    Gwcircular::Doc.update_all("category4_id = 9", condition)
+  end
+
+  def save_reader_groups_json
+    return nil if self._inner_process
+    return nil if self.doc_type == 1
+    unless self.reader_groups_json.blank?
+      objects = JsonParser.new.parse(self.reader_groups_json)
+      objects.each do |object|
+        users = get_user_items(object[1])
+        users.each do |user|
+          create_delivery_data(user)
+        end
+      end
+    end if self.doc_type == 0
+  end
+
+  def save_readers_json
+    return nil if self._inner_process
+    return nil if self.doc_type == 1
+    unless self.readers_json.blank?
+      objects = JsonParser.new.parse(self.readers_json)
+      objects.each do |object|
+        users = get_user_items(object[1])
+        users.each do |user|
+          create_delivery_data(user)
+        end
+      end
+    end if self.doc_type == 0
+  end
+
+  def after_create_delivery
+    return nil if self.doc_type == 1
+
+    item = Gwcircular::Doc.new
+    item.and :state, '!=','already'
+    item.and :title_id,  self.title_id
+    item.and :parent_id, self.id
+    item.and :doc_type, 1
+    item.and :category4_id, 9
+    objcts = item.find(:all)
+    for object in objcts
+      object.state = 'preparation'
+      object.save
+      Gw::Circular.update_all("state=0", "gid=#{object.id}")
+    end
+
+    item = Gwcircular::Doc.new
+    item.and :state, 'preparation'
+    item.and :title_id,  self.title_id
+    item.and :parent_id, self.id
+    item.and :doc_type, 1
+    item.and :category4_id, 0
+    docs = item.find(:all)
+    for doc in docs
+      doc.state = 'draft'
+      doc.save
+      str_title = "<a href=''#{doc.show_path}''>#{self.title}</a>"
+      Gw::Circular.update_all("state=1,title='#{str_title}',ed_at='#{doc.expiry_date.strftime("%Y-%m-%d %H:%M")}'", "gid=#{doc.id}")
+    end
+  end
+
+  def update_commission_count
+    return nil if self._inner_process
+    return nil if self.doc_type == 1 unless self._commission_count
+    self.commission_count_update(self.parent_id) if self.doc_type == 1 if self._commission_count
+    self.commission_count_update(self.id) if self.doc_type == 0
+  end
+
+  def get_custom_group_users(gid)
+    item = Gwcircular::CustomGroup.find_by_id(gid)
+    ret = ''
+    ret = item.readers_json unless item.blank?
+    return ret
+  end
+
+  def get_group_user_items(gid)
+    item = System::User.new
+    item.and "sql", "system_users.state = 'enabled'"
+#    item.and "sql", "system_users.ldap = 1" unless is_vender_user
+    item.and "sql", "system_users_groups.group_id = #{gid}"
+    return item.find(:all,:select=>'system_users.id, system_users.code, system_users.name',:joins=>['inner join system_users_groups on system_users.id = system_users_groups.user_id'],:order=>'system_users.code')
+  end
+
+  def is_vender_user
+    ret = false
+    ret = true if Site.user.code.length <= 3
+    ret = true if Site.user.code == 'gwbbs'
+    return ret
+  end
+
+  def get_user_items(uid)
+    item = System::User.new
+    item.and "sql", "system_users.state = 'enabled'"
+#    item.and "sql", "system_users.ldap = 1" unless is_vender_user
+    item.and "sql", "system_users_groups.user_id = #{uid}"
+    return item.find(:all,:select=>'system_users.id, system_users.code, system_users.name',:joins=>['inner join system_users_groups on system_users.id = system_users_groups.user_id'],:order=>'system_users.code')
+  end
+
+  def create_delivery_data(user)
+    return nil if user.blank?
+    group_code = ''
+    group_name = ''
+    group_code = user.groups[0].code unless user.groups.blank?
+    group_name = user.groups[0].name unless user.groups.blank?
+
+    item = Gwcircular::Doc.new
+    item.and :title_id,  self.title_id
+    item.and :parent_id, self.id
+    item.and :doc_type, 1
+    item.and :target_user_code, user.code
+    doc = item.find(:first)
+    if doc.blank?
+
+      doc_item = Gwcircular::Doc.create({
+        :state => 'draft',
+        :title_id => self.title_id,
+        :parent_id => self.id,
+        :doc_type => 1,
+        :target_user_id => user.id,
+        :target_user_code => user.code,
+        :target_user_name => user.name,
+        :confirmation => self.confirmation,
+        :section_code => group_code,
+        :section_name => group_name,
+        :latest_updated_at => Time.now,
+        :title => self.title,
+        :able_date => self.able_date,
+        :expiry_date => self.expiry_date ,
+        :createdate => self.createdate ,
+        :creater_id => self.creater_id ,
+        :creater => self.creater ,
+        :createrdivision => self.createrdivision ,
+        :createrdivision_id => self.createrdivision_id ,
+        :category4_id => 0
+      })
+      unless doc_item.blank?
+        doc_item.doc_type = 1
+        doc_item.target_user_id = user.id
+        doc_item.target_user_code = user.code
+        doc_item.target_user_name = user.name
+        doc_item.section_code = group_code
+        doc_item.section_name = group_name
+        doc_item.category4_id = 0
+        doc_item.save
+      end
+    else
+
+      doc.confirmation = self.confirmation
+      doc.title = self.title
+      doc.able_date = self.able_date
+      doc.expiry_date = self.expiry_date
+      doc.createdate = self.createdate
+      doc.creater_id = self.creater_id
+      doc.creater = self.creater
+      doc.createrdivision = self.createrdivision
+      doc.createrdivision_id = self.createrdivision_id
+      doc.category4_id = 0
+      doc.save
+
+      if doc.state == 'unread'
+        str_title = "<a href=''#{doc.show_path}''>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>"
+        Gw::Circular.update_all("state=1,title='#{str_title}',ed_at='#{doc.expiry_date.strftime("%Y-%m-%d %H:%M")}'", "gid=#{doc.id}")
+      end
+    end
+  end
+
+  def publish_delivery_data(parent_id)
+
+    item = Gwcircular::Doc.new
+    item.and :title_id,  self.title_id
+    item.and :parent_id, parent_id
+    item.and :state, 'draft'
+    item.and :doc_type, 1
+    docs = item.find(:all)
+    for doc in docs
+      unless doc.category3_id == 1
+        Gwboard.add_reminder_circular(doc.target_user_id.to_s, "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>", "次のボタンから記事を確認してください。<br /><a href='#{doc.show_path}'><img src='/_common/themes/gw/files/bt_addanswer.gif' alt='回覧する' /></a>",{:doc_id => doc.id,:parent_id=>doc.parent_id,:ed_at=>doc.expiry_date.strftime("%Y-%m-%d %H:%M")})
+        doc.category3_id = 1
+      end
+      doc.state = 'unread'
+      doc.save
+    end
+
+    self.commission_count_update(parent_id)
+  end
+
+  def commission_count_update(parent_id)
+
+    condition = "state !='preparation' AND title_id=#{self.title_id} AND parent_id=#{parent_id} AND doc_type=1"
+    commission_count = Gwcircular::Doc.count(:conditions=>condition)
+
+    condition = "state='draft' AND title_id=#{self.title_id} AND parent_id=#{parent_id} AND doc_type=1"
+    draft_count = Gwcircular::Doc.count(:conditions=>condition)
+
+    condition = "state='unread' AND title_id=#{self.title_id} AND parent_id=#{parent_id} AND doc_type=1"
+    unread_count = Gwcircular::Doc.count(:conditions=>condition)
+
+    condition = "state='already' AND title_id=#{self.title_id} AND parent_id=#{parent_id} AND doc_type=1"
+    already_count = Gwcircular::Doc.count(:conditions=>condition)
+
+    item = Gwcircular::Doc.find_by_id(parent_id)
+    return nil if item.blank?
+    item.commission_count = commission_count
+    item.draft_count = draft_count
+    item.unread_count = unread_count
+    item.already_count = already_count
+    item._inner_process = true
+    item.save
   end
 
   def commission_info
@@ -87,6 +313,13 @@ class Gwcircular::Doc < Gw::Database
     return ret
   end
 
+  def commission_delete
+    return unless self.doc_type == 0
+
+    Gwcircular::Doc.destroy_all("parent_id=#{self.id}")
+    Gw::Circular.destroy_all("class_id=#{self.id}")
+  end
+
   def confirmation_name
     return [
       ['簡易回覧：詳細閲覧時自動的に既読にする', 0] ,
@@ -94,61 +327,43 @@ class Gwcircular::Doc < Gw::Database
     ]
   end
 
-  def state_options
-    if self.doc_type_circular?
-      [['下書き','draft'],['配信済み','public']]
-    else
-      [['非通知','preparation'],['配信予定','draft'],['未読','unread'],['携帯で確認','mobile'],['既読','already']]
-    end
-  end
-
-  def state_label
-    if self.doc_type_circular?
-      if self.state == 'public' && self.expiry_date.present? && self.expiry_date < Time.now
-        '期限終了'
-      else
-        state_options.rassoc(self.state).try(:first)
-      end 
-    else
-      if self.state == 'public' && self.expiry_date.present? && self.expiry_date < Time.now
-        '期限切れ'
-      else
-        state_options.rassoc(self.state).try(:first)
-      end
-    end
-  end
-
   def status_name
+    str = ''
     if self.doc_type == 0
-      state_label
-    elsif self.doc_type == 1
-      if self.state == 'unread' || self.state == 'mobile'
-        %(<div align="center"><span class="required">#{state_label}</span></div>).html_safe
-      elsif self.state == 'already'
-        %(<div align="center"><span class="notice">#{state_label}</span></div>).html_safe
-      else
-        state_label
-      end
+      str = '下書き' if self.state == 'draft'
+      str = '配信済み' if self.state == 'public'
+      str = '期限終了' if self.expiry_date < Time.now unless self.expiry_date.blank? if self.state == 'public'
     end
+    if self.doc_type == 1
+      str = '非通知' if self.state == 'preparation'
+      str = '配信予定' if self.state == 'draft'
+      str = '<div align="center"><span class="required">未読</span></div>' if self.state == 'unread'
+      str = '<div align="center"><span class="notice">既読</span></div>' if self.state == 'already'
+      str = '期限切れ' if self.expiry_date < Time.now unless self.expiry_date.blank? if self.state == 'public'
+    end
+    return str
   end
 
-  def status_name_mobile
+  def status_name_csv
+    str = ''
     if self.doc_type == 0
-      state_label
-    elsif self.doc_type == 1
-      if self.state == 'unread' || self.state == 'mobile'
-        %(<span class="required">#{state_label}</span>).html_safe
-      elsif self.state == 'already'
-        %(<span class="notice">#{state_label}</span>).html_safe
-      else
-        state_label
-      end
+      str = '下書き' if self.state == 'draft'
+      str = '配信済み' if self.state == 'public'
+      str = '期限終了' if self.expiry_date < Time.now unless self.expiry_date.blank? if self.state == 'public'
     end
+    if self.doc_type == 1
+      str = '非通知' if self.state == 'preparation'
+      str = '配信予定' if self.state == 'draft'
+      str = '未読' if self.state == 'unread'
+      str = '既読' if self.state == 'already'
+      str = '期限切れ' if self.expiry_date < Time.now unless self.expiry_date.blank? if self.state == 'public'
+    end
+    return str
   end
 
   def already_body
     ret = ''
-    ret = self.body if self.state == 'already' || self.state == 'mobile'
+    ret = self.body if self.state == 'already'
     return ret
   end
 
@@ -162,6 +377,29 @@ class Gwcircular::Doc < Gw::Database
     ret = ''
     ret = self.editdate.to_datetime.strftime('%Y-%m-%d %H:%M') unless self.editdate.blank?
     return ret
+  end
+
+  def public_path
+    if name =~ /^[0-9]{8}$/
+      _name = name
+    else
+      _name = File.join(name[0..0], name[0..1], name[0..2], name)
+    end
+    Site.public_path + content.public_uri + _name + '/index.html'
+  end
+
+  def public_uri
+    content.public_uri + name + '/'
+  end
+
+  def check_digit
+    return true if name.to_s != ''
+    return true if @check_digit == true
+
+    @check_digit = true
+
+    self.name = Util::CheckDigit.check(format('%07d', id))
+    save
   end
 
   def search(params)
@@ -183,14 +421,14 @@ class Gwcircular::Doc < Gw::Database
   def item_home_path
     return "/gwcircular/"
   end
-
+  
   def item_path
     return "#{Site.current_node.public_uri.chop}"
   end
 
   def show_path
     if self.doc_type == 0
-      return "#{self.item_home_path}menus/#{self.id}"
+      return "#{self.item_home_path}#{self.id}"
     else
       return "#{self.item_home_path}docs/#{self.id}"
     end
@@ -206,10 +444,6 @@ class Gwcircular::Doc < Gw::Database
 
   def doc_state_already_update
     return "#{self.item_home_path}docs/#{self.id}/already_update"
-  end
-
-  def doc_state_unread_update
-    return "#{self.item_home_path}docs/#{self.id}/unread_update"
   end
 
   def clone_path
@@ -241,11 +475,20 @@ class Gwcircular::Doc < Gw::Database
   end
 
   def file_export_path
-    return "#{self.item_home_path}#{self.id}/file_exports"
+    if self.doc_type == 0
+      return "#{self.item_home_path}#{self.id}/file_exports"
+    else
+      return '#'
+    end
   end
 
-  def file_export_file_path
-    return "#{self.item_home_path}#{self.id}/file_exports/export_file"
+  def is_date(date_state)
+    begin
+      date_state.to_time
+    rescue
+      return false
+    end
+    return true
   end
 
   def self.json_array_select_trim(datas)
@@ -255,214 +498,5 @@ class Gwcircular::Doc < Gw::Database
       data.reverse!
     end
     return datas
-  end
-
-  def set_creater_editor
-    case
-    when self.doc_type_circular?
-      if self.createdate.blank? || !control.is_admin?
-        self.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-        self.creater_id = Core.user.code
-        self.creater = Core.user.name
-        self.createrdivision = Core.user_group.name
-        self.createrdivision_id = Core.user_group.code
-      end
-    when self.doc_type_commission?
-      if self.editdate.blank? || !control.is_admin?
-        self.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
-        self.editor_id = Core.user.code
-        self.editor = Core.user.name
-        self.editordivision_id = Core.user_group.code
-        self.editordivision = Core.user_group.name
-      end
-    end
-  end
-
-  def duplicate
-    new_doc = self.class.new
-    new_doc.attributes = self.attributes.except(:id)
-    new_doc.unid = nil
-    new_doc.created_at = nil
-    new_doc.updated_at = nil
-    new_doc.recognized_at = nil
-    new_doc.published_at = nil
-    new_doc.state = 'draft'
-    new_doc.category4_id = 0
-    new_doc.name = nil
-    new_doc.latest_updated_at = Core.now
-    new_doc.createdate = nil
-    new_doc.creater_admin = nil
-    new_doc.createrdivision_id = nil
-    new_doc.createrdivision = nil
-    new_doc.creater_id = nil
-    new_doc.creater = nil
-    new_doc.editdate = nil
-    new_doc.editor_admin = nil
-    new_doc.editordivision_id = nil
-    new_doc.editordivision = nil
-    new_doc.editor_id = nil
-    new_doc.editor = nil
-    new_doc.able_date = Time.now.strftime("%Y-%m-%d")
-    new_doc.expiry_date = control.default_published.months.since.strftime("%Y-%m-%d")
-    new_doc.section_code = Core.user_group.code
-    new_doc.section_name = Core.user_group.code + Core.user_group.name
-    new_doc.creater_admin = true
-    new_doc.editor_admin = false
-
-    new_doc.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    new_doc.creater_id = Core.user.code if Core.user.code.present?
-    new_doc.creater = Core.user.name if Core.user.name.present?
-    new_doc.createrdivision = Core.user_group.name if Core.user_group.name.present?
-    new_doc.createrdivision_id = Core.user_group.code if Core.user_group.code.present?
-    new_doc.editor_id = Core.user.code if Core.user.code.present?
-    new_doc.editordivision_id = Core.user_group.code if Core.user_group.code.present?
-    new_doc.creater_admin = control.is_admin?
-    new_doc.editor_admin = control.is_admin?
-
-    return nil unless new_doc.save
-
-    files.each do |file|
-      new_file = file.class.new
-      new_file.attributes = file.attributes.except(:id)
-      new_file.file = Sys::Lib::File::NoUploadedFile.new(file.f_name, filename: file.filename, mime_type: file.content_type)
-      new_file.parent_id = new_doc.id
-      new_file.db_file_id = -1
-      new_file.save!
-
-      new_doc.body = new_doc.body.gsub(file.file_uri('gwcircular'), new_file.file_uri('gwcircular'))
-    end
-
-    new_doc.update_columns(body: new_doc.body) if new_doc.body_changed?
-    new_doc
-  end
-
-  def count_commissions
-    update_columns(
-      commission_count: children.where.not(state: 'preparation').count, 
-      draft_count: children.where(state: 'draft').count, 
-      unread_count: children.where(state: %w(unread mobile)).count, 
-      already_count: children.where(state: 'already').count
-    )
-  end
-
-  private
-
-  def save_name_with_check_digit
-    update_columns(name: Util::CheckDigit.check(format('%07d', self.id))) if self.name.blank?
-  end
-
-  def validate_date_order
-    if self.able_date && self.expiry_date && self.able_date > self.expiry_date
-      errors.add :expiry_date, "を確認してください。（期限日が作成日より前になっています。）"
-    end 
-  end
-
-  def validate_commission_limit
-    return if control.commission_limit.blank?
-
-    users1 = JSON.parse(self.reader_groups_json)
-    users2 = JSON.parse(self.readers_json)
-    count = (users1 + users2).size
-    if control.commission_limit < count
-      errors.add :state, "配信先に#{count}人設定されていますが、回覧人数の制限値を越えています。最大#{control.commission_limit}人まで登録可能です。"
-    end
-  end
-
-  def update_commission_count
-    count_commissions if doc_type_circular?
-    parent.count_commissions if doc_type_commission? && parent
-  end
-
-  def save_commissions
-    before_create_commissions
-    save_reader_groups_json
-    save_readers_json
-    after_create_commissions
-
-    count_commissions
-  end
-
-  def before_create_commissions
-    children.update_all(category4_id: 9)
-  end
-
-  def save_reader_groups_json
-    return if self.reader_groups_json.blank?
-
-    uids = JSON.parse(self.reader_groups_json).map{|o| o[1]}
-    System::User.where(id: uids, state: 'enabled').order(:code).select(:id, :code, :name).all.each do |user|
-      create_commission_for(user)
-    end
-  end
-
-  def save_readers_json
-    return if self.readers_json.blank?
-
-    uids = JSON.parse(self.readers_json).map{|o| o[1]}
-    System::User.where(id: uids, state: 'enabled').order(:code).select(:id, :code, :name).all.each do |user|
-      create_commission_for(user)
-    end
-  end
-
-  def after_create_commissions
-    discard_docs = children.where.not(state: 'already').where(category4_id: 9).all
-    discard_docs.each do |doc|
-      doc.update_columns(state: 'preparation')
-      doc.commission_reminders.update_all(state: 0)
-    end
-  end
-
-  def create_commission_for(user)
-    return nil if user.blank?
-
-    doc = children.where(doc_type: 1, target_user_code: user.code).first ||
-          children.build(doc_type: 1, target_user_code: user.code)
-    if doc.new_record?
-      doc.state = 'draft'
-    else
-      doc.state = 'draft' if doc.state == 'preparation'
-    end
-    doc.title_id ||= self.title_id
-    doc.target_user_id ||= user.id
-    doc.target_user_code ||= user.code
-    doc.target_user_name ||= user.name
-    doc.section_code ||= user.groups.first.try(:code)
-    doc.section_name ||= user.groups.first.try(:name)
-    doc.confirmation = self.confirmation
-    doc.title = self.title
-    doc.able_date = self.able_date
-    doc.expiry_date = self.expiry_date
-    doc.createdate = self.createdate
-    doc.creater_id = self.creater_id
-    doc.creater = self.creater
-    doc.createrdivision = self.createrdivision
-    doc.createrdivision_id = self.createrdivision_id
-    doc.category4_id = 0
-    doc.skip_update_commission_count = true
-    doc.save
-
-    if doc.state == 'unread'
-      title = "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>"
-      doc.commission_reminders.update_all(state: 1, title: title, ed_at: doc.expiry_date)
-    end
-  end
-
-  def publish_commissions
-    children.where(state: 'draft').update_all(state: 'unread')
-
-    children.where(state: 'unread', category3_id: nil).each do |doc|
-      Gwboard.add_reminder_circular(doc.target_user_id.to_s, 
-        "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>", 
-        "次のボタンから記事を確認してください。<br /><a href='#{doc.show_path}'><img src='/_common/themes/gw/files/bt_addanswer.gif' alt='回覧する' /></a>",
-        {:doc_id => doc.id, :parent_id => doc.parent_id, :ed_at => doc.expiry_date.strftime("%Y-%m-%d %H:%M")})
-      doc.update_columns(category3_id: 1)
-    end
-
-    count_commissions
-  end
-
-  def disable_commission_reminders
-    return if self.state == "mobile"
-    commission_reminders.update_all(state: 0)
   end
 end

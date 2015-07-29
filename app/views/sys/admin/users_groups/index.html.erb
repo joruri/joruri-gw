@@ -1,0 +1,37 @@
+<div class="indexTabs">
+<%=link_to 'グループ', sys_groups_path(@parent) %>
+<span>ユーザー</span>
+</div>
+
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+
+<table class="index">
+  <tbody>
+    <tr>
+      <th>詳細</th>
+      <th>ユーザーID</th>
+      <th>氏名</th>
+      <th>役職</th>
+      <th>メールアドレス</th>
+      <th>本務・兼務</th>
+      <th>LDAP同期</th>
+      <th>状態</th>
+    </tr>
+    <% for item in @items %>
+    <tr class="<%= cycle '', 'cycle' %>">
+      <td><%= link_to '詳細', "/_admin/sys/#{item.group_id}/users_groups/#{item.id}" %></td>
+      <td><%= item.user_code %></td>
+      <td><%= safe{item.user.name} %></td>
+      <td><%= safe{item.user.official_position} %></td>
+      <td><%= safe{item.user.email} %></td>
+      <td><%= System::UsersGroup.job_order_show(item.job_order) %></td>
+      <td><%= safe{System::UsersGroup.ldap_show(item.user.ldap)} %></td>
+      <td><%= safe{System::UsersGroup.state_show(item.user.state)} %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @items %>
+<% end %>

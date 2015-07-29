@@ -1,27 +1,64 @@
 <%
+
+@s_finised = nz(params[:s_finished],'1')
+@s_send_cls = nz(params[:s_send_cls], "1")
 sid  = params[:_session_id]
+edit_path   = "/gw/memos/#{@item.id}/edit"
+delete_path = "/gw/memos/#{@item.id}/confirm"
+quote_path  = "/gw/memos/#{@item.id}/quote"
+
 %>
 <hr class="borderDash"/>
-<p class="mobileMemo">
-<img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">
-<%= link_to @item.is_finished? ? "未読に戻す" : "既読にする", {action: :finish} %>
-</p>
-<% if !@item.is_finished? && @item.uid == Core.user.id %>
-<%= link_to "編集", {action: :edit} %>
-<% end %>
-<%= link_to "引用作成", {action: :quote} %>
-<%= link_to '削除', {action: :confirm} %><br />
-時刻　<%= Gw.date_common(@item.ed_at) %><br />
-所属/担当/社名　<%if !@item.fr_group.blank?%><%= convert_for_mobile_body(@item.fr_group, sid) %>の<%end%><br />
-担当者　<%if !@item.fr_user.blank?%><%= convert_for_mobile_body(@item.fr_user, sid) %>様から<%end%><br />
-伝言　<%= convert_for_mobile_body(@item.title, sid) %><br />
-備考　<%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %><br />
+<%if @item.is_finished != 1
+  link_str = "既読にする"
+else
+  link_str = "未読に戻す"
+end%>
+<p class="mobileMemo"><%=link_to link_str, finish_gw_memo_path(@item)%></p>
+<%if @item.is_finished != 1 && @item.uid == Site.user.id%>
+<%=link_to "編集", url_for(edit_path)%>
+<%end%>
+<%=link_to "引用作成", url_for(quote_path)%>
+<%= link_to '削除' , url_for(delete_path) %><br />
+時刻　
+<%time_str = Gw.date_common(@item.ed_at)%>
+<%if (@item.blank? || @item.ed_at.blank?)%>
+  <%= h time_str %>
+  <%else%>
+    <% if (Time.now > @item.ed_at && nz(@item.is_finished,0) != 1)%>
+      <span class="textRed"><%="#{time_str}"%></span>
+    <%else%>
+      <%= time_str%>
+    <%end%>
+<%end%>
+<br />
+所属/担当/社名　<%=(@item.blank? || @item.fr_group.blank?) ? '' : "#{convert_for_mobile_body(@item.fr_group,sid)}の"%><br />
+担当者 <%=(@item.blank? || @item.fr_user.blank?) ? '' : "#{convert_for_mobile_body(@item.fr_user,sid)}様から"%><br />
+伝言　<%= convert_for_mobile_body(@item.title,sid) %><br />
+備考　<%= convert_for_mobile_body(@item.body,sid)  unless @item.body.blank?%><br />
+
 <br />
 送り先<br />
-<% @item.memo_users.each do |mu| %>
-<%= mu.class_id_label %>：<%= "#{mu.uname} (#{mu.ucode})" %><br />
-<% end %>
+<%for memo_user in @item.memo_users
+      begin
+        case memo_user.class_id
+        when 0
+          class_str = 'すべて'
+          name_str = ''
+        when 1
+          class_str = 'ユーザ'
+          to_user = System::User.find(:first, :conditions => "id=#{memo_user.uid}")
+          name_str = to_user.display_name
+        when 2
+          class_str = 'グループ'
+          to_user = System::Group.find(:first, :conditions => "id=#{memo_user.uid}")
+          name_str = to_user.name
+        end
+      rescue
+      end%>
+<%=h class_str%>：<%=h name_str%><br />
+<%end%>
 <hr class="borderDash"/>
 <p class="leftPad2">
-<%= link_to "戻る", {action: :index} %>
-</p>
+<%=link_to "戻る", "/gw/memos/?s_send_cls=#{@s_send_cls}&s_finished=#{@s_finised}"%></p>
+

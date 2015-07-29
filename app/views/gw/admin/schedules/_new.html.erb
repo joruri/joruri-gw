@@ -9,27 +9,25 @@ end
 %>
 
 <div class="piece schedulePiece form">
-<div class="pieceHeader">
-  <%= render '/gw/admin/schedules/piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'form' %>
-</div>
-<div class="pieceBodyBody scheduleform">
+  <div class="pieceHeader">
+    <%= raw(render(:partial => '/gw/admin/schedules/piece_header')) -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= raw(render(:partial => '/gw/admin/schedules/schedule_bt_box', :locals=>{:d=>Date.today, :mode=>'form'})) %>
+    </div>
+    <div class="pieceBodyBody scheduleform">
+      <%= form_for :item,
+        :url => "/gw/schedules?s_date=#{params[:s_date]}&ref=#{params[:ref]}&prop_id=#{params[:prop_id]}&s_genre=#{params[:s_genre]}&o=#{params[:o]}",
+        :html => {:class => class_str, :multipart => true, :id => 'itemForm'} do |f| %>
+      
+      <%= f.error_messages %>
+      <%= render(:partial => 'form', :locals => {:f => f}) %>
 
-<%= form_for :item, :url => "/gw/schedules?s_date=#{params[:s_date]}&ref=#{params[:ref]}&prop_id=#{params[:prop_id]}&s_genre=#{params[:s_genre]}&o=#{params[:o]}",
-  :html => {class: class_str, multipart: true, id: 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <% if @prop_type && @prop_type.restricted == 1 %>
-    <%= render 'form_restricted', f: f %>
-  <% else %>
-    <%= render 'form', f: f %>
-  <% end %>
-  <%= quote_attrs(params) %>
-  <%=raw submit_for_create(f, :js_submitter => 'return my_submit();', :class=>:mockblock) %>
-<% end %>
+      <%= quote_attrs(params) %>
 
-</div>
-</div>
+      <%= raw(submit_for_create(f, :js_submitter => 'my_submit()', :class=>:mockblock)) %>
+      <% end %>
+    </div>
+  </div>
 </div>

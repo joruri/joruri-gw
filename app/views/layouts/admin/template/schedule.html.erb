@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
 <link rel="stylesheet" type="text/css" href="/layout/schedule/style.css" />
 <link rel="stylesheet" type="text/css" href="/_common/themes/gw/css/print_schedule.css" media="print"/>
-<%= render 'layouts/admin/gw/header_tag' %>
+<%= render :partial => 'layouts/admin/gw/header_tag' %>
 </head>
 <body id="page-gw-schedules-<%= params[:action] -%>">
 <div id="container">
-<%= render 'layouts/admin/gw/piece_header' %>
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
 <!--ここからバナー-->
 <div id="banner">
 <div id="bannerBody">
@@ -16,17 +16,9 @@
 </div>
 <!--ここまでバナー-->
 
-<!--ここからナビ-->
-<div id="navi">
-<div id="naviBody">
-</div>
-</div>
-<!--ここまでナビ-->
-
 <!--ここからナビ2-->
 <div id="navi2">
 <div id="navi2Body">
-<%= render 'layouts/admin/gw/notice' %>
 </div>
 </div>
 <!--ここまでナビ-->
@@ -66,7 +58,7 @@
 <!--ここまで右サイド-->
 </div>
 <!--ここまでメインコンテンツ-->
-<%= render 'layouts/admin/gw/piece_footer' %>
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
 </div>
 </body>
 </html>

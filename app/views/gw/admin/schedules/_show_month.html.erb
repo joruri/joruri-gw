@@ -1,68 +1,138 @@
 <%
 @format ||= "%_d"
 week_first_day = @calendar_first_day
+week_cnt = 0
 %>
-<div class="piece schedulePiece monthview">
-<div class="pieceHeader">
-  <%= render '/gw/admin/schedules/piece_header', d: @month_first_day, mode: 'month' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render '/gw/admin/schedules/schedule_header', d: @st_date, mode: 'month' -%>
-</div>
 
-<div class="pieceBodyBody">
-<% if @read -%>
-<table class="<%= @genre %>">
-  <tbody>
-    <tr class="scheduleTableHead weekdayHead">
-      <% 7.times do |i| %>
-        <% wday = (@calendar_first_day + i).wday %>
-        <th class="scheduleData <%= Gw.weekday(wday, 'eh') -%>"><span class="nobr"><%= Gw.weekday(wday) %></span></th>
-      <% end %>
-    </tr>
-    <% @calendar_first_day.step(@calendar_end_day, 7) do |week_first_day| %>
-      <tr class="scheduleTableHead dayHead">
-        <% 7.times do |i| %>
-          <%
-          week_add_day = week_first_day + i
-          day_link = %Q(/gw/schedules/#{(week_add_day).strftime('%Y%m%d')}#{@link_params})
-          %>
-          <th class="<%= create_month_class(week_add_day, @st_date, @holidays, params) %>">
-            <span class="nobr"><%= link_to date_format(@format, week_add_day), day_link %></span>
-          </th>
-        <% end %>
-      </tr>
-      <tr class="scheduleTableBody lineNo1">
-        <% 7.times do |i| %>
-          <%
-          week_add_day = week_first_day + i
-          schedules = @schedules.select {|s| s.date_between?(week_add_day) }
-          holidays = @holidays.select {|h| h.ed_at && h.ed_at.to_date == week_add_day }
-          %>
-          <td class="<%= create_month_class(week_add_day, @st_date, @holidays, params) %>">
-            <!-- schedules -->
-            <%= render '/gw/admin/schedules/show_week_one', schedules: schedules, week_add_day: week_add_day, display_prop: nil if schedules.present? %>
-            <!-- holidays -->
-            <% holidays.each do |holiday| %>
+<div class="piece schedulePiece monthview">
+  <div class="pieceHeader">
+    <%= raw(render :partial => '/gw/admin/schedules/piece_header', :locals=>{:d=>@month_first_day, :mode=>'month'}) -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= raw(render(:partial => '/gw/admin/schedules/schedule_header', :locals=>{:d=>@st_date, :mode=>'month'})) -%>
+      <%= raw(div_notice) -%>
+    </div>
+    <div class="pieceBodyBody">
+      <% if @read -%>
+      <table summary="スケジュール詳細">
+        <tbody>
+          <tr class="scheduleTableHead weekdayHead">
+            <% 7.times do |i| %>
+            <%
+            week_add_day = week_first_day + i
+            wday = (week_add_day).wday
+            class_str = %Q(scheduleData #{Gw.weekday(wday, 'eh')})
+            %>
+            <th class="<%= class_str -%>"><span class="nobr"><%= Gw.weekday(wday) %></span></th>
+            <% end %>
+          </tr>
+          <% while week_first_day <= @calendar_end_day do %>
+          <% week_cnt += 1 %>
+          <tr class="scheduleTableHead dayHead">
+            <% 7.times do |i| %>
+            <%
+            week_add_day = week_first_day + i
+            class_str = create_month_class(week_add_day, @st_date, @holidays, params)
+            if @sp_mode == :schedule
+              day_link = %Q(/gw/schedules/#{(week_add_day).strftime('%Y%m%d')}#{@link_params})
+            else
+              day_link = %Q(/gw/schedule_props/#{(week_add_day).strftime('%Y%m%d')}?s_genre=#{@genre}&cls=#{@cls}#{params[:prop_id]})
+            end
+            %>
+            <th class="<%= class_str -%>"><span class="nobr">
+              <%= link_to(date_format(@format, week_add_day), day_link) -%>
+            </span></th>
+            <% end %>
+          </tr>
+
+          <tr class="scheduleTableBody lineNo1">
+            <% 7.times do |i| %>
+            <%
+            week_add_day = week_first_day + i
+            class_str = create_month_class(week_add_day, @st_date, @holidays, params)
+
+            %>
+            <td class="<%= class_str -%>">
+            <% @schedules.each_with_index do |schedule, j| %> 
+            <%
+            schedule_id = "sche#{schedule.id}_#{i}_#{j}_#{week_cnt}"
+            if schedule.date_between(week_add_day)
+            %>
+
+            <%= render(:partial => '/gw/admin/schedules/show_week_one', 
+              :locals=>{:schedule => schedule, :week_add_day => week_add_day, :schedule_id => schedule_id}) -%>
+
+            <%
+            end
+            %>
+            <% end %>
+
+            <% @holidays.each do |holiday| %> 
+            <%
+            next if holiday.ed_at.nil?
+            if holiday.ed_at.to_date == week_add_day
+            %>
               <div title="<%= holiday.title -%>" class="ind" id="holiday<%= holiday.id -%>">
                 <span class="title"><%= holiday.title -%></span>
               </div>
             <% end %>
-            <!-- edit icon -->
-            <%= show_schedule_edit_icon(week_add_day, uid: @uid) if @edit -%>
-          </td>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<% else %>
-  <%= show_notice %>
-<% end %>
+            <% end %>
+
+            <% if @sp_mode == :schedule && @uid == Site.user.id %>
+            <% @todos.each do |todo| %> 
+            <%
+            next if todo.ed_at.nil?
+            if todo.ed_at.to_date == week_add_day
+            %>
+              <div title="<%= create_todo_tooltip(todo, @ie) -%>" class="ind" id="todo<%= todo.id -%>">
+                <a class="category800" href="/gw/todos/<%= todo.id -%>">
+                  <%= todo.title -%>
+                </a>
+              </div>
+            <% end %>
+            <% end %>
+            <% end %>
+
+            <%
+            if @sp_mode == :schedule
+              if @edit
+                %>
+              <%= show_schedule_edit_icon(week_add_day, :uid=>@uid) -%>
+            <%
+              end
+            elsif @sp_mode == :prop
+              if @is_gw_admin || (@edit && @prop.reserved_state != 0 && @prop.delete_state != 1)
+            %>
+              <%= show_schedule_edit_icon(week_add_day, :prop_id=>params[:prop_id], :s_genre=>params[:s_genre]) -%>
+            <%
+              end
+            end
+            %>
+            </td>
+            <% end %>
+          </tr>
+          <% week_first_day = week_first_day + 7 %>
+          <% end %>
+        </tbody>
+      </table>
+      <% else %>
+        <%= Gw.div_notice('表示する項目はありません') %>
+      <% end %>
+    </div>
+    <div class="pieceBodyFooter">
+      <%= raw(render(:partial => '/gw/admin/schedules/schedule_footer', :locals=>{:d=>@calendar_first_day, :mode=>'month'})) %>
+    </div>
+  </div>
 </div>
-<div class="pieceBodyFooter">
-  <%= render '/gw/admin/schedules/schedule_footer', d: @calendar_first_day, mode: 'month' %>
-</div>
-</div>
-</div>
+
+<%= raw(gw_js_ind_popup) -%>
+
+<script type="text/javascript">
+//<![CDATA[
+  var my_load = function() {
+    gw_js_ind_popup();
+  }
+  window.onload = my_load;
+//]]>
+</script>

@@ -1,5 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
 
   # 研修掲示板の管理者向けツール（掲示板一覧リンクの登録・編集・削除）
   layout "admin/template/sb01_training"
@@ -19,7 +23,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     @items = item.find(:all)
     _index @items
   end
-
+  
   def index_over
     init_params
     @l3_current=nz(params[:l3_c],'02')
@@ -93,7 +97,9 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     bbs_url = @item.bbs_url
     location = @public_uri
     after_process = Proc.new{
-        @item.class.destroy_relation_items(@item.id)
+        destroy_schedule
+        destroy_members_shcedule
+        Gwsub::Sb01TrainingScheduleCondition.destroy_all("training_id = #{@item.id}")
       }
     options = {
       :success_redirect_uri=>location,
@@ -102,11 +108,33 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     _destroy(@item,options)
   end
 
+  def destroy_schedule
+    t_skd = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => "training_id = #{@item.id}")
+    unless t_skd.blank?
+      t_skd.each do |t|
+        skd = Gw::Schedule.find_by_id(t.schedule_id)
+        skd.destroy unless skd.blank?
+        t.destroy
+      end
+    end
+  end
+
+  def destroy_members_shcedule
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "training_id = #{@item.id}")
+    unless skd_m.blank?
+      skd_m.each do |m|
+        skd = Gw::Schedule.find_by_id(m.schedule_id)
+        skd.destroy unless skd.blank?
+        m.destroy
+      end
+    end
+  end
+
   def expired
     init_params
     @item = Gwsub::Sb01Training.find(params[:id])
     @item.state = '4'
-    Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='4'")
+    Gwsub::Sb01TrainingSchedule.update_all("state='4'" ,"training_id=#{@item.id}")
     location = "#{@public_uri}/#{@item.id}"
     options = {
       :success_redirect_uri=>location,
@@ -120,10 +148,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     case @item.state
     when '3'
       @item.state = '2'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='2'")
+      Gwsub::Sb01TrainingSchedule.update_all("state='2'" ,"training_id=#{@item.id}")
     else
       @item.state = '3'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='3'")
+      Gwsub::Sb01TrainingSchedule.update_all("state='3'" ,"training_id=#{@item.id}")
     end
     location = "#{@public_uri}/#{@item.id}"
     options = {
@@ -134,12 +162,12 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
 
   def init_params
     @system ='sb01_training'
-
+    
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
-
+    
     # 対象年度　設定
     @fyed_id = nz(params[:fyed_id],0)
     # 表示行数　設定

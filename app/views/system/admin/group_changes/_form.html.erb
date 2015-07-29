@@ -1,14 +1,19 @@
 <%
-groups_for_selector = System::Group.where(:level_no => 1).order(:sort_no)
-groups              = System::Group.where(:level_no => 2).order(:sort_no)
-groups_objects      = System::Group.order(:sort_no).all
-%>
+def error?(col)
+  @item.invalid?(col) ? 'class="fieldWithErrors"' : ''
+end
 
+groups_for_selector = System::Group.find(:all, :conditions => {:level_no => 1}, :order => :sort_no)
+groups              = System::Group.find(:all, :conditions => {:level_no => 2}, :order => :sort_no)
+groups_objects      = System::Group.find(:all, :order => :sort_no)
+
+%>
+<%= calendar_date_select_includes 'default', :locale => 'ja' %>
 <p class="form">操作</p>
 <table class="show">
   <tr>
     <th><%= @item.locale(:start_date) %></th>
-    <td><%= f.datepicker :start_date %></td>
+    <td><%= calendar_date_select_tag "item[start_date]", @item.start_date, {:popup => "force",:year_range=>5} %></td>
   </tr>
 </table>
 <br />
@@ -68,6 +73,6 @@ function setTarget() {
 <table class="show">
   <tr>
     <th><%= @item.locale(:present_group_id) %></th>
-    <td><span><%= f.select_with_tree :present_group_id, groups, :include_blank => true %></span></td>
+    <td><span <%= error?(:present_group_id) %>><%= f.select_with_tree :present_group_id, groups, :include_blank => true %></span></td>
   </tr>
 </table>

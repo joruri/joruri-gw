@@ -1,2 +1,0 @@
-本製品はIPAフォントを利用しています。
-IPAフォントライセンスは http://ipafont.ipa.go.jp/ipa_font_license_v1.html をご覧ください。

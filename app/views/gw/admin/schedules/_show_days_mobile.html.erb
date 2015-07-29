@@ -2,22 +2,20 @@
 d = @st_date # 初期化処理
 @topdate = @st_date.strftime('%Y%m%d')
 mode = 'week'
-link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{params[:uid].presence || Core.user.id}", "cgid=#{params[:cgid]}","dis=#{@dis}"], {:no_entity => true})
+uid = nz(params[:uid], Site.user.id)
+link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{uid}", "cgid=#{params[:cgid]}","dis=#{@dis}"], {:no_entity => true})
 @format = "%Y年%m月%d日（%_wd）"
 %>
 <hr class="borderDash"/>
-<p class="mobileSchedule">
-<img src="/_common/themes/gw/files/mobile/ic-mobile-schedule.gif">
-<%= link_to "新規作成", "/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, d)}" %></p>
-<%= render '/gw/admin/schedules/mobile_header' %>
+<p class="mobileSchedule"><%=link_to("新規作成", %Q(/gw/schedules/new#{link_params}&s_date=#{date_format(@link_format, d)}))%></p>
+<%=render(:partial => '/gw/admin/schedules/mobile_header')%>
 <p class="leftPad2">
-<% 7.times {|i| %>
-<% date = @st_date + i %>
-<%= link_to "■#{date_format(@format, date)}", "/gw/schedules/#{date.strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}" %><br/>
-<% } %>
+<%7.times { |i|%>
+└<%=link_to(%Q(#{date_format(@format, d+i)}), %Q(/gw/schedules/#{(d+i).strftime('%Y%m%d')}#{link_params}&topdate=#{@topdate}))%><br/>
+<%}%>
 </p>
 <hr class="borderDash"/>
 <p class="leftPad2">
-<%= link_to "<<次週", "/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, d+7)}" %><br />
-<%= link_to "先週>>", "/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, d-7)}" %>
+<%=link_to("<<次週", %Q(/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, d+7)}))%><br/>
+<%=link_to("先週>>", %Q(/gw/schedules/#{link_params}&s_date=#{date_format(@link_format, d-7)}))%>
 </p>

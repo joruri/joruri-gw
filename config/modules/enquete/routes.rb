@@ -1,8 +1,8 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "enquete"
   scp = "admin"
 
-  match 'enquete'             => 'enquete/admin/menus#index', :via =>  [:post, :get]
+  match 'enquete'             => 'enquete/admin/menus#index'
 
   #scope "_#{scp}" do
     namespace mod do

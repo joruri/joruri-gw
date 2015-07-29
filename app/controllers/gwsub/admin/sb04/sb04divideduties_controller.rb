@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子事務分掌表"
   end
@@ -80,7 +81,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     # 所属・担当をまたぐ、兼務追加
     init_params
     # 同一年度・所属・担当（表示用）
-    item1 = Gwsub::Sb04stafflist.where(:id =>params[:show]).first
+    item1 = Gwsub::Sb04stafflist.find_by_id(params[:show])
     return http_error(404) if item1.blank?
 
     item  = Gwsub::Sb04stafflist.new
@@ -178,7 +179,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
   def update
     # 編集（担当変更を含む）
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
 
     # 同一年度・所属・担当（表示用）
     item = Gwsub::Sb04stafflist.new
@@ -249,7 +250,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     # 担当　電話・住所　編集
     init_params
     #編集フォームを表示
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     # 同じ所属・担当のユーザーを取得
@@ -276,7 +277,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     if @item.assignedjobs_id.to_i==0
       @assigned_job = Gwsub::Sb04assignedjob.new
     else
-      @assigned_job = Gwsub::Sb04assignedjob.where(:id =>@item.assignedjobs_id).first
+      @assigned_job = Gwsub::Sb04assignedjob.find_by_id(@item.assignedjobs_id)
       if @assigned_job.blank?
         @assigned_job = Gwsub::Sb04assignedjob.new
       end
@@ -289,7 +290,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     @item = Gwsub::Sb04stafflist.find(params[:id])
     return http_error(404) if @item.blank?
     # 入力データを取得し、担当データ更新
-    assigned_job = Gwsub::Sb04assignedjob.where(:id =>@item.assignedjobs_id).first
+    assigned_job = Gwsub::Sb04assignedjob.find_by_id(@item.assignedjobs_id)
     return http_error(404) if assigned_job.blank?
 
     assigned_job.attributes =params[:assigned_job]
@@ -358,8 +359,8 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
     @u_role = @role_developer || @role_admin
 
     # 電子職員録 主管課権限設定

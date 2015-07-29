@@ -22,30 +22,31 @@
 </script>
 <%=link_to '地図情報を追加',{:action => :new, :system => params[:system], :title_id => params[:title_id], :field_id => params[:field_id]}%><br /><br />
 <table class="list">
-  <tr>
-    <th style="width: 200px; text-align: left;">地図の基準</th>
-    <th style="text-align: left;">メモ</th>
-    <th style="width: 40px; text-align: center;">編集</th>
-    <th style="width: 40px; text-align: center;">確認</th>
-    <th style="width: 40px; text-align: center;">貼付</th>
-    <th style="width: 40px; text-align: center;">削除</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td style="text-align: left;"><%=item.base_info%></td>
-    <td style="text-align: left;"><%=item.memo%></td>
-    <td style="width: 30px; text-align: center;">
-    <%=link_to '編集',{:action => :edit, :id => item.id, :system => item.system_name, :title_id => item.title_id, :field_id => item.field_name}%>
-    </td>
-    <td style="width: 30px; text-align: center;">
-    <%=link_to '確認',item.map_url,:target=>'_blank'%>
-    </td>
-    <td style="width: 30px; text-align: center;">
-    <%=link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => "mceInsertContent('<a href=" + item.map_url + " class=\"" + item.icon_type + "\" Target=""_blank"">" + %Q[#{item.link_memo}] + "</a>'); return false;" %>
-    </td>
-    <td style="width: 30px; text-align: center;">
-    <%=link_to '削除',{:action => :destroy, :id => item.id, :system => params[:system], :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete%>
-    </td>
-  </tr>
+<tr>
+<th style="width: 200px; text-align: left;">地図の基準</th>
+<th style="text-align: left;">メモ</th>
+<th style="width: 40px; text-align: center;">編集</th>
+<th style="width: 40px; text-align: center;">確認</th>
+<th style="width: 40px; text-align: center;">貼付</th>
+<th style="width: 40px; text-align: center;">削除</th>
+</tr>
+<% for item in @items %>
+ <tr>
+ <td style="text-align: left;"><%=item.base_info%></td>
+ <td style="text-align: left;"><%=item.memo%></td>
+ <td style="width: 30px; text-align: center;">
+ <%=link_to '編集',{:action => :edit, :id => item.id, :system => item.system_name, :title_id => item.title_id, :field_id => item.field_name}%>
+ </td>
+ <td style="width: 30px; text-align: center;">
+ <%=link_to '確認',item.map_url,:target=>'_blank'%>
+ </td>
+ <td style="width: 30px; text-align: center;">
+ <%=link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => "mceInsertContent('<a href=" + item.map_url + " class=\"" + item.icon_type + "\" Target=""_blank"">" + %Q[#{item.link_memo}] + "</a>'); return false;" %>
+ </td>
+ <td style="width: 30px; text-align: center;">
+ <%=link_to '削除',{:action => :destroy, :id => item.id, :system => params[:system], :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete%>
+ </td>
+</tr>
 <% end %>
 </table>
+

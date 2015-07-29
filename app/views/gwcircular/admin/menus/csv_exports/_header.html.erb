@@ -1,0 +1,40 @@
+<%
+this_uri = gwcircular_menus_path
+
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab4_class = 'tab'
+str_tab5_class = 'tab'
+str_tab1_class += ' current' if params[:cond].blank?
+str_tab1_class += ' current' if params[:cond] == 'unread'
+str_tab2_class += ' current' if params[:cond] == 'already'
+str_tab3_class += ' current' if params[:cond] == 'owner'
+str_tab4_class += ' current' if params[:cond] == 'void'
+str_tab5_class += ' current' if params[:cond] == 'admin'
+%>
+<%#= render :partial => 'header_help' %>
+<!--掲示板タブ-->
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=str_tab1_class%>"><%= link_to "未読の回覧", "#{this_uri}" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%= link_to "既読の回覧", "#{this_uri}?cond=already" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab3_class%>"><%= link_to "作成した回覧", "#{this_uri}?cond=owner" %></td>
+<!--
+<td class="spaceCenter"></td>
+<td class="<%=str_tab4_class%>"><%= link_to "終了した回覧", "#{this_uri}?cond=void" %></td>
+-->
+<% if @is_admin %>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab5_class%>"><%= link_to "管理者", "#{this_uri}?cond=admin" %></td>
+<% end %>
+<td class="spaceRight">
+</td></tr>
+</tbody>
+</table>
+</div><!--tabBox-->

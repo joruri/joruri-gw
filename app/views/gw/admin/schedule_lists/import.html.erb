@@ -1,0 +1,50 @@
+<%
+location = "#{Site.current_node.public_uri}import"
+%>
+
+<div class="piece prop schedulePiece index">
+
+<div class="pieceHeader">
+  <%= render :partial => 'piece_header' %>
+</div>
+
+<div class="pieceBody">
+
+<div class="pieceBodyHeader">
+  <%= render(:partial => '/gw/admin/schedules/schedule_bt_box', :locals=>{:d=>@st_date, :mode=>'month'}) %>
+  <%# メニュー 置き場 %>
+</div>
+<div class="menu">
+</div>
+<div class="titleLine">
+  <span class="title">スケジュール一覧</span>
+  <span class="linkSpace">
+    <%= required('登録対象CSVファイルを指定して実行してください。') %>
+  </span>
+</div>
+
+<div class="pieceBodyBody">
+<%= div_notice %>
+
+<% form_tag location , {:method=>:post , :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','up') %>
+<table class="show">
+<tr>
+  <th>文字コード</th>
+  <td>
+    <%= radio_button_tag('item[nkf]', 'sjis',true   ) %><label for="item_nkf_sjis" >SJIS</label>
+    <%= radio_button_tag('item[nkf]', 'utf8',false  ) %><label for="item_nkf_utf8" >UTF8</label>
+  </td>
+</tr>
+<tr>
+  <th>対象ファイル</th>
+  <td><%= file_field_tag('item[file]' , :size=>80 , :accept=>'text/csv') %></td>
+</tr>
+</table>
+<br />
+<%= submit_tag 'CSV登録' %>
+<% end %>
+</div>
+
+</div>
+</div>

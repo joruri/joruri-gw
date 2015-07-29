@@ -1,15 +1,16 @@
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
 <%# コード管理メニュー %>
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
-<%= render 'gwsub/admin/sb04/sb04_seating_lists/display_name' -%>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_seating_lists/display_name' -%>
 </div>
 <div class="pieceBody">
+<%= div_notice %>
 <% @action = "create" %>
 <%= form_for :item, :url => "/gwsub/sb04/04/sb04_seating_lists?#{@qs}" ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
-  <%= render 'form', f: f %>
-<% end %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
 </div>
 </div>

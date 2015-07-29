@@ -1,7 +1,0 @@
-<div class="menu">
-<a href="/gw/schedule_events/"><span class="<%= 'current_menu' if @pattern == "week" %>">週間表示</span></a>
-<a href="/gw/schedule_events/?p=month"><span class="<%= 'current_menu' if @pattern == "month" %>">月間表示</span></a>
-<% if @is_ev_admin || @is_gw_admin %>
-<a href="/gw/schedule_event_masters/"><span>主管課マスタ</span></a>
-<% end %>
-</div>

@@ -12,7 +12,7 @@
 <table class="show">
   <tr>
     <th>解決状況</th>
-    <td><%= f.radio_buttons :content_state, @item.resolved_status %></td>
+    <td><%=radio f, :content_state, @item.resolved_status, :class => 'state' %></td>
   </tr>
 
   <% sql = Condition.new %>

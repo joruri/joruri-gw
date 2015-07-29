@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Sys::Lib::Net::Imap
   require 'net/imap'
   

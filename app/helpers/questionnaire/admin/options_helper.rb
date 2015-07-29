@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ############################################################################
 #
 #
@@ -6,11 +7,13 @@
 module Questionnaire::Admin::OptionsHelper
 
   def option_form(form, item)
-    return render 'questionnaire/admin/menus/form_fields/options/form', f: form, item: item
+    #return '' unless item.class.include?(System::Model::Unid::Recognition)
+    return render :partial => 'questionnaire/admin/menus/form_fields/options/form', :locals => {:f => form, :item => item}
   end
 
   def option_view(item)
-    return render 'questionnaire/admin/menus/form_fields/options/view', item: item
+    #return '' unless item.class.include?(System::Model::Unid::Recognition)
+    return render :partial => 'questionnaire/admin/menus/form_fields/options/view', :locals => {:item => item}
   end
 
   def command_addrows(options={})
@@ -19,18 +22,18 @@ module Questionnaire::Admin::OptionsHelper
   end
 
   def option_list_array(id)
-    item = Questionnaire::FormField.where(:id => id).first
+    item = Questionnaire::FormField.find_by_id(id)
     return [] if item.blank?
     return [] if item.option_body.blank?
-    return JSON.parse(item.option_body_json)
+    return JsonParser.new.parse(item.option_body_json)
   end
 
   #
   def option_template_list_array(id)
-    item = Questionnaire::TemplateFormField.where(:id => id).first
+    item = Questionnaire::TemplateFormField.find_by_id(id)
     return [] if item.blank?
     return [] if item.option_body.blank?
-    return JSON.parse(item.option_body_json)
+    return JsonParser.new.parse(item.option_body_json)
   end
 
   def result_text_line_display(field_id)
@@ -90,14 +93,14 @@ module Questionnaire::Admin::OptionsHelper
     ret = ''
     return ret if answer_text.blank?
     answer_text = answer_text.gsub(/\r\n?/, '\\n')
-    field_item = Questionnaire::FormField.where(:id => field_id).first
+    field_item = Questionnaire::FormField.find_by_id(field_id)
     return ret if field_item.blank?
 
     field_groups = answer_group_field_table(field_id)
     ret = %Q[<table class="index" border="0" cellspacing="0" cellpadding="0">]
     ret = "#{ret}#{field_groups[:table_th]}"
     group_values = ''
-    group_values = JSON.parse(answer_text) unless answer_text.blank?
+    group_values = JsonParser.new.parse(answer_text) unless answer_text.blank?
     group_repeat = 0
     group_repeat = field_item.group_repeat unless field_item.group_repeat.blank?
     for i in 1 .. group_repeat
@@ -152,11 +155,11 @@ module Questionnaire::Admin::OptionsHelper
   #通常
   def answer_group_field_table(field_id)
     ret = ''
-    item = Questionnaire::FormField.where(:id => field_id).first
+    item = Questionnaire::FormField.find_by_id(field_id)
     return ret if item.blank?
 
     groups = []
-    groups = JSON.parse(item.group_body_json) unless item.group_body.blank?
+    groups = JsonParser.new.parse(item.group_body_json) unless item.group_body.blank?
     table_th = ''
     for group in groups
       table_th = %Q[#{table_th}<th>#{group['field_label']}</th>]
@@ -168,11 +171,11 @@ module Questionnaire::Admin::OptionsHelper
   #template用
   def answer_group_field_table_template(field_id)
     ret = ''
-    item = Questionnaire::TemplateFormField.where(:id => field_id).first
+    item = Questionnaire::TemplateFormField.find_by_id(field_id)
     return ret if item.blank?
 
     groups = []
-    groups = JSON.parse(item.group_body_json) unless item.group_body.blank?
+    groups = JsonParser.new.parse(item.group_body_json) unless item.group_body.blank?
     table_th = ''
     for group in groups
       table_th = %Q[#{table_th}<th>#{group['field_label']}</th>]

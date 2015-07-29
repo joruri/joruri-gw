@@ -1,45 +1,50 @@
-<div class="piece AdminSetting">
-<%= render 'header' %>
-<%= render 'piece_header' %>
-
+<div class="piece AdminMessage">
+<%
+concat render(:partial => 'header')
+concat render(:partial => 'piece_header')
+%>
 <div class="pieceBody">
-<%= render 'menu' %>
-<%= render 'display_config' %>
-
+<%= render :partial => 'menu' %>
+<%= render(:partial => 'search') %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+<%= render :partial => 'display_config' %>
+<%#if @is_gw_admin == true%>
 <div class="editingBox">
-  <% if @items.blank? %>
-    <span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
-  <% else %>
-    <span class="btEdit"><%= link_to '編集', {action: :new} %></span>
-  <% end %>
+  <%if @items.blank?%>
+    <span class="btNew"><%= link_to '新規作成', '/gw/pref_executive_admins/new' %></span>
+  <%else%>
+    <span class="btEdit"><%= link_to '編集', "/gw/pref_executive_admins/#{@items[0].id}/edit" %></span>
+  <%end%>
 </div>
+<%#end %>
 
-<%= form_tag url_for(action: :sort_update), {method: :put} do %>
-  <%= unique_error_messages_for @items %>
-  <table class="index">
-    <tr>
-      <th style="width: 80px;">並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
-      <th>職名</th>
-      <th>氏名</th>
-      <th style="width: 120px;">Ｇｗに表示</th>
-      <th style="width: 120px;">ＡＩＲに表示</th>
-      <th>状態</th>
-    </tr>
-    <% @items.each do |item| %>
-      <%= fields_for 'item[]', item do |f| %>
-      <tr>
-        <td><%= f.text_field :u_order, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
-        <td><%= item.title %></td>
-        <td><%= item.u_name %></td>
-        <td><%= '表示' if item.is_other_view == 1 %></td>
-        <td><%= '表示' if item.is_governor_view == 1 %></td>
-        <td><%= item.state_label %></td>
-      </tr>
-      <% end %>
-    <% end %>
-  </table>
+<%= form_for :item, :url => "/gw/pref_executive_admins/sort_update", :html => {:method => :put} do |f| %>
+
+<%= f.error_messages %>
+
+<table class="index">
+<tr>
+  <th style="width: 80px;">並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+  <th>職名</th>
+  <th>氏名</th>
+  <th style="width: 120px;">Ｇｗに表示</th>
+  <th style="width: 120px;">ＡＩＲに表示</th>
+  <th>状態</th>
+</tr>
+
+<% for item in @items %>
+<tr>
+  <td><%= f.text_field "sort_no_#{item.id}", :value => item.u_order, :class => 'string sort_no', :style => 'width: 40px;', :size=>5 , :maxlength=>4 %></td>
+  <td><%= item.title %></td>
+  <td><%= item.u_name %></td>
+  <td><%= '表示' if item.is_other_view == 1 %></td>
+  <td><%= '表示' if item.is_governor_view == 1 %></td>
+  <td><%= Gw::PrefExecutive.state_show(item.state) %></td>
 <% end %>
-<%= paginate @items %>
+</table>
 
+<% end %>
+
+<%= paginate @items %>
 </div><!--pieceBody-->
-</div><!--piece AdminSetting-->
+</div><!--piece AdminMessage-->

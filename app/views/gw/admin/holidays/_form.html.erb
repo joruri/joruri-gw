@@ -1,11 +1,16 @@
-<%= required_head -%>
+<%
+style = 'width:30em;'
+%>
+<%= raw(Gw.required_head) -%>
 <table class="show">
   <tr>
-    <th>年月日<%= required -%></th>
-    <td><%= f.date_select_with_picker :st_at %></td>
+    <th>年月日<%= raw(required) -%></th>
+    <td><%= raw(date_picker7 f, 'st_at', :errors=>@item.errors, :mode=>:date, :value=>@item.st_at) -%></td>
   </tr>
   <tr>
-    <th>休日名<%= required -%></th>
-    <td><%= f.text_field :title, :style => 'width:30em;' -%></td>
+    <th>休日名<%= raw(required) -%></th>
+    <td><%= f.text_field("title", :style => style) -%></td>
   </tr>
 </table>
+
+

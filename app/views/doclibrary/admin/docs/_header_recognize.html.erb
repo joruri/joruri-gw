@@ -26,22 +26,24 @@ str_tab3_class += ' current' if params[:state] == 'RECOGNIZE'
 str_tab4_class += ' current' if params[:state] == 'PUBLISH'
 %>
 
-<% if @title.is_writable? %>
+<%if @is_writable%>
+
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-  <tr>
-    <td class="spaceLeft"></td>
-    <td class="<%= str_tab1_class %>"><%= link_to "内容一覧", "#{doclibrary_docs_path(title_id: @title.id)}#{str_state}#{strcat}" %></td>
-    <td class="spaceCenter"></td>
-    <td class="<%= str_tab2_class %>"><%= link_to "下書一覧", "#{doclibrary_docs_path(title_id: @title.id)}&state=DRAFT#{strcat}" %></td>
-    <td class="spaceCenter"></td>
-    <td class="<%= str_tab3_class %>"><%= link_to "承認待ち", doclibrary_docs_path(title_id: @title.id) + "&state=RECOGNIZE" %></td>
-    <td class="spaceCenter"></td>
-    <td class="<%= str_tab4_class %>"><%= link_to "承認済み", doclibrary_docs_path(title_id: @title.id) + "&state=PUBLISH" %></td>
-    <td class="spaceRight"></td>
-  </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=str_tab1_class%>"><%=link_to("内容一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}#{str_state}#{strcat}") %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%=link_to("下書一覧", "#{doclibrary_docs_path({:title_id=>@title.id})}&state=DRAFT#{strcat}") %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab3_class%>"><%=link_to("承認待ち", doclibrary_docs_path({:title_id=>@title.id}) + "&state=RECOGNIZE")%></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab4_class%>"><%=link_to("承認済み", doclibrary_docs_path({:title_id=>@title.id}) + "&state=PUBLISH")%></td>
+<td class="spaceRight"></td>
+</tr>
+</tbody>
 </table>
 </div>
-<% end %>
+
+<%end%>

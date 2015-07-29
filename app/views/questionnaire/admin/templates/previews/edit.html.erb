@@ -1,19 +1,21 @@
 <div class="bbsDocList circular">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
 <div class="pieceBody">
-<%= render 'header_tab' %>
-<%= render 'title_info' %>
+<%= render :partial => 'header_tab' %>
+<%= render :partial => 'title_info' %>
 
-<%= form_for :item, :url => {:action => :update} ,:html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, {:caption=>'回答する'} %>
+<%= form_for :item, :url => questionnaire_template_preview_path(@title, @item) ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= submit_for(f,{:caption=>'回答する'}) %>
+
 <% end %>
 </div>
 
-<div class="btReturn">
-  <%= link_to 'テンプレート管理一覧へ戻る', questionnaire_templates_path %>
-</div>
+<div class="btReturn"><%=link_to('テンプレート管理一覧へ戻る', questionnaire_templates_path) %></div>
 
 </div>

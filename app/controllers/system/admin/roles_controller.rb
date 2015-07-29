@@ -1,23 +1,17 @@
+# encoding: utf-8
 class System::Admin::RolesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    return redirect_to system_roles_path if params[:reset]
-
-    @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_admin || @is_dev
-
-    @role_id = nz(params[:role_id],'0')
-    @priv_id = nz(params[:priv_id],'0')
-
-    search_condition
-
-    Page.title = "権限設定"
+  def initialize_scaffold
+    @css = %w(/layout/admin/style.css)
+    index_path = system_roles_path
+    return redirect_to(index_path) if params[:reset]
   end
-  
+
   def index
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
     item = System::Role.new
     item.page  params[:page], params[:limit]
     item.search params
@@ -28,57 +22,96 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
   end
 
   def show
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
     @item = System::Role.find(params[:id])
   end
 
   def new
-    @item = System::Role.new(:class_id => '1', :priv => '1')
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
+    @item = System::Role.new({
+      :class_id => '1',
+      :priv => '1'})
   end
 
   def create
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
     conv_uidraw_to_uid
     @item = System::Role.new(params[:item])
-
-    _create @item, :success_redirect_uri => "/system/roles?#{@qs}"
+    location = "/system/roles?#{@qs}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _create(@item,options)
   end
 
   def edit
-    @item = System::Role.where(:id => params[:id]).first
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
+    @item = System::Role.find_by_id(params[:id])
   end
 
   def update
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
     conv_uidraw_to_uid
-
-    @item = System::Role.find(params[:id])
+    @item = System::Role.new.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => "/system/roles/#{@item.id}?#{@qs}"
+    location = "/system/roles/#{@item.id}?#{@qs}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _update(@item,options)
   end
 
-  def destroy
-    @item = System::Role.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => "/system/roles?#{@qs}"
-  end 
-
-  def user_fields
-    users = System::User.get_user_select(params[:g_id])
-    render text: view_context.options_for_select(users), layout: false
-  end
-
-private
-
-  def search_condition
-    params[:role_id] = nz(params[:role_id], @role_id)
-
-    qsa = ['role_id' , 'priv_id' , 'role' , 'priv_user']
-    @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
-  end
-
-  def conv_uidraw_to_uid
+  def conv_uidraw_to_uid()
     params[:item]['uid'] = ( params[:item]['class_id'] == '1' ? params[:item]['uid_raw'] : params[:item]['gid_raw']) if nz(params[:item]['class_id'],'') != ''
     params[:item]['group_id'] = ( params[:item]['class_id'] == '1' ? params[:item]['gid_raw'] : '') if nz(params[:item]['class_id'],'') != ''
     params[:item].delete 'uid_raw'
     params[:item].delete 'gid_raw'
   end
+
+  def destroy
+    init_params
+    return authentication_error(403) unless @is_admin || @is_dev
+    @item = System::Role.new.find(params[:id])
+    options = {
+      :success_redirect_uri=>"/system/roles?#{@qs}"
+      }
+    _destroy(@item,options)
+  end
+
+  def init_params
+    @is_dev = System::Role.is_dev?
+    @is_admin = System::Role.is_admin?
+    @role_id = nz(params[:role_id],'0')
+    @priv_id = nz(params[:priv_id],'0')
+
+    Page.title = "権限設定"
+
+    search_condition
+  end
+
+  def search_condition
+    params[:role_id]    = nz(params[:role_id], @role_id)
+#    params[:priv_id]    = nz(params[:priv_id], @priv_id)
+
+    qsa = ['role_id' , 'priv_id' , 'role' , 'priv_user']
+    @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
+  end
+
+  def user_fields
+    users = System::User.get_user_select(params[:g_id])
+    html_select = ""
+    users.each do |value , key|
+      html_select << "<option value='#{key}'>#{value}</option>"
+    end
+
+    respond_to do |format|
+      format.csv { render :text => html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
+  end
+
 end

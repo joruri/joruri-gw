@@ -1,19 +1,19 @@
 <%
 fyear_order = "published_at DESC"
-fyears = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 groups = Gwsub::Sb04section.sb04_group_select(@fyed_id , nil)
 location = "#{@csv_base_url}/csvview"
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 <div class="titleLine">
  <p class="title">電子職員録 出力</p>
 </div>
 </div>
 <div class="pieceBody">
-
+<%= div_notice %>
 <div>
 <span class="explanation">
 電子職員録を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。
@@ -21,38 +21,26 @@ location = "#{@csv_base_url}/csvview"
 </div>
 <br />
 <%= form_tag location, {:method=>:get , :multipart => true} do %>
-<%= hidden_field_tag 'item[file]', 'put' %>
+<%= hidden_field_tag('item[file]','put') %>
 <table class="show">
-  <tr>
-    <th></th>
-    <td>出力条件を選択して実行してください</td>
-  </tr>
-  <tr>
-    <th>出力形式</th>
-    <td>
-      <%= radio_button_tag 'item[form]', 'csv', true, onclick: 'form_csv_switch();' %><label for="item_form_csv">CSV</label>
-      <%= radio_button_tag('item[form]', 'pdf', false, :onclick=>'form_pdf_switch();') %><label for="item_form_pdf">PDF</label>
-    </td>
-  </tr>
-  <tr>
-    <th>年度</th>
-    <td><%= select_tag 'item[fyed_id]', options_for_select(fyears, @fyed_id.to_i), onchange: "get_selects();" %></td>
-  </tr>
-  <tr>
-    <th>所属</th>
-    <td><%= select_tag 'item[grped_id]', options_for_select(groups, @grped_id.to_i) %></td>
-  </tr>
-  <tr>
-   <th>
-    <span id="csv_field">文字コード</span>
-    <span id="pdf_field">幹部のみ</span>
-  </th>
-    <td>
-      <%= radio_button_tag('item[nkf]', 'sjis',true) %><label id="item_nkf_sjis_label" for="item_nkf_sjis">SJIS</label>
-      <%= radio_button_tag('item[nkf]', 'utf8',false) %><label id="item_nkf_utf8_label" for="item_nkf_utf8">UTF8</label>
-      <%= check_box_tag("item[executive]", "1") %>
-    </td>
-  </tr>
+<tr><th></th><td>出力条件を選択して実行してください</td></tr>
+<tr>
+<th>出力形式</th>
+<td>
+<%= radio_button_tag('item[form]', 'csv', true, :onclick=>'form_csv_switch();') %><label for="item_form_csv">CSV</label>
+</td>
+</tr>
+<tr><th>年度</th><td><%= select_tag( 'item[fyed_id]',options_for_select( fyears ,@fyed_id.to_i ) ) %></td></tr>
+<tr><th>所属</th><td><%= select_tag( 'item[grped_id]',options_for_select( groups ,@grped_id.to_i )) %></td></tr>
+<tr>
+<th>
+  <span id="csv_field">文字コード</span>
+</th>
+<td>
+<%= radio_button_tag('item[nkf]', 'sjis',true) %><label id="item_nkf_sjis_label" for="item_nkf_sjis">SJIS</label>
+<%= radio_button_tag('item[nkf]', 'utf8',false) %><label id="item_nkf_utf8_label" for="item_nkf_utf8">UTF8</label>
+</td>
+</tr>
 </table>
 <div class="preserve">
 <%= submit_tag '出力' %>
@@ -61,7 +49,8 @@ location = "#{@csv_base_url}/csvview"
 </div>
 </div>
 
-<script type="text/javascript">
+<%= observe_field "item_fyed_id", :function => "get_selects();" %>
+<script language = "JavaScript" type="text/javascript">
 //<![CDATA[
   var end_cnt = -1;
   function get_selects() {
@@ -70,7 +59,7 @@ location = "#{@csv_base_url}/csvview"
       document.body.style.cursor = 'wait';
       end_cnt = 0;
     }
-    new Ajax.Request("<%= @csv_base_url %>/section_fields?fyed_id=" + fyed_id, {method:'get', onComplete: function(x){
+    new Ajax.Request("<%= @csv_base_url %>section_fields.csv?fyed_id=" + fyed_id, {method:'get', onComplete: function(x){
       $('item_grped_id').update(x.responseText);
       end_cnt = end_cnt + 1;
       if (end_cnt == 1) {
@@ -78,43 +67,5 @@ location = "#{@csv_base_url}/csvview"
       }
     }})
   }
-  var form_pdf_switch = function() {
-    <%# // PDFクリック %>
-    // 非表示
-    Element.hide($('csv_field'));
-    Element.hide($('item_nkf_sjis'));
-    Element.hide($('item_nkf_sjis_label'));
-    Element.hide($('item_nkf_utf8'));
-    Element.hide($('item_nkf_utf8_label'));
-    // 表示
-    Element.show($('pdf_field'));
-    Element.show($('item_executive'));
-  }
-
-  var form_csv_switch = function() {
-    <%# // CSVクリック %>
-    // 非表示
-    Element.hide($('pdf_field'));
-    Element.hide($('item_executive'));
-    // 表示
-    Element.show($('csv_field'));
-    Element.show($('item_nkf_sjis'));
-    Element.show($('item_nkf_sjis_label'));
-    Element.show($('item_nkf_utf8'));
-    Element.show($('item_nkf_utf8_label'));
-
-  }
-
-  var my_load = function() {
-    if ( $('item_form_csv').checked ) {
-      form_csv_switch();
-    } else {
-      form_csv_switch();
-    }
-  }
-
-  window.onload = my_load;
-
-
 //]]>
 </script>

@@ -146,12 +146,7 @@
 .reminder td.plus_update span {
   background-image: url(/_common/themes/gw/files/icon/ic-rem-plus.gif);
 }
-.reminder td.pes span {
-  background-image: url(/_common/themes/gw/files/icon/ic-rem-pes.gif);
-}
-.reminder td.trip span {
-  background-image: url("/_common/themes/gw/files/icon/ic-rem-trip.gif");
-}
+
 
 /* �E�J�����@���̑�
 ----------------------------------------------- */
@@ -275,9 +270,6 @@ table.index th {
 #menu .headLine h3.monitor {
   background-image: url("/_common/themes/gw/files/title/title-electronic-reference.gif");
 }
-#menu .headLine h3.zaimuKaikei {
-  background-image: url("/_common/themes/gw/files/title/title_zaimukaikei_system.gif");
-}
 #menu .headLine .repeat,
 #menu .headLine span.repeat {
   display: block;
@@ -328,18 +320,4 @@ table.index th {
 .adLower img {
   vertical-align: bottom;
 }
-#contentBody .adUpper {
-  background-color: #eee;
-  float: right;
-  margin: 0 0 5px 10px;
-  padding-top: 5px;
-  text-align: center;
-  width: 200px;
-}
-#menuBody .adUpper {
-  background-color: #eee;
-  margin-bottom: 5px;
-  padding-top: 5px;
-  text-align: center;
-  width: 200px;
-}
+

@@ -56,8 +56,8 @@
     </table>
   </div>
 
-<%= render @title.gwbbs_form_name + 'show' %>
-<%#= render '/gwboard/admin/docs/upload_index' unless @title.upload_system == 2 unless @title.upload_system == 1 %>
+<%= render :partial => @title.gwbbs_form_name + 'show' %>
+<%#=render :partial => '/gwboard/admin/docs/upload_index'  unless @title.upload_system == 2 unless @title.upload_system == 1%>
 </div>
 
 <div class="formTitle new">コメント作成</div>

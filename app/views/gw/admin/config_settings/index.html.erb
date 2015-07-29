@@ -1,34 +1,38 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBanner"></div>
+<%= render :partial => 'header_str' %>
+
+<div class="pieceBanner">
+</div>
+
 <div class="pieceBody">
-<%= render 'menu' if @u_role==true || @role_hcs%>
+<%= render :partial => 'menu' if @u_role==true %>
 
 <%# 管理者・編集者には、切替タブを表示 %>
 <%if @u_role == true %>
   <% if @admin_role == true %>
-    <%= render 'tabs_admin' %>
+    <%= render :partial => 'tabs_admin' %>
   <% else %>
-    <%= render 'tabs_editor' %>
+    <%= render :partial => 'tabs_editor' %>
   <% end %>
 <% end %>
 
+<%= div_notice %>
 <% if @u_role ==true %>
   <% if params[:c1].to_i==1 %>
     <% if @admin_role == true %>
       <%# システム管理者用メニュー %>
-      <%= render 'index_admin' %>
+      <%= render :partial => 'index_admin' %>
     <% else %>
       <%# 特定機能の編集者用メニュー %>
-      <%= render 'index_editor' %>
+      <%= render :partial => 'index_editor' %>
     <% end %>
   <% else %>
     <%# 個人設定メニュー %>
-    <%= render 'index_ind' %>
+    <%= render :partial => 'index_ind' %>
   <% end %>
 <% else %>
-  <%# 個人設定メニュー %>
-  <%= render 'index_ind' %>
+    <%# 個人設定メニュー %>
+    <%= render :partial => 'index_ind' %>
 <% end %>
 
 </div>

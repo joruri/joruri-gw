@@ -1,4 +1,4 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
 
 
   match 'gwworkflow',
@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   match 'gwworkflow/show/:id',
     :controller => 'gwworkflow/gwworkflows', :action => :show,    :via => 'get'
-
+    
   match 'gwworkflow/approve/:id',
     :controller => 'gwworkflow/gwworkflows', :action => :approve,    :via => 'get'
   match 'gwworkflow/commit/:id',
@@ -41,14 +41,14 @@ Rails.application.routes.draw do
 
   match 'gwworkflow/ajax_custom_route',
     :controller => 'gwworkflow/gwworkflows', :action => :ajax_custom_route, :via => 'get'
-
+  
   scope '_admin' do
     resources 'gwworkflow' do
       resources :attachments, :controller => 'gwworkflow/admin/attachments'
       resources :export_files, :controller => 'gwworkflow/admin/export_files'
     end
   end
-
+  
   mod = "gwworkflow"
   scp = "admin"
   namespace mod do
@@ -56,7 +56,7 @@ Rails.application.routes.draw do
       resources :itemdeletes
     end
   end
-
+  
   match 'gwworkflow/notifying',
     :controller => 'gwworkflow/settings',    :action => :notifying,    :via => 'get'
   match 'gwworkflow/update_notifying',

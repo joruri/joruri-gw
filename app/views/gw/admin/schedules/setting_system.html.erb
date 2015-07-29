@@ -1,0 +1,25 @@
+<% # app/views/gw/admin/schedules/setting_system.html.erb
+concat <<-EOL
+#{render :partial => '/gw/admin/schedules/header'}
+#{render :partial => '/gw/admin/schedules/header_setting'}
+EOL
+header = <<-EOL
+#{show_notice}
+#{render :partial => '/gw/admin/schedules/piece_header'}
+EOL
+content_for :form do
+  form_for :post, :url => {:action => :create}, :html => {:multipart => true, :id => 'postForm'} do |f|
+    concat <<-EOL
+#{f.error_messages}
+<table class="show">
+  <tr><th><span class="mock">月表示の開始曜日</span></th><td>
+    #{radio f, 'title', opt_schedule_week_1st}
+  </td></tr>
+</table>
+#{submit_for_create f, :class=>'mockblock'}
+EOL
+  end
+end
+body = { :body => @content_for_form }
+concat hhbff_struct(:schedulePiece, :setting, :header=>header, :body=>body)
+%>

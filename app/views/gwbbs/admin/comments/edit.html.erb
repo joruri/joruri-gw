@@ -1,13 +1,13 @@
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <%= form_for :comment, :url => gwbbs_comment_path(@comment,{:title_id=>params[:title_id],:p_id=>params[:p_id]}) + gwbbs_params_set, :html => {:method => :put} do |f| %>
 <%= f.error_messages %>
 
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <div class="submitters">
   <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="登録する" />
   <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
- <%= render 'hidden_form' %>
+ <%= render :partial => 'hidden_form' %>
 </div>
 <div class="btReturn">
   <%=link_to '記事一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>

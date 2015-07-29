@@ -1,0 +1,11 @@
+<%
+titles = Gw.yaml_to_array_for_select 'gw_settings'
+concat <<-EOL
+<div class="menu">
+<p>個人設定</p>
+#{ret=''; titles.each {|x|
+  ret += %Q(#{link_to(x[0], "/gw/schedules/setting_ind_#{x[1]}")})
+}; ret}
+</div>
+EOL
+%>

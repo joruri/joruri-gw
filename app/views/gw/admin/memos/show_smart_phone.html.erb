@@ -1,61 +1,63 @@
 <%
+@s_finised = nz(params[:s_finished],'1')
+send_cls = nz(params[:s_send_cls], 1).to_s
 sid  = params[:_session_id]
 %>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/memos/piece_header' %>
+<%= render :partial => '/gw/admin/memos/piece_header' %>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'search' %>
-<%= render 'tabmenu' %>
+<%= render(:partial => 'search') %>
+<%= memos_tabbox_struct send_cls, @qsa %>
 <div id="contentTable">
-
 <div class="editingBox">
-  <% if !@item.is_finished? && @item.uid == Core.user.id %>
-  <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
-  <% end %>
-  <span class="btQuote"><%= link_to '引用作成', {action: :quote} %></span>
-  <span class="<%= @item.is_finished? ? "btUnread" : "btRead" %>"><%= link_to @item.is_finished? ? "未読に戻す" : "既読にする", {action: :finish} %></span>
-  <span class="btDestroy"><%= link_to "削除する", {action: :destroy}, :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></span>
+<%=raw %Q(<span class="btEdit">#{link_to_edit(@item.id)}</span>) if @item.is_finished != 1 && @item.uid == Site.user.id%>
+<span class="btQuote"><%=link_to '引用作成', "/gw/memos/#{@item.id}/quote" %></span>
+<%if @item.is_finished != 1
+  link_str = "既読にする"
+  link_class = "btRead"
+else
+  link_str = "未読に戻す"
+  link_class = "btUnread"
+end%>
+<span class="<%=link_class%>"><%= link_to link_str, finish_gw_memo_path(@item) %></span>
+<span class="btDestroy"><%= link_to "削除する", gw_memo_path(@item), :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></span>
 </div>
-
+<%= div_notice %>
 <table class="show">
-  <tr>
-    <th>時刻</th>
-    <td><%=l @item.ed_at if @item.ed_at %></td>
-  </tr>
-  <tr>
-    <th>所属/担当/社名</th>
-    <td><%if !@item.fr_group.blank?%><%= convert_for_mobile_body(@item.fr_group, sid) %>の<%end%></td>
-  </tr>
-  <tr>
-    <th>担当者</th>
-    <td><%if !@item.fr_user.blank?%><%= convert_for_mobile_body(@item.fr_user, sid) %>様から<%end%></td>
-  </tr>
-  <tr>
-    <th>伝言</th>
-    <td><%= convert_for_mobile_body(@item.title, sid) %></td>
-  </tr>
-  <tr>
-    <th>備考</th>
-    <td><%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %></td>
-  </tr>
+<tr><th>所属/担当/社名</th><td><%=(@item.blank? || @item.fr_group.blank?) ? '' : "#{convert_for_mobile_body(@item.fr_group,sid)}の"%></td><tr>
+<tr><th>担当者</th><td><%=(@item.blank? || @item.fr_user.blank?) ? '' : "#{convert_for_mobile_body(@item.fr_user,sid)}様から"%></td><tr>
+<tr><th>伝言</th><td><%= convert_for_mobile_body(@item.title,sid) %></td><tr>
+<tr><th>備考</th><td><%= convert_for_mobile_body(@item.body,sid)  unless @item.body.blank?%></td><tr>
 </table>
 <br />
-
 <table class="show">
-  <tr>
-    <th colspan="2">送り先</th>
-  </tr>
-  <% @item.memo_users.each do |mu| %>
-  <tr>
-    <th><%= mu.class_id_label %></th>
-    <td><%= "#{mu.uname} (#{mu.ucode})" %></td>
-  </tr>
-  <% end %>
-</table>
+<tr><th colspan="2">送り先</th></tr>
 
+<%for memo_user in @item.memo_users
+      begin
+        case memo_user.class_id
+        when 0
+          class_str = 'すべて'
+          name_str = ''
+        when 1
+          class_str = 'ユーザ'
+          to_user = System::User.find(:first, :conditions => "id=#{memo_user.uid}")
+          name_str = to_user.display_name
+        when 2
+          class_str = 'グループ'
+          to_user = System::Group.find(:first, :conditions => "id=#{memo_user.uid}")
+          name_str = to_user.name
+        end
+      rescue
+      end%>
+<tr>
+<th><%=h class_str%></th><td><%=h name_str%></td>
+</tr>
+<%end%>
+</table>
 </div>
 </div>
 <div class="pieceBodyBody"></div>

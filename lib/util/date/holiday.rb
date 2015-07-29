@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Util::Date::Holiday
   def self.holiday?(year, month, day, wday = nil)
     #wday = date('w', mktime(0, 0, 0, month, day, year));

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #フォーム情報
 ################################################################################
@@ -6,13 +7,14 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
   include Questionnaire::Model::Database
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート集計システム'
-    @title = Questionnaire::Base.where(:id => params[:title_id]).first
+    @system_title = 'アンケート集計システム'
+    Page.title = @system_title
+    @title = Questionnaire::Base.find_by_id(params[:title_id])
     return http_error(404) unless @title
     @field_lists = ''
-    @field_lists = JSON.parse(@title.form_body_json) unless @title.form_body.size == 0 unless @title.form_body.blank?
+    @field_lists = JsonParser.new.parse(@title.form_body_json) unless @title.form_body.size == 0 unless @title.form_body.blank?
 
   end
 
@@ -35,34 +37,28 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
       @title.save
     end
 
-    item = nil
-    if @title.send_to == 1
-      item = @title.answers.where(section_code: Core.user_group.code).first
-      if item && item.user_code != Core.user.code
-        flash[:notice] = "「#{@title.title}」は既に「#{item.user_name}」さんが所属として回答済みです。"
-        return redirect_to '/enquete/'
-      end
-    else
-      item = @title.answers.where(user_code: Core.user.code).first
+    item = Enquete::Answer.new
+    item.and :title_id, @title.id
+    item.and :user_code, Site.user.code
+    item = item.find(:first)
+    unless item.blank?
+      return redirect_to edit_enquete_answer_path(@title,item) if item.state == 'public'
+      Enquete::Answer.destroy_all("title_id=#{@title.id} AND state IS NULL AND user_code='#{Site.user.code}'")
     end
 
-    if item
-      return redirect_to edit_enquete_answer_path(@title,item) if item.state == 'public'
-      @title.answers.where(state: nil, user_code: Core.user.code).destroy_all
-    end
-    
     @item = Enquete::Answer.new({
       :title_id => @title.id,
       :enquete_division => @title.enquete_division,
-      :user_code => Core.user.code
+      :user_code => Site.user.code
     })
+
   end
 
   def create
     @item = Enquete::Answer.new(params[:item])
 
     @item.title_id = @title.id
-    @item.user_code = Core.user.code
+    @item.user_code = Site.user.code
     @item.enquete_division = @title.enquete_division
 
     @item._field_lists = @field_lists
@@ -76,7 +72,7 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
   def show
     system_admin_flags
 
-    @item = Enquete::Answer.where(:id => params[:id]).first
+    @item = Enquete::Answer.find_by_id(params[:id])
     return http_error(404) unless @item
     user_check(true)
       _show @item
@@ -85,13 +81,13 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
   def edit
     system_admin_flags
 
-    @item = Enquete::Answer.where(:id => params[:id]).first
+    @item = Enquete::Answer.find_by_id(params[:id])
     return http_error(404) unless @item
     user_check
   end
 
   def update
-    @item = Enquete::Answer.where(:id => params[:id]).first
+    @item = Enquete::Answer.find_by_id(params[:id])
     return http_error(404) unless @item
     user_check
 
@@ -109,24 +105,24 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
   def user_check(is_show=nil)
     params[:cond] = 'already' unless @item.state.blank?
     return http_error(404) unless @item.title_id == @title.id
-    return http_error(404) unless @item.user_code == Core.user.code
+    return http_error(404) unless @item.user_code == Site.user.code
     return redirect_to enquete_answer_path(@title, @item) if @item.base.state == 'closed' unless is_show
   end
 
   def public_seal
-    @item = Enquete::Answer.where(:id => params[:id]).first
+    @item = Enquete::Answer.find_by_id(params[:id])
     return http_error(404) unless @item
     user_check
 
-    #@item.attributes = params[:item]
+    @item.attributes = params[:item]
 
     @item.state = 'public'
 
-    @item.user_name = Core.user.name
-    @item.l2_section_code = Core.user_group.parent.code unless Core.user_group.parent.blank?
-    @item.section_code = Core.user_group.code
-    @item.section_name = Core.user_group.name
-    @item.section_sort = Core.user_group.sort_no
+    @item.user_name = Site.user.name
+    @item.l2_section_code = Site.user_group.parent.code unless Site.user_group.parent.blank?
+    @item.section_code = Site.user_group.code
+    @item.section_name = Site.user_group.name
+    @item.section_sort = Site.user_group.sort_no
 
     @item.createdate = @title.createdate
     @item.creater_id = @title.creater_id
@@ -135,10 +131,10 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
     @item.createrdivision_id = @title.createrdivision_id
 
     @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.editor_id = Core.user.code
-    @item.editor = Core.user.name
-    @item.editordivision = Core.user_group.name
-    @item.editordivision_id = Core.user_group.code
+    @item.editor_id = Site.user.code
+    @item.editor = Site.user.name
+    @item.editordivision = Site.user_group.name
+    @item.editordivision_id = Site.user_group.code
 
     @item.enquete_division = @title.enquete_division
     @item.able_date = @title.able_date
@@ -179,7 +175,7 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
     for fld in items
       field_name_array =[]
       groups = []
-      groups = JSON.parse(fld.group_body_json) unless fld.group_body.blank?
+      groups = JsonParser.new.parse(fld.group_body_json) unless fld.group_body.blank?
       field = Hash::new
       group_repeat = fld.group_repeat
       for group in groups
@@ -211,9 +207,9 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
         field[field_name] = field_arr
         field_name_array << field_name
       end
-      @item[fld.field_name] = JSON.generate(field)
+      @item[fld.field_name] = JsonBuilder.new.build(field)
       group_values = ''
-      group_values = JSON.parse(@item[fld.field_name]) unless @item[fld.field_name].blank?
+      group_values = JsonParser.new.parse(@item[fld.field_name]) unless @item[fld.field_name].blank?
 
       is_all_blank = true
       for fieldname in field_name_array

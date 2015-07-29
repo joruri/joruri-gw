@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_props/show.html.erb</p>%>
 <%
 options1 ={ 'table_name' => 'gwsub_sb01_trainings' ,  :action=>'bbs_show' }
 options1['field_td_criteria'] = {
@@ -19,16 +20,16 @@ delete_path = "/gwsub/sb01/sb01_training_schedule_members/#{@item.id}?t_id=#{@t_
 end
 today = Time.now
 deletable = false
-deletable = true if @item.entry_user_id == Core.user.id             # 申込者は取消可
-deletable = true if @item.entry_group_id == Core.user_group.id      # 申込所属は取消可
-deletable = true if @item.training_user_id == Core.user.id          # 受講者は取消可
-deletable = true if @item.training_group_id == Core.user_group.id   # 受講者所属は取消可
+deletable = true if @item.entry_user_id == Site.user.id             # 申込者は取消可
+deletable = true if @item.entry_group_id == Site.user_group.id      # 申込所属は取消可
+deletable = true if @item.training_user_id == Site.user.id          # 受講者は取消可
+deletable = true if @item.training_group_id == Site.user_group.id   # 受講者所属は取消可
 deletable = false if @ts.state.to_i == 3                            # 開催日単位で締切では、不可
 deletable = false if @item1.state.to_i > 2                          # 研修単位で締切では、不可
 unless @ts.from_start.blank?
   deletable = false if @ts.from_start < today # 「終了」（開催日が過ぎている場合は不可）
 end
-deletable = true if @item1.group_id == Core.user_group.id           # 研修企画所属はいつでも取消可
+deletable = true if @item1.group_id == Site.user_group.id           # 研修企画所属はいつでも取消可
 deletable = true if @u_role==true                                   # システム管理者はいつでも取消可
 -%>
 <div class="gwsub sb01">
@@ -36,46 +37,46 @@ deletable = true if @u_role==true                                   # システ�
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/menu' %>
 </div>
 <div class="pieceBody">
 <br />
 <div class="titleLine"><p class="date_title">研修内容</p></div>
-<%= render 'training_show' %>
+<%= render :partial => 'training_show' %>
 <!--<div class="titleLine"><p class="date_title">開催場所・日時</p></div>
-<%#= render 'schedule_show' %>-->
+<%#= render :partial => 'schedule_show' %>-->
 <div class="btReturn">
   <%= link_to '開催日一覧に戻る' ,url_for(show_path) %>
 </div>
 <div class="titleLine"><p class="date_title">受講者</p></div>
-
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <div class="editingBox leftSide">
 <span class="btPropCancel"><%= link_to '申込取消'  ,url_for(delete_path) ,:confirm=>"申込を取り消します。よろしいですか？" ,:method=>:delete if deletable==true %></span>
 </div>
 <table class="show leftSide">
 <tr>
   <th>受講者所属</th>
-  <td><%= @item.group_rel1.name%></td>
+  <td><%=h @item.group_rel1.name%></td>
 </tr>
 <tr>
   <th>受講者</th>
-  <td><%= @item.user_rel1.name%></td>
+  <td><%=h @item.user_rel1.name%></td>
 </tr>
 <tr>
   <th>連絡先電話番号</th>
-  <td><%= @item.training_user_tel %></td>
+  <td><%=h @item.training_user_tel %></td>
 </tr>
 <tr>
   <th>申込者所属</th>
-  <td><%= @item.group_rel2.name%></td>
+  <td><%=h @item.group_rel2.name%></td>
 </tr>
 <tr>
   <th>申込者</th>
-  <td><%= @item.user_rel2.name%></td>
+  <td><%=h @item.user_rel2.name%></td>
 </tr>
 <tr>
   <th>連絡先電話番号</th>
-  <td><%= @item.entry_user_tel %></td>
+  <td><%=h @item.entry_user_tel %></td>
 </tr>
 </table>
 <div class="btReturn">

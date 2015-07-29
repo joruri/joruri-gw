@@ -1,5 +1,10 @@
-<div class="navi">
-<%= link_to "LDAP", system_ldap_groups_path(0) %>
+<%
+
+return render(:text => "") unless Core.ldap.connection
+
+%><div class="navi">
+
+<%= link_to "LDAP", sys_ldap_groups_path(0) %>
 
 <% @parents.each do |p| %>
 &gt; <%= link_to h(p.ou), url_for(:action => :index, :parent => p.ou) %>

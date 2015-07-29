@@ -10,47 +10,48 @@ strparam += "&cat=#{params[:cat]}" unless params[:cat].blank?
 strparam = "?title_id=#{params[:title_id]}#{strparam}"
 fileparam = "?title_id=#{params[:title_id]}"
 str_state = "&state=#{params[:state]}" unless params[:state] == 'DRAFT' unless params[:state].blank?
+
+folder_edit_path = ''
+folder_edit_path = "/doclibrary/folders/#{params[:cat]}/edit?title_id=#{@title.id}&state=CATEGORY&cat=#{params[:cat]}" unless params[:cat].to_s == '1' unless params[:cat].blank?
 %>
 <%#右上バナー%>
 <% if false %>
-  <div class="rightBanner"><%= @title.banner %></div>
+<div class="rightBanner">
+<%= @title.banner %>
+</div>
 <% end %>
 
 <% case params[:state] %>
 <% when 'CATEGORY', 'DATE' %>
-  <%= render 'folder_name' if @title.form_name != 'form002' %>
+  <%= render :partial => 'folder_name' if @title.form_name != 'form002' %>
 <% else %>
   <div class="navi"></div>
 <% end %>
 
-<% if @title.is_writable? %>
-<div class="editingBox">
-  <span class="btNewFile"><%= link_to "ファイル追加", "/doclibrary/docs/new" + strparam %></span>
-  <% if params[:state] == 'CATEGORY' %>
-    <% if @title.is_admin? %>
-      <span class="btNewFolder"><%= link_to "フォルダ追加", "#{folder_path}/new#{strparam}" %></span>
-      <% if @parent && @parent.editable? %>
-        <span class="btEditFolder"><%= link_to "フォルダ編集", "/doclibrary/folders/#{params[:cat]}/edit?title_id=#{@title.id}&state=CATEGORY&cat=#{params[:cat]}" %></span>
-      <% end %>
-      <% if @parent && @parent.deletable? %>
-        <span class="btDestroyFolder"><%= link_to "フォルダ削除", "/doclibrary/folders/#{params[:cat]}?title_id=#{@title.id}&state=CATEGORY&cat=#{params[:cat]}", confirm: '削除をすると元に戻せません。また、このフォルダ以下のフォルダ及びファイルが削除されます。削除しますか？', method: :delete %></span>
-      <% end %>
-    <% end %>
-  <% end %>
+<%if @is_writable%>
+ <div class="editingBox">
+ <span class="btNewFile"><%=link_to("ファイル追加", "/doclibrary/docs/new" + strparam) %></span>
+<%if params[:state] == 'CATEGORY'%>
+ <% if @is_admin %>
+ <span class="btNewFolder"><%=link_to("フォルダ追加", "#{folder_path}/new#{strparam}")%></span>
+ <%unless folder_edit_path.blank?%>
+  <span class="btEditFolder"><%=link_to("フォルダ編集", "#{folder_edit_path}")%></span>
+ <%end%>
+ <%end%>
+<%end%>
+<% if @title.form_name == 'form002' %>
+<span class="btNewDoc"><%=link_to("文書追加", "/doclibrary/categories/new" + fileparam)%></span>
+<span class="docLink"><%=link_to("文書一覧へ >>", "/doclibrary/categories" + fileparam)%></span>
+<%end%>
 
-  <% if @title.form_name == 'form002' %>
-    <span class="btNewDoc"><%= link_to "文書追加", "/doclibrary/categories/new" + fileparam %></span>
-    <span class="docLink"><%= link_to "文書一覧へ >>", "/doclibrary/categories" + fileparam %></span>
-  <% end %>
+<%if @title.use_recognize%>
+ <%#=link_to("【記事管理】", "/doclibrary/adms?title_id=#{params[:title_id]}&state=#{params[:state]}") %>
+<%end%>
+ </div>
+<%end%>
 
-  <% if @title.use_recognize? %>
-    <%#=link_to("【記事管理】", "/doclibrary/adms?title_id=#{params[:title_id]}&state=#{params[:state]}") %>
-  <% end %>
-</div>
-<% end %>
-
-<% if @title.use_recognize? %>
-  <%= render 'header_recognize' %>
-<% else %>
-  <%= render 'header_normal' %>
-<% end %>
+<%if @title.use_recognize%>
+<%=render(:partial => 'header_recognize')%>
+<%else%>
+<%=render(:partial => 'header_normal')%>
+<%end%>

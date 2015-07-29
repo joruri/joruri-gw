@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01Training < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fyear    ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
   belongs_to :group    ,:foreign_key=>:group_id      ,:class_name=>'System::Group'
@@ -25,20 +26,13 @@ class Gwsub::Sb01Training < Gwsub::GwsubPref
 #  before_create :before_create_setting_columns
   before_update :before_update_setting_columns
 
-  def get_bbs_item(title_id=nil)
-    return nil if title_id.blank?
-    item = Gwbbs::Doc.where(:id => self.bbs_doc_id, :title_id => title_id).first
+  def self.is_dev?(uid = Site.user.id)
+    System::Model::Role.get(1, uid ,'gwsub', 'developer')
   end
-
-  def self.is_dev?(user = Core.user)
-    user.has_role?('gwsub/developer')
+  def self.is_admin?(uid = Site.user.id)
+    System::Model::Role.get(1, uid ,'sb01', 'admin')
   end
-
-  def self.is_admin?(user = Core.user)
-    user.has_role?('sb01/admin')
-  end
-
-  def self.is_editor?(org_code , g_code = Core.user_group.group_code)
+  def self.is_editor?(org_code , g_code = Site.user_group.group_code)
     return false unless g_code.to_s == org_code.to_s
     return true
   end
@@ -152,40 +146,4 @@ class Gwsub::Sb01Training < Gwsub::GwsubPref
 
     return self
   end
-
-  def self.destroy_relation_items(id)
-    destroy_attaches(id)
-    destroy_schedule(id)
-    destroy_members_shcedule(id)
-    Gwsub::Sb01TrainingScheduleCondition.destroy_all(:training_id => id)
-    Gwsub::Sb01TrainingSchedule.destroy_all(:training_id => id)
-    Gwsub::Sb01TrainingScheduleMember.destroy_all(:training_id => id)
-  end
-
-  #研修を削除したときにその研修に日もづいているUploadファイルも削除する
-  def self.destroy_attaches(id)
-    attached_files = Gwsub::Sb01TrainingFile.where(:parent_id=>id)
-    attached_files.each do | af |
-      af.delete_attached_folder
-      af.destroy
-    end
-  end
-
-  def self.destroy_schedule(id)
-    t_skd = Gwsub::Sb01TrainingSchedule.where(:training_id => id)
-    unless t_skd.blank?
-      schedule_ids = t_skd.map{|x| x.schedule_id}
-      Gw::Schedule.destroy_all(:id => schedule_ids) unless schedule_ids.blank?
-    end
-  end
-
-  def self.destroy_members_shcedule(id)
-    skd_m = Gwsub::Sb01TrainingScheduleMember.where(:training_id => id)
-    unless skd_m.blank?
-      schedule_ids = skd_m.map{|x| x.schedule_id}
-      Gw::Schedule.destroy_all(:id => schedule_ids) unless schedule_ids.blank?
-    end
-  end
-
-
 end

@@ -1,15 +1,19 @@
+# -*- encoding: utf-8 -*-
 class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+  include Gwboard::Controller::Scaffold
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
+  include Gwboard::Controller::Message
 
-  def pre_dispatch
+  def initialize_scaffold
     @title = nil
-    @title = Gwbbs::Theme.where(:id => params[:id]).first unless params[:id].blank?
+    @title = Gwbbs::Theme.find_by_id(params[:id]) unless params[:id].blank?
     params[:tid] = ''
     css_path = ''
     unless @title.blank?
       params[:tid] = @title.board_id
       css_path = "#{@title.board_css_preview_url}/#{@title.board_id}.css"
-      item = Gwboard::Theme.where(:id => @title.theme_id).first
+      item = Gwboard::Theme.find_by_id(@title.theme_id)
       f_path = "#{@title.board_css_preview_path}/#{@title.board_id}.css"
       item.theme_css_create(f_path)
     end
@@ -53,7 +57,7 @@ class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
       @item.state = 'public'
       @item.content_id = 7
 
-      item = Gwboard::Theme.where(:id => @item.theme_id).first
+      item = Gwboard::Theme.find_by_id(@item.theme_id)
       f_path = "#{@item.board_css_file_path}/#{@item.board_id}.css"
       item.theme_css_create(f_path)
 
@@ -64,11 +68,11 @@ class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
   end
 
   def show
-    @item = Gwbbs::Theme.where(:id => params[:id]).first
+    @item = Gwbbs::Theme.find_by_id(params[:id])
   end
 
   def edit
-    @item = Gwbbs::Theme.where(:id => params[:id]).first
+    @item = Gwbbs::Theme.find_by_id(params[:id])
     return http_error(404) unless @item
     gen_select_data(@item)
 
@@ -90,7 +94,7 @@ class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
       @item.state = 'public'
       @item.content_id = 7
 
-      item = Gwboard::Theme.where(:id => @item.theme_id).first
+      item = Gwboard::Theme.find_by_id(@item.theme_id)
       f_path = "#{@item.board_css_file_path}/#{@item.board_id}.css"
       item.theme_css_create(f_path)
 
@@ -122,34 +126,36 @@ class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
     hide = true if params[:state] == "HIDE"
 
     sql = Condition.new
-    sql.and "gwbbs_controls.state", 'public'
-    sql.and "gwbbs_controls.view_hide", 0 if hide
-    sql.and "gwbbs_controls.view_hide", 1 unless hide
-    sql.and {|d|
-      d.or {|d2|
-        d2.and "gwbbs_roles.role_code", 'a'
-        d2.and "gwbbs_roles.user_code", Core.user.code
-      }
-      d.or {|d2|
-        d2.and "gwbbs_roles.role_code", 'a'
-        d2.and "gwbbs_roles.user_id", 'IS', nil
-        d2.and "gwbbs_roles.group_code", Core.user_group.code
-      }
+    sql.or {|d|
+      d.and "sql", "gwbbs_controls.state = 'public'"
+      d.and "sql", "gwbbs_controls.view_hide = 0" if hide
+      d.and "sql", "gwbbs_controls.view_hide = 1" unless hide
+      d.and "sql", "gwbbs_adms.user_code = '#{Core.user.code}'"
     }
-    join = "INNER JOIN gwbbs_roles ON gwbbs_controls.id = gwbbs_roles.title_id"
+
+    sql.or {|d|
+      d.and "sql", "gwbbs_controls.state = 'public'"
+      d.and "sql", "gwbbs_controls.view_hide = 0" if hide
+      d.and "sql", "gwbbs_controls.view_hide = 1" unless hide
+      d.and "sql", "gwbbs_adms.user_id = 0"
+      d.and "sql", "gwbbs_adms.group_code = '#{Core.user_group.code}'"
+    }
+    join = "INNER JOIN gwbbs_adms ON gwbbs_controls.id = gwbbs_adms.title_id"
     item = Gwbbs::Control.new
     item.page   params[:page], params[:limit]
     @select_bbs = item.find(:all, :joins=>join, :conditions=>sql.where,:order => 'sort_no, id', :group => 'gwbbs_controls.id').map{|u| [u.title, u.id]}
   end
 
   def gen_select_data(theme=nil)
-    if Gwbbs::Control.is_sysadm?
+    admin_flags('_menu')
+    if @is_sysadm
       sysadm_index
     else
       bbsadm_index
     end
 
     item = Gwboard::Theme.new
+    dump "theme.id:#{theme.theme_id }" unless theme.blank?
     item.and 'id', '!=' , theme.theme_id  unless theme.blank?
     item.and :content_id, '>=' , 3
     item.page params[:page], params[:limit]

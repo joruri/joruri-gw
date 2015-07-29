@@ -1,0 +1,29 @@
+<%
+if @count == 0
+  disabled = true
+else
+  disabled = false
+end
+%>
+<div class="piece AdminSetting AdminUsers">
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => '/system/admin/users/csv_menu' %>
+    <%= div_notice %>
+
+    <h3>CSV登録反映</h3>
+    <div class="user_explanation">
+      CSV仮データについて、ユーザーおよびグループの情報として正式に登録します。現在のユーザーおよびグループの情報は上書きされます。<br />
+      また、現在のユーザーの中で、CSV仮データには存在しないユーザーおよびグループは、無効化されますので、ご注意ください。<br />
+      現在のユーザー情報はバックアップをお願いします。
+    </div>
+    <%= form_for :item, :url => "#{csvset_system_users_path}?do=synchro", :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
+    <%= hidden_field_tag('item[csv]','set') %>
+    <%= f.error_messages %>
+    <div class="submitters">
+      <%= submit_tag 'CSV登録反映', :confirm => "CSV仮データを実際のユーザー情報として登録します。現在のユーザー情報は上書きされます。", :disabled => disabled %>
+    </div>
+    <% end %>
+  </div>
+</div>

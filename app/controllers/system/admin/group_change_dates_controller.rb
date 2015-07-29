@@ -1,17 +1,18 @@
+# encoding: utf-8
 class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "開始日設定"
     @role_developer  = System::User.is_dev?
     @role_admin      = System::User.is_admin?
     @role_editor     = System::User.is_editor?
     @u_role = @role_developer || @role_admin || @role_editor
-    return error_auth unless @u_role
 
     @limit = nz(params[:limit],30)
     @css = %w(/layout/admin/style.css)
+    return redirect_to "/_admin" unless @u_role
   end
 
   def index
@@ -24,7 +25,7 @@ class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
 
   def show
       @item = System::GroupChangeDate.new.find(params[:id])
-      return error_auth unless @item.readable?
+      return authentication_error(404) unless @item.readable?
 
       _show @item
   end
@@ -36,7 +37,7 @@ class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
 
   def edit
     @item = System::GroupChangeDate.where(:id => params[:id]).first
-    return error_auth unless @item.readable?
+    return authentication_error(404) unless @item.readable?
   end
 
   def create

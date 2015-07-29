@@ -1,16 +1,17 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_entries/show.html.erb</p>%>
 <div class="gwsub sb01">
 <div class="pieceHeader">
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/menu' %>
 </div>
 <div class="pieceBody">
 <br/>
-
+<div class="notice"><%= flash[:notice] %></div>
 <div class="titleLine"><p class="date_title">研修詳細</p></div>
-<%= render 'gwsub/admin/sb01/sb01_training_entries/training_show' %>
-<%#= render 'gwsub/admion/sb01/sb01_training_plans/upload_index' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/training_show' %>
+<%#= render :partial => 'gwsub/admion/sb01/sb01_training_plans/upload_index' %>
 <% if @ts.blank?%>
 <div class="notice">申込可能な開催日が存在しません。</div>
 <%else%>
@@ -73,7 +74,7 @@ else
   if item.from_start.blank?
     date = ""
   else
-    date = "#{h item.from_start.strftime('%Y-%m-%d')}" + " (#{safe{Gw.weekday(item.from_start.wday)}})"
+    date = "#{h item.from_start.strftime('%Y-%m-%d')}" + " (#{ass{Gw.weekday(item.from_start.wday)}})"
   end
 end
 %>

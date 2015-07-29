@@ -1,17 +1,22 @@
-<div class="piece AdminSetting">
-<%= render 'header_str' %>
+<%#*<h1>Gw::Public::PrefConfigs#new</h1>%>
+<%#*<p>Find me in app/views/gw/public/pref_configs/new.html.erb</p>%>
 
-<div class="pieceBody">
+<div class="piece AdminMessage">
+<%= render :partial => 'header_str' %>
 
-<%= form_for :item, :url => {:action => :create}, :html => {:method => :post} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, {:caption => '保存'} %>
+  <div class="pieceBody">
+
+<%= form_for :item, :url => "#{@public_uri}/", :html => {:method => :post} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%=submit_for(f, {:caption => '保存'})  %>
+
 <% end %>
-
 <div class="btReturn">
-  <%= link_to '戻る', @return_uri %>
+  <%=link_to '戻る', @return_uri %>
 </div>
-
 </div><!--pieceBody-->
 </div><!--piece admin_messages-->

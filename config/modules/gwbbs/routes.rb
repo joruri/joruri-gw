@@ -1,12 +1,14 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "gwbbs"
   scp = "admin"
 
-  match "gwbbs",                                      :to => "gwbbs/admin/menus#index", :via =>  [:post, :get]
-  match "gwbbs/docs/:parent_id/edit_file_memo/:id",   :to => "gwbbs/admin/docs#edit_file_memo", :via =>  [:post, :get]
-  match "gwbbs/csv_exports/:id",                      :to => "gwbbs/admin/csv_exports#index", :via =>  [:post, :get]
-  match "gwbbs/csv_exports/:id/export_csv",           :to => "gwbbs/admin/csv_exports#export_csv", via: [:get, :post]
-
+  match "gwbbs",                                      :to => "gwbbs/admin/menus#index"
+  match "gwbbs/docs/:parent_id/edit_file_memo/:id",   :to => "gwbbs/admin/docs#edit_file_memo"
+  match "gwbbs/itemdeletes/:mode/target_record",      :to => "gwbbs/admin/itemdeletes#target_record"
+  match "gwbbs/itemdeletes/:mode/create_date_record", :to => "gwbbs/admin/itemdeletes#create_date_record"
+  match "gwbbs/csv_exports/:id",                      :to => "gwbbs/admin/csv_exports#index"
+  match "gwbbs/csv_exports/:id/export_csv",           :to => "gwbbs/admin/csv_exports#export_csv"
+  
   #scope "_#{scp}" do
     namespace mod do
       scope :module => scp do
@@ -18,13 +20,21 @@ Rails.application.routes.draw do
           :path => "menus"
         resources "itemdeletes",
           :controller => "itemdeletes",
-          :path => "itemdeletes"
+          :path => "itemdeletes" do
+            member do
+              get :target_record, :create_date_record
+            end
+          end
         resources "builders",
           :controller => "builders",
           :path => "builders"
         resources "synthesetup",
           :controller => "synthesetup",
-          :path => "synthesetup"
+          :path => "synthesetup" do
+            collection do
+              get :date_edit
+            end
+          end
         resources "makers",
           :controller => "makers",
           :path => "makers"
@@ -36,7 +46,6 @@ Rails.application.routes.draw do
           :path => "docs" do
             member do
               get :recognize_update, :publish_update, :clone
-              get :export_file, :file_exports
             end
             collection do
               get :destroy_void_documents

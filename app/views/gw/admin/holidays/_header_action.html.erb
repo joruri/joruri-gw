@@ -1,0 +1,5 @@
+<div class="menu">
+<p><%= @category_title -%></p>
+<%= link_to '新規作成', "/gw/holidays/new?category=#{@category_id}" -%>
+<%= link_to '一覧', "/gw/holidays/?category=#{@category_id}" -%>
+</div>

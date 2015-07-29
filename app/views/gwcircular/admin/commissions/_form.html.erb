@@ -1,0 +1,169 @@
+<%
+box_width = 'width:400px;'  #承認者設定枠の幅
+
+reader_groups_select = []
+readers_select = []
+if params[:action] == "edit"
+  if @item.reader_groups_json.present?
+    _reader_groups_select = JsonParser.new.parse(@item.reader_groups_json)
+    reader_groups_select = Gwcircular::Doc.json_array_select_trim(_reader_groups_select)
+  end
+  if @item.readers_json.present?
+    _readers_select = JsonParser.new.parse(@item.readers_json)
+    readers_select = Gwcircular::Doc.json_array_select_trim(_readers_select)
+  end
+else
+
+end
+
+concat hidden_field_tag('init[reader_groups_json]', @item.reader_groups_json)
+concat hidden_field_tag('init[readers_json]', @item.readers_json)
+user_groups = Gwboard::Group.level
+groups = Gwcircular::CustomGroup.custom_select
+first_group_id = Gwcircular::CustomGroup.first_group_id
+%>
+
+<table class="show">
+<tr><th colspan="3" class="titleTop">カスタム配信設定<%= required('　事前に登録している配信先設定から選択します。') %></th></tr>
+<tr><td class="userChange">
+<%= select_tag('item[reader_groups][gid]', options_for_select(groups, first_group_id), :onchange => 'update_reader_group_cand();' ) %><br />
+<%= select_tag('item[reader_groups][uid]', options_for_select(Gwcircular::CustomGroup.get_user_select(first_group_id)), :size => 6, :style => box_width, :ondblclick => 'add_reader_group()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_reader_group()' %><br /><br />
+<%= button_to_function '← 削除', 'del_reader_group()' %>
+</td>
+<td>
+<%= select_tag('item[reader_groups_add_buf]', options_for_select(reader_groups_select), :size => 7, :style => box_width, :ondblclick => 'del_reader_group()', :multiple => true) %>
+<%= hidden_field_tag 'item[reader_groups_json]', '' %>
+</td>
+</tr>
+</table>
+<table class="show">
+<tr><th colspan="3" class="titleTop">個人配信設定<%= required('　指定された個人に回覧板が配信されます。') %></th></tr>
+<tr><td class="userChange">
+<%= select_tag('item[readers][gid]', options_for_select(user_groups, Site.user_group.id ), :onchange=>'update_reader_cand();' ) %><br />
+<%= select_tag('item[readers][uid]', options_for_select(System::User.get_user_select(Site.user_group.id,:all,{})), :size => 14, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_reader()' %><br /><br />
+<%= button_to_function '← 削除', 'del_reader()' %>
+</td>
+<td>
+<%= select_tag('item[readers_add_buf]', options_for_select(readers_select), :size => 15, :style => box_width, :ondblclick => 'del_reader()', :multiple => true) %>
+<%= hidden_field_tag 'item[readers_json]', '' %>
+</td></tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  //--add-del---------------------------------------------------
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  //reader_groups
+  var add_reader_group = function() {
+    add_list('item_reader_groups_uid', 'item_reader_groups_add_buf')
+  }
+  var del_reader_group = function() {
+    del_list('item_reader_groups_add_buf')
+  }
+  //readers
+  var add_reader = function() {
+    add_list('item_readers_uid', 'item_readers_add_buf')
+  }
+  var del_reader = function() {
+    del_list('item_readers_add_buf')
+  }
+  //---------------------------------------------------add-del--
+
+  var my_submit = function(state) {
+    //reader_groups
+    var fr = $('item_reader_groups_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_reader_groups_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    //readers
+    var fr = $('item_readers_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_readers_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var st = $('item_state');
+    st.value = state;
+    $('itemForm').submit();
+  }
+
+  var load_cand = function () {
+    var u = $('init_reader_groups_json');
+    var to = $('item_reader_groups_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_readers_json');
+    var to = $('item_readers_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+  }
+
+  //--update-----------------------------------------------------------
+  //reader_groups
+  var update_reader_group_cand = function () {
+    var fr = $('item_reader_groups_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwcircular/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_reader_groups_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //readers
+  var update_reader_cand = function () {
+    var fr = $('item_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //-----------------------------------------------------------update--
+  <% unless params[:action] == "edit" %>
+    window.onload = load_cand;
+  <% end %>
+//]]>
+</script>

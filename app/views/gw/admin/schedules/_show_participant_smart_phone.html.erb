@@ -1,0 +1,43 @@
+<%
+partitipants = []
+schedule_users.each do |x|
+  begin
+    case x.class_id
+    when 0
+      th = 'すべて'
+      td = ''
+    when 1
+      th = 'ユーザー'
+      user = System::User.find(:first, :conditions => "id=#{x.uid}")
+      if user.blank? || user.state != 'enabled'
+      else
+        partitipants <<  [th , user.display_name]
+      end
+
+    when 2
+      th = 'グループ'
+      group = System::Group.find(:first, :conditions => "id=#{x.uid}")
+      if group.blank? || group.state != 'enabled'
+      else
+        partitipants <<  [th , group.name]
+      end
+
+    end
+  rescue
+  end
+end
+if is_todo == true
+  part_str = "担当者"
+else
+  part_str = "参加者"
+end
+%>
+<%unless partitipants.blank?%>
+<table class="show">
+<tr><th colspan="2"><%=part_str%></th></tr>
+
+<%for p_user in partitipants%>
+<tr><th><%= p_user[0]%></th><td><%= p_user[1]%></td></tr>
+<%end%>
+</table>
+<%end%>

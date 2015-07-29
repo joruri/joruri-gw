@@ -1,6 +1,6 @@
 <%= required_head %>
 <table class="show">
-  <% if params[:action].in?(['new', 'create']) %>
+  <% if params[:action].in?('new', 'create') %>
   <tr>
     <th>ユーザID<%= required %></th>
     <td><%= f.text_field :code, :class => 'string', :style => 'width: 200px;' %></td>
@@ -13,11 +13,11 @@
   <% end %>
   <tr>
     <th>状態<%= required %></th>
-    <td><%= f.radio_buttons :state, @item.class.state_options %></td>
+    <td><%= radio f, :state, Gw.yaml_to_array_for_select('system_states') %></td>
   </tr>
   <tr>
     <th>LDAP同期<%= required %></th>
-    <td><%= f.radio_buttons :ldap, @item.class.ldap_options %></td>
+    <td><%= radio f, :ldap, Gw.yaml_to_array_for_select('system_users_ldaps') %></td>
   </tr>
   <tr>
     <th>名前<%= required %></th>
@@ -45,13 +45,16 @@
   </tr>
 </table>
 
-<% if params[:action].in?(['new', 'create']) %>
+<% if params[:action].in?('new', 'create') %>
+<%
+groups = System::Group.select_dd_tree
+%>
 <br />
 <div>登録するユーザーの所属を指定してください</div>
 <table class="show">
   <tr>
     <th>グループ</th>
-    <td><%= select_tag('ug[group_id]', options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @group_id || safe{params[:ug][:group_id]}), :include_blank => true) %></td>
+    <td><%= select_tag('ug[group_id]', options_for_select(groups, @group_id || safe{params[:ug][:group_id]}), :include_blank => true) %></td>
   </tr>
   <tr>
     <th>本務・兼務</th>
@@ -64,22 +67,18 @@
   <tr>
     <th>配属開始日</th>
     <td>
-      <%= text_field_tag 'ug[start_at]', safe{params[:ug] ? params[:ug][:start_at] : Gw.date_str(Time.now)}, class: 'datepicker' %>
+      <%= text_field_tag 'ug[start_at]', safe{params[:ug] ? params[:ug][:start_at] : Gw.date_str(Time.now)} %>
+      <button type="button" id="ug_start_at_bt" onclick="showCalendar('ug_start_at_bt','ug_start_at')" class="show_cal_bt"></button>
     </td>
   </tr>
   <tr>
     <th>配属終了日</th>
     <td>
-      <%= text_field_tag 'ug[end_at]', safe{params[:ug][:end_at]}, class: 'datepicker' %>
+      <%= text_field_tag 'ug[end_at]', safe{params[:ug][:end_at]} %>
+      <button type="button" id="ug_end_at_bt" onclick="showCalendar('ug_end_at_bt','ug_end_at')" class="show_cal_bt"></button>
     </td>
   </tr>
 </table>
 <% end %>
 
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $('input.datepicker').datepicker();
-  });
-})(jQuery);
-</script>
+<%= raw(gw_js_include_full) %>

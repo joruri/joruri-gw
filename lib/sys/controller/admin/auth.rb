@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Sys::Controller::Admin::Auth
   ACCOUNT_KEY = :sys_user_account
   PASSWD_KEY  = :sys_user_password
@@ -71,10 +72,8 @@ protected
   def current_user
     return @@current_user if @@current_user
     return false if (!session[ACCOUNT_KEY] || !session[PASSWD_KEY])
-    unless user = System::User.where(state: 'enabled', code: session[ACCOUNT_KEY]).first
-      unless user = System::User.authenticate(session[ACCOUNT_KEY], session[PASSWD_KEY], true)
-        return false
-      end
+    unless user = System::User.authenticate(session[ACCOUNT_KEY], session[PASSWD_KEY], true)
+      return false
     end
     @@current_user = user
   end
@@ -99,15 +98,15 @@ protected
   #
   # To require logins for all actions, use this in your controllers:
   #
-  #   before_action :login_required
+  #   before_filter :login_required
   #
   # To require logins for specific actions, use this in your controllers:
   #
-  #   before_action :login_required, :only => [ :edit, :update ]
+  #   before_filter :login_required, :only => [ :edit, :update ]
   #
   # To skip this in a subclassed controller:
   #
-  #   skip_before_action :login_required
+  #   skip_before_filter :login_required
   #
   def login_required
     username, passwd = get_auth_data
@@ -158,11 +157,11 @@ protected
     #base.send :helper_method, :current_user, :logged_in?
   end
 
-  # When called with before_action :login_from_cookie will check for an :auth_token
+  # When called with before_filter :login_from_cookie will check for an :auth_token
   # cookie and log the user back in if apropriate
   def login_from_cookie
     return unless cookies[:auth_token] && !logged_in?
-    user = System::User.where(:remember_token=>cookies[:auth_token]).first
+    user = System::User.find_by_remember_token(cookies[:auth_token])
     if user && user.remember_token?
       user.remember_me
       self.current_user = user

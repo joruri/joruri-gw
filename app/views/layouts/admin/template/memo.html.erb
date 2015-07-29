@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
-<%= render 'layouts/admin/gw/header_tag' %>
+<%= render :partial => 'layouts/admin/gw/header_tag' %>
 <link rel="stylesheet" type="text/css" href="/layout/todo/style.css" />
 </head>
 <body <%= Page.body_id %>>
 <div id="container">
-<%= render 'layouts/admin/gw/piece_header' %>
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
 <!--ここからバナー-->
 <div id="banner">
 <div id="bannerBody">
@@ -14,18 +14,9 @@
 </div>
 </div>
 <!--ここまでバナー-->
-
-<!--ここからナビ-->
-<div id="navi">
-<div id="naviBody">
-</div>
-</div>
-<!--ここまでナビ-->
-
 <!--ここからナビ2-->
 <div id="navi2">
 <div id="navi2Body">
-<%= render 'layouts/admin/gw/notice' %>
 </div>
 </div>
 <!--ここまでナビ-->
@@ -65,7 +56,7 @@
 <!--ここまで右サイド-->
 </div>
 <!--ここまでメインコンテンツ-->
-<%= render 'layouts/admin/gw/piece_footer' %>
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
 </div>
 </body>
 </html>

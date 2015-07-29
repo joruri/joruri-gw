@@ -5,9 +5,14 @@
   end
 %>
 <div class="menu">
-<a href="<%= system_users_path -%>"><span class="<%= "current_menu" if current_no == 1 -%>">ユーザー管理</span></a>
-<% if @role_admin %>
-<a href="<%= system_groups_path(0) -%>"><span class="<%= "current_menu" if current_no == 2 -%>">グループ管理</span></a>
-<a href="<%= csvget_system_users_groups_csvdatas_path -%>"><span class="<%= "current_menu" if current_no == 3 -%>">CSV管理</span></a>
+<a href="<%= system_users_path -%>"><span class="<%= (current_no == 1) ? "current_menu" : '' -%>">ユーザー管理</span></a>
+<% if @role_admin == true %>
+<a href="<%= system_groups_path(0) -%>"><span class="<%= (current_no == 2) ? "current_menu" : '' -%>">グループ管理</span></a>
+<a href="<%= csvget_system_users_path -%>"><span class="<%= (current_no == 3) ? "current_menu" : '' -%>">CSV管理</span></a>
+<!--
+2013年02月14日(木)　LDAP対応は春以降に先送り
+<a href="<%= system_ldap_groups_path(0) -%>"><span class="<%= (current_no == 2) ? "current_menu" : '' -%>">LDAP</span></a>
+<a href="<%= system_ldap_temporaries_path -%>"><span class="<%= (current_no == 2) ? "current_menu" : '' -%>">LDAP同期</span></a>
+-->
 <% end %>
 </div>

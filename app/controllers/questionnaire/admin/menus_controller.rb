@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #基本情報登録
 #system_admin_flags内部で　adminで無いとき params[:cond] = admin を消去
@@ -6,24 +7,27 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   include Questionnaire::Model::Database
   include Questionnaire::Model::Systemname
+
+
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート集計システム'
+    @system_title = 'アンケート集計システム'
+    Page.title = @system_title
     @system_path = "/#{self.system_name}"
     params[:limit] = 100
   end
 
   def is_creator
     system_admin_flags
-    params[:cond] = '' if @item.creater_id == Core.user.code if @is_sysadm
-    params[:cond] = 'admin' unless @item.creater_id == Core.user.code if @is_sysadm
+    params[:cond] = '' if @item.creater_id == Site.user.code if @is_sysadm
+    params[:cond] = 'admin' unless @item.creater_id == Site.user.code if @is_sysadm
 
     ret = false
     ret = true if @is_sysadm
-    ret = true if @item.creater_id == Core.user.code  if @item.admin_setting == 0
-    ret = true if @item.section_code == Core.user_group.code  if @item.admin_setting == 1
+    ret = true if @item.creater_id == Site.user.code  if @item.admin_setting == 0
+    ret = true if @item.section_code == Site.user_group.code  if @item.admin_setting == 1
     return ret
   end
 
@@ -41,7 +45,7 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
     end
   end
   def admin_index
-    return error_auth unless @is_sysadm
+    return authentication_error(403) unless @is_sysadm
 
     item = Questionnaire::Base.new
     item.page(params[:page], params[:limit])
@@ -53,12 +57,12 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
     #個人宛
     sql.or {|d|
       d.and :admin_setting , 0
-      d.and :creater_id, Core.user.code
+      d.and :creater_id, Site.user.code
     }
     #所属宛
     sql.or {|d|
       d.and :admin_setting , 1
-      d.and :section_code, Core.user_group.code
+      d.and :section_code, Site.user_group.code
     }
     item = Questionnaire::Base.new
     item.page params[:page], params[:limit]
@@ -80,16 +84,14 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
   def new
     @item = Questionnaire::Base.new({
       :state => 'draft',
-      :section_code => Core.user_group.code ,
+      :section_code => Site.user_group.code ,
       :send_change => '1',  #配信先は所属
       :spec_config => 3 ,   #他の回答者名を表示する
       :manage_title => '',
       :title => '',
       :able_date => Time.now.strftime("%Y-%m-%d"),
       :expiry_date => 7.days.since.strftime("%Y-%m-%d %H:00"),
-      :default_limit => 100,
-      :send_to => 0,
-      :send_to_kind => 0
+      :default_limit => 100
     })
   end
 
@@ -97,20 +99,20 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
     @item = Questionnaire::Base.new(params[:item])
 
     @item.able_date = Time.now.strftime("%Y-%m-%d")
-    @item.section_code = Core.user_group.code
+    @item.section_code = Site.user_group.code
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.creater_id = Core.user.code
-    @item.creater = Core.user.name
-    @item.createrdivision = Core.user_group.name
-    @item.createrdivision_id = Core.user_group.code
+    @item.creater_id = Site.user.code
+    @item.creater = Site.user.name
+    @item.createrdivision = Site.user_group.name
+    @item.createrdivision_id = Site.user_group.code
     @item.keycode = generate_key_code
     _self_create(@item)
   end
 
   def show
-    @item = Questionnaire::Base.where(:id => params[:id]).first
+    @item = Questionnaire::Base.find_by_id(params[:id])
     return http_error(404) unless @item
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     item = Questionnaire::FormField.new
     item.and :parent_id, @item.id
@@ -120,16 +122,16 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   def edit
-    @item = Questionnaire::Base.where(:id => params[:id]).first
+    @item = Questionnaire::Base.find_by_id(params[:id])
     return http_error(404) unless @item
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
   end
 
   #
   def update
-    @item = Questionnaire::Base.where(:id => params[:id]).first
+    @item = Questionnaire::Base.find_by_id(params[:id])
     return http_error(404) unless @item
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     @before_state = @item.state
 
@@ -139,11 +141,11 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
     @item._commission_state = @before_state
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
     unless @is_sysadm
-      @item.section_code = Core.user_group.code
-      @item.creater_id = Core.user.code
-      @item.creater = Core.user.name
-      @item.createrdivision = Core.user_group.name
-      @item.createrdivision_id = Core.user_group.code
+      @item.section_code = Site.user_group.code
+      @item.creater_id = Site.user.code
+      @item.creater = Site.user.name
+      @item.createrdivision = Site.user_group.name
+      @item.createrdivision_id = Site.user_group.code
     end
     @item.keycode = generate_key_code if @item.keycode.blank?
     location = "/questionnaire"
@@ -151,9 +153,9 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
   end
   #
   def destroy
-    @item = Questionnaire::Base.where(:id => params[:id]).first
+    @item = Questionnaire::Base.find_by_id(params[:id])
     return http_error(404) unless @item
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     location = "/questionnaire"
     _destroy(@item, :success_redirect_uri=>location)
@@ -187,9 +189,9 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
 
   #
   def open_close_update(state=nil)
-    @item = Questionnaire::Base.where(:id => params[:id]).first
+    @item = Questionnaire::Base.find_by_id(params[:id])
     return http_error(404) unless @item
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     @before_state = @item.state
 
@@ -203,11 +205,11 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
     @item._commission_state = @before_state
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
     unless @is_sysadm
-      @item.section_code = Core.user_group.code
-      @item.creater_id = Core.user.code
-      @item.creater = Core.user.name
-      @item.createrdivision = Core.user_group.name
-      @item.createrdivision_id = Core.user_group.code
+      @item.section_code = Site.user_group.code
+      @item.creater_id = Site.user.code
+      @item.creater = Site.user.name
+      @item.createrdivision = Site.user_group.name
+      @item.createrdivision_id = Site.user_group.code
     end
 
     location =  "/questionnaire"

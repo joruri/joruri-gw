@@ -1,6 +1,7 @@
+<%# app/views/gwsub/admin/sb01/sb01_training_plans/_form %>
 <%
-groups = System::Group.where("state='enabled' and level_no = 3").order([:level_no,:code].join(','))
-users = System::User.get_user_select(Core.user_group.id)
+groups = System::Group.find(:all, :conditions=>"state='enabled' and level_no = 3", :order => [:level_no,:code].join(',') )
+users = System::User.get_user_select(Site.user_group.id)
 mce_base_url = ''
 %>
 <%= f.hidden_field :fyear_id %>
@@ -15,40 +16,36 @@ mce_base_url = ''
 <%= hidden_field_tag 'pre_fyear', @fyed_id %>
 
 <%= f.error_messages %>
-<%= required_head %>
-<%= tool_tiny_mce mce_base_url %>
+<%= raw(required_head) %>
+<script src="/javascripts/prototype.js" type="text/javascript"></script>
+<%= tool_tiny_mce mce_base_url%>
 <table class="show">
-  <tr>
-    <th>研修名<%= required %></th>
-  </tr>
-  <tr>
-    <td><%= f.text_field :title ,:size=>80 %></td>
-  </tr>
+<tr><th>研修名<%= raw(required) %></th></tr>
+<tr><td><%= f.text_field :title ,:size=>80 %></td></tr>
 </table>
 <table class="show bbsText">
-  <tr>
-    <th>研修案内<%= required %></th>
-  </tr>
-  <tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
-  </tr>
+<tr><th>研修案内<%= raw(required) %></th></tr>
+<tr>
+<td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+</tr>
 </table>
 <%= gwsub_attaches_sb01_training_form(f, @item) %>
 
 <table class="show">
-  <tr><th>企画所属<%= required %></th></tr>
-  <tr><td><%= select_tag "item[group_id]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, Core.user_group.id), onchange: 'get_user();' %></td></tr>
-  <tr><th>企画者<%= required %></th></tr>
-  <tr><td><%= select_tag "item[member_id]", Gw.options_for_select(users, Core.user.id) %></td></tr>
-  <tr><th>連絡先電話番号<%= required %></th></tr>
-  <tr><td><%= f.text_field :member_tel ,:size=>20 %></td></tr>
+<tr><th>企画所属<%= raw(required) %></th></tr>
+<tr><td><%= select_tag("item[group_id]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, Site.user_group.id)) %></td></tr>
+<tr><th>企画者<%= raw(required) %></th></tr>
+<tr><td><%= select_tag("item[member_id]", Gw.options_for_select(users, Site.user.id)) %></td></tr>
+<tr><th>連絡先電話番号<%= raw(required) %></th></tr>
+<tr><td><%= f.text_field :member_tel ,:size=>20 %></td></tr>
 </table>
-
 <div class="preserve">
 <%= f.submit '確定' %>
 </div>
 
-<script type="text/javascript">
+<%= raw(gw_js_include_full) %>
+<%= observe_field "item_group_id", :function => "get_user();" %>
+<script language = "JavaScript" type="text/javascript">
 //<![CDATA[
   var end_cnt = -1;
   var ed_str = '';
@@ -56,7 +53,7 @@ mce_base_url = ''
     g_id = $("item_group_id").value;
     document.body.style.cursor = 'wait';
     end_cnt = 0;
-    new Ajax.Request("<%= @public_uri + '/' %>user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+    new Ajax.Request("<%= @public_uri + '/' %>user_fields.csv?g_id=" + g_id, {method:'get', onComplete: function(x){
       $('item_member_id').update(x.responseText);
       end_cnt = end_cnt + 1;
       if (end_cnt == 1) {

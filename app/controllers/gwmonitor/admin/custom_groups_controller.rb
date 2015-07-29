@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
 
   include System::Controller::Scaffold
@@ -15,7 +16,7 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
 
   def index
     item = Gwmonitor::CustomGroup.new
-    item.and :owner_uid, Core.user.id
+    item.and :owner_uid, Site.user.id
     item.order 'sort_no, id'
     item.page params[:page], params[:limit]
     @items = item.find(:all)
@@ -35,35 +36,35 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   def edit
     @item = Gwmonitor::CustomGroup.find(params[:id])
     return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return authentication_error(403)  unless @item.owner_uid == Site.user.id
 
   end
 
   def create
     @item = Gwmonitor::CustomGroup.new(params[:item])
-    @item.owner_uid = Core.user.id
+    @item.owner_uid = Site.user.id
     _create(@item, :success_redirect_uri=>@home_path)
   end
 
   def update
     @item = Gwmonitor::CustomGroup.find(params[:id])
     return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return authentication_error(403)  unless @item.owner_uid == Site.user.id
     @item.attributes = params[:item]
-    @item.owner_uid = Core.user.id
+    @item.owner_uid = Site.user.id
     _update(@item, :success_redirect_uri=>@home_path)
   end
 
   def destroy
     @item = Gwmonitor::CustomGroup.find(params[:id])
     return http_error(404) unless @item
-    return error_auth  unless @item.owner_uid == Core.user.id
+    return authentication_error(403)  unless @item.owner_uid == Site.user.id
     _destroy(@item, :success_redirect_uri=>@home_path)
   end
 
   def sort_update
     item = Gwmonitor::CustomGroup.new
-    item.and :owner_uid, Core.user.id
+    item.and :owner_uid, Site.user.id
     item.order 'sort_no, id'
     item.page params[:page], params[:limit]
     @items = item.find(:all)

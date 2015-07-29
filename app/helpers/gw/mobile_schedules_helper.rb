@@ -1,9 +1,5 @@
+# encoding: utf-8
 module Gw::MobileSchedulesHelper
-
-  def grouop_enabled_children(parent_id)
-    ret = System::Group.where("parent_id = ? AND state = ?",parent_id,"enabled").order(sort_no)
-    return ret
-  end
 
   def no_schedule_show
     ret = %Q(<p class="leftPad1">予定なし</p>)

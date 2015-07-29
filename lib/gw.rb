@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gw
 
   def self.nz(value, valueifnull='')
@@ -49,29 +50,32 @@ class Gw
   def self.add_memo(uids, title, body, options={})
     uids = uids.to_s.split(':') if !uids.is_a?(Array)
     uids = uids.uniq
-    fr_u = options[:fr_user].blank? ? Core.user : System::User.find_by(id: options[:fr_user]) rescue Core.user
+    fr_u = options[:fr_user].blank? ? Core.user : System::User.find(:first, :conditions=>"id=#{options[:fr_user]}") rescue Core.user
     fr_u = Core.user if fr_u.blank?
     begin
       Gw::Database.transaction do
-        memo = Gw::Memo.new(
-          :class_id => 1,
-          :uid => fr_u.id,
-          :title => title,
-          :ed_at => options[:ed_at].presence || Gw.datetime_str(Time.now),
-          :is_finished => options[:is_finished] || 0,
-          :is_system => options[:is_system],
-          :fr_group => fr_u.groups[0].name,
-          :fr_user => fr_u.display_name,
-          :body => body
-        )
+        memo = {
+          :class_id=>1,
+          :uid=>fr_u.id,
+          :title=>title,
+          :ed_at=>nz(options[:ed_at],Gw.datetime_str(Time.now)),
+          :is_finished=>options[:is_finished],
+          :is_system=>options[:is_system],
+          :fr_group=>fr_u.groups[0].name,
+          :fr_user=>fr_u.display_name,
+          :body=>body
+        }
+        item = Gw::Memo.new(memo)
+        item.save!
         uids.each do |uid|
-          memo.memo_users.build(
+          memo_user = Gw::MemoUser.new({
+            :schedule_id => item.id,
             :class_id => 1,
             :uid => uid
-          )
+          })
+          memo_user.save!
         end
-        memo.save!
-        memo.send_mail_after_addition uids
+        item.send_mail_after_addition uids
       end
       return true
     rescue => e
@@ -135,6 +139,30 @@ class Gw
   def self.links_to_ext_with_uri(captions)
     ret = []
     captions.each_slice(2){|x| ret.push "<li>#{helperx.link_to x[0], x[1], :class=>:ext, :target=>:blank}</li>"}
+    ret.join
+  end
+
+  def self.links_to_pref_cms(yaml_key = 'sso_pref_portal_joruricms')
+    ret = []
+    dat = Gw.yaml_to_array_for_select(yaml_key).collect{|x|
+      w = x[0].split ' '
+      [x[1], *w]
+    }
+    dat.each{|x| ret.push(
+      "<li>#{helperx.link_to x[1], "/_admin/gw/test/#{x[0]}/redirect_pref_cms", :class=>:ext, :target=>'_blank'}</li>"
+      )}
+    ret.join
+  end
+
+  def self.links_to_pref_portal(yaml_key = 'sso_pref_portal_joruricms')
+    ret = []
+    dat = Gw.yaml_to_array_for_select(yaml_key).collect{|x|
+      w = x[0].split ' '
+      [x[1], *w]
+    }
+    dat.each{|x| ret.push(
+      "#{helperx.link_to x[1], "/_admin/gw/test/#{x[0]}/redirect_pref_cms",  :target=>'_blank'}"
+      )}
     ret.join
   end
 
@@ -202,7 +230,7 @@ class Gw
         }
       end
     else
-      hs = Gw::Holiday.where("st_at='#{Gw.date_str(d)}'")
+      hs = Gw::Holiday.find(:all, :conditions=>"st_at='#{Gw.date_str(d)}'")
       is_holiday = hs.length > 0
     end
 
@@ -309,16 +337,10 @@ class Gw
     return a.uniq.select{|i| a.index(i) != a.rindex(i)}
   end
 
-
-  def self.email_validate
-    return  /^([^\s]+)((?:[-a-z0-9]\.)[a-z]{2,})$/i
-  end
-
   def self.is_valid_email_address?(v)
-    require 'validates_email_format_of'
     # logic: based.on ValidatesEmailFormatOf
     options = { :check_mx => false,
-      :with => Gw.email_validate }
+      :with => ValidatesEmailFormatOf::Regex }
     begin
       domain, local = v.reverse.split('@', 2)
     rescue
@@ -339,9 +361,10 @@ class Gw
     unless v =~ options[:with]
       return 2
     end
-    #if options[:check_mx]
-    #  return 2 unless ValidatesEmailFormatOf::validate_email_domain(v)
-    #end
+    if options[:check_mx]
+      return 2 unless
+        ValidatesEmailFormatOf::validate_email_domain(v)
+    end
     return 1
   end
 
@@ -423,38 +446,52 @@ class Gw
     keys.delete_if{|x| nz(params[x],'')==''}.collect{|x| [x, params[x]]}
   end
 
-  def self.is_deco_cloud?
-    gcodes = Joruri.config.application['gw.deco_special_link_group_codes'] || []
-    !Core.user_group.self_and_ancestors.any?{|g| g.code.in?(gcodes) }
+  def self.is_deco_cloud?(gid=Core.user_group.id)
+    group = System::Group.find_by_id(gid)
+    return false if group.blank?
+    p_group = System::Group.find_by_id(group.parent_id)
+    return false if p_group.blank?
+    return true
   end
 
-  def self.is_deco_pref?
-    gcodes = Joruri.config.application['gw.deco_special_link_group_codes'] || []
-    Core.user_group.self_and_ancestors.any?{|g| g.code.in?(gcodes) }
+  def self.is_deco_pref?(gid=Core.user_group.id)
+    group = System::Group.find_by_id(gid)
+    return false if group.blank?
+    p_group = System::Group.find_by_id(group.parent_id)
+    return false if p_group.blank?
+    return false
   end
 
-  def self.is_dev?(user = Core.user)
-    user.has_role?('gwsub/developer')
+  def self.is_dev?(options={})
+    uid = nz(options[:uid],Core.user.id)
+    System::Model::Role.get(1, uid ,'gwsub', 'developer')
   end
 
-  def self.is_editor?(user = Core.user)
-    editor_users        = user.has_role?('system_users/editor')
-    editor_tabs         = user.has_role?('edit_tab/editor')
-    editor_rss          = user.has_role?('rss_reader/admin')
-    editor_blogparts    = user.has_role?('blog_part/admin')
-    editor_ind_portals  = user.has_role?('ind_portal/admin')
-    admin_disaster      = Gw::Property::PortalMode.is_disaster_admin?(user)
-    editor_disaster     = Gw::Property::PortalMode.is_disaster_editor?(user)
+  def self.is_editor?(options={})
+    uid = nz(options[:uid],Core.user.id)
+    editor_users        = System::Model::Role.get(1, uid ,'system_users','editor')
+    editor_tabs         = System::Model::Role.get(1, uid ,'edit_tab', 'editor')
+    editor_rss          = System::Model::Role.get(1, uid ,'rss_reader', 'admin')
+    editor_blogparts    = System::Model::Role.get(1, uid ,'blog_part', 'admin')
+    editor_ind_portals  = System::Model::Role.get(1, uid ,'ind_portal', 'admin')
+    admin_disaster      = Gw::AdminMode.is_disaster_admin?( uid )
+    editor_disaster     = Gw::AdminMode.is_disaster_editor?( uid )
     editor = editor_users || editor_tabs  || editor_rss || editor_blogparts || editor_ind_portals || admin_disaster || editor_disaster
     return editor
   end
 
-  def self.is_admin_admin?(user = Core.user)
-    user.has_role?('_admin/admin')
+  def self.is_admin_admin?(options={})
+    uid = nz(options[:uid],Core.user.id)
+    ret = System::Model::Role.get(1,uid,'_admin','admin')
+    return ret
   end
 
-  def self.is_admin_or_editor?(user = Core.user)
-    Gw.is_admin_admin?(user) || Gw.is_editor?(user)
+  def self.is_admin_or_editor?(options={})
+    uid = nz(options[:uid],Core.user.id)
+    editor = Gw.is_editor?(options)
+    admin = Gw.is_admin_admin?(options)
+    admin_role = editor || admin
+    return admin_role
   end
 
   #require 'parsedate'
@@ -578,7 +615,9 @@ class Gw
 
   def self.is_valid_date_str?(datestr)
     return false if datestr.nil?
-    Date.valid_date?(*datestr.split('-').map(&:to_i))
+    dx = Date.new(datestr)
+    return false if dx[0].nil? || dx[1].nil? || dx[2].nil?
+    Date.valid_date?(dx[0], dx[1], dx[2])
   end
 
   def self.date_format(format, d)
@@ -689,26 +728,10 @@ class Gw
 
   def self.ym_to_time(d, options={})
     return nil if d.blank?
-    d_a = d.split(/\//)
-    day = 0
-    if options && !options[:day].blank?
-      day = options[:day]
-    else
-      day = 1
-    end
-    if d_a.blank? || d_a[0].blank? || d_a[1].blank?
-      return nil
-    else
-      begin
-        if day.to_i > 0
-          return Time.local(d_a[0], d_a[1], day)
-        else
-          return Time.local(d_a[0], d_a[1]).end_of_month
-        end
-      rescue
-        return nil
-      end
-    end
+    d_a = Date.new(d)
+    day = options[:day].blank? ? 1 : options[:day]
+    d_a.blank? || d_a[0].blank? || d_a[1].blank? ? nil :
+      day > 0 ? Time.local(d_a[0], d_a[1], day) : Time.local(d_a[0], d_a[1]).end_of_month
   end
 
   def self.extract_datetime_param!(params, keys)
@@ -743,37 +766,6 @@ class Gw
     else
       raise TypeError, "未知の型です(#{_dt.class})"
     end
-  end
-
-  def self.datetime_merge_to_time(_dt)
-    case _dt.class.to_s
-    when 'Time'
-      return _dt
-    when 'Date', 'DateTime'
-      return _dt.to_time
-    when 'String'
-      begin
-        dt = DateTime.parse(_dt)
-      rescue # 日付が異常、もしくは日付が存在しない場合
-        raise TypeError, "日付が異常、もしくは日付が存在しません"
-      else
-        return dt
-      end
-    else
-      raise TypeError, "未知の型です(#{_dt.class})"
-    end
-  end
-
-  def self.datetime_merge_to_day(_d, _t)
-    d = _d
-    t = _t
-    return Time.local(d.year, d.month, d.day, t.hour, t.min, t.sec)
-  end
-
-  def self.time_merge_to_datetime(_d, _t)
-    d = _d
-    t = _t
-    return DateTime.new(d.year, d.month, d.day, t.hour, t.min, t.sec)
   end
 
   def self.datetime_merge(_d, _t)
@@ -878,6 +870,10 @@ class Gw
     end
   end
 
+  def self.yaml_to_array_for_select_with_additions(before_additions, relation_name, after_additions, options={})
+    before_additions + yaml_to_array_for_select(relation_name, options) + after_additions
+  end
+  
   def self.yaml_to_array_for_select(relation_name, options={})
     yaml = options[:yaml]
     hx = Gw::NameValue.get_cache('yaml', yaml, relation_name)
@@ -1026,28 +1022,6 @@ class Gw
     return [['使用中' , 'u' ],['廃止済み' , 's' ]]
   end
 
-  def self.compress_files(file_options, options)
-    zipdata = ""
-    Zip::Archive.open_buffer(zipdata, Zip::CREATE) do |ar|
-      file_options.each do |file|
-        filename = file[:filename]
-        filepath = file[:filepath]
-        begin
-          if options[:encoding].present?
-            filename = filename.encode(options[:encoding], :invalid => :replace, :undef => :replace, :replace => '_')
-          end
-          ar.add_buffer(filename, File.read(filepath))
-        rescue Errno::ENOENT => e
-          error_log e
-          filename += '_ERROR!.txt'
-          ar.add_buffer(filename, "ファイルは存在していません。削除された可能性があります。")
-        rescue Zip::Error => e
-          error_log e
-        end
-      end
-    end
-    zipdata
-  end
 
 private
   def self.option_text_and_value(option)

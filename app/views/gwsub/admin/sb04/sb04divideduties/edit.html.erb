@@ -10,20 +10,20 @@ end
 @action = "edit"
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 <div class="btReturn">
 <%= link_to '詳細に戻る',"#{@csv_base_url}/#{@item.id}?#{@qs}" %>
 </div>
 </div>
 
 <div class="pieceBody">
-
+<%= div_notice %>
 <%= form_for :item, :url => "#{@csv_base_url}/#{@item.id}?#{@qs}" ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
-  <%= render 'form', f: f %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
 <% end %>
-<div><h4><%= header_str %></h4></div>
-<%= render 'gwsub/admin/sb04/sb04divideduties/show', base_url: "#{@csv_base_url}" %>
+<div><h4><%= h header_str %></h4></div>
+<%= render :partial => 'gwsub/admin/sb04/sb04divideduties/show',:locals=>{:base_url=>"#{@csv_base_url}"} %>
 </div>
 </div>

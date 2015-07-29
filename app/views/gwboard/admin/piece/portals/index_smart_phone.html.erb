@@ -1,10 +1,13 @@
 <div class="piece gadget bbs">
+
 <div class="pieceHeader"><h3>掲示板</h3></div>
 <div class="pieceBody">
+
 <ul>
   <% @items.each do |item| %>
     <li><%= link_to item.title, "/gwbbs/docs?title_id=#{item.id}&limit=10" %></li>
   <% end %>
 </ul>
+
 </div>
 </div>

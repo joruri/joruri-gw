@@ -1,6 +1,9 @@
 <div id="schedule_part">
-<%= render '/gw/admin/schedules/smartphone_header' %>
-<%= render '/gw/admin/schedules/schedule_line_box_smart_phone', d: @st_date, mode: 'day', move_mode: :header %>
-<%= render '/gw/admin/schedules/show_day' %>
-<%= render '/gw/admin/schedules/schedule_line_box_smart_phone', d: @st_date, mode: 'day', move_mode: :footer %>
+<%=render(:partial => '/gw/admin/schedules/smartphone_header')%>
+<%=render(:partial => '/gw/admin/schedules/schedule_line_box_smart_phone', :locals=>{:d=>@st_date, :mode=>'day', :move_mode=>:header})%>
+<% # app/views/gw/admin/schedules/show.html.erb
+concat render(:partial => '/gw/admin/schedules/show_day')
+%>
+<%=render(:partial => '/gw/admin/schedules/schedule_line_box_smart_phone', :locals=>{:d=>@st_date, :mode=>'day', :move_mode=>:footer})%>
+
 </div><!--schedule_part-->

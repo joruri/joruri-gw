@@ -1,21 +1,26 @@
 <div class="docsInnerBox">
 <table class="bbsCommentlist">
-  <tr>
-    <th class = "comment">コメント</th>
-    <!--<th class="order">順番</th>
-    <th class="daytime">登録日時</th>
-    <th class="delete"></th>-->
-  </tr>
-  <% @item.comments.each.with_index(1) do |item, i| %>
-  <tr>
-    <td class="comment">
-      <%= item.body %><br />
-      <span>
-      <%= item.creater_or_editor_label %><br />
-      <%= item.created_at.strftime('%Y-%m-%d %H:%M') %>
-      </span>
-    </td>
-  </tr>
-  <% end %>
+ <tr>
+  <th class = "comment">コメント
+  <%= %Q(<br /><div class="notice">#{flash[:notice]}</div>) if flash[:notice] %>
+  </th>
+  <!--<th class="order">順番</th>
+  <th class="daytime">登録日時</th>
+  <th class="delete"></th>-->
+ </tr>
+<%@i = 0%>
+<% for item in @comments %>
+ <%@i = @i + 1%>
+ <tr>
+  <td class="comment">
+  <%=item.body%><br />
+  <span>
+  <%=item.editordivision %>
+  <%=' : ' %>
+  <%=item.editor %><br />
+  <%= item.created_at.strftime('%Y-%m-%d %H:%M') %>
+  </span>
+ </tr>
+<% end %>
 </table>
 </div>

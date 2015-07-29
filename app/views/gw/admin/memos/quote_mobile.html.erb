@@ -1,16 +1,20 @@
+<%# app/views/gw/public/memos/_new_mobile.html.erb %>
+<%
+@create_path  = gw_memos_path
+%>
 <hr class="borderDash"/>
-<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif">作成</p>
+<p class="mobileMemo">作成</p>
 <hr class="borderDash"/>
 <p class="leftPad2">
 </p>
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, class: "leftSide"} do |f| %>
-  <%= f.error_messages %>
-  <%= link_to "送り先ユーザー選択", "/gw/mobile_participants?view=quote&group_id=#{Core.user_group.id}&memo_id=#{@item.id}" %>
-  <span class="textRed">※</span><br />
-  <%= render 'form_mobile', f: f %><br /><br />
-  <%= submit_for_create f, :caption=>"送信する" %>
-<% end %>
+<%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:class=>"leftSide"} do |f| %>
+<%= f.error_messages %>
+<%=link_to "送り先ユーザー選択", "/gw/mobile_participants?view=quote&group_id=#{Site.user_group.id}&memo_id=#{@item.id}"%><span class="textRed">※</span><br />
+<%= render :partial => 'form_mobile', :locals => {:f => f} %>
+<br />
+<br />
+<%=submit_for_create f, :caption=>"送信する"%>
+<% end  %>
 <hr class="borderDash"/>
 <p class="leftPad2">
-<%= link_to "戻る", {action: :index} %>
-</p>
+<%=link_to "戻る", "/gw/memos/?s_send_cls=#{@s_send_cls}&s_finished=#{@s_finised}"%></p>

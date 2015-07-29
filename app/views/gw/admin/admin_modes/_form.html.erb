@@ -1,6 +1,10 @@
 <% case @item.type_name %>
 <% when "mode" %>
-  <%= render 'form_mode', f: f %>
+  <%= render :partial => 'form_mode', :locals => {:f => f} %>
 <% when "disaster_bbs" %>
-  <%= render 'form_bbs', f: f %>
+  <%= render :partial => 'form_bbs', :locals => {:f => f} %>
 <% end %>
+<%= f.hidden_field :class_id %>
+<%= f.hidden_field :name %>
+<%= f.hidden_field :type_name %>
+

@@ -1,5 +1,7 @@
 <div class="piece memo setting">
-<%= render 'header_str' %>
+
+<%#= render :partial => '/gw/admin/memos/piece_header' %>
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
 <div class="pieceBodyHeader">
@@ -8,28 +10,30 @@
 </div>
 </div>
 <div class="pieceBodyBody">
-
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+<%@key = 'mobiles'%>
+<a name="<%=@key%>"></a>
 <%= form_tag({:action => 'update_forwarding'}) do %>
-  <%= error_messages_for @item %>
   <table class="show">
     <tr>
       <th>携帯メール転送</th>
-      <td><%= select_tag 'item[mobiles][ktrans]', options_for_select([['する','1'],['しない','2']], @item.ktrans) %></td>
+      <td><%= select_tag('ktrans', options_for_select({'する'=>1, 'しない'=>2}, @ktrans)) %></td>
     </tr>
     <tr>
       <th>携帯メールアドレス</th>
-      <td><%= email_field_tag 'item[mobiles][kmail]', @item.kmail, size: 80 %></td>
+      <td><%= email_field_tag('kmail', @kmail) %></td>
     </tr>
   </table>
 <div class="submitters"><%= submit_tag('保存') %></div>
-<% end %>
-
+<%end%>  
+  
 </div>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '連絡メモ設定へ戻る', "/gw/memo_settings" %>
+  <%=link_to '連絡メモ設定へ戻る', "/gw/memo_settings" %>
 </div>
 
 </div>
 </div>
+  

@@ -1,0 +1,11 @@
+<%=raw init_tiny_mce :readonly => true %>
+
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:name) %></th>
+    <td><%=h safe{@item.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:title) %></th>
+    <td><%=h @item.title %></td>
+  </tr>
+</table>

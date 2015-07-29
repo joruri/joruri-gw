@@ -1,39 +1,44 @@
+<%# app/views/gw/admin/memos/_form.html.erb %>
 <%
-suffixes_raw = I18n.a('enum.gw/memo.category')
+# hidden parameters
+suffixes_raw = Gw.yaml_to_array_for_select('gw_memos_categories')
 suffixes = Gw.options_for_select(suffixes_raw, nil)
 %>
+
 
 <%= raw(get_form_title_div params) %>
 
 <span class="required">※は必須項目です。</span>
 <table class="show">
-  <tr>
-    <th>時刻 <%= required %></th>
-    <td><%= f.datetimepicker :ed_at %></td>
+<tr><th>時刻<span class="required">※</span></th><td>
+  <%= f.calendar_date_select :ed_at, :time => true, :popup => "force", :value => safe{@item.ed_at.strftime("%Y-%m-%d %H:%M")} %>
+  </td>
   </tr>
   <tr>
     <th>所属/担当/社名</th>
-    <td><%= f.text_field :fr_group, :style => "width:30em;" %> の</td>
+    <td><%= f.text_field :fr_group, :style=>"width:30em;" %> の</td>
   </tr>
   <tr>
     <th>担当者</th>
-    <td><%= f.text_field :fr_user, :style => "width: 30em; ime-mode: active;" %> 様から</td>
+    <td><%= f.text_field :fr_user, :style=>"width: 30em; ime-mode: active;" %> 様から</td>
   </tr>
   <tr>
-    <th>伝言 <%= required %></th>
+    <th>伝言<span class="required">※</span></th>
     <td>
-      <%= f.text_area :title, :rows => 5, :style => "width: 30em; ime-mode: active;" %>
-      <br />
-      <%= select_tag :_category, suffixes, :size => suffixes_raw.length, :ondblclick => 'select_category()' %>
+      <%= f.text_area :title, :rows => 5 ,:style => "width: 30em; ime-mode: active;" %>
+      <br/>
+      <%= select_tag('_category', suffixes, :size => suffixes_raw.length, :ondblclick => 'select_category()') %>
     </td>
   </tr>
   <tr>
     <th>備考</th>
-    <td><%= f.text_area :body, :rows => 5, :style => "width: 30em; ime-mode: active;" %></td>
+    <td>
+      <%= f.text_area :body, :rows => 5 ,:style => "width: 30em; ime-mode: active;" %>
+    </td>
   </tr>
 </table>
 
-<%= render 'form_participant', f: f %>
+<%= render :partial => 'form_participant', :locals => {:f => f} %>
 
 <script type="text/javascript">
 //<![CDATA[

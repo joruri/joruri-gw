@@ -1,12 +1,12 @@
 <%
-  privs = System::PrivName.where(:priv_name => 'developer').first
-  user_id = Core.user.id
-  group_id = Core.user_group.id
+  privs = System::PrivName.find_by_priv_name('developer')
+  user_id = Site.user.id
+  group_id = Site.user_group.id
   if @item.class_id.to_i == 1
     unless @item.uid.blank?
       user_id = @item.uid
       if @item.group_id.blank?
-        user_group = System::UsersGroup.where(:user_id => @item.uid).first
+        user_group = System::UsersGroup.find_by_user_id(@item.uid)
         group_id = user_group.group_id
       else
         group_id = @item.group_id
@@ -19,14 +19,15 @@
     end
   end
   users = System::User.get_user_select(group_id)
-  groups = System::Group.where(:state => 'enabled', :level_no => 3).order(:level_no, :code)
+  groups = System::Group.find(:all, :conditions=>"state='enabled' and level_no = 3", :order => [:level_no,:code].join(',') )
+
 %>
 <%= required_head %>
 <table class="show">
   <tr>
     <th>機能名<%= required %></th>
     <td>
-      <%= f.collection_select :role_name_id, System::RoleName.all.order(:sort_no), :id, :display_name, {:include_blank => true} %>
+      <%= f.collection_select :role_name_id, System::RoleName.find(:all, :order => :sort_no), :id, :display_name ,{ :include_blank => true} %>
     </td>
   </tr>
   <tr>
@@ -38,27 +39,28 @@
   </tr>
   <tr>
     <th>優先順位<%= required %></th>
-    <td><%= f.text_field :idx, :class => 'num', :style => 'width: 200px;', :class => "IMEoff" %></td>
+    <td><%= f.text_field :idx, :class => 'num', :style => 'width: 200px;', :class=>"IMEoff" %></td>
   </tr>
   <tr>
     <th>種別<%= required %></th>
-    <td><%= f.radio_buttons :class_id, @item.class_id_no, {}, {onclick: 'sel_class();'} %></td>
+    <td><%= radio f, 'class_id', @item.class_id_no, :onClick => 'sel_class();' %></td>
   </tr>
   <tr>
     <th>グループ</th>
-    <td><%= select_tag "item[gid_raw]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, group_id), :onchange => 'get_user();' %></td>
+    <td><%= select_tag("item[gid_raw]", Gw.options_for_select(groups.collect{|x| ["(#{x.code})#{x.name}", x.id]}, group_id) ,:onchange=>'get_user();') %></td>
   </tr>
   <tr>
     <th>ユーザ</th>
     <td>
-    <%= select_tag "item[uid_raw]", Gw.options_for_select(users, user_id) %></td>
+    <%= select_tag("item[uid_raw]", Gw.options_for_select(users, user_id)) %></td>
   </tr>
   <tr>
     <th>許可<%= required %></th>
-    <td><%= f.radio_buttons :priv, @item.priv_no %></td>
+    <td><%= radio f, 'priv', @item.priv_no %></td>
   </tr>
 </table>
-
+<div id="pp"></div>
+<%#= observe_field "item_gid_raw", :function => "get_user();" %>
 <script type="text/javascript">
 //<![CDATA[
   var end_cnt = -1;
@@ -67,7 +69,7 @@
     g_id = $("item_gid_raw").value;
     document.body.style.cursor = 'wait';
     end_cnt = 0;
-    new Ajax.Request("/system/roles/user_fields?g_id=" + g_id, {method:'get', onComplete: function(x){
+    new Ajax.Request("/system/roles/user_fields.csv?g_id=" + g_id, {method:'get', onComplete: function(x){
       $('item_uid_raw').update(x.responseText);
       end_cnt = end_cnt + 1;
       if (end_cnt == 1) {
@@ -76,17 +78,20 @@
     }})
   }
   var sel_class = function() {
+    //pp(arguments.callee.toString())
+    //pp(radio_selected('item[class_id]'))
+    //pp(gdbn('item[class_id]')[radio_selected('item[class_id]')])
     idx = arguments.length == 1 ? arguments[0] : radio_selected('item[class_id]')
     switch (idx) {
-    case 1:
+    case 0:
       $('item_uid_raw').disabled = true;
       $('item_gid_raw').disabled = true;
       break;
-    case 2:
+    case 1:
       $('item_uid_raw').disabled = false;
       $('item_gid_raw').disabled = false;
       break;
-    case 3:
+    case 2:
       $('item_uid_raw').disabled = true;
       $('item_gid_raw').disabled = false;
       break;

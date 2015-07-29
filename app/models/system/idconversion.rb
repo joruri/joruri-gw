@@ -1,7 +1,8 @@
+# encoding: utf-8
 class System::Idconversion < ActiveRecord::Base
   include System::Model::Base
-  include System::Model::Base::Content
   include System::Model::Tree
+  include System::Model::Base::Config
 
   validates_presence_of :tablename
   validates_uniqueness_of :tablename
@@ -60,7 +61,7 @@ class System::Idconversion < ActiveRecord::Base
     if _user_id1.blank?
         _user_id = nil
     else
-      _user = System::User.where("code='#{_user_id1}'").first
+      _user = System::User.find(:first , :conditions=>"code='#{_user_id1}'")
       if _user == nil
         _user_id = nil
       else
@@ -75,7 +76,7 @@ class System::Idconversion < ActiveRecord::Base
         _group_id = nil
     else
       _version_id = System::GroupVersion.get_current_group_version_id
-      _group = System::Group.where("code='#{_group_id1}' and version_id='#{_version_id}'").first
+      _group = System::Group.find(:first , :conditions=>"code='#{_group_id1}' and version_id='#{_version_id}'")
       if _group == nil
         _group_id = nil
       else

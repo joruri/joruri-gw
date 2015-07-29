@@ -1,20 +1,24 @@
+<%
+system_select = "/gwbbs/synthesetup/new"
+date_select = "/gwbbs/synthesetup/date_edit"
+%>
 <div class="piece bbs">
 <div class="pieceHeader">
 <h2>記事更新情報</h2>
 </div>
 <div class="pieceBody">
 <div class="editingBox">
-<span class="docLink"><%= link_to 'ポータルに戻る >>', '/' %></span>
+<span class="docLink"><%=link_to('ポータルに戻る >>', '/') %></span>
 </div>
 <table class="index">
-  <tr>
-    <td style="width: 100px; text-align: center;"><%= link_to '表示対象', {action: :new} %></td>
-    <td>新着記事総合に表示する対象のカテゴリを選択します</td>
-  </tr>
-  <tr>
-    <td style="width: 100px; text-align: center;"><%= link_to '表示期間', {action: :edit, id: 0} %></td>
-    <td>新着記事総合に表示する期間を設定します</td>
-  </tr>
+<tr>
+<td style="width: 100px; text-align: center;"><%=link_to('表示対象', system_select)%></td>
+<td>新着記事総合に表示する対象のカテゴリを選択します</td>
+</tr>
+<tr>
+<td style="width: 100px; text-align: center;"><%=link_to('表示期間', date_select)%></td>
+<td>新着記事総合に表示する期間を設定します</td>
+</tr>
 </table>
 </div>
 </div><!--piece gwbbs-->

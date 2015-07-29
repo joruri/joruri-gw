@@ -1,44 +1,16 @@
 <%
-text_style = 'width:30em;'
-unless params[:item].blank?
-  st_at_str = %Q(#{params[:item]['st_at(1i)']}-#{params[:item]['st_at(2i)']}-#{params[:item]['st_at(3i)']} #{params[:item]['st_at(4i)']}:#{params[:item]['st_at(5i)']})
-  params[:item][:st_at]= st_at_str
-  ed_at_str = %Q(#{params[:item]['ed_at(1i)']}-#{params[:item]['ed_at(2i)']}-#{params[:item]['ed_at(3i)']} #{params[:item]['ed_at(4i)']}:#{params[:item]['ed_at(5i)']})
-  params[:item][:ed_at]= ed_at_str
-end
-@inquire_to_err_flg = false
-if !@item.errors.blank?
-  @inquire_to_err_flg = @item.errors.include?("inquire_to")
-end
 
-repeat_class_id = 0
-repeat_allday_radio_id = allday_radio_id = 1
-todo_ed_at_id = 1
-todo_st_at_id = 2
-event_week = event_month = "0"
-event_word = ""
+@inquire_to_err_flg = false
+allday_radio_id = 1
 @inquire_to = ""
 
 form_kind_id = 0 # フォーム切り替え用変数
 if !params[:item].blank?
-  repeat_class_id = params[:item][:repeat_class_id].to_i
   allday_radio_id = params[:item][:allday_radio_id].to_i
-  repeat_allday_radio_id = params[:item][:repeat_allday_radio_id].to_i
-  event_week = params[:item][:event_week]
-  event_month = params[:item][:event_month]
-  event_word = params[:item][:event_word]
   form_kind_id = params[:item][:form_kind_id].to_i
-  todo_st_at_id = params[:item][:todo_st_at_id].to_i
-  todo_ed_at_id = params[:item][:todo_ed_at_id].to_i
-  todo_repeat_time_id = params[:item][:todo_repeat_time_id].to_i
   @inquire_to = params[:item][:inquire_to]
 end
 repeat_mode = get_repeat_mode params # 通常：1、繰り返し：2
-creator_uid = Core.user.id
-creator_uname = Core.user.name
-creator_ucode = Core.user.code
-creator_gid = Core.user_group.id
-created_at = 'now()'
 
 d_load_st, d_load_ed = case params[:action]
 when 'edit', 'quote'
@@ -46,30 +18,14 @@ when 'edit', 'quote'
   if params[:action] == 'quote' && @item.guide_state == 2
     @item.guide_state = 1
   end
-  if !@item.schedule_events.blank?
-    event_week = @item.schedule_events.event_week
-    event_month = @item.schedule_events.event_month
-    event_word = @item.schedule_events.event_word
-  end
-  allday_radio_id = repeat_allday_radio_id = nz(@item.allday, 1).to_i
-  if !@item.schedule_todo.blank?
-    todo_st_at_id = nz(@item.schedule_todo.todo_st_at_id, 1).to_i
-    todo_ed_at_id = nz(@item.schedule_todo.todo_ed_at_id, 1).to_i
-    todo_repeat_time_id = nz(@item.schedule_todo.todo_repeat_time_id, 0).to_i
-  end
+
+  allday_radio_id = nz(@item.allday, 1).to_i
+
   if params[:action] == 'quote'
-    creator_uid = Core.user.id
-    creator_uname = Core.user.name
-    creator_ucode = Core.user.code
-    creator_gid = Core.user_group.id
-    created_at = 'now()'
+
     @inquire_to = ""
   else
-    created_at   = @item.created_at
-    creator_uid  = @item.creator_uid
-    creator_uname = @item.creator_uname
-    creator_ucode = @item.creator_ucode
-    creator_gid  = @item.creator_gid
+
     @inquire_to  = @item.inquire_to
   end
   if !@item.schedule_props.blank?
@@ -82,9 +38,8 @@ when 'edit', 'quote'
     [@item.st_at, @item.ed_at]
   else
     raise "呼び出しが不正です(repeat_mode=#{repeat_mode})" if @item.repeat.nil?
-    # edit 時の値ロードのため手抜き
+    # note/100222/nkoshiba: edit 時の値ロードのため手抜き
     params[:item] ={}
-    repeat_class_id = @item.repeat.class_id
     @item.repeat.attributes.reject{|k,v| /_at$/ =~ k || 'id' == k}.each{|k,v|
       params[:item]["repeat_#{k}".to_sym] = v
     }
@@ -114,16 +69,9 @@ when 'new'
   _wrk_st = !dd.blank? ? Gw.date_to_time(dd) : Time.local(now.year, now.month, now.day, hour, min, 0)
   [_wrk_st, _wrk_st + 60*60]
 when 'create', 'update'
-  creator_uid = params[:item][:creator_uid]
-  creator_uname = params[:item][:creator_uname]
-  creator_ucode = params[:item][:creator_ucode]
-  creator_gid = params[:item][:creator_gid]
-  created_at = params[:item][:created_at]
+
   form_kind_id = params[:item][:form_kind_id].to_i
-  allday_radio_id = repeat_allday_radio_id = params[:item][:allday_radio_id].to_i
-  todo_st_at_id = params[:item][:todo_st_at_id].to_i
-  todo_ed_at_id = params[:item][:todo_ed_at_id].to_i
-  todo_repeat_time_id = params[:item][:todo_repeat_time_id].to_i
+  allday_radio_id = params[:item][:allday_radio_id].to_i
 
   if repeat_mode == 1
     [Gw.to_time(params[:item][:st_at]), Gw.to_time(params[:item][:ed_at])]
@@ -134,42 +82,29 @@ when 'create', 'update'
 else
   raise "呼び出しが不正です(action=#{params[:action]})"
 end
-form_kind_ids_radio = [['通常', 0], ['Todo', 2 ]]
-form_kind_radio = radio(f, 'form_kind_id', form_kind_ids_radio,:selected=> nz(form_kind_id, 0).to_s, :force_tag=>1, :return_array=>1, :onclick=>'form_kind_id_switch();')
-form_kind_radio_str = Gw.join(form_kind_radio, "")
-
 %>
 
-<%= render '/gw/admin/schedules/form_participant', f: f %>
+<%=render :partial => '/gw/admin/schedules/form_participant', :locals => {:f => f}%>
 <table class="show">
-<tr>
-<td class="select">
-<%= form_kind_radio_str.html_safe%>
-</td>
-</tr>
 <tr id="start_tr_1"><th>開始日時<span class="textRed">※</span></th></tr>
-<tr id="start_tr_2"><td><%= f.datetime_select_for_mobile :st_at, selected: d_load_st %><%= hidden_field_tag 'init[st_at][mode]', 'datetime' %></td></tr>
+<tr id="start_tr_2"><td><%= date_picker_smartphone f, 'st_at', :errors=>@item.errors, :mode=>:datetime, :value=>d_load_st, :minute_interval=>'5' %></td></tr>
 <tr><th><span id="ed_set_str">終了日時</span><span class="textRed">※</span></th></tr>
-<tr><td><%= f.datetime_select_for_mobile :ed_at, selected: d_load_ed %><%= hidden_field_tag 'init[ed_at][mode]', 'datetime' %></td></tr>
+<tr><td>
+<%= date_picker_smartphone f, 'ed_at', :errors=>@item.errors, :mode=>:datetime, :value=>d_load_ed, :minute_interval=>'5' %>
+<%=f.hidden_field :ed_at%>
+
+</td></tr>
 <tr id="allday_id_1"><th>
-時間未定：<%= f.check_box("allday", {:checked => @item.allday.present?, :onclick => 'allday_check(this)'},"1", nil) %></th></tr>
+時間未定：<%= f.check_box("allday", {:onClick => 'allday_check(this)'},"1", "") %></th></tr>
 <tr id="allday_id_2"><td>
-<%= radio(f, 'allday_radio_id', I18n.a('enum.gw/schedule.allday_radio_id'), :selected=> nz(allday_radio_id, 0).to_i, :force_tag=>1) %>
-<tr></td>
-<tr id="todo_ed_id_1"><th>
-Todo期限設定
-<tr id="todo_ed_id_2"><td>
-<%= radio(f, 'todo_ed_at_id', Gw::ScheduleTodo.gw_schedules_form_todo_ed_at_ids, :selected=> nz(todo_ed_at_id, 0).to_i, :force_tag=>1, :onclick=>'todo_ed_at_select_radio_click();') %>
-<tr></td>
+<%= radio(f, 'allday_radio_id', Gw.yaml_to_array_for_select('allday_radio_ids'), :selected=> nz(allday_radio_id, 0).to_i, :force_tag=>1) %>
+</td></tr>
 </table>
 <table class="show">
 <tr><th><span id="title_title">件名（用務名等）</span><span class="textRed">※</span></th></tr>
 <tr><td>
 <span id="title_category">
-<%= f.select :title_category_id, options_for_select(@item.title_category_options, @item.title_category_id), include_blank: '---' %>
-</span>
-<span id="title_category_todo">
-TODO
+<%= f.select(:title_category_id, Gw.yaml_to_array_for_select('gw_schedules_title_categories', :include_blank=>1), :selected=>@item.title_category_id) %>
 </span>
 <br />
 <%= f.text_area  :title, :style=>"width: 100%;" ,:rows=>5   %></td></tr>
@@ -178,149 +113,45 @@ TODO
 <tr><th>メモ</th></tr>
 <tr><td><%= f.text_area  :memo, :style=>"width: 100%;" ,:rows=>5   %></td></tr>
 </table>
-<%= render '/gw/admin/schedules/form_public', f: f %>
+<%=render :partial => '/gw/admin/schedules/form_public', :locals => {:f => f}%>
 
 <%#携帯用パラメータ%>
-<%#= hidden_field_tag "item[form_kind_id]", "0" %>
+<%= hidden_field_tag "item[form_kind_id]", form_kind_id.to_s %>
 <%= hidden_field_tag "init[repeat_mode]", "1" %>
 <%= hidden_field_tag "init[st_at][mode]", "datetime" %>
 <%= hidden_field_tag "init[ed_at][mode]", "datetime" %>
 
-<%= hidden_field_tag "item[creator_uid]", Core.user.id %>
-<%= hidden_field_tag "item[creator_uname]", Core.user.name %>
-<%= hidden_field_tag "item[creator_ucode]",  Core.user.code %>
-<%= hidden_field_tag "item[creator_gid]", Core.user_group.id %>
+<%= hidden_field_tag "item[creator_uid]", Site.user.id %>
+<%= hidden_field_tag "item[creator_uname]", Site.user.name %>
+<%= hidden_field_tag "item[creator_ucode]",  Site.user.code %>
+<%= hidden_field_tag "item[creator_gid]", Site.user_group.id %>
 <%= hidden_field_tag "item[created_at]", Time.now %>
 
 <%= hidden_field_tag "item[guide_state]","0" %>
 <%= hidden_field_tag "item[guide_ed_at]","0" %>
 
 <%= hidden_field_tag "init[ucls]", "1" %>
-<%= hidden_field_tag "init[uid]", Core.user.id %>
-<%= hidden_field_tag "init[uname]",  Core.user.display_name %>
+<%= hidden_field_tag "init[uid]", Site.user.id %>
+<%= hidden_field_tag "init[uname]",  Site.user.display_name %>
 
 <%= hidden_field_tag "item[schedule_users][user_type_id]" ,"_belong" %>
 <%= hidden_field_tag "item[schedule_users][child_gid]" ,"child_group_18" %>
 
-<%= hidden_field_tag "item[owner_uid]" , Core.user.id %>
-<%= hidden_field_tag "item[owner_udisplayname]" ,  Core.user.display_name %>
+<%= hidden_field_tag "item[owner_uid]" , Site.user.id %>
+<%= hidden_field_tag "item[owner_udisplayname]" ,  Site.user.display_name %>
 <%= hidden_field_tag "item[schedule_props][prop_type_id]", "other:other" %>
 <script type="text/javascript">
 //<![CDATA[
 
-var form_kind_id_switch = function() {
-  idx = radio_selected('item[form_kind_id]');
-  todo_ed_at_id = radio_selected('item[todo_ed_at_id]');
-  is_allday_check = $("item_allday").checked
-  //alert(allday_check)
-  //alert(idx);
-if (idx == 0) {
-    $("ed_set_str").innerHTML = "終了日時"
-    is_title_category_show_hide(idx);
-    <% if params[:action] != 'edit' && params[:action] != 'update' && params[:quote] != 'quote' %>
-    is_public_select(idx);
-    <% end %>
-    $('participant_title').innerHTML = '参加者';
-    $('title_title').innerHTML = '件名（用務名等）';
-    is_public_click();
-    Element.show($('start_tr_1'));
-    Element.show($('start_tr_2'));
-    Element.show($('allday_id_1'));
-    Element.show($('allday_id_2'));
-    Element.hide($('todo_ed_id_1'));
-    Element.hide($('todo_ed_id_2'));
-    if(is_allday_check){
-      item_st_at_day_disabled(false);
-      item_ed_at_day_disabled(false);
-      item_st_at_time_disabled(true);
-      item_ed_at_time_disabled(true);
-    }else{
-      item_st_at_all_disabled(false);
-      item_ed_at_all_disabled(false);
-    }
-  }  else if (idx == 1) {
-    $("ed_set_str").innerHTML = "期限"
-    is_title_category_show_hide(idx);
-    <% if params[:action] != 'edit' && params[:action] != 'update' && params[:quote] != 'quote' %>
-    is_public_select(idx);
-    <% end %>
-    is_public_click();
-    //alert(idx);
-    Element.hide($('start_tr_1'));
-    Element.hide($('start_tr_2'));
-    Element.hide($('allday_id_1'));
-    Element.hide($('allday_id_2'));
-    Element.show($('todo_ed_id_1'));
-    Element.show($('todo_ed_id_2'));
-    $('participant_title').innerHTML = '担当者';
-    $('title_title').innerHTML = '内容';
-    //todo_st_at_select_radio_click();
-    todo_ed_at_select_radio_click();
-    //todo_repeat_time_select_radio_click();
-  }
-  //todo_at_show_hide();
-}
-var todo_st_at_select_radio_click = function() {
-  todo_st_at_id = radio_selected('item[todo_st_at_id]');
-  if (todo_st_at_id == 1) {
-    item_st_at_all_disabled(false);
-  } else if (todo_st_at_id == 0) {
-    item_st_at_day_disabled(false);
-    item_st_at_time_disabled(true);
-  } else if (todo_st_at_id == 2) {
-    item_st_at_all_disabled(true);
+var allday_check = function(obj) {
+  if (obj.checked) { // チェックボックスはチェックされています
+    item_time_disabled(true);
+    item_allday_radio_true_false(false);
+ } else { // チェックボックスはチェックされていません
+    item_time_disabled(false);
+    item_allday_radio_true_false(true);
   }
 }
-
-var todo_ed_at_select_radio_click = function() {
-  todo_ed_at_id = radio_selected('item[todo_ed_at_id]');
-  if (todo_ed_at_id == 1) {
-    item_ed_at_all_disabled(false);
-  } else if (todo_ed_at_id == 0) {
-    item_ed_at_day_disabled(false);
-    item_ed_at_time_disabled(true);
-  } else if (todo_ed_at_id == 2) {
-    item_ed_at_all_disabled(true);
-  }
-}
-
-/*
-var todo_at_show_hide = function() {
-  form_kind_id = radio_selected('item[form_kind_id]');
-   //alert(form_kind_id);
-  if (form_kind_id == 2) {
-    Element.show($('todo_st_at_select'));
-    Element.show($('todo_ed_at_select'));
-    Element.show($('todo_repeat_time_select'));
-    Element.hide($('allday_select'));
-    Element.hide($('allday_select_repeat'));
-    Element.show($('item_ed_at_calendar'));
-  } else {
-    Element.hide($('todo_st_at_select'));
-    Element.hide($('todo_ed_at_select'));
-    Element.hide($('todo_repeat_time_select'));
-  }
-}*/
-var is_title_category_show_hide = function (idx) {
-  // 公開範囲
-  // idx：item[is_public]
-  if (idx == 1) {
-    Element.show($('title_category_todo'));
-    Element.hide($('title_category'));
-  } else {
-    Element.hide($('title_category_todo'));
-    Element.show($('title_category'));
-  }
-}
-  var allday_check = function(obj) {
-    if (obj.checked) { // チェックボックスはチェックされています
-      item_time_disabled(true);
-      item_allday_radio_true_false(false);
-   } else { // チェックボックスはチェックされていません
-      item_time_disabled(false);
-      item_allday_radio_true_false(true);
-    }
-  }
 
 var item_time_disabled = function(flg) {
   //alert(flg);
@@ -346,9 +177,8 @@ var is_public_select = function (idx) {
 var is_public_click = function () {
   // 公開範囲
   idx = radio_selected('item[is_public]');
-  kind_id = radio_selected('item[form_kind_id]');
   //alert(idx);
-  if (idx == 1 && kind_id == 0) {
+  if (idx == 1) {
     Element.show($('public_groups'));
   } else {
     Element.hide($('public_groups'));
@@ -389,10 +219,43 @@ var item_ed_at_time_disabled = function(flg) {
   $('item_ed_at_5i').disabled = flg;
 }
 
+var update_item_st_at = function() {
+  /*mode = $('init_ed_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_ed_at').value = ret;*/
+  //update_prop_cand();
+
+
+}
+
+var update_item_ed_at = function() {
+  mode = $('init_ed_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  if (mode == 'datetime' || mode == 'time')
+    hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; break;
+  case 'date': ret = ymd; break;
+  case 'time': ret = hn; break;
+  }
+  $('item_ed_at').value = ret;
+  //update_prop_cand();
+
+
+}
 
 var my_load = function() {
   allday_check( $('item_allday') );
-  form_kind_id_switch();
+  update_item_ed_at();
 }
 my_load();
 //]]>

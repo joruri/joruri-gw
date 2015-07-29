@@ -1,2 +1,2 @@
-<% no = @title.left_index_pattern == 1 ? 1 : 0 %>
-<%= render "index_#{no}" %>
+<%=render(:partial => 'index_0') unless @title.left_index_pattern == 1%>
+<%=render(:partial => 'index_1') if @title.left_index_pattern == 1%>

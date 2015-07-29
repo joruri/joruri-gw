@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_entries/index.html.erb</p>%>
 <%
   _items_is_blank = @items.nil? ? true : @items[0].nil?
 %>
@@ -6,59 +7,59 @@
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/menu' %>
 </div>
 <div class="pieceBody">
-
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <% if _items_is_blank %>
 <div class="notice">表示する項目はありません。</div>
-<% else %>
+<%else%>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <table class="index">
-<tbody>
-  <tr>
-    <th>詳細</th>
-    <th>申込</th>
-    <th>研修名
-      <%= link_to '▲', @public_uri+"/index_date?sort_keys=gwsub_sb01_trainings.title asc" %>
-      <%= link_to '▼', @public_uri+"/index_date?sort_keys=gwsub_sb01_trainings.title desc" %></th>
-    <th>開催日
-      <%= link_to '▲', @public_uri+"/index_date?sort_keys=from_start asc" %>
-      <%= link_to '▼', @public_uri+"/index_date?sort_keys=from_start desc" %></th>
-    <th>開始時刻</th>
-    <th>終了時刻</th>
-    <th>定員  </th>
-    <th>受付</th>
-    <th>企画所属 </th>
-    <th>最終更新日</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr class="<%= cycle '', 'cycle' %>">
-    <%
-    schedule_check = Gwsub::Sb01TrainingSchedule.schedule_link_check(item.schedule_id)
-    if schedule_check == true
-      skd_link = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{item.training_id}&p_id=#{item.id.to_s}&t_menu=entries"
-      entry_link = link_to '申込む', skd_link
-    else
-      entry_link = "申込む"
-    end
-    if item.state == '3'
-      entry_link = %Q(<span class="required">締切</span>)
-    end
-    %>
-    <td><%= link_to '詳細', "/gwsub/sb01/sb01_training_schedules/#{item.id}?t_id=#{item.training_id}&t_menu=entries" %></td>
-    <td><%=raw(entry_link)%></td>
-    <td><%= item.training.title %></td>
-    <td><%= item.from_start.strftime("%Y-%m-%d") unless item.from_start.blank?%> (<%=safe{Gw.weekday(item.from_start.wday)} unless item.from_start.blank?%>)</td>
-    <td><%= item.from_start.strftime('%H:%M')  unless item.from_start.blank?%></td>
-    <td><%= item.from_end.strftime('%H:%M')  unless item.from_end.blank?%></td>
-    <td><%= item.members_max %></td>
-    <td><%= item.members_current %></td>
-    <td><%= item.training.group_name %></td>
-    <td><%= item.updated_at.strftime('%Y-%m-%d') unless item.updated_at.blank?%></td>
-  </tr>
-  <% end %>
-</tbody>
-</table>
+  <tbody>
+    <tr>
+      <th>詳細</th>
+      <th>申込</th>
+      <th>研修名
+        <%= link_to '▲', @public_uri+"/index_date?sort_keys=gwsub_sb01_trainings.title asc" %>
+        <%= link_to '▼', @public_uri+"/index_date?sort_keys=gwsub_sb01_trainings.title desc" %></th>
+      <th>開催日
+        <%= link_to '▲', @public_uri+"/index_date?sort_keys=from_start asc" %>
+        <%= link_to '▼', @public_uri+"/index_date?sort_keys=from_start desc" %></th>
+      <th>開始時刻</th>
+      <th>終了時刻</th>
+      <th>定員  </th>
+      <th>受付</th>
+      <th>企画所属 </th>
+      <th>最終更新日</th>
+    </tr>
+<%for item in @items%>
+<tr class="<%= cycle '', 'cycle' %>">
+<%
+schedule_check = Gwsub::Sb01TrainingSchedule.schedule_link_check(item.schedule_id)
+if schedule_check == true
+  skd_link = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{item.training_id}&p_id=#{item.id.to_s}&t_menu=entries"
+  entry_link = link_to '申込む', skd_link
+else
+  entry_link = "申込む"
+end
+if item.state == '3'
+  entry_link = %Q(<span class="required">締切</span>)
+end
+%>
+  <td><%= link_to '詳細', "/gwsub/sb01/sb01_training_schedules/#{item.id}?t_id=#{item.training_id}&t_menu=entries" %></td>
+  <td><%=raw(entry_link)%></td>
+  <td><%= item.training.title %></td>
+  <td><%= item.from_start.strftime("%Y-%m-%d") unless item.from_start.blank?%> (<%=ass{Gw.weekday(item.from_start.wday)} unless item.from_start.blank?%>)</td>
+  <td><%= item.from_start.strftime('%H:%M')  unless item.from_start.blank?%></td>
+  <td><%= item.from_end.strftime('%H:%M')  unless item.from_end.blank?%></td>
+  <td><%= item.members_max %></td>
+  <td><%= item.members_current %></td>
+  <td><%= item.training.group_name %></td>
+  <td><%= item.updated_at.strftime('%Y-%m-%d') unless item.updated_at.blank?%></td>
+</tr>
+<% end %>
+</tbody></table>
 <br/>
 <%= paginate @items%>
 <br/>

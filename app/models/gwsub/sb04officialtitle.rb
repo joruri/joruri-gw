@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fy_rel     ,:foreign_key=>:fyear_id           ,:class_name=>'Gw::YearFiscalJp'
   has_many :staffs       ,:foreign_key=>:official_title_id  ,:class_name=>'Gwsub::Sb04stafflist'
@@ -18,7 +19,7 @@ class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -112,5 +113,11 @@ class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
     end if params.size != 0
 
     return self
+  end
+
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `gwsub_sb04officialtitles` ;"
+    connect.execute(truncate_query)
   end
 end

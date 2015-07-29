@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwboard::Theme < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
@@ -57,7 +58,7 @@ class Gwboard::Theme < Gw::Database
 
     self.if_icon = ''
     unless self.if_icon_id.blank?
-      item = Gwboard::Image.where(:id =>self.if_icon_id).first
+      item = Gwboard::Image.find_by_id(self.if_icon_id)
       self.if_icon = item.file_path unless item.blank?
     end
 

@@ -4,10 +4,7 @@ class Digitallibrary::Category < Gwboard::CommonDb
   include System::Model::Tree
   include Digitallibrary::Model::Systemname
 
-  acts_as_tree order: { sort_no: :asc }
-
-  belongs_to :control, :foreign_key => :title_id
-
+  acts_as_tree :order=>'sort_no'
   validates_presence_of :state, :name
 
   def link_list_path

@@ -1,19 +1,23 @@
+<%#*<h1>Gw::Public::MemoSettings#index</h1>%>
+<%#*<p>Find me in app/views/gw/memo_settings/index.html.erb</p>%>
+
 <div class="piece memo setting">
-<%= render 'header_str' %>
+
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
 <ul>
-  <li>
-    <span class="function"><%= link_to 'リマインダー表示設定', "/gw/memo_settings/reminder" %></span>
-    <span class="explanation">ポータルのリマインダーに表示する連絡メモの設定を行います。</span>
-  </li>
-  <li>
-    <span class="function"><%= link_to '携帯等メール転送設定', "/gw/memo_settings/forwarding" %></span>
-    <span class="explanation">連絡メモを携帯等のメールに転送します。</span>
-  </li>
+<li>
+<span class="function"><%= link_to 'リマインダー表示設定' , "/gw/memo_settings/reminder" %></span>
+<span class="explanation">ポータルのリマインダーに表示する連絡メモの設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to '携帯等メール転送設定' , "/gw/memo_settings/forwarding" %></span>
+<span class="explanation">連絡メモを携帯等のメールに転送します。</span>
+</li>
 </ul>
 <div class="btReturn">
-  <%= link_to '連絡メモ一覧へ戻る', "/gw/memos" %>
+  <%=link_to '連絡メモ一覧へ戻る', "/gw/memos" %>
 </div>
 </div>
 

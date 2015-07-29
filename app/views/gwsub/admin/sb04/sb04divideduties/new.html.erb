@@ -16,19 +16,20 @@ end
 @action = "create"
 -%>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 <div class="showMenu">
   <%= link_to_show @items[0].id %>
 </div>
 </div>
 
 <div class="pieceBody">
-<%= form_for :item, :url => "#{@csv_base_url}?#@qs}" ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
-  <%= render 'form', f: f %>
-<% end %>
-<div><h4><%= header_str %></h4></div>
-<%= render 'gwsub/admin/sb04/sb04divideduties/show', base_url: "#{@csv_base_url}" %>
+<%= div_notice %>
+<% form_for :item, :url => "#{@csv_base_url}?#@qs}" ,:action=>:create ,:method=>:post , :html => {:multipart => true} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
+<div><h4><%= h header_str %></h4></div>
+<%= render :partial => 'gwsub/admin/sb04/sb04divideduties/show' ,:locals=>{:base_url=>"#{@csv_base_url}"} %>
 </div>
 </div>

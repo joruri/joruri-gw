@@ -1,28 +1,37 @@
 <div class="piece schedulePiece setting">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-<div class="titleLine">
-<span class="title">個人設定メニュー</span>
-</div><!--titleLine-->
-</div>
-<div class="pieceBodyBody">
-<ul>
-  <li>
-    <span class="function"><a href="/gw/schedules/setting_ind_schedules">スケジューラ設定</a></span>
-    <span class="explanation">週初めの変更（日曜日or月曜日）、場所の表示の有無、ポータル画面での表示の有無を設定できます。</span>
-  </li>
-  <li>
-    <span class="function"><a href="/system/custom_groups">カスタムグループ設定</a></span>
-    <span class="explanation">カスタムグループを設定できます。</span>
-  </li>
-  <li>
-    <span class="function"><a href="/gw/schedule_settings/import">インポート</a></span>
-    <span class="explanation">CSV (MS Outlook)形式、およびiCal形式のファイルをインポートできます。</span>
-  </li>
-</ul>
-</div>
-</div>
+  <div class="pieceHeader">
+  <%= render :partial => '/gw/admin/schedules/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= raw(div_notice) %>
+      <div class="titleLine">
+      <span class="title">個人設定メニュー</span>
+      </div><!--titleLine-->
+    </div>
+    <div class="pieceBodyBody">
+      <ul>
+        <li>
+          <span class="function"><a href="/gw/schedules/setting_ind_schedules">スケジューラ設定</a></span>
+          <span class="explanation">
+            週初めの変更（日曜日or月曜日）、場所の表示の有無、ポータル画面での表示の有無を設定できます。
+          </span>
+        </li>
+        <li>
+          <span class="function">
+            <a href="/system/custom_groups">カスタムグループ設定</a>
+          </span>
+          <span class="explanation">
+            カスタムグループを設定できます。
+          </span>
+        </li>
+        <li>
+          <span class="function"><a href="/gw/schedule_settings/import">インポート</a></span>
+          <span class="explanation">
+            CSV (MS Outlook)形式、およびiCal形式のファイルをインポートできます。
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>

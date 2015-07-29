@@ -1,6 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwbbs::Itemdelete < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Gwboard::Model::ControlCommon
+  include Gwboard::Model::AttachFile
   include Gwbbs::Model::Systemname
 
   validates_presence_of :limit_date

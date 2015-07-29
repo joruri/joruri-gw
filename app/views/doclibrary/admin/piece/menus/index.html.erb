@@ -10,39 +10,44 @@ str_current_date = ' current' if params[:state] == 'DATE'
 <div class="sideMenu" <%=raw @title.sidelist_style %>>
 <%=raw @title.other_system_link unless @title.other_system_link.blank? %>
 <% unless @title.left_index_use == '0' %>
-  <%= render 'search' %>
-  <%= link_to @title.left_banner.html_safe, @title.docs_path if @title.left_banner.present? %>
-  <% unless @title.form_name == 'form002' %>
-    <div class="btBox">
-      <div class="btIndex<%= str_current_cat %>"><%= link_to "分類順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"CATEGORY"})}#{str_limit}" %></div>
-      <div class="btIndex<%= str_current_grp %>"><%= link_to "所属順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"GROUP"})}#{str_limit}" %>  </div>
-      <% if @title.importance == 0 %><%#区分を使いまわししているので注意　書庫では日付順を表示する区分になります%>
-      <div class="btIndex<%= str_current_date %>"><%= link_to "日付順", "#{@title.docs_path}&state=DATE#{str_limit}" %></div>
-      <% end %>
-    </div>
-  <% end %>
-  <div id="sideList">
-  <% case params[:state] %>
-  <% when 'GROUP' %>
-    <ul class="section">
-    <% @grp_items.each do |group| %>
-      <% next unless @group_doc_counts[group.code] %>
-      <li class="<%= 'current' if group.code == params[:gcd] %>">
-        <%= link_to "#{group.name}(#{@group_doc_counts[group.code]})", "#{@title.docs_path}&state=GROUP&gcd=#{group.code}" %>
-      </li>
+<%= render :partial => 'search' %>
+<%= link_to @title.left_banner.html_safe, @title.docs_path if @title.left_banner.present? %>
+<% unless @title.form_name == 'form002' %>
+<div class="btBox">
+<div class="btIndex<%= str_current_cat %>"><%= link_to "分類順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"CATEGORY"})}#{str_limit}" %></div>
+<div class="btIndex<%= str_current_grp %>"><%= link_to "所属順", "#{doclibrary_docs_path({:title_id=>@title.id,:state=>"GROUP"})}#{str_limit}" %>  </div>
+<% if @title.importance == 0 %><%#区分を使いまわししているので注意　書庫では日付順を表示する区分になります%>
+<div class="btIndex<%= str_current_date %>"><%= link_to "日付順", "#{@title.docs_path}&state=DATE#{str_limit}" %></div>
+<% end %>
+</div>
+<% end %>
+<div id="sideList">
+<% case params[:state] %>
+<% when 'GROUP' %>
+  <ul class="section">
+  <% for grp_item in @grp_items %>
+    <%
+      s_children = ''
+      s_children = "#{@group_doc_counts[grp_item.code].total_cnt.to_i}" unless @group_doc_counts[grp_item.code].blank? unless grp_item.code.blank? unless @group_doc_counts.blank?
+      group_name = ''
+      group_name = "#{grp_item.name}(#{s_children})" unless s_children.blank?
+      str_current = ''
+      str_current = 'class="current"'  if grp_item.code.to_s == params[:gcd].to_s
+    %>
+    <% unless group_name.blank? %>
+    <li <%= str_current %>><%= link_to group_name, "#{@title.docs_path}&state=GROUP&gcd=#{grp_item.code}" %></li>
     <% end %>
-    </ul>
-  <% when 'DATE', 'DRAFT', 'RECOGNIZE', 'PUBLISH' %>
-    <ul>
-      <li>
-        <ul class="level1">
-          <li class="root bottomFolder"><%= link_to @title.category1_name, "#{@title.docs_path}&state=#{params[:state]}" %></li>
-        </ul>
-      </li>
-    </ul>
-  <% else %>
-    <ul><%= doclibrary_folder_trees(@items) %></ul>
   <% end %>
-  </div>
+  </ul>
+<% when 'DRAFT', 'RECOGNIZE', 'PUBLISH' %>
+  <ul><li>
+    <ul class="level1">
+      <li class="root bottomFolder"><%= link_to @title.category1_name, "#{@title.docs_path}&state=#{params[:state]}" %></li>
+    </ul>
+  </li></ul>
+<% else %>
+  <ul><%= doclibrary_folder_trees(@items) %></ul>
+<% end %>
+</div>
 <% end %><%# left_index_use %>
 </div>

@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_conditions/_menu.html.erb</p>%>
 <%
 link_str1 = %Q(<span>一覧</span>)
 link_str2 = %Q(<span>登録</span>)
@@ -17,10 +18,10 @@ when '02'
 else
 end
 %>
-<%= render 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
 <% unless link_str1.blank? %>
 <div class="menu">
-<p><%= "#{@menu_title}" %></p>
+<p><%= h "#{@menu_title}" %></p>
 <%= link_to link_str1 , url_for(link_url1) %>
 <%= link_to link_str2 , url_for(link_url2) %>
 <%= link_to link_str3 , url_for(link_url3) , html_options3 %>

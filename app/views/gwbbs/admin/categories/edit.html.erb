@@ -7,7 +7,7 @@
 
 <%= f.error_messages %>
 
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <%= submit_for(f,{:caption=>'編集する'}) %>
 

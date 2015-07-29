@@ -1,6 +1,6 @@
 <%
 fyear_order = "published_at DESC"
-fyear = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyear = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 fyears = [['すべて',0]]+fyear
 limits = Gw.limit_select
 -%>

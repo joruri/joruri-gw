@@ -1,71 +1,141 @@
-<%
-@item.selected_receiver_uids ||= @item.memo_users.map(&:uid)
-selected_receiver_options = Gw::Memo.receiver_options(@item.selected_receiver_uids, with_image_class: @mobile_image)
-receiver_options = Gw::Memo.receiver_options(Core.user_group.users.pluck(:id), with_image_class: @mobile_image)
-%>
+<%# hidden parameters %>
+<%= hidden_field_tag 'init[schedule_users_json]', (params[:item].nil? ? nz(@users_json) : params[:item][:schedule_users_json]) %>
+<%= hidden_field_tag 'init[uid]', Core.user.id %>
+<%= hidden_field_tag 'init[user_display_name]', Core.user.name %>
 <table class="show">
-  <tr>
-    <th>送り先<%= required('※<br />10人まで') %></th>
-    <td>
-      <table border="0">
-        <tr>
-          <td class="userChange">
-            <%= select_tag :receivers_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
-            <%= select_tag :receivers, options_for_select(receiver_options), :multiple => true, :size => 10, :style => 'width:200px;' %>
-          </td>
-          <td>
-            <%= button_tag '追加 →', :type => :button, :id => 'mv1' %><br /><br />
-            <%= button_tag '← 削除', :type => :button, :id => 'mv2' %>
-          </td>
-          <td>
-            <br />
-            <%= select_tag :selected_receivers, options_for_select(selected_receiver_options), :multiple => true, :size => 10, :style => 'width:200px;' %>
-            <%= f.select :selected_receiver_uids, options_for_select(selected_receiver_options, selected_receiver_options.map{|o| o[1]}), {}, {:multiple => true, :style => 'display: none;'} %>
-          </td>
-        </tr>
-      </table>
-    </td>
+<%= f.fields_for :schedule_users do |schedule_user| %>
+<tr><th>送り先<%= required('※<br/>10人まで') %></th><td>
+<table border="0"><tr>
+  <td class="userChange">
+  <%= show_group_link 'item[schedule_users][user_type_id]', :onchange => 'update_user_cand();', :mode => :form_memo %><br />
+  <%= select_tag 'item[schedule_users][uid]', Gw::Memo.options_for_select(System::User.get_user_select(nil, nil, {}), Core.user.id, :title => 1, :firefox => @firefox), :size => 10, :style => 'width:200px;', :ondblclick => 'add_participant()', :multiple => true %>
+  </td>
+  <td>
+  <%= button_to_function '追加 →', 'add_participant()' %><br /><br />
+  <%= button_to_function '← 削除', 'del_participant()' %>
+  </td>
+  <td>
+  <%= select_tag 'item[schedule_users_add_buf]', '', :size => 10, :style => 'width:200px;', :ondblclick => 'del_participant()', :multiple => true %>
+  <%= hidden_field_tag 'item[schedule_users_json]', '' %>
+  </td>
   </tr>
+</table>
+</td></tr>
+<% end %>
 </table>
 
 <script type="text/javascript">
-(function($) {
-  $(function() {
-    $('#receivers_group_id').on('change', function() {
-      $.get('<%= url_for(action: :getajax) %>', {group_id: $(this).val()}, function(data) {
-        $('#receivers').html(data);
-      });
-    });
-    $('#receivers').on('dblclick', function() {
-      moveSelectedOptions('#receivers', '#selected_receivers');
-    });
-    $('#mv1').on('click', function() {
-      moveSelectedOptions('#receivers', '#selected_receivers');
-    });
-    $('#selected_receivers').on('dblclick', function() {
-      moveSelectedOptions('#selected_receivers', '#receivers');
-    });
-    $('#mv2').on('click', function() {
-      moveSelectedOptions('#selected_receivers', '#receivers');
-    });
+//<![CDATA[
+  var nbsp = String.fromCharCode( 160 );
+  var add_participant = function() {
+    add_list('item_schedule_users_uid', 'item_schedule_users_add_buf')
+  }
+  var del_participant = function() {
+    del_list('item_schedule_users_add_buf')
+  }
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
 
-    function moveSelectedOptions(from, to) {
-      var from = $(from);
-      var to = $(to);
-      from.find('option:selected').each(function() {
-        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
-          to.append($(this).removeAttr('selected'));
-        }
-      });
-      var clone_options = $('#selected_receivers').find('option').clone().attr('selected', 'selected');
-      $('#item_selected_receiver_uids').empty().append(clone_options);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++) {
+      var inner = fr[idxs[i]].innerHTML.replace( "&nbsp;&nbsp;&nbsp;&nbsp;", nbsp + nbsp + nbsp + nbsp); // 置換
+      var inner = inner.replace( "M&nbsp;&nbsp;", 'M' + nbsp + nbsp); // 置換
+      var value = fr[idxs[i]].value; // 置換
+      <% if @firefox -%>
+      var classname = fr[idxs[i]].className;
+      select_options_push_memos(to, value, inner, fr[idxs[i]].title, classname);
+      <% else -%>
+      select_options_push(to, value, inner, fr[idxs[i]].title);
+      <% end -%>
     }
-
-    $('form').on('submit', function() {
-      var count = $('#item_selected_receiver_uids').find('option').length;
-      if (count == 0) { alert('送り先を選択してください。'); return false; }
-      if (count > 10) { alert('送り先は10人以下にしてください。'); return false; }
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  var my_submit = function() {
+    var fr = $('item_schedule_users_add_buf');
+    if (fr.options.length == 0) {
+      alert('送り先が選択されていません。');
+      return false;
+    }
+    if (fr.options.length > 10) {
+      alert('送り先は10人までです。');
+      return false;
+    }
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_users_json');
+  to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    $('itemForm').submit();
+  }
+  var my_load = function() {
+    my_load_core('user');
+  }
+  var my_load_core = function(mode) {
+    if (mode == 'user') {
+      var u = $('init_schedule_users_json');
+      var to = $('item_schedule_users_add_buf');
+    } else {
+      var u = $('init_schedule_props_json');
+      var to = $('item_schedule_props_add_buf');
+    }
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        <% if @firefox -%>
+        select_options_push_memos(to, users[i][1], users[i][2], users[i][0], users[i][3]);
+        <% else -%>
+    select_options_push(to, users[i][1], users[i][2].replace( "&nbsp;&nbsp;&nbsp;&nbsp;", nbsp + nbsp + nbsp + nbsp), users[i][0]);
+    <% end -%>
+      }
+    }
+//    if (mode == 'user')
+//     if (to.options.length == 0)
+//        select_options_push(to, $('init_uid').value, $('init_user_display_name').value, 1);
+  }
+  var update_user_cand = function () {
+    var fr = $('item_schedule_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&firefox=<%= @firefox -%>' + '&' + time_serial();
+    var to = $('item_schedule_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        var value = xh[2].replace( "&nbsp;&nbsp;&nbsp;&nbsp;", nbsp + nbsp + nbsp + nbsp); // 置換
+        var inner = value.replace( "M&nbsp;&nbsp;", 'M' + nbsp + nbsp); // 置換
+        to.options[i] = new Option(inner, xh[1]);
+        to.options[i].title = xh[0];
+        <%= ' to.options[i].className = xh[3];' if @firefox %>
+      }
     });
-  });
-})(jQuery);
+  }
+
+  var select_options_push_memos = function(elem, v, tx, title, classname, permit_rep) {
+    // elem は select であることを想定
+    // elem に value=v, text=t で Options を追加。
+    // premit_rep は既定で true, true だと重複登録を行わない(重複チェックは v, title で行う)
+    // select_options_push を参考にして作成
+    var has_rep;
+    // parse options
+    permit_rep = (permit_rep != undefined);
+    title = nz(title);
+    // main
+    has_rep = (undefined != select_options_get_index_by_value(elem, v, title));
+    if (permit_rep || !has_rep) {
+      var idx = elem.length;
+      elem.options[idx] = new Option(tx, v); // 重複許可ありなら無条件追加
+      elem.options[idx].title = title;
+      elem.options[idx].className = classname;
+    }
+  }
+
+  window.onload = my_load;
+//]]>
 </script>

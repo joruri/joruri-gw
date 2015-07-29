@@ -1,0 +1,21 @@
+<%# 操作マニュアルのページ %>
+<div class="helpBox">
+  <% if @title.help_display.blank? or @title.help_display.to_i==0 %>
+    <% if @title.help_url.blank? -%>
+      <div>ヘルプ</div>
+    <% else -%>
+      <div>
+        <a href="<%= @title.help_url %>" >ヘルプ</a>
+      </div>
+    <% end -%>
+    <% if @is_admin  %>
+      <% if @title.help_admin_url.blank? -%>
+        <div>管理者ヘルプ</div>
+      <% else -%>
+        <div>
+          <a href="<%=@title.help_admin_url%>" >管理者ヘルプ</a>
+        </div>
+      <% end -%>
+    <% end -%>
+  <% end -%>
+</div>

@@ -1,4 +1,9 @@
-<h2 class="pieceTitle">一般施設マスタ</h2>
+<%
+piece_head_title = nz(@piece_head_title, 'マスタ')
+%>
+<h2 class="pieceTitle"><%= piece_head_title %></h2>
 <div class="btsHeaderLeft">
-<span class="btNew"><%= link_to '新規作成', {action: :new} %></span>
+<% if @genre == 'other' %>
+<span class="btNew"><%= link_to '新規作成', "/gw/prop_#{@genre}s/new?cls=#{@cls}" %></span>
+<% end %>
 </div>

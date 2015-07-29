@@ -1,9 +1,15 @@
-class Gwboard::Admin::AjaxusersController < Gw::Controller::Admin::Base
+class Gwboard::Admin::AjaxusersController < ApplicationController
   include System::Controller::Scaffold
 
   def getajax
-    group = System::Group.find(params[:s_genre])
-    @items = group.enabled_users_for_options(ldap: 1).map{|u| [u.code, u.id, u.display_name]}
+    prm = params
+    gid = prm[:s_genre].to_i
+    item = System::User.new
+    item.and "sql", "system_users.state = 'enabled'"
+    item.and "sql", "system_users_groups.group_id = #{gid}"
+    @items = item.find(:all,:select=>'system_users.*',
+      :joins=>['inner join system_users_groups on system_users.id = system_users_groups.user_id'],
+      :order=>'system_users.sort_no, system_users.code').collect{|x| [x.code, x.id, "#{Gw.trim(x.name)}(#{x.code})"]}
     _show @items
   end
 

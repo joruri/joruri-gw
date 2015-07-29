@@ -1,98 +1,36 @@
+# -*- encoding: utf-8 -*-
 class Gwqa::Doc < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::Operator
-  include Gwboard::Model::Doc::Base
-  include Gwboard::Model::Doc::Auth
-  include Gwboard::Model::Doc::Wiki
+  include Cms::Model::Base::Content
   include Gwqa::Model::Systemname
 
-  has_many :files, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :images, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :db_files, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :recognizers, -> { order(:id) }, :foreign_key => :parent_id, :dependent => :destroy
-  has_many :answers, -> { where(doc_type: 1).order(:id) }, :foreign_key => :parent_id, :dependent => :destroy, :class_name => 'Gwqa::Doc'
-  belongs_to :question, -> { where(arel_table[:doc_type].eq(0)) }, :foreign_key => :parent_id, :class_name => 'Gwqa::Doc'
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :category, :foreign_key => :category1_id
+  belongs_to :content,   :foreign_key => :content_id,   :class_name => 'Cms::Content'
+  belongs_to :control,   :foreign_key => :title_id,     :class_name => 'Gwqa::Control'
 
-  has_many :roles, :foreign_key => :title_id, :primary_key => :title_id
-  has_one :section, :foreign_key => :code, :primary_key => :section_code, :class_name => 'System::Group'
+  validates_presence_of :state
+  after_validation  :validate_title
+  before_update :set_title
+  before_destroy :notification_destroy
+  after_update :answer_count_update
+  after_save :check_digit, :title_update_save, :notification_update, :answer_date_update
+  after_destroy :answer_count_update, :q_delete_draft_answers
 
-  after_create :save_name_with_check_digit
-  with_options unless: :state_preparation? do |f|
-    f.before_update :set_title
-    f.after_save :update_answer_date
-    f.after_update :update_answer_count
-    f.after_destroy :update_answer_count
-  end
+  attr_accessor :_notification
+  attr_accessor :_bbs_title_name
+  attr_accessor :_note_section
+  attr_accessor :_no_validation
 
-  validates :state, presence: true
-  with_options unless: :state_preparation? do |f|
-    f.validates :title, presence: { message: "を入力してください。" }, if: :doc_type_question?
-    f.validates :category1_id, presence: { message: "を設定してください。" }, if: "doc_type_question? && category_use?"
-  end
+  def validate_title
+    return if self._no_validation
+    if title.blank?
+      errors.add :title, "を入力してください。"
+    end unless state == 'preparation' if doc_type == 0
 
-  scope :public_docs, -> { where(state: 'public') }
-  scope :today_public_docs, -> { where(state: 'public').latest_updated_since(Date.today) }
-  scope :draft_docs, -> { where(state: 'draft') }
+    if category1_id.blank?
+        errors.add :category1_id, "を設定してください。"
+    end if category_use == 1 unless state == 'preparation' if doc_type == 0
 
-  scope :question_docs, -> { where(doc_type: 0) }
-  scope :answer_docs, -> { where(doc_type: 1) }
-  scope :public_question_docs, -> { public_docs.question_docs }
-
-  scope :search_with_params, ->(control, params) {
-    rel = all
-    rel = rel.where(id: Gwqa::Doc.unscoped.select(:parent_id).search_with_text(:title, :body, params[:kwd])) if params[:kwd].present?
-    rel = rel.where(category1_id: params[:cat1]) if params[:cat1].present?
-    rel = rel.where(category2_id: params[:cat2]) if params[:cat2].present?
-    rel = rel.where(category3_id: params[:cat3]) if params[:cat3].present?
-    rel = rel.where(section_code: params[:grp]) if params[:grp].present?
-
-    if params[:yyyy].present? && params[:mm].present?
-      from_date = Date.new(params[:yyyy].to_i, params[:mm].to_i, 1).beginning_of_day
-      to_date = Date.new(params[:yyyy].to_i, params[:mm].to_i, -1).end_of_day
-      rel = rel.where(arel_table[:latest_updated_at].gteq(from_date)).where(arel_table[:latest_updated_at].lteq(to_date))
-    end
-    rel
-  }
-  scope :index_select, ->(control = nil) {
-    select(:id, :title_id, :category1_id, :state, :title, :section_name, :section_code, 
-      :answer_count, :content_state, :latest_answer, :latest_updated_at)
-  }
-  scope :index_docs_with_params, ->(control, params) {
-    rel = all
-    case params[:state]
-    when "TODAY"
-      rel = rel.today_public_docs
-    when "DRAFT"
-      rel = rel.draft_docs
-      rel = rel.group_or_creater_docs unless control.is_admin?
-    else
-      rel = rel.public_docs
-    end
-    rel
-  }
-  scope :index_order_with_params, ->(control, params) {
-    case params[:state]
-    when "GROUP"
-      order(section_code: :asc, latest_updated_at: :desc)
-    when "CATEGORY"
-      docs = arel_table
-      cats = Gwqa::Category.arel_table
-      order(cats[:sort_no].asc, docs[:category1_id].asc, docs[:title].asc, docs[:latest_updated_at].desc).joins(:category)
-    else
-      order(latest_updated_at: :desc)
-    end
-  }
-
-  def doc_type_question?
-    doc_type == 0
-  end
-
-  def doc_type_answer?
-    doc_type == 1
   end
 
   def no_recog_states
@@ -109,6 +47,144 @@ class Gwqa::Doc < Gwboard::CommonDb
 
   def resolved_status_select
     [['未解決','unresolved'],['解決済','resolved']]
+  end
+
+  def public_path
+    if name =~ /^[0-9]{8}$/
+      _name = name
+    else
+      _name = File.join(name[0..0], name[0..1], name[0..2], name)
+    end
+    Site.public_path + content.public_uri + _name + '/index.html'
+  end
+
+  def parent_path
+    if self.doc_type == 1
+      _name = pname
+    else
+      _name = name
+    end
+    Site.public_path + content.public_uri + _name + '/index.html'
+  end
+
+  def public_uri
+    content.public_uri + name + '/'
+  end
+
+  def check_digit
+    if pname.to_s != ''
+      return true if name.to_s != ''
+    end
+    return true if @check_digit == true
+
+    @check_digit = true
+
+    self.name = Util::CheckDigit.check(format('%07d', id))
+    self.pname = Util::CheckDigit.check(format('%07d', parent_id))
+    save
+  end
+
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+
+      case n
+      when 'cat1'
+        self.and :category1_id, v
+      when 'cat2'
+        self.and :category2_id, v
+      when 'cat3'
+        self.and :category3_id, v
+      when 'kwd'
+        and_keywords v, :title, :body
+      end
+    end if params.size != 0
+
+    return self
+  end
+
+  def answer_date_update
+    if self.state == 'public'
+      item = Gwqa::Doc.new
+      item.and :id, self.parent_id
+      item.and :title_id, self.title_id
+      item = item.find(:first)
+      unless item.blank?
+        item.latest_answer = self.latest_updated_at unless self.latest_updated_at.blank?
+        item.save
+      end
+    end if self.doc_type == 1
+  end
+
+  def notification_delete_old_records
+    Gwboard::Synthesis.destroy_all(["latest_updated_at < ?", 5.days.ago])
+  end
+
+  def notification_create
+    return nil unless self._notification == 1
+
+    notification_delete_old_records
+    Gwboard::Synthesis.destroy_all(["latest_updated_at < ?", 5.days.ago])
+    doc_id = self.id if self.doc_type == 0
+    doc_id = self.parent_id unless self.doc_type == 0
+    Gwboard::Synthesis.create({
+      :system_name => self.system_name,
+      :state => self.state,
+      :title_id => self.title_id,
+      :parent_id => doc_id,
+      :latest_updated_at => self.latest_updated_at ,
+      :board_name => self._bbs_title_name,
+      :title => self.title,
+      :url => self.portal_show_path,
+      :editordivision => self._note_section ,
+      :editor => self.editor || self.creater
+    })
+  end
+
+  def notification_update
+    return if self._no_validation
+    return nil unless self._notification == 1
+
+    notification_delete_old_records
+
+    doc_id = self.id if self.doc_type == 0
+    doc_id = self.parent_id unless self.doc_type == 0
+
+    item = Gwboard::Synthesis.new
+    item.and :title_id, self.title_id
+    item.and :parent_id, doc_id
+    item.and :system_name , self.system_name
+    item = item.find(:first)
+    unless item.blank?
+      item.system_name = self.system_name
+      item.state = self.state
+      item.title_id = self.title_id
+      item.parent_id = doc_id
+      item.latest_updated_at = self.latest_updated_at
+      item.board_name = self._bbs_title_name
+      item.title = self.title
+      item.url = self.portal_show_path
+      item.editordivision = self._note_section
+      item.editor = self.editor || self.creater
+      item.save
+    else
+      notification_create
+    end
+  end
+
+  def notification_destroy
+    return nil unless self._notification == 1
+
+    doc_id = self.id if self.doc_type == 0
+    doc_id = self.parent_id unless self.doc_type == 0
+
+    item = Gwboard::Synthesis.new
+    item.and :title_id, self.title_id
+    item.and :parent_id, doc_id
+    item.and :system_name, self.system_name
+    item = item.find(:first)
+    item.destroy if item
   end
 
   def qa_doc_path
@@ -206,38 +282,42 @@ class Gwqa::Doc < Gwboard::CommonDb
     return self.item_home_path + "docs?title_id=#{self.title_id}"
   end
 
-  def public_answers
-    answers.where(state: 'public')
-  end
-
-  def is_settlementable?(user = Core.user)
-    content_state != "resolved" && (creater_id == user.code || editor_id == user.code)
-  end
-
-  private
-
-  def save_name_with_check_digit
-    update_columns(name: Util::CheckDigit.check(format('%07d', self.id))) if self.name.blank?
-    update_columns(pname: Util::CheckDigit.check(format('%07d', self.parent_id))) if self.pname.blank?
-  end
-
   def set_title
-    if doc_type == 0
-      answers.update_all(title: title) if title_changed?
+    if self.doc_type == 0
+      args = ["UPDATE gwqa_docs SET title = ? WHERE doc_type = 1 AND parent_id = ?;", self.title, self.id]
+      strsql = ActiveRecord::Base.send(:sanitize_sql_array, args)
+      connection.execute(strsql)
     else
-      self.title = question.title if question && question.title.present?
+      item = Gwqa::Doc.find_by_id(self.parent_id)
+      unless item.blank?
+        self.title = item.title unless item.title.blank?
+      end
     end
   end
 
-  def update_answer_count
-    if state == 'public' && doc_type == 1
-      question.update_columns(answer_count: question.answers.where(state: 'public').count) if question
+  def q_delete_draft_answers
+      strsql = "UPDATE gwqa_docs SET state = 'draft' WHERE state = 'public' AND doc_type = 1 AND parent_id = #{self.id};"
+      connection.execute(strsql)
+  end
+
+  def title_update_save
+    if self.state=='public'
+      item = Gwqa::Control.find(self.title_id)
+      item.docslast_updated_at = Time.now
+      item.save(:validate=>false)
     end
   end
 
-  def update_answer_date
-    if state == 'public' && doc_type == 1 && latest_updated_at.present?
-      question.update_columns(latest_answer: latest_updated_at) if question
+  def answer_count_update
+    if self.doc_type == 1
+      strsql = "SELECT id FROM gwqa_docs WHERE state = 'public' AND doc_type = 1 AND parent_id = #{self.parent_id};"
+      item = Gwqa::Doc.find_by_sql(strsql)
+      strsql = " UPDATE gwqa_docs SET answer_count = #{item.count} WHERE id = #{self.parent_id};"
+      connection.execute(strsql)
     end
+  end
+
+  def _execute_sql(strsql)
+    return connection.execute(strsql)
   end
 end

@@ -1,18 +1,20 @@
+<%# app/views/gw/public/todos/_new_mobile.html.erb %>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render :partial => '/gw/admin/todos/piece_header'%>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
 
-<%= form_for :item, :url => '/gw/todos', :html => {:id => 'itemForm'} do |f| %>
-<%= f.error_messages %>
-<%= render 'form', f: f %>
-<%= submit_for_create(f) %>
-<% end %>
+<%= form_for :item, :url => '/gw/todos', :html => {:id => 'itemForm'} do |f|%>
+<%=f.error_messages%>
+<%=render(:partial => 'form', :locals => {:f => f})%>
+<%=submit_for_create(f)%>
+
+<%end%>
 
 <p class="leftPad2">
-<%= link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}" %></p>
+<%=link_to "戻る", "/gw/todos/?s_finished=#{@s_finised}"%></p>
 </div>
 <div class="pieceBodyBody"></div>
 </div>

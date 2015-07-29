@@ -3,7 +3,7 @@
 <h2>質問管理</h2>
 </div>
 <div class="pieceBody">
-<%= render 'gwqa/admin/makers/faq_header' %>
+<%= render :partial => 'gwqa/admin/makers/faq_header' %>
 
 <table class="index">
   <tr>
@@ -36,7 +36,7 @@
 <br />
 <%= paginate @faq_items %>
 
-<%= render 'gwqa/admin/makers/qa_header' %>
+<%= render :partial => 'gwqa/admin/makers/qa_header' %>
 
 <table class="index">
   <tr>

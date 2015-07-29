@@ -1,0 +1,6 @@
+<%@reader_groups = JsonParser.new.parse(@item.reader_groups_json) if @item.reader_groups_json%>
+<%unless @reader_groups.blank?%>
+<div class="docsInnerBox">
+  <%=readers_table('配信先所属設定', @reader_groups, 4, 'bbsCreator')%>
+</div>
+<%end%>

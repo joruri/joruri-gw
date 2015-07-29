@@ -1,62 +1,60 @@
 <div class="piece AdminSetting AdminUsersGroups">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => 'switching' %>
+    <%= render :partial => '/system/admin/groups/navi' %>
+    <%= div_notice %>
+    <div class="editingBox">
+      <span class="btEdit">
+      <%= action_menu :edit %>
+      </span>
+      <span class="btDestroy">
+      <%= action_menu :destroy %>
+      </span>
+    </div>
 
-<div class="pieceBody">
-<%= render '/system/admin/users/header_menu' %>
-<%= render 'switching' %>
-<%= render '/system/admin/groups/navi' %>
+    <div>
+    ユーザーが所属している所属の削除はできません。
+    <br />また、削除は、終了日を設定し、状態を「無効」に変更するだけです。現在は、コード・名称の再利用はできませんので、注意してください。
+    </div>
 
-<div class="editingBox">
-  <span class="btEdit">
-    <%= action_menu :edit %>
-  </span>
-  <span class="btDestroy">
-    <%= action_menu :destroy %>
-  </span>
-</div>
+    <% user = @item.user %>
+    <table class="show">
+      <tbody>
+        <tr>
+          <th>ユーザー</th>
+          <td><%= safe{user.name} %></td>
+        </tr>
+        <tr>
+          <th>所属グループ</th>
+          <td><%= @item.show_group_name %></td>
+        </tr>
+        <tr>
+          <th>役職</th>
+          <td><%= safe{user.official_position} %></td>
+        </tr>
+        <tr>
+          <th>本務・兼務</th>
+          <td><%= System::UsersGroup.job_order_show(@item.job_order) %></td>
+        </tr>
+        <tr>
+          <th>配属開始日</th>
+          <td><%= safe{Gw.date_str(@item.start_at)} %></td>
+        </tr>
+        <tr>
+          <th>配属終了日</th>
+          <td><%= safe{Gw.date_str(@item.end_at)} %></td>
+        </tr>
+        <tr>
+          <th>状態</th>
+          <td><%= safe{System::UsersGroup.state_show(user.state) } %></td>
+        </tr>
+      </tbody>
+    </table>
 
-<div>
-ユーザーが所属している所属の削除はできません。
-<br />また、削除は、終了日を設定し、状態を「無効」に変更するだけです。現在は、コード・名称の再利用はできませんので、注意してください。
-</div>
-
-<% user = @item.user %>
-<table class="show">
-  <tbody>
-    <tr>
-      <th>ユーザー</th>
-      <td><%= safe{user.name} %></td>
-    </tr>
-    <tr>
-      <th>所属グループ</th>
-      <td><%= @item.show_group_name %></td>
-    </tr>
-    <tr>
-      <th>役職</th>
-      <td><%= safe{user.official_position} %></td>
-    </tr>
-    <tr>
-      <th>本務・兼務</th>
-      <td><%= System::UsersGroup.job_order_show(@item.job_order) %></td>
-    </tr>
-    <tr>
-      <th>配属開始日</th>
-      <td><%= safe{Gw.date_str(@item.start_at)} %></td>
-    </tr>
-    <tr>
-      <th>配属終了日</th>
-      <td><%= safe{Gw.date_str(@item.end_at)} %></td>
-    </tr>
-    <tr>
-      <th>状態</th>
-      <td><%= safe{System::UsersGroup.state_show(user.state) } %></td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="btReturn">
-  <%= link_to '戻る', system_users_groups_path(@parent) %>
-</div>
-
-</div>
+    <div class="btReturn">
+      <%=link_to '戻る', system_users_groups_path(@parent) %>
+    </div>
+  </div>
 </div>

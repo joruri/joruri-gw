@@ -1,62 +1,110 @@
 <%
-show_day_header = render '/gw/admin/schedules/show_day_header'
+show_day_header = render(:partial => '/gw/admin/schedules/show_day_header')
 %>
+
 <div class="piece schedulePiece dayview">
-<div class="pieceHeader">
-  <%= render '/gw/admin/schedules/piece_header', d: @st_date, mode: 'day' %>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render '/gw/admin/schedules/schedule_header', d: @st_date, mode: 'day', show_flg: @show_flg -%>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/schedules/piece_header', :locals=>{:d=>@st_date, :mode=>'day'} %>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/schedules/schedule_header', :locals=>{:d=>@st_date, :mode=>'day', :show_flg => @show_flg}) -%>
+    </div>
+
+    <div class="pieceBodyBody">
+      <table summary="スケジュール詳細" class="scheduleTable">
+        <tbody>
+
+          <% if @show_flg %>
+          <% @users.each_with_index do |user, u_id| %>
+          <%
+          key = "user_#{user.id}"
+          schedule_data = @user_schedules[key]
+          user_title = ""
+          if params[:cgid].present?
+            users_custom_group = System::UsersCustomGroup.find(:first,
+              :conditions =>"user_id = #{user.id} and custom_group_id = #{params[:cgid]}")
+            usericon = " userIcon#{users_custom_group.icon}"
+            user_title = users_custom_group.title
+          else
+            usericon = ""
+          end
+          %>
+          <% if @header_each == 0 && u_id == 0 || @header_each != 0 && u_id % @header_each == 0 %>
+          <%= show_day_header -%>
+          <% end %><%# header End %>
+
+          <tr class="<%= schedule_data[:trc] -%>">
+            <th rowspan="<%= schedule_data[:row] -%>" class="scheduleUser">
+              <div class="leftHeader<%= usericon -%>">
+                <% if user_title.present? -%>
+                <div class="title"><%= user_title -%></div>
+                <% end -%>
+                <div class="username">
+                  <span><%= user.display_name -%>
+                    <% if @edit -%>
+                    <%= show_schedule_edit_icon(@calendar_first_day, :uid=>user.id) -%>
+                    <% end -%>
+                  </span>
+                  <span class="linkBox">
+                    <a href="/gw/schedules/?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="weekLink">週表示</a>
+                    <a href="/gw/schedules/show_month?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="monthLink">月表示</a>
+                    <a href="/gw/schedule_lists/?uid=<%= user.id -%>&s_year=<%= @calendar_first_day.year -%>&s_month=<%= @calendar_first_day.month -%>" class="listsLink">一覧</a>
+                  </span>
+                </div>
+              </div>
+            </th>
+
+            <% if schedule_data[:schedule_len] == 0 %>
+            <% (@calendar_end_time - @calendar_first_time + 1).times do %>
+            <td colspan="2" class="scheduleData">
+              <!-- 予定無し -->
+            </td>
+            <% end %>
+            <% else %>
+            <% participant_schedule_cnt = 0 %>
+            <% schedule_data[:schedules].each do |schedule| %>
+            <%
+              schedule_id = "sche#{schedule.id}_#{user.id}"
+              participant = false
+              schedule.schedule_users.each do |schedule_user|
+                break if participant
+                participant = schedule_user.uid == user.id
+              end
+
+              public =  schedule.is_public_auth?(@is_gw_admin)
+            %>
+
+            <%= render(:partial => '/gw/admin/schedules/show_day_one',
+              :locals=>{:schedule => schedule, :schedule_data => schedule_data,
+                :participant_schedule_cnt => participant_schedule_cnt, :public => public, :schedule_id => schedule_id}) -%>
+
+              <% participant_schedule_cnt += 1 %>
+              <% end %><%# if @schedules.each_with_index end%>
+            <% end %><%# if schedule_data[:schedule_len] == 0 end%>
+
+          <% end %><%# @user.each end%>
+
+          <%= show_day_header -%>
+          <% else %><%# if @show_flg %>
+            <%= Gw.div_notice('表示する項目はありません。') -%>
+          <% end %><%# if @show_flg %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pieceBodyFooter">
+      <%= render(:partial => '/gw/admin/schedules/schedule_footer', :locals=>{:d=>@st_date, :mode=>'day', :show_flg => @show_flg}) -%>
+    </div>
+  </div>
 </div>
 
-<div class="pieceBodyBody">
-<% if @show_flg %>
-<table class="scheduleTable">
-  <tbody>
-    <% @users.each_with_index do |user, iuser| %>
-      <%
-      schedule_data = @user_schedules["user_#{user.id}"]    
-      cg_user = params[:cgid].present? ? user.users_custom_groups.first : nil
-      %>
-      <%= show_day_header if iuser == 0 || @header_each != 0 && iuser % @header_each == 0 -%>
-      <tr class="<%= schedule_data[:trc] -%>">
-        <th rowspan="<%= schedule_data[:row] -%>" class="scheduleUser">
-          <div class="leftHeader <%= "userIcon#{cg_user.icon}" if cg_user -%>">
-            <% if cg_user.present? -%>
-            <div class="title"><%= cg_user.title -%></div>
-            <% end -%>
-            <div class="username">
-              <span>
-                <%= user.display_name -%>
-                <%= show_schedule_edit_icon(@calendar_first_day, uid: user.id) if @edit -%>
-              </span>
-              <span class="linkBox">
-                <a href="/gw/schedules/?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="weekLink">週表示</a>
-                <a href="/gw/schedules/show_month?s_date=<%= @calendar_first_day.strftime("%Y%m%d") -%>&uid=<%= user.id -%>" class="monthLink">月表示</a>
-                <a href="/gw/schedule_lists/?uid=<%= user.id -%>&s_year=<%= @calendar_first_day.year -%>&s_month=<%= @calendar_first_day.month -%>" class="listsLink">一覧</a>
-              </span>
-            </div>
-          </div>
-        </th>
-        <% if schedule_data[:schedule_len] == 0 %>
-          <% (@calendar_end_time - @calendar_first_time + 1).times do %>
-            <td colspan="2" class="scheduleData"><!-- 予定無し --></td>
-          <% end %>
-        <% else %>
-          <%= render '/gw/admin/schedules/show_day_one', schedule_data: schedule_data, display_prop: nil -%>
-        <% end %>
-      </tr>
-    <% end %>
-    <%= show_day_header -%>
-  </tbody>
-</table>
-<% else %>
-  <%= show_notice -%>
-<% end %>
-</div>
-<div class="pieceBodyFooter">
-  <%= render '/gw/admin/schedules/schedule_footer', d: @st_date, mode: 'day', show_flg: @show_flg -%>
-</div>
-</div>
-</div>
+<%= raw(gw_js_ind_popup) %>
+<script type="text/javascript">
+//<![CDATA[
+  var my_load = function() {
+    gw_js_ind_popup();
+  }
+  window.onload = my_load;
+//]]>
+</script>

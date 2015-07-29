@@ -8,6 +8,7 @@
 -------------------------------------------------*/
 #content .bbsDocList {
   background-image: url(/_common/themes/gw/files/title/title_board.gif);
+  margin-top: 10px;
 }
 
 /* ヘルプボックス
@@ -229,16 +230,6 @@ table.bbsUserformBody table.border  {
   border: 1px solid #000000;
 }
 
-.docsInnerBox table.show {
-  clear: none;
-  border: 1px solid #D3DCED;
-}
-.bbsDocList .docsInnerBox table.show th,
-.bbsDocList .docsInnerBox table.show td {
-    background-color: #fff;
-    border: 1px solid #d3dced;
-}
-
 /* table bbsExpirydate(詳細ページ　公開終了欄)
 -------------------------------------------------*/
 .bbsDocList .bbsExpirydate {
@@ -247,18 +238,6 @@ table.bbsUserformBody table.border  {
 }
 .bbsDocList .bbsExpirydate td.space {
   width: 10px;
-}
-
-/* docListFunctions(詳細ページ　機能リンク)
--------------------------------------------------*/
-.right .docListFunctions {
-    padding-right: 10px;
-    text-align: right;
-}
-.right .docListFunctions div {
-    display: inline;
-    margin-left: 10px;
-    margin-right: 0;
 }
 
 /* table bbsFile(入力ページ　添付ファイル欄)

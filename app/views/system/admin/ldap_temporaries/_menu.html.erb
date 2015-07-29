@@ -1,8 +1,4 @@
-<div class="menu">
-<%= link_to system_ldap_temporaries_path do %>
-  <span class="<%= 'current_menu' if params[:controller] =~ /ldap_temporaries/ %>">中間データ</span>
-<% end %>
-<%= link_to system_ldap_groups_path(:parent => 0) do %>
-  <span class="<%= ' current_menu' if params[:controller] =~ /ldap_groups/ %>">LDAP</span>
-<% end %>
+<div class="indexTabs">
+<%= link_to '中間データ', system_ldap_temporaries_path %>
+<%= link_to '通信テスト', system_ldap_temporaries_path + '?do=preview' %>
 </div>

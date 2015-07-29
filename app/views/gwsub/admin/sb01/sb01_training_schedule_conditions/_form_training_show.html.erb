@@ -1,21 +1,21 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_members/new.html.erb</p>%>
 <%
 doc_link = %Q(#{@item1.title})
 %>
 <table class="show leftSide">
-  <tr>
-    <th>研修名</th>
-    <td><%=raw(doc_link)%></td>
-  </tr>
-  <tr>
-    <th>企画所属</th>
-    <td><%= @item1.group_name %></td>
-  </tr>
-  <tr>
-    <th>企画者</th>
-    <td><%= @item1.member_name %></td>
-  </tr>
-  <tr>
-    <th>連絡先電話番号</th>
-    <td><%= @item1.member_tel %></td>
-  </tr>
-</table>
+<tr>
+<th>研修名</th>
+<td><%=raw(doc_link)%></td>
+</tr>
+<tr>
+<th>企画所属</th>
+<td><%=h @item1.group_name %></td>
+</tr>
+<tr>
+<th>企画者</th>
+<td><%=h @item1.member_name %></td>
+</tr>
+<tr>
+<th>連絡先電話番号</th>
+<td><%=h @item1.member_tel %></td>
+</tr></table>

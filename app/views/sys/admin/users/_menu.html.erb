@@ -1,0 +1,9 @@
+<div class="actionMenu">
+  <%= action_menu :new %>
+  <%= action_menu :index %>
+  <%= action_menu :show if ["show", "edit"].index(params[:action]) %>
+  <%= action_menu :edit if ["show", "edit"].index(params[:action]) %>
+  <%= action_menu :destroy if ["show", "edit"].index(params[:action]) %>
+  <%= link_to 'CSV出力', csvput_sys_users_path %>
+  <%= link_to 'CSV登録', csvup_sys_users_path %>
+</div>

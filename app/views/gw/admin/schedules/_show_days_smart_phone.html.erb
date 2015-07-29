@@ -2,13 +2,13 @@
 d = @st_date # 初期化処理
 @topdate = @st_date.strftime('%Y%m%d')
 mode = 'week'
-uid = nz(params[:uid], Core.user.id)
+uid = nz(params[:uid], Site.user.id)
 link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{uid}", "cgid=#{params[:cgid]}","dis=#{@dis}"], {:no_entity => true})
 @format = "%Y年%m月%d日（%_wd）"
 @day_format = "%Y-%m-%d"
 @holidays = Gw::Holiday.find_by_range_cache(d,d+6)
 %>
-<div class="pieceBodyBody"><table class="scheduleTable">
+<div class="pieceBodyBody"><table summary="スケジュール詳細" class="scheduleTable">
 <%7.times { |i|
 td_date = d+i
 st_at_str = date_format(@day_format, td_date)

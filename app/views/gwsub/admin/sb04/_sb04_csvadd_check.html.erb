@@ -1,5 +1,5 @@
 <%
-fyears = Gwsub::Sb04EditableDate.all.order("fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears = Gwsub::Sb04EditableDate.find(:all,:order=>"fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 location = "#{@csv_base_url}/csvadd_check_run"
 
 case @menu_header4
@@ -26,6 +26,7 @@ end
 エラーがあった場合、エラーを修正して'error'の列を削除した上で、再度CSVファイルを送信してください。<br /><br />
 </span>
 </div>
+<%= div_notice %>
 
 <%= form_tag location , {:method=>:post , :multipart => true} do %>
 <%= hidden_field_tag('item[csv]','add') %>
@@ -36,7 +37,10 @@ end
 </tr>
 <tr>
   <th>文字コード</th>
-  <td><%= radio_button_tags 'item[nkf]', [['SJIS','sjis'],['UTF8','utf8']], 'sjis' %> </td>
+  <td>
+    <%= radio_button_tag('item[nkf]', 'sjis',true   ) %><label for="item_nkf_sjis" >SJIS</label>
+    <%= radio_button_tag('item[nkf]', 'utf8',false  ) %><label for="item_nkf_utf8" >UTF8</label>
+  </td>
 </tr>
 <tr>
   <th>対象ファイル</th>

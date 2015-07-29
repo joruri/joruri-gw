@@ -1,19 +1,23 @@
 <div class="contentMenu">
-  <span class="btNew"><%= link_to '電子図書を作成する', action: :new if Digitallibrary::Control.is_sysadm? %></span>
+  <span class="btNew"><%=link_to('電子図書を作成する', new_digitallibrary_cabinet_path) if @is_sysadm %></span>
 </div>
 
 <div class="tabBox">
-<table class="tabtable">
+ <table class="tabtable">
   <tbody>
-    <tr>
-      <td class="spaceLeft"></td>
-      <td class="tab<%= ' current' unless params[:state] == 'HIDE'%>"><%= link_to '管理可能電子図書', digitallibrary_cabinets_path %></td>
-      <td class="spaceCenter"></td>
-      <td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%= link_to '管理可能電子図書（非表示）', digitallibrary_cabinets_path(state: "HIDE") %></td>
-      <td class="spaceCenter"></td>
-      <td class="tab"><%= link_to '電子図書一覧', '/digitallibrary' %></td>
-      <td class="spaceRight"></td>
-    </tr>
+   <tr>
+    <td class="spaceLeft"></td>
+<!--
+    <%#*<td class="tab"><%=link_to('電子図書を作成する', gwboard_new_item) if @is_sysadm %></td>%>
+    <%#*<td class="spaceCenter"></td>%>
+-->
+    <td class="tab<%= ' current' unless params[:state] == 'HIDE'%>"><%=link_to '管理可能電子図書', digitallibrary_cabinets_path %></td>
+    <td class="spaceCenter"></td>
+    <td class="tab<%= ' current' if params[:state] == 'HIDE'%>"><%=link_to '管理可能電子図書（非表示）', digitallibrary_cabinets_path({:state=>"HIDE"}) %></td>
+    <td class="spaceCenter"></td>
+    <td class="tab"><%=link_to '電子図書一覧', '/digitallibrary' %></td>
+    <td class="spaceRight"></td>
+   </tr>
   </tbody>
-</table>
+ </table>
 </div>

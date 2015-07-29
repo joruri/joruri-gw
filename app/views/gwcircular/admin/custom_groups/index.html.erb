@@ -1,10 +1,13 @@
 <div class="bbsDocList circular">
-<%= render 'piece_header' %>
-<%= render 'piece_banner' %>
+<%= render :partial => 'piece_header' %>
+<%= render :partial => 'piece_banner' %>
 
 <div class="pieceBody">
+
+<%= div_notice %>
 <%= form_for :item, :url => "/gwcircular/custom_groups/sort_update", :html => {:method => :put} do |f| %>
-  <%= f.error_messages %>
+<%= f.error_messages %>
+
   <table class="index">
   <colgroup style="width:100px;"></colgroup>
   <colgroup class="name"></colgroup>
@@ -12,23 +15,24 @@
   <colgroup style="width:100px;"></colgroup>
   <colgroup style="width:80px;"></colgroup>
   <colgroup style="width:80px;"></colgroup>
-  <tr>
-    <th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
-    <th>名称</th>
-    <th>最終更新日時</th>
-    <th>状態</th>
-    <th></th>
-    <th></th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td><%= item.sort_prefix%>&nbsp;<%= f.text_field "sort_no_#{item.id}", :value => item.sort_no, :class => 'string sort_no', :style => 'width: 40px;', :size => 5 , :maxlength => 4 %></td>
-    <td><%= item.name %></td>
-    <td><%= item.updated_at.strftime("%Y/%m/%d %H:%M") if !item.updated_at.blank? %></td>
-    <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
-    <td><%= link_to_edit item.id %></td>
-    <td><%= link_to_destroy item.id %></td>
-  </tr>
+<tr>
+  <th>並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
+  <th>名称</th>
+  <th>最終更新日時</th>
+  <th>状態</th>
+  <th></th>
+  <th></th>
+</tr>
+
+<% for item in @items %>
+<tr>
+  <td><%= item.sort_prefix%>&nbsp;<%= f.text_field "sort_no_#{item.id}", :value => item.sort_no, :class => 'string sort_no', :style => 'width: 40px;', :size => 5 , :maxlength => 4 %></td>
+  <td><%= item.name %></td>
+  <td><%= item.updated_at.strftime("%Y/%m/%d %H:%M") if !item.updated_at.blank? %></td>
+  <td><%= item.state == 'enabled' ? '有効' : '無効' %></td>
+  <td><%= link_to_edit item.id %></td>
+  <td><%= link_to_destroy item.id %></td>
+</tr>
 <% end %>
 </table>
 

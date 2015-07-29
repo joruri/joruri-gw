@@ -186,6 +186,7 @@ table.show {
 }
 #content .circular {
   background-image: url(/_common/themes/gw/files/title/title-electronic-reference.gif);
+  margin-top: 10px;
 }
 #content .bbsDocList .pieceHeader {
   position: relative;

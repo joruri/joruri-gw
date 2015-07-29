@@ -1,60 +1,63 @@
 <div class="piece prop index">
-<div class="pieceHeader">
-<%= render 'piece_header' %>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-<%= render '/gw/admin/prop_others/prop_master_menu' %>
-<%= render 'titleline' %>
-</div>
-<div class="pieceBodyBody">
-
-<% if @items.present? %>
-  <table class="index">
-    <tr>
-      <th class="item">詳細</th>
-      <th class="group">所属</th>
-      <th class="item">制限数</th>
-      <th class="item">合計</th>
-      <% @prop_types.each do |type| %>
-      <th class="item"><%= type.name %></th>
+  <div class="pieceHeader">
+    <%= render :partial => 'piece_header' %>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/prop_others/prop_master_menu') %>
+      <%= render(:partial => 'titleline') %>
+    </div>
+    <div class="pieceBodyBody">
+      <%= div_notice %>
+      <% if @items.blank? %>
+      <% else %>
+        <table class="index">
+          <tr>
+            <th class="item">詳細</th>
+            <th class="group">所属</th>
+            <th class="item">制限数</th>
+            <th class="item">合計</th>
+            <% @prop_types.each do |type| %>
+            <th class="item"><%= type.name %></th>
+            <% end %>
+          </tr>
+          <% @items.each do |item| %>
+            <%
+            count = current_count_group_props_each(item.gid, @prop_types)
+            g_count = System::Group.count(:all,:conditions=>"id=#{item.gid}")
+            detail=0
+            if g_count> 0
+              g_name = item.group.name
+            else
+              detail=1
+              g_h_count = System::GroupHistory.count(:all,:conditions=>"id=#{item.gid}")
+              if g_h_count >  0
+                group_h = System::GroupHistory.find_by_id(item.gid)
+                if group_h.blank?
+                  g_name = %Q(<span style="color:red;">削除済　[id=#{item.gid}]</span>)
+                else
+                  g_name = %Q(<span style="color:red;">削除済　#{group_h.name}[id=#{item.gid}]</span>)
+                end
+              else
+                g_name = %Q(<span style="color:red;">削除済　[id=#{item.gid}]</span>)
+              end
+            end
+          %>
+            <tr class="<%= cycle '' , 'cycle' %>">
+              <td><%= link_to_show item.id if detail==0 %></td>
+              <td><%= raw(g_name) %></td>
+              <td><%= item.limit %></td>
+              <td><%= count[@prop_types.size] %></td>
+              <% @prop_types.each_with_index do |type, i| %>
+              <td class="item"><%= count[i] %></td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
       <% end %>
-    </tr>
-    <% @items.each do |item| %>
-      <%
-      count = current_count_group_props_each(item.gid, @prop_types)
-      g_count = System::Group.where("id=#{item.gid}").count
-      detail=0
-      if g_count> 0
-        g_name = item.group.name
-      else
-        detail=1
-        g_h_count = System::GroupHistory.where("id=#{item.gid}").count
-        if g_h_count >  0
-          group_h = System::GroupHistory.where(:id => item.gid).first
-          if group_h.blank?
-            g_name = %Q(<span style="color:red;">削除済　[id=#{item.gid}]</span>)
-          else
-            g_name = %Q(<span style="color:red;">削除済　#{group_h.name}[id=#{item.gid}]</span>)
-          end
-        else
-          g_name = %Q(<span style="color:red;">削除済　[id=#{item.gid}]</span>)
-        end
-      end
-      %>
-      <tr class="<%= cycle '' , 'cycle' %>">
-        <td><%= link_to_show item.id if detail==0 %></td>
-        <td><%= raw(g_name) %></td>
-        <td><%= item.limit %></td>
-        <td><%= count[@prop_types.size] %></td>
-        <% @prop_types.each_with_index do |type, i| %>
-        <td class="item"><%= count[i] %></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
-<%= paginate @items %>
-</div>
-</div>
+      <%= paginate @items %>
+    </div>
+
+  </div>
+
 </div>

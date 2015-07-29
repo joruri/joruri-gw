@@ -1,18 +1,19 @@
 <%
-  fyears = Gwsub::Sb04EditableDate.all.order("fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyears = Gwsub::Sb04EditableDate.find(:all,:order=>"fyear_markjp DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
   location = "/gwsub/sb04/04/sb04stafflists/stafflists_create_run?#{@qs}"
 -%>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_level3menu_header' %>
 <div class="titleLine">
  <p class="title">電子職員録作成</p>
 </div>
 </div>
 <div class="pieceBody">
 <div style="margin-left:1em;">
+<%= div_notice %>
 </div>
 <div style="margin-left:3em;">
 <span class="explanation">

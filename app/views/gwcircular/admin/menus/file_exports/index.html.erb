@@ -1,28 +1,26 @@
-<%
-  s_cond = '?cond=owner'
-  s_cond = '?cond=void' if params[:cond] == 'void'
-  s_cond = '?cond=admin' if params[:cond] == 'admin'
-%>
 <div class="bbsDocList circular">
-<%= render 'gwcircular/admin/menus/piece_header' %>
-<%= render 'gwcircular/admin/menus/piece_banner' %>
-
+<div class="pieceHeader">
+<h2 class="pieceTitle">回覧板</h2>
+<div class="btsHeaderLeft">
+</div>
+<%if @is_admin %>
+<div class="btsHeadeRight">
+<span class="btManager"><a href="/gwcircular/basics/">管理者</a></span>
+</div>
+<%end%>
+</div><!--pieceHeader-->
+<!--カラム用タグ-->
+<div class="pieceBanner">
+<h3><%=@title.title%></h3>
+<div class="helpBox">
+</div>
+</div>
 <div class="pieceBody">
-<%= render 'gwcircular/admin/menus/tabbox' %>
+<%=render :partial => 'form' %>
 
-<div class="docsInnerBox">
-<div class="bbsUserform">
-<table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr @parent.title %></span></td></tr>
-</table>
-</div>
-</div>
-
-<%= render 'form' %>
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '記事へ戻る', @item.show_path %>
+  <%=link_to '記事一覧へ戻る', "#{@title.menus_path}?cond=owner" %>
 </div>
-
 </div><!--pieceBody-->
-</div><!--bbsDocList circular-->
+</div><!--piece gwbbs-->

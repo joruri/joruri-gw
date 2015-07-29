@@ -1,4 +1,4 @@
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <table class="index">
 
   <tr>
@@ -14,15 +14,15 @@
     <% end -%>
   </tr>
 
-  <% @items.each do |item| %>
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to '詳細', item.show_path %></td>
-    <td><%= item.wareki %></td>
-    <td><%= item.nen %></td>
-    <td><%= item.gatsu %></td>
-    <td><%= item.sono %></td>
+    <td><%=h item.wareki %></td>
+    <td><%=h item.nen %></td>
+    <td><%=h item.gatsu %></td>
+    <td><%=h item.sono %></td>
     <% if @title.form_name == 'form002' -%>
-      <td><%= item.filename%></td>
+      <td><%=h item.filename%></td>
     <% else -%>
     <td>　</td>
     <% end -%>

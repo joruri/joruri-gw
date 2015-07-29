@@ -1,37 +1,36 @@
 <div class="piece schedulePiece setting">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyBody">
-<div class="titleLine">
-  <span class="title">休日管理</span>
-</div>
-<div class="editingBox">
-  <div class="btEdit">
-    <%= link_to '編集', {action: :edit} %>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/schedules/piece_header' -%>
   </div>
-  <div class="btDestroy">
-    <%= link_to '削除', {action: :destroy}, confirm: '削除してよろしいですか？', method: :delete %>
+  <div class="pieceBody">
+    <div class="pieceBodyBody">
+      <div class="titleLine">
+        <span class="title">休日管理</span>
+      </div>
+      <%= div_notice %>
+      <div class="editingBox">
+        <div class="btEdit">
+          <%= link_to '編集', "/gw/holidays/#{@item.id}/edit?categoriy=#{@category_id}" %>
+        </div>
+        <div class="btDestroy">
+          <%= link_to '削除', "/gw/holidays/#{@item.id}?categoriy=#{@category_id}", :confirm => '削除しますか？', :method => :delete %>
+        </div>
+      </div>
+      <table class="show">
+        <tbody>
+          <tr>
+            <th>年月日</th>
+            <td><%= @item.st_at.strftime("%Y-%m-%d") -%></td>
+          </tr>
+          <tr>
+            <th>休日名</th>
+            <td><%= html_escape(@item.title) -%></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="btReturn">
+        <%= link_to '一覧に戻る' , "/gw/holidays?category=#{@category_id}" %>
+      </div>
+    </div>
   </div>
-</div>
-
-<table class="show">
-  <tbody>
-    <tr>
-      <th>年月日</th>
-      <td><%= @item.st_at.strftime("%Y-%m-%d") -%></td>
-    </tr>
-    <tr>
-      <th>休日名</th>
-      <td><%= @item.title -%></td>
-    </tr>
-  </tbody>
-</table>
-
-<div class="btReturn">
-  <%= link_to '一覧に戻る', {action: :index} %>
-</div>
-</div>
-</div>
 </div>

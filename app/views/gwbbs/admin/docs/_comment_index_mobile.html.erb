@@ -1,10 +1,14 @@
 <p class="bgAsh" >コメント</p>
-<% @item.comments.each.with_index(1) do |item, i| %>
+<%@i = 0%>
+<% for item in @comments %>
+ <%@i = @i + 1%>
   <p class="leftPad2">
-    <%= item.body %>
+    <%=item.body%>
   </p>
   <p class="leftPad1">
-  <%= item.creater_or_editor_label %>
+  <%=item.editordivision %>
+  <%=' : ' %>
+  <%=item.editor %>
   （<%= item.created_at.strftime('%Y-%m-%d %H:%M') %>）
   </p>
 <% end %>

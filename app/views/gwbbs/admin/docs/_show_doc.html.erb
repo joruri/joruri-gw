@@ -1,44 +1,51 @@
-<%= render 'header' %>
+<%
+  if Time.now <= @item.expiry_date
+    is_editable_dates = true
+  else
+    is_editable_dates = false
+  end
+%>
+
+<%= render :partial => 'header' %>
 <div class="editingBox">
-  <% if @item.is_editable? %><!--編集権限あり-->
-    <% unless @title.edit_forbidden %>
-      <% if @title.is_admin? || (Time.now <= @item.expiry_date) %>
-        <% unless @title.use_recognize? %><%#承認機能使用しない%>
-          <span class="btEdit"><%= link_to '編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+<% if @is_editable %><!--編集権限あり-->
+  <% unless @title.edit_forbidden %>
+    <% if @is_admin || (is_editable_dates && @is_editable) %>
+      <% unless @title.use_recognize %><%#承認機能使用しない%>
+        <span class="btEdit"><%= link_to '編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+      <% else %>
+        <% if @item.category4_id == 1 %>
+          <span class="btAppEdit"><%= link_to '承認あり編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
         <% else %>
-          <% if @item.category4_id == 1 %>
-            <span class="btAppEdit"><%= link_to '承認あり編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
-          <% else %>
-            <span class="btEdit"><%= link_to '編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
-          <% end %>
+          <span class="btEdit"><%= link_to '編集', "#{edit_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
         <% end %>
       <% end %>
-    <% end %><!--edit_forbidden-->
-  <% end %><!--編集権限あり-->
-  
-  <% if @title.is_writable? %><!--掲示板に書込権があれば、どの記事でも複製可能-->
-    <% unless @title.addnew_forbidden %>
-      <span class="btReproduce rightSide"><%= link_to '複製', "#{clone_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => 'この記事を複製しますか' %></span>
     <% end %>
-  <% end unless @title.id == 1 %>
-  
-  <% if @item.is_editable? %><!--編集権限あり-->
-    <% unless @title.delete_forbidden %>
-     <% if @title.id != 17 || (@title.id == 17 && @title.is_admin?) %>
-        <span class="btDestroy"><%= link_to '削除', "#{gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
-      <% end %>
-    <% end %><!--delete-->
-  <% end %>
+  <% end %><!--edit_forbidden-->
+<% end %><!--編集権限あり-->
 
-  <% if @item.is_recognizable? && @item.state == 'recognize' %>
-    <span class="btRecognize"><%= link_to '承認', "#{recognize_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+<% if @is_writable %><!--掲示板に書込権があれば、どの記事でも複製可能-->
+  <% unless @title.addnew_forbidden %>
+    <span class="btReproduce rightSide"><%= link_to '複製', "#{clone_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => 'この記事を複製しますか' %></span>
   <% end %>
-  <% if @item.is_publishable? && @item.state == 'recognized' %>
-    <span class="btPublish"><%= link_to '公開', "#{publish_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
-  <% end %>
+<% end unless @title.id == 1 %>
+
+<% if @is_editable %><!--編集権限あり-->
+  <% unless @title.delete_forbidden %>
+   <% if @title.id != 17 || ( @title.id == 17 && @is_admin ) %>
+      <span class="btDestroy"><%= link_to '削除', "#{gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+    <% end %>
+  <% end %><!--delete-->
+<% end %><!--編集権限あり-->
+
+<% if @is_recognize %>
+ <span class="btRecognize"><%= link_to '承認', "#{recognize_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+<%end%>
+
+<% if @is_publish %>
+  <span class="btPublish"><%= link_to '公開', "#{publish_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
+<% end %>
 </div>
-
-<%= show_prev_next_link = render 'show_prev_next_link' %>
 
 <div class="docsInnerBox">
 
@@ -76,66 +83,56 @@
 
 <div class="bbsCreatorInf">
 <table>
-  <tr>
-    <td>作成 : &nbsp;</td>
-    <td><%= @item.createrdivision %></td>
-    <td class="space"></td>
-    <td><%= @item.creater %></td>
-    <td class="space"></td>
-    <td><%= @item.createdate %></td>
-  </tr>
-  <tr>
-    <td>編集 : &nbsp;</td>
-    <td><%= @item.editordivision %></td>
-    <td class="space"></td>
-    <td><%= @item.editor %></td>
-    <td class="space"></td>
-    <td><%= @item.editdate %></td>
-  </tr>
+<tr>
+<td>作成 : &nbsp;</td>
+<td><%= @item.createrdivision %></td>
+<td class="space"></td>
+<td><%= @item.creater %></td>
+<td class="space"></td>
+<td><%= @item.createdate %></td>
+</tr>
+<tr>
+<td>編集 : &nbsp;</td>
+<td><%= @item.editordivision %></td>
+<td class="space"></td>
+<td><%= @item.editor %></td>
+<td class="space"></td>
+<td><%= @item.editdate %></td>
+</tr>
 </table>
 </div>
-
-<%= render @title.gwbbs_form_name + 'show' %>
-<% if @title.use_old_upload_system? %>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.files %>
+<%= render :partial => @title.gwbbs_form_name + 'show' %>
+<% if attach_use_old%>
+  <%= render :partial => '/gwboard/admin/docs/upload_index' %>
 <% else %>
-  <%= render '/gwboard/admin/docs/library_index', files: @item.files if @title.attachfile_index_use %>
+  <%= render :partial => '/gwboard/admin/docs/library_index' if @title.attachfile_index_use %>
 <% end %>
 </div>
-<%= render 'comment_index' if @item.one_line_note == 1 %>
+<%= render :partial => 'comment_index' if @item.one_line_note == 1 %>
 
-<% if @title.use_recognize? %>
-<%= render 'recognize_users' if @item.state.in?(%w(draft recognize recognized)) %>
+<% if @title.use_recognize %>
+<%= render :partial => 'recognize_users' if @item.state == 'draft' %>
+<%= render :partial => 'recognize_users' if @item.state == 'recognize' %>
+<%= render :partial => 'recognize_users' if @item.state == 'recognized' %>
 <% end %>
 
-<div class="docListFunctions">
-  <% if @link_to_hcs_url %>
-  <div class="link_to_hss"><%= link_to '福利厚生ポータルへ', @link_to_hcs_url %></div>
-  <% end %>
-  <div class="link_to_clip">
-    <a href="javascript:void(0)" onclick="copy_clip(); return false;">お知らせリンク作成</a>
-  </div>
-  <% if @item.files.present? %>
-  <div class="link_export_file">
-    <%= link_to "添付ファイル一括ダウンロード(ファイル数：#{@item.files.length})", "#{@item.file_exports_path}#{gwbbs_params_set}" -%>
-  </div>
+<% if !@previous.blank? || !@next.blank? %>
+<%#ページ移動データあり -------------------------------------------------------------------------------------- -%>
+<div class="docsPageMove">
+  <% unless @title.use_other_system %>
+    <%#他シスリンクなし%>
+    <% unless @previous.blank? %>
+<span class="left"><%= link_to '< 前のページ', "#{@previous.show_path}&pp=#{@prev_page}#{gwbbs_params_set}" %></span>
+    <% else %>
+<span class="left">先頭ページ</span>
+    <% end %>
+
+<span class="center">|</span>
+    <% unless @next.blank? %>
+<span class="right"><%= link_to "次のページ >", "#{@next.show_path}&pp=#{@next_page}#{gwbbs_params_set}" %></span>
+    <% else %>
+<span class="right">最終ページ</span>
+    <% end %>
   <% end %>
 </div>
-
-<script type="text/javascript">
-//<![CDATA[
-var copy_clip = function() {
-  var ua = "";
-  ua = navigator.userAgent.toLowerCase();
-  url = "機能名：掲示板\n件名：<%= @item.title -%>\nURL：<%= request.url -%>";
-  if(ua.indexOf("msie") != -1) {
-    clipboardData.setData('Text', url);
-    alert("記事の情報をクリップボードにコピーしました。");
-  } else {
-    alert(url);
-  }
-}
-//]]>
-</script>
-
-<%= show_prev_next_link %>
+<% end %>

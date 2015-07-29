@@ -1,7 +1,7 @@
-<%= form_tag '', :method => :get, :class => 'changelimit' do %>
-  <span>表示行数</span>
-  <%= select_tag('limit', options_from_collection_for_select([[10,'10行'],[20,'20行'],[30,'30行'],[50,'50行'],[100,'100行']],:first,:last, params['limit'].to_i), :onchange => 'submit();') %>
-  <%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
-  <%= hidden_field_tag(:title_id, params[:title_id]) unless params[:title_id].blank? %>
-  <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
+<% form_tag '', :method => :get, :class => 'changelimit' do %>
+<span>表示行数</span>
+<%=select_tag('limit', options_from_collection_for_select([[10,'10行'],[20,'20行'],[30,'30行'],[50,'50行'],[100,'100行']],:first,:last, params['limit'].to_i), :onchange => 'submit();')%>
+<%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
+<%= hidden_field_tag(:title_id, params[:title_id]) unless params[:title_id].blank? %>
+<%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
 <!-- end .search --><% end %>

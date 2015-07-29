@@ -1,5 +1,6 @@
 <div class="piece todo setting">
-<%= render 'header_str' %>
+
+<%= render :partial => 'header_str' %>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
 <div class="titleLine">
@@ -8,15 +9,16 @@
 </div>
 
 <div class="pieceBodyBody">
-
-<%= form_tag "/gw/todo_settings/edit_admin_deletes", {:method => :put, :multipart => true} do %>
+<%= div_notice %>
+<% @key = 'admin_deletes' %>
+<a name="<%= @key %>"></a>
+<%= form_for :item, :url => "/gw/todo_settings/edit_#{@key}", :html => {:method=>:put, :multipart => true} do |f| %>
 <table class="show">
-  <tr>
-    <th>削除対象</th>
-    <td><%= select_tag 'item[todos][todos_admin_delete]', options_for_select(@item.admin_delete_options, @item.todos_admin_delete) %></td>
-  </tr>
+  <tr><th>削除対象</th><td>
+    <%= select_by_list(f, :todos_admin_delete, Gw.yaml_to_array_for_select('gw_todos_admin_delete_term', :for_select_by_list => 1),
+        {}, @item[:todos_admin_delete].to_i) %>　経過したToDoを削除</td></tr>
 </table>
-<div class="submitters"><%= submit_tag "保存" %></div>
+<%= submit_for(f, {:caption => '保存', :id=>"item_submit_#{@key}"}) %>
 <% end %>
 </div>
 

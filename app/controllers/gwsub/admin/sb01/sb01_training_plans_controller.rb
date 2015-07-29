@@ -1,5 +1,8 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwboard::Controller::Authorize
 
   layout "admin/template/sb01_training"
 
@@ -25,22 +28,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     @l2_current=nz(params[:l1_c],'02')
     @item = Gwsub::Sb01Training.find(params[:id])
     # 開催予定日取得
-    @ts = Gwsub::Sb01TrainingSchedule.where(:training_id => @item.id).order(:from_start)
-    #受講者が登録されている場合は準備中に戻せない
-    @preparable = true
-    unless @ts.blank?
-      @ts.each do |ts|
-        @preparable = false if ts.members.size != 0
-      end
-    end
-    @editor_role = Gwsub::Sb01Training.is_editor?(@item.group_code.slice(0,6),Core.user_group.code)
-    @docs_editor = @editor_role || @u_role
-    # 予約条件取得
-    @tcs = Gwsub::Sb01TrainingScheduleCondition.where(:training_id => @item.id).order(:from_start)
-    #最終開催日が過ぎているか判定
-    @skd = Gwsub::Sb01TrainingSchedule.where('training_id = ?', @item.id).order('IF( ISNULL( from_start ) , 1, 0 ) ASC , from_start DESC').first
-    @expiry = false
-    @expiry = true if @skd.from_start < Time.now and @item.state == '2' if !@skd.blank? && !@skd.from_start.blank?
+    ts = Gwsub::Sb01TrainingSchedule.new
+    @ts = ts.find(:all,
+      :conditions => ['training_id = ? ', @item.id],
+      :order => 'from_start ASC'
+    )
   end
 
   def new
@@ -50,7 +42,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     @item.fyear_id    = @fyed_id
     @item.categories  = @cat
     @item.state       = '1'
-    @item.group_id     = Core.user_group.id
+    @item.group_id     = Site.user_group.id
     @item.id = create_kari_id()
   end
 
@@ -61,27 +53,27 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     end
     return session[:sb01_training_plans_kari_id]
   end
-
+  
   #仮の研修IDの設定
   def set_kari_id(id)
     return session[:sb01_training_plans_kari_id] = id
   end
-
+  
   #仮の研修IDを破棄する
   def flush_kari_id()
     return set_kari_id(nil)
   end
-
+    
   #仮の研修IDの生成
   def create_kari_id()
     #新規作成時、添付ファイル用に仮のIDを設定しておく
     return set_kari_id(Gwsub::Sb01TrainingFile::create_kari_id())
   end
-
+  
   def create
     init_params
     _kari_id = get_kari_id()
-
+    
     new_item = Gwsub::Sb01Training.set_f(params[:item])
     @item = Gwsub::Sb01Training.new(new_item)
     @cat = @item.categories
@@ -91,7 +83,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     if @item.save
       #仮IDを設定していたUploadファイルに対して本IDを設定
       flush_kari_id()
-      attached_files = Gwsub::Sb01TrainingFile.where(:parent_id => _kari_id)
+      attached_files = Gwsub::Sb01TrainingFile.find_all_by_parent_id(_kari_id)
       attached_files.each do | af |
         af.move_parent_path(@item.id)
         af.update_attribute(:parent_id, @item.id)
@@ -102,48 +94,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
       _body = @item.body.gsub(/\/#{_kari_id}\//, '/'+@dest_folder_name.to_s+'/')
       @item.update_attribute(:body, _body)
 
-      create_or_update_bbsdoc(@item)
-
       location = "#{@public_uri}/#{@item.id}"
       redirect_to location
     else
       @item.id = get_kari_id()
       render :action=>:new
-    end
-  end
-
-  def create_or_update_bbsdoc(item)
-    #掲示板設定があれば記事を作成
-
-    bbs_title_id = Gwsub::Property::TrainingBoard.first_or_new.board_id
-    if bbs_title_id
-      title = Gwbbs::Control.where(:id => bbs_title_id, :state => 'public').first
-      if title
-        mode = nil
-        if item.bbs_doc_id
-          bbs_doc = item.get_bbs_item(title.id) || Gwbbs::Doc.new
-        else
-          bbs_doc = Gwbbs::Doc.new
-        end
-        expiry_date = Time.now + 24*60*60
-        bbs_doc.attributes = {
-          :state => 'preparation',
-          :title_id => title.id,
-          :latest_updated_at => Time.now,
-          :importance=> 1,
-          :one_line_note => 0,
-          :title => item.title,
-          :body => item.body,
-          :section_code => item.group_code,
-          :category4_id => 0,
-          :able_date => Time.now.strftime("%Y-%m-%d"),
-          :expiry_date => expiry_date.strftime("%Y-%m-%d"),
-        }
-        bbs_doc.save(:validate => false)
-         unless bbs_doc.blank?
-           Gwsub::Sb01Training.where(:id => @item.id).update_all(:bbs_doc_id => bbs_doc.id, :bbs_url => "/gwbbs/docs/#{bbs_doc.id}?title_id=#{title.id}&limit=20&state=GROUP")
-         end
-      end
     end
   end
 
@@ -166,16 +121,15 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
       :after_process=>Proc.new{
       update_schedule_title
       update_members_shcedule_title
-      create_or_update_bbsdoc(@item)
     }}
     _update(@item,options)
   end
 
   def update_schedule_title
-    t_skd = Gwsub::Sb01TrainingSchedule.where("training_id = #{@item.id}")
+    t_skd = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => "training_id = #{@item.id}")
     unless t_skd.blank?
       t_skd.each do |t|
-        skd = Gw::Schedule.where(:id => t.schedule_id).first
+        skd = Gw::Schedule.find_by_id(t.schedule_id)
         unless skd.blank?
           skd.title = @item.title
           skd.updater_uid   = @item.member_id
@@ -192,10 +146,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
   end
 
   def update_members_shcedule_title
-    skd_m = Gwsub::Sb01TrainingScheduleMember.where("training_id = #{@item.id}")
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "training_id = #{@item.id}")
     unless skd_m.blank?
       skd_m.each do |m|
-        skd = Gw::Schedule.where(:id =>m.schedule_id).first
+        skd = Gw::Schedule.find_by_id(m.schedule_id)
         unless skd.blank?
           skd.title = @item.title
           skd.updater_uid   = @item.member_id
@@ -215,7 +169,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     @item = Gwsub::Sb01Training.find(params[:id])
     location = "/gwsub/sb01/sb01_training_plans"
     after_process = Proc.new{
-        @item.class.delay.destroy_relation_items(@item.id)
+        destroy_schedule
+        destroy_members_shcedule
+        Gwsub::Sb01TrainingScheduleCondition.destroy_all("training_id = #{@item.id}")
+        destroy_attaches(params[:id])
       }
     options = {
       :success_redirect_uri=>location,
@@ -223,25 +180,56 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     }
     _destroy(@item,options)
   end
+  
+  #研修を削除したときにその研修に日もづいているUploadファイルも削除する
+  def destroy_attaches(id)
+    attached_files = Gwsub::Sb01TrainingFile.find_all_by_parent_id(id)
+    attached_files.each do | af |
+      af.delete_attached_folder
+      af.destroy
+    end
+  end
+
+  def destroy_schedule
+    t_skd = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => "training_id = #{@item.id}")
+    unless t_skd.blank?
+      t_skd.each do |t|
+        skd = Gw::Schedule.find_by_id(t.schedule_id)
+        skd.destroy unless skd.blank?
+        t.destroy
+      end
+    end
+  end
+
+  def destroy_members_shcedule
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "training_id = #{@item.id}")
+    unless skd_m.blank?
+      skd_m.each do |m|
+        skd = Gw::Schedule.find_by_id(m.schedule_id)
+        skd.destroy unless skd.blank?
+        m.destroy
+      end
+    end
+  end
 
   def site_url
     @site_url = url_for(:action => 'index' )
     @site_url.sub!(url_for(:action => 'index', :only_path => true).split(/\//).pop, '')
     @site_url.chop! if @site_url[-1, 1] == '/'
   end
-
+  
   def init_params
-
+   
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 管理者以外は自所属のみ表示
     if @u_role==true
       @g_id = 0
     else
-      @g_id = Core.user_group.id
+      @g_id = Site.user_group.id
     end
     # 対象年度　設定
     @fyed_id_today = Gw::YearFiscalJp.get_record(Date.today).id
@@ -275,7 +263,14 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
 
   def user_fields
     users = System::User.get_user_select(params[:g_id])
-    render text: view_context.options_for_select([['[指定なし]','']] + users), layout: false
+    html_select = "<option value=''>[指定なし]</option>"
+    users.each do |value , key|
+      html_select << "<option value='#{key}'>#{value}</option>"
+    end
+
+    respond_to do |format|
+      format.csv { render :text => html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def closed
@@ -284,10 +279,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     case @item.state
     when '2'
       @item.state = '3'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='3'")
+      Gwsub::Sb01TrainingSchedule.update_all("state='3'" ,"training_id=#{@item.id}")
     when '3'
       @item.state = '2'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='2'")
+      Gwsub::Sb01TrainingSchedule.update_all("state='2'" ,"training_id=#{@item.id}")
     else
     end
     location = "#{@public_uri}/#{@item.id}"
@@ -303,16 +298,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     case @item.state
     when '1'
       @item.state = '2'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='2'")
-      bbs_title_id = Gwsub::Property::TrainingBoard.first_or_new.board_id
-      bbs_doc_item = @item.get_bbs_item(bbs_title_id)
-      unless  bbs_doc_item.blank?
-        bbs_doc_item.state = "public"
-        bbs_doc_item.save(:validate => false)
-      end
+      Gwsub::Sb01TrainingSchedule.update_all("state='2'" ,"training_id=#{@item.id}")
     when '2'
       @item.state = '1'
-      Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='1'")
+      Gwsub::Sb01TrainingSchedule.update_all("state='1'" ,"training_id=#{@item.id}")
     else
   end
     location = "#{@public_uri}/#{@item.id}"
@@ -326,7 +315,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     init_params
     @item = Gwsub::Sb01Training.new.find(params[:id])
     @item.state = '4'
-    Gwsub::Sb01TrainingSchedule.where("training_id=#{@item.id}").update_all("state='4'")
+    Gwsub::Sb01TrainingSchedule.update_all("state='4'" ,"training_id=#{@item.id}")
     location = "#{@public_uri}/#{@item.id}"
     options = {
       :success_redirect_uri=>location,

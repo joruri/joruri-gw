@@ -1,9 +1,11 @@
+# -*- encoding: utf-8 -*-
 class Questionnaire::FieldOption < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Questionnaire::Model::Systemname
 
   after_validation :validate_rel_cols
+
 
   def validate_rel_cols
     return true if @skip_validation
@@ -13,4 +15,5 @@ class Questionnaire::FieldOption < Gw::Database
 
     return true
   end
+
 end

@@ -6,6 +6,7 @@
 ---------------------------------------------------------*/
 #content .piece {
   background-image: url(/_common/themes/gw/files/title/title_system.gif);
+  margin-top: 10px;
 }
 #content .piece.soumuMessage {
   background-image: url("/_common/themes/gw/files/title/title_general.gif");

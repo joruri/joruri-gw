@@ -3,7 +3,7 @@
 <%= link_to image_tag('/_common/themes/gw/files/mobile/header-logo-s.gif', { :border => '0', :alt => 'Joruriグループウェア'}), '/' %>
 </div>
 </h1>
-<% if Core.user %>
-<span class="name"><%= Core.user.display_name %></span>
+<% if Site.user %>
+<span class="name"><%=h Site.user.display_name %></span>
 <% end %>
 

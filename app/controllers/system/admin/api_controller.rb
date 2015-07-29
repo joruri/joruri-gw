@@ -1,8 +1,7 @@
+# encoding: utf-8
 class System::Admin::ApiController < ApplicationController
   include Sys::Controller::Admin::Auth
-  layout false
-
-  protect_from_forgery :except => [:sso_login]
+  layout 'base'
 
   def checker
     state,xml = api_checker
@@ -53,7 +52,7 @@ protected
     user = current_user
 
     dump ['api_checker',Time.now.strftime('%Y-%m-%d %H:%M:%S'),request.parameters]
-    xml = Gw::Tool::Reminder.checker_api(user.id, user.code, params[:password], user)
+    xml = Gw::Tool::Reminder.checker_api(user.id)
     dump ['api_checker_ret',Time.now.strftime('%Y-%m-%d %H:%M:%S'),xml]
     return 200,xml
   end
@@ -79,8 +78,9 @@ protected
     cond = Condition.new
     cond.and :code, account
     cond.and :air_token, 'IS NOT', nil
-    cond.and :air_token, 'LIKE', "#{System::User.escape_like(token)}%"
-    user = System::User.where(cond.where).first
+    cond.and :air_token, 'LIKE', "#{System::User.escape_like(token)} %"
+    user = System::User.find(:first, :conditions => cond.where)
+
     token, enc_password = user.air_token.split(/ /)
     usr_pass = Util::Crypt.decrypt(Base64.decode64(enc_password))
 
@@ -119,7 +119,7 @@ protected
       c.and :air_login_id, 'IS NOT', nil
       c.and :air_login_id, 'LIKE', "#{System::User.escape_like(token)} %"
     end
-    @user = System::User.where(cond.where).first
+    @user = System::User.find(:first, :conditions => cond.where)
     return render(:text => "ログインに失敗しました。") unless @user
 
     @token, enc_password = @user.air_login_id.split(/ /)
@@ -131,14 +131,9 @@ protected
     @user.encrypted_password = Util::Crypt.encrypt @user.password
     set_current_user(@user)
 
-    @admin_uri = params[:path].presence || "/"
-    if request.mobile?
-      @admin_uri += "?_jgw_session=#{request.session_options[:id]}" unless request.session_options[:id].blank?
-    end
-    if request.get? # 送信されてきたのがGET形式なら、params[:path]にリダイレクト。POSTならView側でリダイレクト
-      return redirect_to @admin_uri
-    else
-      Page.title = "転送中です"
-    end
+    dump ['air_sso_login_token',Time.now.strftime('%Y-%m-%d %H:%M:%S'),request.parameters]
+    admin_uri = "/"
+    admin_uri += "?_jgw_session=#{request.session_options[:id]}" unless request.session_options[:id].blank?
+    return redirect_to admin_uri
   end
 end

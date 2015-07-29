@@ -1,7 +1,7 @@
 <div class="piece">
 <h1><%= link_to '', '/' %></h1>
 </div>
-<% if Core.user %>
-<span class="department"><%= Core.user_group.name %></span>
-<span class="name"><%= Core.user.display_name %></span>
+<% if Site.user %>
+<span class="department"><%=h Site.user_group.name %></span>
+<span class="name"><%=h Site.user.display_name %></span>
 <% end %>

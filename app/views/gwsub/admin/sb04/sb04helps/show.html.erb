@@ -8,16 +8,17 @@ else
 end
 -%>
 <div class="gwsub sb04">
-  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
   <div class="pieceBanner">
-    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-    <%= render 'gwsub/admin/sb04/sb04helps/menu' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04helps/menu' %>
     <div class="showMenu">
     <%= link_to '編集' , "/gwsub/sb04/05/sb04helps/#{@item.id}/edit?#{@qs}" %>
     <%= link_to '削除' , "/gwsub/sb04/05/sb04helps/#{@item.id}?#{@qs}",:method=>:delete,:confirm=>'ヘルプURLの登録を削除します。ヘルプの内容は削除されません。よろしいですか？'   if @u_role==true %>
     </div>
   </div>
   <div class="pieceBody">
+    <%= div_notice %>
     <table class="show">
       <tbody>
         <tr>

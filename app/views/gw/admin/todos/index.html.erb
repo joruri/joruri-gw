@@ -1,12 +1,15 @@
-<%= render '/gw/admin/todos/header' %>
+<%# app/views/gw/admin/todos/index.html.erb %>
+<%=render(:partial => '/gw/admin/todos/header')%>
 <div class="piece todo index">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render(:partial => '/gw/admin/todos/piece_header')%>
 <div class="pieceBody"><div class="pieceBodyBody">
-<%= render '/gw/admin/todos/search' %>
+<%=render(:partial => '/gw/admin/todos/search')%>
 
-<% if @items.blank? %>
-<%= show_notice %>
-<% else %>
+
+<%=div_notice%>
+<%if @items.blank?%>
+<%=no_item_notice%>
+<%else%>
 <table class="index">
   <tr>
   <th>
@@ -30,7 +33,7 @@
   </tr>
   <%
     now = Time.now
-    @items.each do |item|%>
+    for item in @items%>
     <%
     # 場所
     #schedule = item.schedule
@@ -65,18 +68,17 @@
     finish_link = "#{finish_gw_todo_path(item)}?#{@qs}"
     %>
     <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= Gw::Todo.finished_show(item.is_finished) %></td>
+      <td><%=Gw::Todo.finished_show(item.is_finished)%></td>
       <td><%= raw(item_ed_at_str) -%></td>
-      <td><%= item.title %></td>
-      <td><%= safe{item.updated_at.strftime('%Y-%m-%d %H:%M')} %></td>
-      <td><%= link_to "詳細", show_link %></td>
-      <td><%= link_to "編集", edit_gw_todo_path(item) %></td>
+      <td><%=item.title%></td><td><%=safe{item.updated_at.strftime('%Y-%m-%d %H:%M')}%></td><td><%=link_to "詳細", show_link%></td>
+      <td><%=link_to "編集", edit_gw_todo_path(item)%></td>
       <td><%= raw(state_link) -%></td>
-    </tr>
-  <% end %>
+  </tr>
+  <%end%>
 </table>
-<%= paginate @items %>
-<% end %>
+<%=paginate @items%>
+<%end%>
 </div>
 </div>
 </div>
+

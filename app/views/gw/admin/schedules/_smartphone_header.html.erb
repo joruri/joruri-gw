@@ -4,33 +4,36 @@ if params[:gid].blank?
   if @custom_group
     header_str = @custom_group.name
   else
-    header_str = 'カスタムグループ'
+    header_str = %Q(カスタムグループ)
   end
 else
-  if Core.user_group.id == params[:gid]
-    header_str = Core.user_group.name
+  if Site.user_group.id == params[:gid]
+    header_str = Site.user_group.name
   else
-    if group = System::Group.where(:id => params[:gid]).first
-      header_str = group.name
+    group = System::Group.find_by_id(params[:gid])
+    if group.blank?
+      header_str =  %Q(グループ（日表示）)
     else
-      header_str = 'グループ（日表示）'
+      header_str =  group.name
     end
   end
 end
 
 if @st_date.blank?
-  @st_date = Gw.date8_to_date(params[:s_date]) rescue Date.today
+s_date = nil
+s_date = Gw.date8_to_date params['s_date'] unless params['s_date'].blank?
+@st_date = nz(s_date, Date.today)
 end
 sche_date = @st_date.strftime('%Y%m%d')
 
-g_link = %Q(&dis=group&gid=#{Core.user_group.id})
+g_link = %Q(&dis=group&gid=#{Site.user_group.id})
 cg_link = "/gw/schedules/?s_date=#{sche_date}&dis=group&cgid=" + (@first_custom_group.blank? ? "#{@cgid}" : "#{@first_custom_group.id}" )
 %>
 <div class="btBox">
-<div class="btIndex weekLink nobr"><%= link_to "個人（週表示）", "/gw/schedules?s_date=#{sche_date}&dis=week" -%></div>
-<div class="btIndex dayLink nobr"><%= link_to "グループ（日表示）", "/gw/schedules/?s_date=#{sche_date}#{g_link}" -%></div>
-<div class="btIndex customLink nobr"><%= link_to "カスタム（日表示）", cg_link -%></div>
+<div class="btIndex weekLink nobr"><%= link_to  "個人（週表示）" ,"/gw/schedules?s_date=#{sche_date}&dis=week" -%></div>
+<div class="btIndex dayLink nobr"><%= link_to  "グループ（日表示）" ,"/gw/schedules/?s_date=#{sche_date}#{g_link}" -%></div>
+<div class="btIndex customLink nobr"><%= link_to  "カスタム（日表示）" ,cg_link -%></div>
 </div>
-<% if params[:gid].present? || params[:cgid].present?-%>
+<% if !params[:gid].blank? || !params[:cgid].blank?-%>
 <span class="organization"><%= header_str -%></span>
 <% end -%>

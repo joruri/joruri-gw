@@ -1,8 +1,0 @@
-<% if @key == 'ssos' %>
-<% elsif @key=='mobiles' %>
-  <% piece_head_title = '連絡メモ' %>
-  <h2 class='pieceTitle'><%= piece_head_title -%></h2>
-<% else %>
-  <% piece_head_title = nz(@piece_head_title, '空き時間検索') %>
-  <h2 class="pieceTitle"><%= piece_head_title -%></h2>
-<% end %>

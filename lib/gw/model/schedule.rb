@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gw::Model::Schedule
 
   def self.remind
@@ -60,12 +61,14 @@ module Gw::Model::Schedule
   end
 
   def self.get_user(uid)
-    System::User.where("id=#{uid}").first
+    System::User.find(:first, :conditions => "id=#{uid}")
   end
 
   def self.get_users_id_in_group(gid)
     return [] unless System::Group.find(:first, :conditions => "id=#{gid}")
-    return System::UsersGroup.joins(:user).where("group_id=#{gid}").order("code").reject{|x| x.user.state != 'enabled'}.collect{|x| x.user_id }
+    return System::UsersGroup.find(:all, :conditions => "group_id=#{gid}",
+      :joins => :user,
+      :order => "code").reject{|x| x.user.state != 'enabled'}.collect{|x| x.user_id }
   end
 
   def self.get_uids(params)
@@ -80,15 +83,18 @@ module Gw::Model::Schedule
       uids = [Core.user.id] if uids.length == 0
     elsif params[:cgid].present?
       cgid = params[:cgid]
-      uids = System::UsersCustomGroup.where("custom_group_id = #{cgid}").order("sort_no").collect{|x| x.user_id }
+      uids = System::UsersCustomGroup.find(:all,
+        :conditions => "custom_group_id = #{cgid}",
+        :order => "sort_no"
+        ).collect{|x| x.user_id }
     else
       uid = params[:uid]
       uid = Core.user.id if uid.nil? || uid == 'me'
       if uid == 'all'
-        return System::User.where("state='enabled'").collect{|x| x.id}, nil
+        return System::User.find(:all, :conditions => "state='enabled'").collect{|x| x.id}, nil
       end
       uid = uid.to_i rescue Core.user.id
-      uid = Core.user.id if System::User.where("id=#{uid}").length == 0
+      uid = Core.user.id if System::User.find(:all, :conditions => "id=#{uid}").length == 0
       uids = [uid]
     end
     return uids
@@ -104,10 +110,11 @@ module Gw::Model::Schedule
         return []
       end
 
-      users =  System::User.joins(:user_groups)
-        .where(state: 'enabled')
-        .where("system_users_groups.group_id = ?", gid)
-        .order(sort_no: :asc, code: :asc)
+      users =  System::User.find(:all,
+        :conditions => "system_users_groups.group_id=#{gid} AND system_users.state = 'enabled'",
+        :joins => :user_groups,
+        :order => "system_users.sort_no, system_users.code")
+
     elsif params[:cgid].present?
 
       cgid = params[:cgid]
@@ -115,12 +122,19 @@ module Gw::Model::Schedule
         return []
       end
 
-      users = System::User.includes(:users_custom_groups)
-        .where(state: 'enabled')
-        .where('system_users_custom_groups.custom_group_id = ?', cgid)
-        .order('system_users_custom_groups.sort_no')
+      u = System::User.new
+      u.class.has_many :user_custom_groups_temp, :foreign_key => :user_id,
+      :class_name => 'System::UsersCustomGroup', :dependent=>:destroy,
+      :conditions => " custom_group_id = #{params[:cgid]}"
+      users = u.find(:all,
+        :conditions => "system_users.state = 'enabled' AND system_users_custom_groups.custom_group_id = #{cgid}",
+        :order => "system_users_custom_groups.sort_no" ,
+        :joins => :user_custom_groups_temp,
+        :include => :user_custom_groups_temp
+        )
+
     elsif params[:uid].present?
-      users = System::User.where(id: params[:uid], state: 'enabled')
+      users = System::User.find(:all, :conditions => "id = #{params[:uid]} and state = 'enabled'")
     else
       users = [Core.user]
     end
@@ -130,7 +144,7 @@ module Gw::Model::Schedule
   def self.get_uname(options={})
     case
     when !options[:uid].nil?
-      ux = System::User.where("id=#{options[:uid]}").first
+      ux = System::User.find(:first, :conditions=>"id=#{options[:uid]}")
       return '' if ux.nil?
       return Gw.trim(nz(ux.display_name))
     else
@@ -140,7 +154,7 @@ module Gw::Model::Schedule
   def self.get_gname(options={})
     case
     when !options[:gid].nil?
-      ux = System::Group.where("id=#{options[:gid]}").first
+      ux = System::Group.find(:first, :conditions=>"id=#{options[:gid]}")
       return '' if ux.nil?
       return Gw.trim(nz(ux.display_name))
     else
@@ -148,31 +162,9 @@ module Gw::Model::Schedule
     end
   end
   def self.get_group(options={})
-    return !options[:gid].nil? ? System::Group.where("id=#{options[:gid]}").first :
-      !options[:uid].nil? ? System::User.where("id=#{options[:uid]}").first.groups[0] : nil
+    return !options[:gid].nil? ? System::Group.find(:first, :conditions=>"id=#{options[:gid]}") :
+      !options[:uid].nil? ? System::User.find(:first, :conditions=>"id=#{options[:uid]}").groups[0] : nil
   end
-
-
-  def self.get_group_uid_from_uid(uid)
-    user_group = System::UsersGroup.find(:first, :conditions => "user_id=#{uid}") rescue nil
-    if user_group.present?
-      group = System::User.find(:first, :conditions => "code='#{user_group.group_code}_0'") rescue nil
-      return group == nil ? -1 : group.id
-    else
-      return -1
-    end
-  end
-
-
-
-  def self.meetings_guide_admin?(user = Core.user)
-    user.has_role?('meeting_guide/admin')
-  end
-
-  def self.meetings_guide_recognizer?(user = Core.user)
-    user.has_role?('meeting_guide/recognizer')
-  end
-
 
   def self.link_to_prop_master(id, genre, options={})
     caption = nz(options[:caption], '設備情報')
@@ -183,7 +175,7 @@ module Gw::Model::Schedule
     return [] if params[:s_genre].nil?
     if params[:prop_id].nil?
       cond = "delete_state = 0 or delete_state is null"
-      _mdl = Gw::PropOther.new
+      _mdl = Gw::PropOther
       _mdl.find(:all, :conditions=>cond, :order=>'extra_flag, gid, sort_no, name').select{|x|
         x.gid.to_s == Core.user.groups[0].id.to_s
       }.collect{|x| x.id}
@@ -193,48 +185,143 @@ module Gw::Model::Schedule
   end
 
   def self.get_prop(prop_id, params)
-    _mdl = Gw::PropOther.new
+    _mdl = Gw::PropOther
     _mdl.find(:first, :conditions => "id=#{prop_id}")
   end
 
   def self.get_props(params, is_gw_admin = Gw.is_admin_admin?, options = {})
-    case options[:s_genre]
-    when "rentcar"
-      items = Gw::PropRentcar.where(delete_state: 0).order(sort_no: :asc, id: :asc)
-    when "meetingroom"
-      items = Gw::PropMeetingroom.where(delete_state: 0).order(sort_no: :asc, id: :asc)
-    when "other"
-      items = get_other_props(params, is_gw_admin, options)
+
+    s_other_admin_gid = options[:s_other_admin_gid].to_i
+    group = Core.user.groups[0]
+    _mdl = Gw::PropOther
+    cond = ""
+
+    cond.concat " delete_state = 0"
+    cond_type = ""
+
+    if is_gw_admin
+      if options[:type_id].blank?
+        cond_type = ""
+      elsif params[:type_id] == '0'
+      else
+        cond_type = " and type_id = #{options[:type_id]}"
+      end
     else
-      items = get_other_props(params, is_gw_admin, options)
+      cond_type = " and type_id = #{options[:type_id]}" if options[:type_id].present? && options[:type_id] != '0'
     end
+    cond_other = "delete_state = 0 and (auth = 'read' or auth = 'edit') and ((gw_prop_other_roles.gid = #{group.id} or gw_prop_other_roles.gid = #{group.parent_id}) or (gw_prop_other_roles.gid = 0))"
+    cond_other.concat cond_type
 
-    items = items.where(id: params[:prop_id]) if params[:prop_id].present?
-    items
-  end
+    cond_other_admin = ""
+    if s_other_admin_gid != 0 # 絞り込み
+      s_other_admin_group = System::GroupHistory.find_by_id(s_other_admin_gid)
+      s_other_admin_group
+      cond_other_admin = "auth = 'admin'"
+      if s_other_admin_group.level_no == 2 # 部局
+        gids = Array.new
+        gids << s_other_admin_gid
+        parent_groups = System::GroupHistory.new.find(:all, :select => "id", :conditions => ['parent_id = ?', s_other_admin_gid])
+        parent_groups.each do |parent_group|
+          gids << parent_group.id
+        end
+        search_group_ids = Gw.join([gids], ',')
+        cond_other_admin.concat " and gw_prop_other_roles.gid in (#{search_group_ids})"
+      else # 所属
+        cond_other_admin.concat " and gw_prop_other_roles.gid = #{s_other_admin_group.id}"
+      end
 
-  def self.get_other_props(params, is_gw_admin = Gw.is_admin_admin?, options = {})
-    props = Gw::PropOther.distinct.joins(:prop_other_roles).includes(:owner_group)
-      .where(delete_state: 0)
-      .order(type_id: :asc)
-      .order('system_groups.sort_no')
-      .order(sort_no: :asc, name: :asc)
-
-    unless is_gw_admin
-      props = props.merge(Gw::PropOther.with_user_auth(Core.user, %w(read edit)))
-    end
-
-    if options[:type_id].present? && options[:type_id] != '0'
-      props = props.where(type_id: options[:type_id])
-    end
-
-    if options[:s_other_admin_gid].present? && options[:s_other_admin_gid] != 0
-      if group = System::Group.find_by(id: options[:s_other_admin_gid])
-        gids = group.self_and_enabled_descendants.map(&:id)
-        props = props.where("gw_prop_others.id in (select prop_id from gw_prop_other_roles where gw_prop_other_roles.auth = 'admin' and gw_prop_other_roles.gid in (?))", gids)
+      if is_gw_admin
+        cond_other_admin = " and #{cond_other_admin}"
+      else
+        cond_other_admin = " and gw_prop_others.id in (select `prop_id` from `gw_prop_other_roles` where #{cond_other_admin})"
       end
     end
 
-    props
+    if params[:prop_id].blank?
+      if is_gw_admin
+        other_items = _mdl.find(:all, :conditions=>cond + cond_type + cond_other_admin, :order=>'type_id, gid, coalesce(sort_no, 0), name',
+          :joins => :prop_other_roles, :group => "gw_prop_others.id")
+      else
+        other_items = _mdl.find(:all, :conditions=>cond_other + cond_other_admin, :order=>'type_id, gid, coalesce(sort_no, 0), name, gw_prop_others.gid',
+          :joins => :prop_other_roles, :group => "gw_prop_others.id")
+
+      end
+
+      parent_groups = Gw::PropOther.get_parent_groups
+
+      _items = other_items.sort{|a, b|
+          ag = System::GroupHistory.find_by_id(a.get_admin_first_id(parent_groups))
+          bg = System::GroupHistory.find_by_id(b.get_admin_first_id(parent_groups))
+          flg = (!ag.blank? && !bg.blank?) ? ag.sort_no <=> bg.sort_no : 0
+          (a.type_id <=> b.type_id).nonzero? or (flg).nonzero? or a.sort_no <=> b.sort_no
+      }
+      return _items
+    else
+      _mdl.find(:all, :conditions=>["id = ? and delete_state = 0",params[:prop_id]] )
+    end
+  end
+
+  def self.get_settings(_key, options={})
+    key = _key.to_s
+    options[:nodefault] = 1 if !%w(ssos).index(key).nil?
+    ret = {}
+
+    if options[:nodefault].nil?
+      ret.merge! Gw::NameValue.get_cache('yaml', nil, "gw_#{key}_settings_system_default")
+    end
+
+    ind = Gw::Model::UserProperty.get(key.singularize, options)
+    if !ind.blank? && !ind[key].blank?
+      if key == 'portals'
+        ret = ind[key]
+        remove_obsolete_rss(ret)
+      else
+        ret.merge! ind[key]
+      end
+    end
+    return HashWithIndifferentAccess.new(ret)
+  end
+
+  def self.remove_obsolete_rss(hh)
+    hh.reject! do |item|
+      !item[1]['piece_name'].blank? && item[1]['piece_name'].index('piece/gw-rssreader') == 0 if item.length >= 2
+    end
+  end
+
+  def self.get_ind_portal_add_cands_all
+    sql = Condition.new
+    sql.and :state, 'public'
+    sql.and :view_hide , 1
+    sql.and "sql", "gwbbs_roles.role_code = 'r'"
+    sql.and "sql", "gwbbs_roles.group_code = '0'"
+
+    join = "INNER JOIN gwbbs_roles ON gwbbs_controls.id = gwbbs_roles.title_id"
+    items = Gwbbs::Control.find(:all, :joins=>join, :conditions=>sql.where,:order => 'sort_no, updated_at DESC', :group => 'gwbbs_controls.id')
+    add_cands = []
+
+    add_cands += items.sort{|a,b|a.sort_no<=>b.sort_no}.collect{|x|["#{x.id}", "掲示板/#{x.title}", 'gwbbs']}
+    add_cands += [["3", "新着情報", 'gwbbs']]
+    add_cands
+  end
+
+  def self.cut_strng(strng, cut_num, strt_pnt = 0)
+    if cut_num == nil || cut_num == 0 then
+      return ''
+    else
+      end_pnt = strt_pnt + cut_num
+    end
+    if end_pnt >= jp_chr_num(strng) then
+      end_pnt = jp_chr_num(strng)-1
+    end
+    if strt_pnt > end_pnt then
+      return ''
+    end
+    strng_chrs = Array.new
+    strng_chrs = strng.split(//u)
+    cut_strng = ''
+    strt_pnt.upto(end_pnt) do |x|
+      cut_strng.concat strng_chrs[x]
+    end
+    return cut_strng
   end
 end

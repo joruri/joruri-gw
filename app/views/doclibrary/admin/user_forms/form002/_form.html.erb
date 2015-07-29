@@ -1,18 +1,14 @@
 <%
-@group_level2s = Gwboard::Group.level2_only
-@group_level3s = Gwboard::Group.level3_only(0)
+  @documents = [] if @documents.blank?
+  @group_level2s = Gwboard::Group.level2_only
+  @group_level3s = Gwboard::Group.level3_only(0)
 %>
-<%= f.hidden_field :wiki, :value => 0 %>
 <table class="show">
   <tr>
     <th>文書の選択<br />（和暦/年/月/その）</th>
     <td>
-      <% category_options = @item.category_options_form002 %>
-      <% if category_options.blank? %>
-        <%= required '文書が登録されていません' %>
-      <% else %>
-        <%= f.select :category2_id, category_options, :include_blank => '文書を選択してください' %>
-      <% end %>
+      <%= required('文書が登録されていません') if @documents == []%>
+      <%= f.select(:category2_id, @documents, :include_blank => '文書を選択してください')  unless @documents == []%>
     </td>
   </tr>
 </table>
@@ -20,20 +16,17 @@
   <tr>
     <th>号区分,区分</th>
     <td>
-      <% if (folder_options = @item.folder_options).present? %>
-        <%= f.select :category1_id, folder_options, include_blank: '号区分,区分を選択してください' %>
-      <% else %>
-        <%= required '号区分,区分が登録されていません' %>
-      <% end %>
+      <%= required('号区分,区分が登録されていません') if @category_levels == []%>
+      <%= f.select(:category1_id, @category_levels, :include_blank => '号区分,区分を選択してください')  unless @category_levels == []%>
     </td>
   </tr>
   <tr>
     <th>号数</th>
-    <td>第<%= f.text_field :inpfld_006, :size => "5" %>号</td>
+    <td>第<%= f.text_field :inpfld_006, :size=>"5"%>号</td>
   </tr>
   <tr>
     <th>件名</th>
-    <td><%= f.text_area :title, :cols => "60", :rows => "2" %></td>
+    <td><%= f.text_area :title, :cols=>"60", :rows=>"2" %></td>
   </tr>
 </table>
 <table class="show">

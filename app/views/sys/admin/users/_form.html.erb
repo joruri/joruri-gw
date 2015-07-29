@@ -1,0 +1,67 @@
+<%= Gw.required_head %>
+<table class="show">
+  <tr>
+    <th>ユーザーID<%= Gw.required %></th>
+    <td><%= f.text_field :code, :class => 'string', :style => 'width: 200px;' %></td>
+  </tr>
+  <tr>
+    <th>状態<%= Gw.required %></th>
+    <td><%= f.radio_buttons :state, Gw.yaml_to_array_for_select('system_states'), :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th>LDAP同期<%= Gw.required %></th>
+    <td><%= f.radio_buttons :ldap, Gw.yaml_to_array_for_select('system_users_ldaps'), :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th>名前<%= Gw.required %></th>
+    <td><%= f.text_field(:name, :class => 'string name', :style => 'width: 200px;') %></td>
+  </tr>
+  <tr>
+    <th>名前(英)</th>
+    <td><%= f.text_field(:name_en, :class => 'string name', :style => 'width: 200px;') %></td>
+  </tr>
+  <tr>
+    <th>パスワード</th>
+    <td><%= f.text_field(:password, :class => 'string name', :style => 'width: 200px;') %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス</th>
+    <td><%= f.text_field(:email, :class => 'string email', :style => 'width: 400px;') %></td>
+  </tr>
+  <tr>
+    <th>役職</th>
+    <td><%= f.text_field(:official_position, :class => 'string name', :style => 'width: 200px;') %></td>
+  </tr>
+  <tr>
+    <th>担当</th>
+    <td><%= f.text_field(:assigned_job, :class => 'string name', :style => 'width: 200px;') %></td>
+  </tr>
+</table>
+
+<% case params[:action] %>
+<% when 'new', 'create' %>
+<%= f.fields_for :user_groups do |f2| %>
+<%= f2.hidden_field :user_id %>
+<br />
+<div>登録するユーザーの所属を指定してください</div>
+<table class="show">
+  <tr>
+    <th>グループ</th>
+    <td><%= f2.select :group_id, System::Group.select_dd_tree, :include_blank => true %></td>
+  </tr>
+  <tr>
+    <th>本務・兼務</th>
+    <td><%= f2.radio_buttons :job_order, Gw.yaml_to_array_for_select('system_ugs_job_orders') %></td>
+  </tr>
+  <tr>
+    <th>配属開始日</th>
+    <td><%= f2.calendar_date_select :start_at, :time => false %></td>
+  </tr>
+  <tr>
+    <th>配属終了日</th>
+    <td><%= f2.calendar_date_select :end_at, :time => false %></td>
+  </tr>
+</table>
+<% end %>
+<% end %>
+<%= raw(gw_js_include_full) %>

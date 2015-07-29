@@ -2,32 +2,37 @@
 grouplist4 = Gwsub.grouplist4(nil, nil , true , nil)
 userlist = System::User.get_user_select(params[:gid], nil, {})
 %>
-<%= form_for :item, url: "#{gw_schedule_lists_path}/user_add#{@params_set}",
-  html: {id: "listForm", method: :post, multipart: true, style: 'border:2px solid #FF0000;margin: 15px; padding: 15px;'} do |f| %>
+<%= form_for :item, :url => "#{gw_schedule_lists_path}/user_add#{@params_set}" ,:action=>:search ,:method=>:post ,
+  :html => {:id => "listForm", :style => 'border:2px solid #FF0000;margin: 15px; padding: 15px;', :multipart => true} do |f| %>
 <table class="noBorderTable">
   <tr>
     <td>
-      <% @items.each do |item| %>
-      <%= hidden_field_tag 'ids[]', item.id %>
+      <% @ids.each do |id| %>
+      <%= hidden_field_tag('ids[]', id) %>
       <% end %>
-      <%= hidden_field_tag :uid, params[:uid] %>
-      <%= hidden_field_tag :s_year, params[:s_year] %>
-      <%= hidden_field_tag :s_month, params[:s_month] %>
-      <%= select_tag :add_group_id, options_for_select(grouplist4, @gid), onchange: "update_grouplist()" %>
+      <%= hidden_field_tag(:uid, params[:uid]) %>
+      <%= hidden_field_tag(:s_year, params[:s_year]) %>
+      <%= hidden_field_tag(:s_month, params[:s_month]) %>
+      <%= select_tag(:add_group_id , options_for_select( grouplist4, @gid ), :onchange=>"update_grouplist()" ) %>
     </td>
-    <td><%= select_tag :add_user_id, options_for_select(userlist, @uid) %> を、以下の予定の参加者に追加します。</td>
-    <td><%= submit_tag '追加', {name: :add_submit, onclick: "return confirm('ユーザーを追加します。よろしいですか？');"} %></td>
-    <td><%= submit_tag 'キャンセル', {name: :cancel} %></td>
+    <td>
+      <%= select_tag(:add_user_id , options_for_select( userlist, @uid ) ) %> を、以下の予定の参加者に追加します。
+    </td>
+    <td>
+      <%= submit_tag '追加', {:onclick=>"return confirm('ユーザーを追加します。よろしいですか？');", :name =>:add_submit} %>
+    </td>
+    <td>
+      <%= submit_tag 'キャンセル', {:name =>:cancel} %>
+    </td>
   </tr>
 </table>
 <% end %>
-
-<script type="text/javascript">
+<script language = "JavaScript" type="text/javascript">
 <!--
   var update_grouplist = function () {
     var fr = $('add_group_id');
     var gid = fr.options[fr.selectedIndex].value;
-    url = '/gw/schedule_lists/user_fields?gid=' + gid;
+    url = '/gw/schedule_lists/user_fields.csv?gid=' + gid;
     var to = $('add_user_id');
     end_cnt = 0;
     new Ajax.Request(url, {method:'get', onComplete: function(x){
@@ -38,5 +43,7 @@ userlist = System::User.get_user_select(params[:gid], nil, {})
       }
     }})
   }
+
+
 -->
 </script>

@@ -1,0 +1,16 @@
+<div class="actionMenu">
+  <%= action_menu :new %>
+  <%= action_menu :index %>
+  <%= action_menu :show if ["show", "edit"].index(params[:action]) %>
+  <%= action_menu :edit if ["show", "edit"].index(params[:action]) %>
+  <%= action_menu :destroy if ["show", "edit"].index(params[:action]) %>
+  <%= link_to 'CSV出力', csvput_sys_groups_path %>
+  <%= link_to 'CSV登録', csvup_sys_groups_path %>
+</div>
+
+<div class="navi">
+<% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
+<%= link_to "(#{c.code})#{c.name}", url_for(:action => :index, :parent => c) -%>
+<%= '>' if tree.size != k + 1 -%>
+<% end %>
+</div>

@@ -1,6 +1,9 @@
-class Gwboard::Admin::MapsController < Gw::Controller::Admin::Base
+class Gwboard::Admin::MapsController < ApplicationController
   include System::Controller::Scaffold
-  layout 'admin/base'
+
+  def initialize_scaffold
+    self.class.layout 'admin/base'
+  end
 
   def index
     item = Gwboard::Maps.new
@@ -53,7 +56,7 @@ class Gwboard::Admin::MapsController < Gw::Controller::Admin::Base
   end
 
   def destroy
-    @item = Gwboard::Maps.where(:id => params[:id]).first
+    @item = Gwboard::Maps.find_by_id(params[:id])
     str_redirect = gwboard_maps_path(@item.parent_id) + "?system=#{@item.system_name}&title_id=#{@item.title_id}&field_id=#{@item.field_name}"
     @item.destroy
     _destroy(@item, :success_redirect_uri => str_redirect)

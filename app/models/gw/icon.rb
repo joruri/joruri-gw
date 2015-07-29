@@ -1,6 +1,8 @@
+# -*- encoding: utf-8 -*-
 class Gw::Icon < Gw::Database
   include System::Model::Base
-	include System::Model::Base::Content
+
+  include Cms::Model::Base::Content
 
   belongs_to :gw_icon_groups
 

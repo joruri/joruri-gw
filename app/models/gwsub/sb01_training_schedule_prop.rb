@@ -1,6 +1,6 @@
 class Gwsub::Sb01TrainingScheduleProp < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :training_rel   ,:foreign_key=>'training_id'     ,:class_name=>"Gwsub::Sb01Training"
   belongs_to :tc_rel         ,:foreign_key=>'condition_id'    ,:class_name=>"Gwsub::Sb01TrainingScheduleCondition"
@@ -35,7 +35,7 @@ class Gwsub::Sb01TrainingScheduleProp < Gwsub::GwsubPref
       st_at  = Gw.date_common(st_at1)
       return false if st_at.blank?
     end
-    holidays  =Gw::Holiday.all.order("st_at").map{|x| x.st_at.strftime("%Y-%m-%d %H:%M:%S")}
+    holidays  =Gw::Holiday.find(:all,:order=>"st_at").map{|x| x.st_at.strftime("%Y-%m-%d %H:%M:%S")}
     st_day  = st_at.split(' ')
     st_date = st_day[0].split('-')
     st_time = st_day[1].split(':')
@@ -115,7 +115,7 @@ class Gwsub::Sb01TrainingScheduleProp < Gwsub::GwsubPref
     end
 #    return false if p_id.blank?
     props_cond = "schedule_id=#{s_id} and prop_id=#{p_id} and prop_type='Gw::PropMeetingroom' "
-    props_count = Gw::ScheduleProp.where(props_cond).count
+    props_count = Gw::ScheduleProp.count(:all,:conditions=>props_cond)
     # 会議室予約が削除されている場合リンクなし
     return false if props_count==0
     return true

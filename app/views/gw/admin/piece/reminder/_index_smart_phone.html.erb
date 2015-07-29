@@ -1,0 +1,53 @@
+<div id="portal_reminder_part">
+<%
+  icon_clses = [
+  ['circular','circular'],
+  ['memo','memo'],
+  ['todo','todo'],
+  ]
+  opt = {:mobile=>true}
+reminds = []
+  %w(memo todo).each{|mod|
+      reminds += eval("Gw::Model::#{mod.capitalize}.remind.collect{|x| x[:c]='#{mod}'; x}")
+  }
+%>
+
+<%if reminds.blank?%>
+リマインダーに表示する内容はありません。
+<%else%>
+<div class="pieceBody">
+<table>
+<%
+cols = %w(date_ste cls title)
+cols.each{|col| concat raw %Q(<colgroup class="#{col}"></colgroup>)}
+reminds.sort{|a, b| b[:date_d] <=> a[:date_d]}.each do |x|
+  c_s_a = []
+  c_s_a.push cycle('', 'cycle')
+  c_s_a.push 'expired' if x[:delay]
+  c_s_a.push x[:c]
+  c_s_a.push x[:css_class] if !x[:css_class].blank?
+  c_s = Gw.join(c_s_a, ' ')
+  c_s = %Q( class="#{c_s}") if !c_s.blank?
+  icon_cls  = icon_clses.assoc(x[:c])
+  icon_cls1 = icon_cls.blank? ? nil:icon_cls[1]
+%>
+<tr>
+<td>
+<%
+title = x[:title].gsub(/'/,'"')
+uri   = title.gsub(/<a .*?href="(.*?)".*?>.*?<\/a>/iom, '\1')
+label = title.sub(/(<a .*?href=".*?".*?>)(.*?)(<\/a>)/i, '\2')
+link_title = ""
+link_title += %Q(<span class="date_ste">#{x[:date_str]}</span>)
+link_title += %Q(<span class="cls #{icon_cls1}">#{x[:cls]}</span>)
+link_title += %Q(<span class="span">：</span>)
+link_title += %Q(<span class="title">#{label}</span>)
+%>
+<%=link_to(raw(link_title), uri)%>
+</td>
+</tr>
+<%end%>
+</table>
+</div>
+<%end%>
+</div>

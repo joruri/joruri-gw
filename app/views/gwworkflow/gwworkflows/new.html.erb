@@ -1,5 +1,5 @@
 <div class="bbsDocList workflow"><%# <div class="bbsDocList workflow"> %>
-<%= render 'piece_header', hide_new_action: true %>
+<%= render :partial => 'piece_header', :locals => {:hide_new_action => true} %>
 <div class="pieceBody">
 	
 <%= form_for :item, :url => {:action => 'create'}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
@@ -11,7 +11,7 @@
 <div class="btDestroy"><%= link_to '削除', "/gwworkflow/destroy/#{@item.id}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></div>
 </div>
 <% end %>
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <div class="submitters">
 <div align="center">

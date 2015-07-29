@@ -1,35 +1,24 @@
+<%#*<p>Find me in app/views/gw/admin/year_mark_jp/show.html.erb</p>%>
+<%
+  cnt =  Gw::YearMarkJp.count(:all , :order=>"start_at DESC" , :conditions=>"start_at > '#{@item.start_at.strftime("%Y-%m-%d 00:00:00")}'")
+%>
 <div class="piece YearMarkJp">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <div class="pieceBody">
-
-<% if @item.editable? %>
-<div class="editingBox">
-  <span class="btEdit"><%= link_to '編集', {action: :edit} %></span>
-  <span class="btDestroy"><%= link_to '削除', {action: :destroy}, confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
-</div>
-<% else %>
+<% if cnt == 0 %>
+  <div class="editingBox">
+  <span class="btEdit"><%= link_to_edit  @item.id %></span>
+  <span class="btDestroy"><%=  link_to '削除', "/gw/year_mark_jps/#{@item.id}?#{@qs}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %></span>
+  </div>
+<%else%>
   <div>最新の年号以外は編集・削除を行うことはできません。</div>
-<% end %>
-
-<table class="show">
-  <tr>
-    <th>年号</th>
-    <td><%= @item.name %></td>
-  </tr>
-  <tr>
-    <th>記号</th>
-    <td><%= @item.mark %></td>
-  </tr>
-  <tr>
-    <th>開始日（西暦）</th>
-    <td><%= @item.start_at.strftime('%Y-%m-%d') if @item.start_at %></td>
-  </tr>
-</table>
-
+<%end%>
+<%= raw(table_to_show2 @item, { 'table_name' => 'gw_year_mark_jps' }) %>
+<br />
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '一覧へ戻る', {action: :index} %>
+  <%=link_to '年号一覧へ戻る', "/gw/year_mark_jps?#{@qs}" %>
 </div>
-
+<br />
 </div>
 </div>

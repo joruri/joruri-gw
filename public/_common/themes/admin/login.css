@@ -29,10 +29,9 @@ input {
   width: 150px;
 }
 
-div.submitters {
+.submitters {
   height: 100px;
-  padding: 10px 0 0;
-  margin: 10px;
+  padding: 10px 25px 0;
 }
 
 form input.login {
@@ -185,12 +184,4 @@ div#login {
   width: 350px;
 }
 
-div.department {
-  background-image: url("/_common/themes/admin/images/login-tokushimakenlogo_.gif");
-  background-position: 40% center;
-  background-repeat: no-repeat;
-  height: 30px;
-  line-height: 2;
-  margin-left: 30px;
-  margin-top: 20px;
-}
+

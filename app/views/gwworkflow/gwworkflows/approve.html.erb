@@ -6,10 +6,10 @@
   s_cond_btn = '?cond=admin' if params[:cond] == 'admin'
 %>
 <div class="bbsDocList workflow">
-<%= render 'piece_header', hide_new_action: true %>
+<%= render :partial => 'piece_header', :locals => {:hide_new_action => true} %>
 <div class="pieceBody">
 
-<%= render 'detail', hide_new_action: true %>
+<%= render :partial => 'detail', :locals => {:hide_new_action => true} %>
 
 <%= form_for :committee, :url => {:action => 'commit'}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
 <%= f.error_messages %>
@@ -23,7 +23,7 @@
 	</tr>
 </table>
 
-<%= render '/gwworkflow/share/users_route_editor', f: f %>
+<%= render :partial => '/gwworkflow/share/users_route_editor', :locals => {:f => f} %>
 
 <div class="submitters">
 <div align="center">

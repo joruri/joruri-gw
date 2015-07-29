@@ -1,11 +1,11 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   mod = "digitallibrary"
   scp = "admin"
 
-  match "digitallibrary",                                    :to => "digitallibrary/admin/menus#index", :via =>  [:post, :get]
-  match "digitallibrary/folders/:id/delete",                 :to => "digitallibrary/admin/folders#destroy", :via =>  [:post, :get]
-  match "digitallibrary/docs/:parent_id/edit_file_memo/:id", :to => "digitallibrary/admin/docs#edit_file_memo", :via =>  [:post, :get]
-
+  match "digitallibrary",                                    :to => "digitallibrary/admin/menus#index"
+  match "digitallibrary/folders/:id/delete",                 :to => "digitallibrary/admin/folders#destroy"
+  match "digitallibrary/docs/:parent_id/edit_file_memo/:id", :to => "digitallibrary/admin/docs#edit_file_memo"
+  
   #scope "_#{scp}" do
     namespace mod do
       scope :module => scp do

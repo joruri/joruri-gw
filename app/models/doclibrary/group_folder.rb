@@ -1,20 +1,18 @@
+# -*- encoding: utf-8 -*-
 class Doclibrary::GroupFolder < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
   include System::Model::Tree
-  include Gwboard::Model::SerialNo
+  include Cms::Model::Base::Content
 
-  acts_as_tree order: { sort_no: :asc }
+  acts_as_tree :order=>'sort_no'
 
-  belongs_to :control, :foreign_key => :title_id
-
-  after_update :close_state
-
-  validates :state, :name, presence: true
+  validates_presence_of :state, :name
 
   def status_select
     [['公開','public'], ['非公開','closed']]
   end
+
 
   def status_name
     {'public' => '公開', 'closed' => '非公開'}
@@ -75,91 +73,4 @@ class Doclibrary::GroupFolder < Gwboard::CommonDb
     return "#{self.item_home_path}group_folders/#{self.id}?title_id=#{self.title_id}&state=GROUP&grp=#{self.parent_id}&gcd=#{self.code}"
   end
 
-  def public_children
-    children.where(state: 'public')
-  end
-
-  def public_descendants
-    public_children.inject([]) {|arr, c| arr << c; arr += c.public_descendants }
-  end
-
-  def public_descendant_codes
-    public_children.select(:id, :parent_id, :code).inject([]) {|arr, c| arr << c.code; arr += c.public_descendant_codes }
-  end
-
-  def close_state_for_descendants
-    children.update_all(state: 'closed')
-    children.each(&:close_state_for_descendants)
-  end
-
-  def self.sync_group_folders(id, mode = 'public')
-    control_item = Doclibrary::Control.where(:id => id).first
-    return false if control_item.blank?
-    mode = 'closed' if mode.blank?
-
-    transaction do
-      sync_system_groups(control_item, mode)
-      sync_public_docs_count(control_item)
-    end
-  end
-
-  private
-
-  def close_state
-    if !new_record? && state_changed? && state == 'closed'
-      close_state_for_descendants
-    end
-  end
-
-  def self.sync_system_groups(control, mode = 'public')
-    control.group_folders.update_all(use_state: 'closed')
-
-    System::Group.where(state: 'enabled').order(:level_no, :sort_no, :id).each do |group|
-      use_state = group.ldap == 0 ? 'closed' : mode
-      parent_folder = control.group_folders.where(sysgroup_id: group.parent_id).first
-      if folder = control.group_folders.where(code: group.code).first
-        folder.update_columns(
-          :state => 'closed',
-          :use_state => use_state,
-          :parent_id => parent_folder.try(:id),
-          :sort_no => group.sort_no,
-          :level_no => group.level_no,
-          :name => group.name,
-          :sysgroup_id => group.id,
-          :sysparent_id => group.parent_id,
-          :updated_at => Time.now
-        )
-      else
-        control.group_folders.create(
-          :state => 'closed',
-          :use_state => use_state,
-          :parent_id => parent_folder.try(:id),
-          :sort_no => group.sort_no,
-          :level_no => group.level_no,
-          :code => group.code,
-          :name => group.name,
-          :sysgroup_id => group.id,
-          :sysparent_id => group.parent_id,
-          :children_size => 0,
-          :total_children_size => 0,
-        )
-      end
-    end
-  end
-
-  def self.sync_public_docs_count(control)
-    control.group_folders.update_all(state: 'public', children_size: 0, total_children_size: 0)
-
-    control.docs.public_docs.select(:section_code).group(:section_code).count(:id).each do |section_code, count|
-      if folder = control.group_folders.find_by(code: section_code)
-        folder.update_columns(children_size: count)
-        folder.ancestors.each do |ancestor|
-          ancestor.update_columns(total_children_size: ancestor.total_children_size + count)
-        end
-      end
-    end
-
-    control.group_folders.where(children_size: 0, total_children_size: 0).update_all(state: 'closed')
-    control.group_folders.where(level_no: 1).update_all(state: 'public')
-  end
 end

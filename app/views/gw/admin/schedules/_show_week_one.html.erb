@@ -1,20 +1,20 @@
-<% schedules.each do |schedule| %>
-<% if schedule.is_public_auth?(@is_gw_admin) %>
-  <div title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) %>" class="ind tooltip">
-    <a class="<%= schedule.display_category_class(display_prop) %>" href="/gw/schedules/<%= schedule.id %>/show_one">
-      <span><%= schedule.display_time(display_prop, week_add_day) %></span>
-      <span class="title"><%= schedule.display_title(display_prop) %></span>
+<%
+public =  schedule.is_public_auth?(@is_gw_admin)
+-%>
+
+<% if public -%>
+  <div title="<%= create_schedule_tooltip(schedule, @ie) -%>" class="ind" id="<%= schedule_id -%>">
+    <a class="<%= schedule.get_category_class -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
+      <span><%= schedule.show_time(week_add_day) -%></span>
+      <span class="title"><%= schedule.title -%></span>
       <% if @schedule_settings[:view_place_display] == '1' && schedule.place.present? %>
-        <span class="place">（<%= schedule.place %>）</span>
+        <span class="place">（<%= schedule.place -%>）</span>
       <% end %>
     </a>
   </div>
 <% else %>
-  <% unless schedule.todo? %>
-    <div title="<%= "#{schedule.display_time(display_prop, week_add_day)} [非公開予定]" %>" class="ind tooltip">
-      <span><%= schedule.display_time(display_prop, week_add_day) %></span>
-      <span class="title">[非公開予定]</span>
-    </div>
-  <% end %>
-<% end %>
-<% end %>
+  <div title="<%= @ie ? "#{schedule.show_time(week_add_day)} [非公開予定]" : "<span>#{schedule.show_time(week_add_day)} [非公開予定]</span>" -%>" id="<%= schedule_id -%>" class="ind">
+    <span><%= schedule.show_time(week_add_day) -%></span>
+    <span class="title">[非公開予定]</span>
+  </div>
+<% end -%><%# public end %>

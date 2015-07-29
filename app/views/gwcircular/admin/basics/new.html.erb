@@ -1,12 +1,12 @@
 <div class="bbsDocList circular">
-<%= render 'piece_header' %>
+<%= render :partial => 'piece_header' %>
 
 <div class="pieceBody">
 <%= form_for :item, :url => "#{@public_uri}", :action => :create ,:html => {:method => :post , :multipart => true, :id => 'itemForm'} do |f| %>
 
 <%= f.error_messages %>
 
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <%#このsubmitはJSを呼んで更新処理をかけているので変更してはいけない%>
 <%= submit_for_update(f, :js_submitter => 'my_submit()') %>

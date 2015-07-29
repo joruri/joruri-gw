@@ -1,17 +1,18 @@
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-  <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-  <%= render 'menu' -%>
-  <%= render 'display_name' -%>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+  <%= render :partial => 'menu' -%>
+  <%= render :partial => 'display_name' -%>
 </div>
 
 <div class="pieceBody">
 
   <div class="pieceBodyBody">
     <% if @items.blank? -%>
-      <%= show_notice -%>
+      <%= Gw.div_notice('表示する項目はありません。初期設定を確認してください。') -%>
     <% else -%>
+    <%= div_notice -%>
     <table class="index">
       <tr>
       <th></th>

@@ -1,29 +1,30 @@
 <%
+  # アイコンクラスの並び順は、先頭IDのアルファベット順とすること（assocの条件）
+  icon_clses = [
+  # 回覧版
+  ['circular','circular'],
+  # 連絡メモ
+  ['memo','memo'],
+  # 照会回答
+  ['monitor','monitor'],
+  # TODO
+  ['todo','todo'],
+  # JoruriPlus
+  ['plus_update','plus_update'],
+  # ワークフロー
+  ['workflow','denshiKessai']
+  ]
   remind = []
-  reminders = Gw::Reminder.where(:state => 'enabled').order('sort_no').all
-  icon_clses = reminders.map{|x| [x.name, x.css_name]}
-  reminders.each do |reminder|
-    begin
-      remind += eval("Gw::Model::#{reminder.name.capitalize}.remind.collect{|x| x[:c]='#{reminder.name}'; x}")
-    rescue => e
-      dump e
-    end
-  end
-
-  begin
-    remind += Gw::Model::ReminderExternal.remind
-    items = Gw::ReminderExternalSystem.order(:id).all
-    icon_clses += items.map{|item| [item.code, item.css_name]}
-  rescue => e
-    dump e
-  end
+  %w(todo memo circular monitor plus_update workflow).each{|mod|
+    remind += eval("Gw::Model::#{mod.capitalize}.remind.collect{|x| x[:c]='#{mod}'; x}")
+  }
 %>
-<div class="piece gadget reminder" style="<%= 'margin-right: 210px;' if Gw::Property::PortalAddDispOption.display_right? && Gw::Property::PortalMode.first_or_new.normal_mode? %>">
+<div class="piece gadget reminder">
 <div class="pieceHeader"><h3 class="remainder">リマインダー</h3></div>
-<div class="borderbox" id="reminderList">
+<div class="borderbox">
 <% if remind.length > 0 %>
 <div class="pieceBody">
-<table id="reminderListTable">
+<table>
 <%
 cols = %w(date_ste cls title)
 cols.each{|col| concat raw %Q(<colgroup class="#{col}"></colgroup>)}
@@ -46,47 +47,5 @@ end
 表示する内容はありません。
 </div>
 <% end %>
-<script type="text/javascript">
-//<![CDATA[
-setInterval(refreshReminder,180000);
-var reminderRequest;
-function refreshReminder(){
-  document.body.style.cursor = 'wait';
-  ajax_uri = "/gw/reminders/requests";
-  if(reminderRequest!=null){
-       //reminderRequest.abort();
-  }
-  reminderRequest = new Ajax.Request(ajax_uri, {method:'get', onComplete: function(x){
-      if(x.responseText.match(/追加する内容はありません。/)){
-        //
-      }else{
-
-        var resetTable = '<div class="pieceBody"><table id="reminderListTable"><tbody>';
-        var HcsItems = '';
-        var table = document.getElementById("reminderListTable");
-        if(table){
-          for(var i =0 ; i < table.rows.length; i++){
-            var reminderRow = table.rows[i];
-            if(reminderRow.className.match(/hcs/)){
-              HcsItems += '<tr class="' + reminderRow.className + '">' + reminderRow.innerHTML + '</tr>';
-            }
-          }
-        }
-
-        var res = x.responseText.replace('<colgroup class="date_ste"></colgroup><colgroup class="cls"></colgroup><colgroup class="title"></colgroup>', "");
-        res = res.replace(/[\n\r]/g,"");
-        resetTable += res + HcsItems;
-        resetTable += '</tbody></table></div>';
-        $('reminderList').update(resetTable);
-      }
-
-      document.body.style.cursor = 'default';
-    }})
-}
-
-//]]>
-</script>
-
 </div>
 </div>
-

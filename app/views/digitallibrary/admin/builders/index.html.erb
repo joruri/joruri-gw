@@ -3,12 +3,12 @@ params[:title] = '電子図書'
 params[:separator_str1] = '.'
 params[:separator_str2] = '.'
 %>
-<%= form_tag('/digitallibrary/builders/create') do %>
+<% form_tag('/digitallibrary/builders/create') do %>
 <table class="show">
   <tr>
     <th style="width: 50px; text-align: left;">作成者</th>
-    <td style="width: 150px; text-align: left;"><%= Core.user_group.name %></td>
-    <td style="text-align: left;"><%= Core.user.name %></td>
+    <td style="width: 150px; text-align: left;"><%= Site.user_group.name %></td>
+    <td style="text-align: left;"><%= Site.user.name %></td>
   </tr>
 </table>
 <table class="show">

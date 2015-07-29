@@ -1,0 +1,22 @@
+<div class="piece bbs">
+<div class="pieceHeader">
+<h2>記事更新情報設定</h2>
+</div>
+<div class="pieceBody">
+<div class="editingBox">
+<span class="docLink"><%=link_to('ポータルに戻る >>', '/') %></span>
+</div>
+<div class="titleLine">
+ <p class="title">表示期間</p>
+</div>
+
+<%= form_for :item, :url => "/gwbbs/synthesetup/#{@item.id}" , :html => {:method => :put} do |f| %>
+<%= f.error_messages %>
+<%= render :partial => 'form_edit', :locals => {:f => f} %>
+<% end %>
+<div class="btReturn">
+  <%=link_to('処理選択へ戻る', '/gwbbs/synthesetup') %>
+</div>
+
+</div>
+</div><!--piece gwbbs-->

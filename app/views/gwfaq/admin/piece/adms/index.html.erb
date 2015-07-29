@@ -1,0 +1,19 @@
+<% if @title.left_banner.blank? %>
+  <%= link_to @title.title, @title.docs_path %>
+<% else %>
+  <a href ="<%= @title.docs_path %>">
+  <%=raw @title.left_banner %>
+  </a>
+<% end %>
+<div class="SideListTitle"><%= gwbbs_sidelist_title %></div>
+<div class="sideList" <%= @title.sidelist_style %>>
+  <% unless @items.blank?%>
+    <% if params[:pp].blank? %>
+      <%= render :partial => 'whats_new' %>
+    <% else %>
+      <%= render :partial => 'titlelist' %>
+    <% end %>
+  <% else %>
+    <%=raw "<br />\n" * @loop %>
+  <% end %>
+</div>

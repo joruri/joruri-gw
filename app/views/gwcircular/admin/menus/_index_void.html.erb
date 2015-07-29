@@ -1,20 +1,20 @@
 <table class="index">
-  <tr class="headIndex">
-    <th style="width:60px;">状態</th>
-    <th class="docTitle">回覧件名</th>
-    <th class="update">回覧状況</th>
-    <th style="width:120px;">回覧期限日時</th>
-    <th style="width:120px;">最終更新日時</th>
-    <th style="width:100px;">CSVファイル出力</th>
+<tr class="headIndex">
+<th style="width:60px;">状態</th>
+<th class="docTitle">回覧件名</th>
+<th class="update">回覧状況</th>
+<th style="width:120px;">回覧期限日時</th>
+<th style="width:120px;">最終更新日時</th>
+<th style="width:100px;">CSVファイル出力</th>
+</tr>
+<% for item in @items %>
+  <tr class="<%= cycle 'article', 'article cycle' %>">
+  <td style="width:60px;"><%= raw(status_name(item)) %></td>
+  <td class="docTitle"><%= link_to item.title, "#{show_path(item)}?cond=void" %></td>
+  <td class="update"><%= item.commission_info %></td>
+  <td class="update"><%= item.expiry_date.strftime('%Y-%m-%d %H:%M') %></td>
+  <td class="update"><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') %></td>
+  <td align="center"><%= link_to '出力', csv_exports_path(item,"void") %></td>
   </tr>
-  <% @items.each do |item| %>
-    <tr class="<%= cycle 'article', 'article cycle' %>">
-      <td style="width:60px;"><%= item.status_name %></td>
-      <td class="docTitle"><%= link_to item.title, "#{item.show_path}?cond=void" %></td>
-      <td class="update"><%= item.commission_info %></td>
-      <td class="update"><%=l item.expiry_date if item.expiry_date %></td>
-      <td class="update"><%=l item.latest_updated_at if item.latest_updated_at %></td>
-      <td align="center"><%= link_to '出力', "/gwcircular/#{item.id}/csv_exports?cond=void" if item.doc_type == 0 %></td>
-    </tr>
-  <% end %>
+<% end %>
 </table>

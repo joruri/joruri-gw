@@ -1,0 +1,1346 @@
+################################################################################
+# commons
+t1_finished:
+  1: 完了
+t1_read:
+  1: 既読
+t1f0:
+  1: はい
+  0: いいえ
+t1f0_kyoka_fuka:
+  1: 許可
+  0: 不可
+t1f2:
+  1: true
+  2: false
+t1f2_marubatsu:
+  1: ○
+  2: ×
+t1f2_do:
+  1: する
+  2: しない
+t1f2_ed:
+  1: enabled
+  2: disabled
+t1f2_edj:
+  1: 有効
+  2: 無効
+gw_prop_state:
+  0: 有効
+  1: 無効
+gw_prop_delete_state:
+  0: 未
+  1: 済
+common_states:
+  draft: 下書き
+  recognized: 公開待ち
+  public: 公開中
+  closed: 非公開
+gw_prop_other_states:
+  public: 公開中
+  closed: 非公開
+jp_states:
+  1: 北海道
+  2: 青森県
+  3: 岩手県
+  4: 宮城県
+  5: 秋田県
+  6: 山形県
+  7: 福島県
+  8: 茨城県
+  9: 栃木県
+  10: 群馬県
+  11: 埼玉県
+  12: 千葉県
+  13: 東京都
+  14: 神奈川県
+  15: 新潟県
+  16: 富山県
+  17: 石川県
+  18: 福井県
+  19: 山梨県
+  20: 長野県
+  21: 岐阜県
+  22: 静岡県
+  23: 愛知県
+  24: 三重県
+  25: 滋賀県
+  26: 京都府
+  27: 大阪府
+  28: 兵庫県
+  29: 奈良県
+  30: 和歌山県
+  31: 鳥取県
+  32: 島根県
+  33: 岡山県
+  34: 広島県
+  35: 山口県
+  36: 徳島県
+  37: 香川県
+  38: 愛媛県
+  39: 高知県
+  40: 福岡県
+  41: 佐賀県
+  42: 長崎県
+  43: 熊本県
+  44: 大分県
+  45: 宮崎県
+  46: 鹿児島県
+  47: 沖縄県
+sexes:
+  1: 男
+  2: 女
+age_classes:
+  1: 20歳未満
+  2: 20歳代
+  3: 30歳代
+  4: 40歳代
+  5: 50歳代
+  6: 60歳以上
+job_classes:
+  1: 農林水産業
+  2: 自営業
+  3: 会社・団体職員
+  4: 主婦
+  5: その他
+has_willings:
+  1: 希望する
+  2: 希望しない
+is_draft:
+  1: 草稿
+  2: 完成稿
+published_classes:
+  1: 公開
+
+################################################################################
+# グループウェア　書庫,電子図書,掲示板,Q&A,FAQ 共通項目
+resolved_states:
+  resolved: 解決済
+  unresolved: 未解決
+importance_states:
+  0: 使用しない
+  1: 使用する
+bbs_category_states:
+  0: 使用しない
+  1: 使用する
+category_states:
+  1: 大分類のみ
+  2: 中分類まで
+  3: 小分類まで
+recognize_states:
+  0: 不要
+  1: 任意
+question_types:
+  0: 質問記事
+  1: 回答記事
+
+################################################################################
+# 書庫
+doclibrary_controls:
+  id: 管理番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  importance: x
+  form_name: x
+  banner: x
+  banner_position: x
+  left_banner: x
+  left_menu: x
+  left_index_use: x
+  left_index_bg_color: x
+  wallpaper: x
+  css: x
+  name: x
+  title: タイトル
+  category: x
+  category1_name: x
+  category2_name: x
+  category3_name: x
+  recognize: x
+  createdate: x
+  createrdivision_id: x
+  createrdivision: x
+  creater_id: x
+  creater: x
+  editdate: x
+  editordivision_id: x
+  editordivision: x
+  editor_id: x
+  editor: x
+  default_limit: 表示行数
+  dbname: x
+  adms: x
+  adms_json: x
+  editors: x
+  editors_json: x
+  readers: x
+  readers_json: x
+doclibrary_docs:
+  id: ファイル番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  doc_type: x
+  parent_id: x
+  title_id: x
+  name: x
+  title: x
+  head: x
+  body: x
+  category1_id: x
+  category2_id: x
+  category3_id: x
+  category4_id: x
+  page_count: x
+  keyword1: x
+  keyword2: x
+  keyword3: x
+  keywords: x
+  createdate: x
+  createrdivision_id: x
+  createrdivision: x
+  creater_id: x
+  creater: x
+  editdate: x
+  editordivision_id: x
+  editordivision: x
+  editor_id: x
+  editor: x
+  latest_updated_at: x
+  content_state: x
+
+################################################################################
+# 掲示板
+gwbbs_controls:
+  id: 管理番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  importance: x
+  form_name: 画面形式選択
+  banner: x
+  banner_position: x
+  left_banner: x
+  left_menu: x
+  left_index_use: x
+  left_index_bg_color: x
+  wallpaper: x
+  css: x
+  name: x
+  title: タイトル
+  category: r:分類使用:bbs_category_states
+  category1_name: 分類名称
+  category2_name: x
+  category3_name: x
+  recognize: x
+  createdate: x
+  createrdivision_id: x
+  createrdivision: x
+  creater_id: x
+  creater: x
+  editdate: x
+  editordivision_id: x
+  editordivision: x
+  editor_id: x
+  editor: x
+  default_limit: 表示行数
+  dbname: x
+  adms: x
+  adms_json: x
+  editors: x
+  editors_json: x
+  readers: x
+  readers_json: x
+gwbbs_docs:
+  id: 記事番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  latest_updated_at: x
+  doc_type: x
+  parent_id: x
+  content_state: x
+  title_id: x
+  name: x
+  pname: x
+  title: x
+  head: 質問
+  body: 回答
+  category1_id: x
+  category2_id: x
+  category3_id: x
+  category4_id: x
+  keyword1: x
+  keyword2: x
+  keyword3: x
+  keywords: x
+  createdate: 登録日
+  createrdivision_id: x
+  createrdivision: 登録者所属
+  creater_id: x
+  creater: 登録者名
+  editdate: 更新日
+  editordivision_id: x
+  editordivision: 編集者所属
+  editor_id: x
+  editor: 編集者名
+  expiry_date: x
+
+################################################################################
+# gwfaq,gwqa 開始
+gwfaq_controls:
+  id: 管理番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  importance: x
+  form_name: x
+  banner: x
+  banner_position: x
+  left_banner: x
+  left_menu: x
+  left_index_use: x
+  left_index_bg_color: x
+  wallpaper: x
+  css: x
+  name: x
+  title: タイトル
+  category: r:分類使用:bbs_category_states
+  category1_name: 分類名称
+  category2_name: x
+  category3_name: x
+  recognize: x
+  createdate: x
+  createrdivision_id: x
+  createrdivision: x
+  creater_id: x
+  creater: x
+  editdate: x
+  editordivision_id: x
+  editordivision: x
+  editor_id: x
+  editor: x
+  default_limit: 表示行数
+  dbname: x
+  adms: x
+  adms_json: x
+  editors: x
+  editors_json: x
+  readers: x
+  readers_json: x
+gwfaq_category:
+  id: 管理番号
+gwfaq_docs:
+  id: 記事番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  doc_type: x
+  parent_id: x
+  title_id: x
+  name: x
+  title: x
+  head: 質問
+  body: 回答
+  category1_id: dbraw:大分類:gwfaq_categories:name:id
+  category2_id: dbraw:中分類:gwfaq_categories:name:id
+  category3_id: dbraw:小分類:gwfaq_categories:name:id
+  category4_id: x
+  page_count: x
+  keyword1: x
+  keyword2: x
+  keyword3: x
+  keywords: x
+  createdate: 登録日
+  createrdivision_id: x
+  createrdivision: 登録者所属
+  creater_id: x
+  creater: 登録者名
+  editdate: 更新日
+  editordivision_id: x
+  editordivision: 編集者所属
+  editor_id: x
+  editor: 編集者名
+  latest_updated_at: x
+  content_state: x
+gwqa_controls:
+  id: 管理番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  importance: x
+  form_name: x
+  banner: x
+  banner_position: x
+  left_banner: x
+  left_menu: x
+  left_index_use: x
+  left_index_bg_color: x
+  wallpaper: x
+  css: x
+  name: x
+  title: タイトル
+  category: r:分類使用:bbs_category_states
+  category1_name: 分類名称
+  category2_name: x
+  category3_name: x
+  recognize: x
+  createdate: x
+  createrdivision_id: x
+  createrdivision: x
+  creater_id: x
+  creater: x
+  editdate: x
+  editordivision_id: x
+  editordivision: x
+  editor_id: x
+  editor: x
+  default_limit: 表示行数
+  dbname: x
+  adms: x
+  adms_json: x
+  editors: x
+  editors_json: x
+  readers: x
+  readers_json: x
+gwqa_category:
+  id: 管理番号
+gwqa_docs:
+  doc_type: r:記事種別:question_types
+  id: 記事番号
+  unid: x
+  content_id: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  parent_id: x
+  title_id: x
+  name: x
+  title: x
+  head: n:タイトル
+  body: 本文
+  category1_id: dbraw:大分類:gwfaq_categories:name:id
+  category2_id: dbraw:中分類:gwfaq_categories:name:id
+  category3_id: dbraw:小分類:gwfaq_categories:name:id
+  category4_id: x
+  page_count: x
+  keyword1: x
+  keyword2: x
+  keyword3: x
+  keywords: x
+  createdate: 登録日
+  createrdivision_id: x
+  createrdivision: 登録者所属
+  creater_id: x
+  creater: 登録者名
+  editdate: 更新日
+  editordivision_id: x
+  editordivision: 編集者所属
+  editor_id: x
+  editor: 編集者名
+  latest_updated_at: x
+  content_state: x
+
+################################################################################
+# アンケート
+monitor_titles:
+  id: ID
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  published_at: x
+  name: 管理用名称
+  title: 表示用タイトル
+  subtitle: 表示用サブタイトル
+  addinfo: 表示用注釈
+  footer: 表示用フッタ
+  open_date: d:公開開始日
+  close_date : d:公開終了日
+  mode: x
+  docs: x
+monitor_question_type_name:
+  1: テキストボックス
+  2: テキストエリア
+  3: ラジオボタン
+  4: チェックボックス
+  5: ドロップダウンボックス
+monitor_question_required_name:
+  checked: 必須チェックを行う
+monitor_questions:
+  id: ID
+  unid: x
+  state: x
+  created_at: x
+  updated_at: x
+  published_at: x
+  title_id: 親タイトルID
+  content: 設問の内容
+  question_type_id: r:回答の形式:monitor_question_type_name
+  length: テキストの長さ
+  precies: テキストエリアの行数
+  position: 並び順
+  required: r:必須チェック:monitor_question_required_name
+  ans_uniq: x
+  answer_01: n:選択肢01
+  answer_02: n:選択肢02
+  answer_03: n:選択肢03
+  answer_04: n:選択肢04
+  answer_05: n:選択肢05
+  answer_06: n:選択肢06
+  answer_07: n:選択肢07
+  answer_08: n:選択肢08
+  answer_09: n:選択肢09
+  answer_10: n:選択肢10
+  answer_11: x
+  answer_12: x
+  answer_13: x
+  answer_14: x
+  answer_15: x
+
+################################################################################
+# rss reader
+gw_rssreader:
+  _cols: index:title:uri:max
+  index: 連番
+  title: タイトル
+  uri: RSSのURL
+  max: 一覧での表示数
+
+################################################################################
+# スケジュール・施設予約
+gw_prop_images_common:
+  _cols: path:orig_filename:note:content_type:_size
+  id: x
+  rentcar_id: x
+  idx: x
+  note: 備考
+  path: img:画像
+  orig_filename: ファイル名
+  content_type: ファイル種別
+  created_at: x
+  updated_at: x
+  _size: サイズ（幅x高さ）
+gw_prop_other_reserved_states:
+  1: 許可
+  0: 不可
+gw_prop_other_images:
+  _base: gw_prop_images_common
+gw_schedule_props:
+  _common:
+    _prop_name: 施設名称
+    _prop_stat: 設備の状態
+    id: x
+    schedule_id: dbraw:予定のタイトル:gw/gw_schedules:title:id
+    prop_type: r:施設種別:gw_props_class_names
+    prop_id: x
+    created_at: x
+    updated_at: x
+    st_at: d:開始日
+    ed_at: d:終了日
+    _name: 設備名称
+    _subscriber: 利用責任者所属
+  index:
+    _cols: _prop_stat:st_at:ed_at:_name:_subscriber
+  index_mr_pm:
+    _cols: _name:participant_nums_inner:participant_nums_outer:title:_owner:_subscriber:updated_at:_prop_stat:st_at:ed_at
+    _nums: 人数
+    _creator: 登録者
+    _owner: 利用責任者
+    _subscriber: 所属
+    schedule_id: dbraw:会議名称:gw/gw_schedules:title:id
+    updated_at: x
+    _name: 会議室等名称
+    title: 件名（用務名等）
+    participant_nums_inner: t:利用人数<br />(庁内)
+    participant_nums_outer: t:利用人数<br />(庁外)
+  index_rc_pm:
+    _cols: _prop_stat:_name:_subscriber:st_at:ed_at
+    _name: 号車
+gw_schedules:
+  _common:
+    id: x
+    creator_uid: x
+    creator_ucode: 作成者ID
+    creator_uname: 作成者
+    creator_gid: x
+    creator_gcode: 作成者所属ID
+    creator_gname: 作成所属
+    owner_uname: 利用責任者
+    owner_gname: 利用責任者所属
+    title_category_id: タイトルカテゴリ
+    title: 件名（用務名等）
+    place_category_id: 場所カテゴリ
+    place: 場所
+    to_go: 行き先（最遠地）
+    is_public: r:公開:gw_schedules_public_states
+    memo: メモ
+    participant_nums_inner: 予約人数(庁内)
+    participant_nums_outer: 予約人数(庁外)
+    inquire_to: 連絡先電話番号
+    st_at: d:開始日時
+    ed_at: d:終了日時
+    created_at: d:作成日
+    updated_at: d:更新日
+    _title: タイトル
+    _place: 場所
+  show:
+    _cols: st_at:ed_at:_title:_place:is_public:memo:updated_at:creator_uname:owner_uname:owner_gname:participant_nums_inner:to_go:participant_nums_outer:inquire_to
+gw_schedules_show_one_day:
+  date: x
+  title: タイトル
+  time_str: 時刻
+gw_schedules_title_categories:
+  100: 会議
+  200: 出張
+  300: 研修
+  400: 休暇
+  500: 仕事集中タイム
+  600: 来客対応
+  700: 重要イベント
+  800: 期限日
+  900: 注意
+  950: 議会関係
+  1000: 予定あり
+  1100: その他１
+  1200: その他２
+gw_schedules_public_states:
+  1: 公開（誰でも閲覧可）
+  2: 所属内（参加者の所属および公開所属）
+  3: 非公開（参加者のみ）
+gw_schedules_repeats:
+  1: 毎日
+  2: 毎日(土日除く)
+  3: 毎週
+gw_schedules_repeat_weekday_ids:
+  0: 日曜日
+  1: 月曜日
+  2: 火曜日
+  3: 水曜日
+  4: 木曜日
+  5: 金曜日
+  6: 土曜日
+allday_radio_ids:
+  1: 未定
+  2: 終日
+gw_schedules_form_kind_ids:
+  0: 通常
+  1: 設備予約
+gw_todos:
+  _common:
+    id: x
+    class_id: x
+    uid: x
+    title: 内容
+    st_at: x
+    ed_at: D:期限
+    is_finished: r:完了:t1_finished
+    created_at: x
+    updated_at: d:更新/完了日時
+#    category_id: x
+#    prior_id: r:重要度:gw_todos_prior
+    prior_id: x
+    body: 備考
+    _title: 内容
+  index:
+    _cols: is_finished:ed_at:prior_id:_title:updated_at
+  show:
+    _cols: ed_at:prior_id:title:body
+  form:
+    _cols: ed_at:prior_id:title:body
+gw_todos_prior:
+  0: ----
+  1: 普通
+  2: 重要
+  3: 最重要
+gw_memos:
+  _common:
+    id: x
+    class_id: x
+    uid: 作成者
+    title: 伝言
+    st_at: x
+    ed_at: d:時刻
+    is_finished: r:未/既:t1_read
+    created_at: d:登録日
+#    updated_at: d:更新日/完了日
+    updated_at: d:更新日
+    fr_group: "所属/担当/社名"
+    fr_user: 担当者
+    memo_category_id: r:用件:gw_memos_categories
+    _memo_category_id: 用件
+    body: 備考
+    _is_finished: 未/既
+  show:
+    _cols: ed_at:fr_group:fr_user:title:body:_gid:uid:created_at:updated_at
+    _gid: 作成者所属
+  index:
+    _cols: _send_cls:_is_finished:fr_group:fr_user:title:ed_at
+#    _cols: _cb:_id:_send_cls:_is_finished:fr_group:fr_user:title:ed_at
+#    _cb: 選択
+#    _id: 詳細
+    _send_cls: 相手
+  form:
+    _cols: ed_at:fr_group:fr_user:title:body
+gw_holidays:
+  _common:
+    _cols: st_at:title
+    st_at: D:年月日
+    title: 休日名
+gw_icons:
+  id: x
+  icon_gid: dbraw:グループ:gw/gw_icon_groups:name:id
+  title: タイトル
+  path: img:画像
+  created_at: x
+  updated_at: d:更新日
+gw_icon_groups:
+  id: x
+  name: グループ名
+  created_at: x
+  updated_at: d:更新日
+gw_display_item_selects_state:
+  0: 表示しない
+  1: 表示する
+gw_display_item_selects:
+  id: x
+  dbname: x
+  dbname_jp: x
+  tablename: テーブル名
+  tablename_jp: 表示用テーブル名
+  data_type: データ種別
+  item_name: カラム名
+  item_name_jp: 表示項目名
+  index_state: r:一覧表示:gw_display_item_selects_state
+  index_order: 表示順
+  index_select_state: r:絞込表示:gw_display_item_selects_state
+  index_select_order: 絞込表示順
+  show_state: r:詳細表示:gw_display_item_selects_state
+  show_order: 表示順
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+gw_display_item_selects_public:
+  id: x
+  dbname: x
+  dbname_jp: x
+  tablename: x
+  tablename_jp: x
+  data_type: x
+  item_name: x
+  item_name_jp: 表示項目名
+  index_state: r:一覧表示:gw_display_item_selects_state
+  index_order: 表示順
+  index_select_state: r:絞込表示:gw_display_item_selects_state
+  index_select_order: 絞込表示順
+  show_state: r:詳細表示:gw_display_item_selects_state
+  show_order: 表示順
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+gw_year_mark_jps:
+  id: x
+  name: 年号
+  mark: 記号
+  start_at: D:開始日（西暦）
+  updated_at: x
+  updated_user: x
+  updated_group: x
+  created_at: x
+  created_user: x
+  created_group: x
+gw_year_fiscal_jps:
+  _common:
+    id: x
+    start_at: D:開始日（西暦）
+    end_at: D:終了日（西暦）
+    fyear: 年度（西暦）
+    fyear_f: 年度（西暦：年度付）
+    markjp: 年度（記号）
+    markjp_f: 年度（記号：年度付）
+    namejp: 年度（和暦）
+    namejp_f: 年度（和暦：年度付）
+    updated_at: x
+    updated_user: x
+    updated_group: x
+    created_at: x
+    created_user: x
+    created_group: x
+  index:
+    _cols: start_at:end_at:fyear:fyear_f:markjp:markjp_f:namejp:namejp_f
+  show:
+    _cols: start_at:end_at:fyear:fyear_f:markjp:markjp_f:namejp:namejp_f
+
+################################################################################
+# WDB 簡易データベース
+################################################################################
+wdb_databases:
+  id: x
+  name: 内部名称
+  title: 表示名称
+  description: 説明
+  unid: x
+  created_at: d:登録日
+  updated_at: d:更新日
+
+wdb_connection_specs:
+  id: x
+  name: 名前
+  value: 値
+  param_type: 型
+  sort_no: 表示順
+  database_id: データベースID
+  created_at: d:登録日時
+  updated_at: d:更新日時
+
+
+wdb_database_attrs:
+  id: x
+  name: 名前
+  value: 値
+  database_id: データベースID
+  sort_no: 表示順
+  created_at: d:登録日時
+  updated_at: d:更新日時
+
+
+wdb_table_fields:
+  id: x
+  name: 名前
+  title: 表示名称
+  field_type: 型
+  description: 説明
+  sort_no: 表示順
+  table_id: テーブルID
+  created_at: d:登録日時
+  updated_at: d:更新日時
+
+
+wdb_tables:
+  id: x
+  name: 名前
+  title: 表示名称
+  description: 説明
+  database_id: データベースID
+  sort_no: 表示順
+  created_at: d:登録日時
+  updated_at: d:更新日時
+
+## system neighborhoods
+# cms_cores
+cms_contents:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  module: モジュール名
+  controller: コントローラ名
+  name: 内部名称
+  title: 表示名称
+  path: ディレクトリパス
+cms_layouts:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  name: 内部名称
+  title: 表示名称
+  head: ヘッダー
+  body: 本文
+  stylesheet: スタイルシート
+  mobile_head: 携帯ヘッダー
+  mobile_body: 携帯本文
+  mobile_stylesheet: 携帯スタイルシート
+  s_mobile_head: スマートフォンヘッダー
+  s_mobile_body: スマートフォン本文
+  s_mobile_stylesheet: スマートフォンスタイルシート
+cms_nodes:
+  _common:
+    id: Id
+    unid: x
+    state: r:状態:common_states
+    created_at: x
+    updated_at: x
+    recognized_at: x
+    published_at: x
+    parent_id: dbraw:親ノード:cms_nodes:name:id
+    content_id: dbraw:コンテンツ:cms_contents:name:id
+    layout_id: dbraw:レイアウト:cms_layouts:name:id
+    controller: アイテム種別(コントローラ)
+    name: 内部名称
+    title: 表示名称
+    _type: アイテム種別
+  index:
+    _cols: id:name:title:_type:state
+  show:
+    _cols: state:parent_id:content_id:layout_id:controller:name:title
+cms_pages:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  node_id: dbraw:親ノード:cms_nodes:name:id
+  layout_id: dbraw:レイアウト:cms_layouts:name:id
+  name: 内部名称
+  title: 表示名称
+  head: ヘッダー
+  body: 本文
+cms_pieces:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  content_id: dbraw:コンテンツ:cms_contents:name:id
+  controller: コントローラ名
+  outline: 概略
+  name: 内部名称
+  title: 表示名称
+  head: ヘッダー
+  body: 本文
+cms_routes:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  sort_no: 並び順
+  parent_id: dbraw:親ノード:cms_nodes:name:id
+  node_id: dbraw:ディレクトリ:cms_nodes:name:id
+  title: 表示名称（省略可）
+cms_sites:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  domain: ドメイン
+  name: サイト名称
+  node_id: dbraw:ルートノード:cms_nodes:name:id
+  mobile_is: r:携帯サイト？:t1f0
+  mobile_id: dbraw:携帯サイト:cms_sites:name:id
+cms_texts:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  recognized_at: x
+  published_at: x
+  module: モジュール名
+  controller: コントローラ名
+  name: 内部名称
+  title: 表示名称
+  body: 本文
+
+# intras
+intra_messages:
+  id: x
+  unid: x
+  state: r:状態:common_states
+  created_at: x
+  updated_at: x
+  published_at: 日時
+  title: タイトル
+  body: 本文
+
+# system_cores
+system_group_nexts:
+  _common:
+    id: x
+    group_update_id: 変更情報ID
+    operation: r:引継区分:system_group_nexts_state
+    old_group_id: 引継元所属ID
+    old_code: 引継元所属コード
+    old_name: 引継元所属名
+    created_at: d:実行日時
+    updated_at: d:最終更新日時
+  index:
+    _cols: operation:old_code:old_name:updated_at
+  show:
+    _cols: operation:old_code:old_name:updated_at
+system_group_updates:
+  _common:
+    id: x
+    parent_code: 上位所属コード
+    parent_name: 上位所属名
+    level_no: 階層
+    code: 所属コード
+    name: 所属名
+    state: r:変更区分:system_group_updates_state
+    start_at: D:適用開始日
+    group_id: x
+    created_at: d:実行日時
+    updated_at: d:最終更新日時
+  index:
+    _cols: start_at:_parent_ou:_group_ou:state:updated_at
+#    _cols: start_at:parent_code:parent_name:level_no:code:name:state:updated_at
+    _parent_ou: 親所属
+    _group_ou: 所属
+  show:
+#    _cols: start_at:_parent_ou:_group_ou:state:updated_at
+    _cols: start_at:parent_code:parent_name:level_no:code:name:state:updated_at
+    _parent_ou: 親所属
+    _group_ou: 所属
+system_group_change_pickups:
+  _common:
+    id: x
+    target_at: D:抽出対象日
+    created_at: d:実行日時
+    updated_at: d:最終更新日時
+  index:
+    _cols: target_at:updated_at
+  show:
+    _cols: target_at:updated_at
+system_group_changes:
+  _common:
+    id: x
+    state: r:作業工程:system_group_change_state
+    target_at: D:抽出対象日（最新抽出時のみ表示）
+    created_at: d:初回実行日時
+    updated_at: d:最終実行日時
+  index:
+    _cols: state:updated_at:created_at:target_at
+  show:
+    _cols: state:updated_at:created_at:target_at
+system_groups:
+  _common:
+    id: x
+    parent_id: dbraw:親グループ:system_groups:name:id
+    state: r:状態:system_states
+    created_at: x
+    updated_at: x
+    level_no: 階層レベル
+    version_id: x
+    code: コード
+    name: 名前
+    name_en: 名前(英)
+    email: メールアドレス
+    start_at: D:適用開始日
+    end_at: D:適用終了日
+    sort_no: 表示順
+    ldap_version: LDAPバージョン
+    ldap: r:LDAP同期:system_users_ldaps
+  index:
+    _cols: code:name:email:start_at:end_at:ldap:state
+  show:
+    _cols: state:code:name:name_en:email:sort_no:start_at:end_at:level_no:_groups
+#    _cols: state:code:name:name_en:email:sort_no:start_at:end_at:level_no:parent_id
+    _groups: グループ
+  index_for_user:
+    _cols: state:_groups:start_at:level_no:parent_id
+#    _cols: state:code:name:version_id:level_no:parent_id
+    _groups: グループ
+system_group_history_temporaries:
+  _common:
+#    _cols: state:code:name:name_en:email:level_no:parent_id
+    id: x
+    parent_id: dbraw:親グループ:system_groups:name:id
+    state: r:状態:system_states
+    created_at: x
+    updated_at: x
+    level_no: 階層レベル
+    version_id: x
+#    version_id: dbraw:適用開始日:system_group_versions:start_at:id
+    code: コード
+    name: 名前
+    name_en: 名前(英)
+    email: メールアドレス
+    start_at: D:適用開始日
+    end_at: D:適用終了日
+    sort_no: 表示順
+    ldap_version: LDAPバージョン
+    ldap: r:LDAP同期:system_users_ldaps
+  index:
+    _cols: _parent_ou:code:name:start_at:end_at:_group_updates:_group_nexts
+    _parent_ou: 上位所属
+    _group_updates: 変更分類
+    _group_nexts: 引継分類
+  index_select:
+    _cols: code:name:start_at:end_at:_group_updates:_group_nexts
+    _parent_ou: 上位所属
+    _group_updates: 変更分類
+    _group_nexts: 引継分類
+  show:
+    _cols: state:code:name:name_en:email:sort_no:start_at:end_at:level_no:_groups
+#    _cols: state:code:name:name_en:email:sort_no:start_at:end_at:level_no:parent_id
+    _groups: グループ
+  index_for_user:
+    _cols: state:_groups:start_at:level_no:parent_id
+    _groups: グループ
+system_languages:
+  id: x
+  state: r:状態:system_states
+  created_at: x
+  updated_at: x
+  sort_no: 並び順
+  name: 内部名称
+  title: 表示名称
+system_roles:
+  id: x
+  table_name: 権限ロール名
+  priv_name: 対象権限
+  idx: 優先順位
+  class_id: r:種別:system_role_classes
+  uid: ユーザ/グループ
+  #uid: dbraw:ユーザID_グループID:system_users:name:id
+  priv: r:許可:t1f0_kyoka_fuka
+  created_at: x
+  updated_at: x
+  role_name_id: x
+system_role_classes:
+#  0: all
+#  1: user
+#  2: group
+#  3: project
+  0: すべて
+  1: ユーザ
+  2: グループ
+system_states:
+  enabled: 有効
+  disabled: 無効
+system_users:
+  _common:
+    id: x
+    state: r:状態:system_states
+    created_at: x
+    updated_at: x
+    code: ID
+    ldap: r:LDAP:system_users_ldaps
+    ldap_version: LDAPバージョン
+    auth_no: r:権限:system_users_auth_nos
+    name: 名前
+    name_en: 名前(英)
+    password: パスワード
+    email: メールアドレス
+    remember_token: x
+    remember_token_expires_at: x
+    _groups: グループ
+    official_position: 役職
+    assigned_job: 担当
+  index:
+    _cols: code:name:name_en:official_position:email:_groups:ldap:state
+  show:
+    _cols: state:id:name:name_en:email:official_position:assigned_job
+  show_for_public:
+    _cols: code:state:ldap:name:name_en:email:official_position:assigned_job
+system_users_groups:
+  _common:
+    rid: rid
+    created_at: x
+    updated_at: x
+    user_id: dbraw:ユーザー:system_users:name:id
+    group_id: dbraw:グループ:system_group_temporaries:name:id
+    job_order: r:本務・兼務:system_ugs_job_orders
+    start_at: D:配属開始日
+    end_at: D:配属終了日
+    _rid: 詳細
+    user_code: ID
+    group_code: x
+    _group: グループ
+    _user_mail: メール
+    _user_ldap: LDAP
+    _user_state: r:状態:system_states
+    _user_post: 役職
+  index:
+    _cols: _rid:user_code:user_id:_user_post:_user_mail:job_order:_user_ldap:_user_state
+  show:
+    _cols: user_id:_group:_user_post:job_order:start_at:end_at:_user_state
+    _groups: グループ
+  index_for_users:
+    _cols: rid:_groups:start_at:end_at:job_order:_g_start_at:_g_end_at:_level:_parent_name
+#    _version_id: D:適用開始日
+    _groups: グループ
+    _g_start_at: D:適用開始日
+    _g_end_at: D:適用終了日
+    _level: 階層
+    _parent_name: 上位所属
+  index_for_public_users:
+    _cols: _groups:start_at:end_at:job_order:_g_start_at:_g_end_at:_level:_parent_name
+#    _version_id: D:適用開始日
+    _groups: グループ
+    _g_start_at: D:適用開始日
+    _g_end_at: D:適用終了日
+    _level: 階層
+    _parent_name: 上位所属
+system_users_group_histories:
+  _common:
+    rid: rid
+    created_at: x
+    updated_at: x
+    user_id: dbraw:ユーザー:system_users:name:id
+    group_id: dbraw:グループ:system_groups:name:id
+    job_order: r:本務・兼務:system_ugs_job_orders
+    start_at: D:配属開始日
+    end_at: D:配属終了日
+    _rid: 詳細
+    user_code: ID
+    group_code: x
+    _group: グループ
+    _user_mail: メール
+    _user_ldap: LDAP
+    _user_state: r:状態:system_states
+  index:
+    _cols: _rid:user_code:user_id:_user_mail:job_order:start_at:end_at:_user_ldap:_user_state
+  show:
+    _cols: user_id:group_id:job_order:_user_state:start_at:end_at
+  index_for_users:
+    _cols: rid:_groups:start_at:end_at:job_order:_g_start_at:_g_end_at:_level:_parent_name
+#    _cols: _history:_groups:_u_start_at:_u_end_at:job_order:_g_start_at:_g_end_at:_level:_parent_name
+    _history: 詳細
+#    _version_id: D:適用開始日
+    _groups: グループ
+    _g_start_at: D:適用開始日
+    _g_end_at: D:適用終了日
+    _level: 階層
+    _parent_name: 上位所属
+system_users_group_temporaries:
+  _common:
+    rid: rid
+    created_at: x
+    updated_at: x
+    user_id: dbraw:ユーザー:system_user_temporaries:name:id
+    group_id: dbraw:グループ:system_group_history_temporaries:name:id
+    job_order: r:本務・兼務:system_ugs_job_orders
+    start_at: D:配属開始日
+    end_at: D:配属終了日
+    _rid: 詳細
+    user_code: ID
+    group_code: x
+    _group: グループ
+    _user_mail: メール
+    _user_ldap: LDAP
+    _user_state: r:状態:system_states
+    _user_post: 役職
+  index:
+    _cols: _rid:user_code:user_id:_user_post:_user_mail:job_order:_user_ldap:_user_state
+  show:
+    _cols: user_id:_group:_user_post:job_order:start_at:end_at:_user_state
+    _groups: グループ
+system_ugs_job_orders:
+  0: 本務
+  1: 兼務
+  9: 仮所属
+system_users_auth_nos:
+  0: なし
+  1: 投稿者
+  2: 作成者
+  3: 編集者
+  4: 設計者
+  5: 管理者
+system_users_ldaps:
+  0: 非同期
+  1: 同期
+
+system_group_versions:
+  id: ID
+  created_at: x
+  updated_at: x
+  version: 年度
+  start_at: D:適用開始日
+system_idconversions:
+  id: ID
+  created_at: x
+  updated_at: x
+  tablename: 変換対象
+  converted_at: d:変換実施日
+
+gw_admin_messages_states:
+  1: する
+  2: しない
+gw_admin_messages:
+  _common:
+    id: x
+    created_at: x
+    updated_at: d:更新日
+    body: メッセージ
+    sort_no: 表示順
+    state: r:表示:gw_admin_messages_states
+  index:
+    _cols: state:sort_no:body:updated_at
+  show:
+    _cols: state:sort_no:body:updated_at
+
+gw_prop_extra_pm_messages_states:
+  1: する
+  2: しない
+gw_prop_extra_pm_props_class_ids:
+  1: 会議室
+  2: レンタカー
+gw_prop_extra_pm_messages:
+  _common:
+    id: x
+    created_at: x
+    updated_at: d:更新日
+    body: メッセージ
+    sort_no: 表示順
+    state: r:表示:gw_prop_extra_pm_messages_states
+    prop_class_id: r:分類:gw_prop_extra_pm_props_class_ids
+  index:
+    _cols: prop_class_id:state:sort_no:body:updated_at
+  show:
+    _cols: prop_class_id:state:sort_no:body:updated_at
+
+gw_users_class_types:
+  _cols: _belong:_prop_genre_extras
+  _belong: 所属
+  _prop_genre_extras: 一般施設
+
+gw_props_class_types:
+  _cols: other
+  other: 一般施設
+
+gw_props_class_names:
+  Gw::PropOther: 一般施設
+
+gw_memos_categories:
+  1: 電話してください。電話番号：
+  2: また電話して下さるそうです。
+  3: 電話があったことをお伝えします。
+

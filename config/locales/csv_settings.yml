@@ -1,4 +1,149 @@
 # this is csv importer setting file
+system_users_group_histories:
+  model: System::UsersGroupHistory
+  fields:
+    rid: rid
+    created_at: created_at
+    updated_at: updated_at
+    user_id: user_id
+    group_id: group_id
+    job_order: job_order
+    start_at: start_at
+    end_at: end_at
+    user_code: user_code
+    group_code: group_code
+system_users_groups:
+  model: System::UsersGroup
+  fields:
+    rid: rid
+    created_at: created_at
+    updated_at: updated_at
+    user_id: user_id
+    group_id: group_id
+    job_order: job_order
+    start_at: start_at
+    end_at: end_at
+    user_code: user_code
+    group_code: group_code
+system_users:
+  model: System::User
+  fields:
+    id: id
+    state: state
+    created_at: created_at
+    updated_at: updated_at
+    ldap: ldap
+    ldap_version: ldap_version
+    auth_no: auth_no
+    name: name
+    name_en: name_en
+    password: password
+    email: email
+    official_position: official_position
+    assigned_job: assigned_job
+    remember_token: remember_token
+    remember_token_expires_at: remember_token_expires_at
+    code: code
+system_groups:
+  model: System::Group
+  fields:
+    id: id
+    parent_id: parent_id
+    state: state
+    created_at: created_at
+    updated_at: updated_at
+    level_no: level_no
+    version_id: version_id
+    code: code
+    name: name
+    name_en: name_en
+    email: email
+    start_at: start_at
+    end_at: end_at
+    sort_no: sort_no
+    ldap_version: ldap_version
+    ldap: ldap
+system_group_histories:
+  model: System::GroupHistory
+  fields:
+    id: id
+    parent_id: parent_id
+    state: state
+    created_at: created_at
+    updated_at: updated_at
+    level_no: level_no
+    version_id: version_id
+    code: code
+    name: name
+    name_en: name_en
+    email: email
+    start_at: start_at
+    end_at: end_at
+    sort_no: sort_no
+    ldap_version: ldap_version
+    ldap: ldap
+gw_year_fiscal_jps:
+  model: Gw::YearFiscalJp
+  fields:
+    id: id
+    start_at: start_at
+    fyear: fyear
+    fyear_f: fyear_f
+    markjp: markjp
+    markjp_f: markjp_f
+    namejp: namejp
+    namejp_f: namejp_f
+    updated_at: updated_at
+    updated_user: updated_user
+    updated_group: updated_group
+    created_at: created_at
+    created_user: created_user
+    created_group: created_group
+gw_year_mark_jps:
+  model: Gw::YearMarkJp
+  fields:
+    id: id
+    name: name
+    mark: mark
+    start_at: start_at
+    updated_at: updated_at
+    updated_user: updated_user
+    updated_group: updated_group
+    created_at: created_at
+    created_user: created_user
+    created_group: created_group
+gw_display_item_selects:
+  model: Gw::DisplayItemSelect
+  fields:
+    id: id
+    dbname: dbname
+    dbname_jp: dbname_jp
+    tablename: tablename
+    tablename_jp: tablename_jp
+    data_type: data_type
+    item_name: item_name
+    item_name_jp: item_name_jp
+    index_state: index_state
+    index_order: index_order
+    index_select_state: index_select_state
+    index_select_order: index_select_order
+    show_state: show_state
+    show_order: show_order
+    updated_at: updated_at
+    updated_user: updated_user
+    updated_group: updated_group
+    created_at: created_at
+    created_user: created_user
+    created_group: created_group
+gw_pref_assembly_members:
+  model: Gw::PrefAssemblyMember
+  fields:
+    会派: g_name
+    会派表示順: g_order
+    姓: u_lname
+    名: u_name
+    議員表示順: u_order
+    在席情報: state
 gw_pref_executive_csv:
   model: Gwsub::PrefExecutive
   fields:

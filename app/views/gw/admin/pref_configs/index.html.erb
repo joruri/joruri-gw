@@ -1,0 +1,23 @@
+<%#*<h1>Gw::Public::PrefSoumuMessages#index</h1>%>
+<%#*<p>Find me in app/views/gw/public/pref_soumu_messages/index.html.erb</p>%>
+
+<%
+  options={:table_name=>"pref_soumu_messages",:action=>"index",:link_to_show=>1}
+  options['field_td_criteria']={
+    'body'=>Proc.new{|item| item.body }
+  }
+%>
+
+<div class="piece soumuMessage">
+
+  <%= render :partial => 'header_str' %>
+
+<div class="pieceBody">
+  <%= render :partial => 'header' %>
+
+  <div class="explain">表示対象となるメッセージは２行です。　並び順が同じときは、更新日時の降順で表示します。</div>
+  <%= raw(table_to_index2(@items,options)) %>
+
+</div>
+
+</div><!--piece admin_messages-->

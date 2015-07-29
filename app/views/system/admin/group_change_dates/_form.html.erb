@@ -1,7 +1,8 @@
+
 <table class="show">
   <tr>
     <th><%= @item.locale(:start_at) %></th>
-    <td><%= f.datepicker :start_at %></td>
+    <td><%= f.calendar_date_select :start_at, :time => false, :value => safe{@item.start_at.strftime("%Y-%m-%d")} %></td>
   </tr>
 </table>
 <br />

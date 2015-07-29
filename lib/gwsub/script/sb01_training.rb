@@ -1,18 +1,19 @@
-class Gwsub::Script::Sb01_training < System::Script::Base
+# encoding: utf-8
+require 'date'
+class Gwsub::Script::Sb01_training
+  def self.delete_abandoned_files(hours=24)
+		#保存されなかった研修登録でUpされた画像、添付ファイルを削除する
+    dump "Gwsub::Script::Sb01_training.delete_abandoned_files 不要な添付ファイルの削除 #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}に作業開始"
 
-  def self.delete_abandoned_files(hours = 24)
-    run do
-      limit_date = limit_date_for_preparation
+		before_when_to_delete = (Time.now - 60 * 60 * hours).strftime("%Y-%m-%d %H:%M:%S");
+    dump "Gwsub::Script::Sb01_training.delete_abandoned_files #{before_when_to_delete}より前に作成され破棄されたテンポラリの添付ファイルを削除します。"
 
-      log "研修申込不要添付ファイル削除処理: #{I18n.l(limit_date)} 以前を削除" do
-        del = 0
-        Gwsub::Sb01TrainingFile.get_abandoned_files(limit_date).find_each do |item|
-          if item.delete_record
-            del += 1
-          end
-        end
-        log "#{del} deleted"
-      end
-    end
+		rc = Gwsub::Sb01TrainingFile.get_abandoned_files(before_when_to_delete)
+		rc.each do |r|
+	    dump "Gwsub::Script::Sb01_training.delete_abandoned_files 不要な添付ファイルの削除 id=#{r.id}, parent_id=#{r.parent_id}"
+			r.delete_record
+		end
+
+    dump "Gwsub::Script::Sb01_training.delete_abandoned_files 不要な添付ファイルの削除 #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}に作業終了"
   end
 end

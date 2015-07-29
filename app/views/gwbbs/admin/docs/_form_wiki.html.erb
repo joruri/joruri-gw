@@ -1,9 +1,0 @@
-<%# user_formsから呼び出される。titleは表示に使用。 %>
-<table class="show" id="wiki_body_table" style="<%= 'display: none;' unless @item.wiki_enabled? -%>">
-  <tr>
-    <th><%= title -%></th></tr><tr>
-    <td class="wikiEditor">
-      <%= f.text_area :wiki_body, {:rows => 20, :cols=>40, :class => 'wikiEditor', :style => 'width:100%'} %>
-    </td>
-  </tr>
-</table>

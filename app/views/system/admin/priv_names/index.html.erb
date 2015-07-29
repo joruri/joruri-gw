@@ -1,10 +1,10 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%= render :partial => 'header' %>
 
+<div class="pieceBody">
 <div class="editingBox">
   <span class="btNew"><%= link_to '新規作成', "/system/priv_names/new?#{@qs}" %></span>
+  <span class="docLink"><%= link_to '管理者権限設定', "/system/roles"%></span>
 </div>
 
 <table class="index">
@@ -16,7 +16,7 @@
       <th style="width: 40px; text-align: center;">表示順</th>
       <th style="width: 60px; text-align: center;">ステータス</th>
     </tr>
-    <% @items.each do |item| %>
+    <% for item in @items %>
     <tr class="<%= cycle '', 'cycle' %>">
       <td style="text-align: center;"><%= link_to '詳細', "/system/priv_names/#{item.id}?#{@qs}" %></td>
       <td><%= item.display_name %></td>
@@ -28,7 +28,9 @@
   </tbody>
 </table>
 
+<br/>
 <%= paginate @items %>
+<br/>
 
 </div>
 </div>

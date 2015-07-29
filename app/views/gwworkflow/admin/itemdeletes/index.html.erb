@@ -18,7 +18,8 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+  <%#=link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+  <%=link_to '管理者設定へ戻る', config_url(:config_settings_sakujo) %>
 </div>
 </div><!--pieceBody-->
 </div><!--piece gwbbs-->

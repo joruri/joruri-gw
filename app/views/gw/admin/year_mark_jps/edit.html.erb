@@ -1,15 +1,18 @@
+<%#*<p>Find me in app/views/gw/admin/year_mark_jp/edit.html.erb</p>%>
+<%
+  @edit_path = "/gw/year_mark_jps/#{@item.id}?#{@qs}"
+%>
 <div class="piece YearMarkJp">
-<%= render 'header' %>
+
+<%= render :partial => 'header' %>
 <div class="pieceBody">
-
-<%= form_for :item, :url => {action: :update}, :html => {method: :put, multipart: true} do |f| %>
-  <%= render 'form', f: f %>
-  <%= submit_for f, caption: '保存' %>
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :multipart => true} do |f| %>
+<%= render :partial => 'form', :locals => {:f => f} %>
+<%= raw(submit_for(f, {:caption => '保存'}) ) %>
 <% end %>
-
 <div class="btReturn">
-  <%= link_to '戻る', {action: :show} %>
+  <%=link_to '戻る', "/gw/year_mark_jps/#{@item.id}?#{@qs}" %>
+</div>
 </div>
 
-</div>
 </div>

@@ -1,7 +1,9 @@
+# -*- encoding: utf-8 -*-
 module Questionnaire::Model::FieldOption
   def self.included(mod)
-    mod.has_many :options, ->{where("#{Questionnaire::FieldOption.table_name}.state = 'public'").order("#{Questionnaire::FieldOption.table_name}.id")},
-                 :foreign_key => :field_id,:class_name => 'Questionnaire::FieldOption',:dependent => :destroy
+    mod.has_many :options,  :foreign_key => :field_id,  :order => "#{Questionnaire::FieldOption.table_name}.id",
+                 :conditions => "#{Questionnaire::FieldOption.table_name}.state = 'public'", :class_name => 'Questionnaire::FieldOption',
+                 :dependent => :destroy
 
     mod.after_validation :validate_options
     mod.after_save :save_options
@@ -77,7 +79,7 @@ module Questionnaire::Model::FieldOption
 
     _options.to_a.sort.each do |i, opt|
       unless opt['id'].blank?
-        option = Questionnaire::FieldOption.where(:id => opt['id']).first
+        option = Questionnaire::FieldOption.find_by_id(opt['id'])
         option.attributes = opt
         option.state      = 'public'
         option.published_at = Core.now

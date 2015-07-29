@@ -1,60 +1,48 @@
-<table border="0">
+<!--<%= @users_json -%>-->
+<%= hidden_field_tag('init[schedule_users_json]',
+  (params[:item] && params[:item][:schedule_users_json] ? params[:item][:schedule_users_json] : nz(@users_json) )) -%> 
+
+<%
+u = Site::user
+ucls = 1
+uid = u.id
+uname = u.name
+%>
+
+<%= hidden_field_tag('init[ucls]', ucls) -%>
+<%= hidden_field_tag('init[uid]', uid) -%>
+<%= hidden_field_tag('init[uname]', uname) -%>
+
+<%= f.fields_for :schedule_users do |schedule_user| %>
+<table border="0" id="schedule_users_table">
   <tr>
     <td class="userChange">
-      <%= select_tag :group_user_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
-      <%= select_tag :group_users, options_for_select(Core.user_group.enabled_user_options, Core.user.id), size: 10, style: 'width:300px;', multiple: true %>
+      <%= select_tag 'item[schedule_users][user_type_id]', Gw.options_for_select(
+        System::Group.get_group_select('','group_'), 'group_'+Site.user_group.id.to_s, :title=>1), :size=>1,
+        :style => 'width:300px;', :onchange => 'update_user_cand();', :multiple => false -%>
+      <br />
+      <%= select_tag 'item[schedule_users][uid]', Gw.options_for_select(
+        System::User.get_user_select(Site.user_group.id), Site.user.id, :title=>1), :size=>10,
+        :style => 'width:300px;', :multiple => true -%>
+    </td>
+    <td class="roleChange">
+      <%= submit_to_remote "", "追加 ↓",:update => "item_schedule_users_add_buf_list" ,:before => "add_users();set_users_json();",
+        :submit => "schedule_users_table", :url => "/system/custom_groups/get_users.xml" -%>
+      <br />
     </td>
     <td>
-      <%= button_tag "追加 ↓", type: :button, id: 'add_group_user', style: 'width:60px;' %>
+      <br />
+      <%= select_tag 'item[schedule_users_add_buf]', '', :size=>10, :style => 'width:200px;display:none;', :multiple => true -%>
+      <%= hidden_field_tag 'item[schedule_users_json]', '' -%>
     </td>
-    <td></td>
   </tr>
   <tr>
     <td colspan="3">
-      <%= render 'form_users_table', f: f %>
+      <%= render(:partial => 'form_users_table') -%>
     </td>
   </tr>
 </table>
+<% end -%>
 
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $('#group_user_group_id').on('change', function() {
-      $.get('<%= url_for(action: :get_users) %>', {group_id: $(this).val()}, function(data) {
-        $('#group_users').html(data);
-      });
-    });
-    $('#add_group_user').on('click', function() {
-      addSelectedUser('#group_users', '#schedule_users_table');
-    });
-    $('#group_users').on('dblclick', function() {
-      addSelectedUser('#group_users', '#schedule_users_table');
-    });
-    function addSelectedUser(from, to) {
-      var from = $(from);
-      var to = $(to);
-      from.find('option:selected').each(function() {
-        if (to.find('tr[data-user-id=' + $(this).val() + ']').length == 0) {
-          var clone = $('#template').clone();
-          clone.removeAttr('id').removeAttr('style').attr('data-user-id', $(this).val());
-          clone.find('input[id$=user_id]').val($(this).val());
-          clone.find('td.u_name').text($(this).text());
+<%#= javascript_include_tag :defaults %>
 
-          var num = to.find('tr').length - 1;
-          var attrs = ['id', 'name', 'for'];
-          clone.find('input, select, label').each(function() {
-            for (var i=0; i<attrs.length; i++) {
-              var val = $(this).attr(attrs[i]);
-              if (val) { $(this).attr(attrs[i], val.replace(/0/, new String(num))); }
-            }
-          });
-          to.append(clone);
-        }
-      });
-    }
-    $('form').on('submit', function() {
-      $('#template').remove();
-    });
-  });
-})(jQuery);
-</script>

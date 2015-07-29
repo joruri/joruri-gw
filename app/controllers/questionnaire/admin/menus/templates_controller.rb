@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #
 ################################################################################
@@ -7,48 +8,53 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
   include Questionnaire::Model::Systemname
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'テンプレート選択'
+    @system_title = 'テンプレート選択'
+    Page.title = @system_title
     @system_path = "/#{self.system_name}"
 
-    @title = Questionnaire::Base.where(:id => params[:parent_id]).first
+    @title = Questionnaire::Base.find_by_id(params[:parent_id])
     return http_error(404) unless @title
   end
 
   def is_creator
     system_admin_flags
-    params[:cond] = '' if @title.creater_id == Core.user.code if @is_sysadm
-    params[:cond] = 'admin' unless @title.creater_id == Core.user.code if @is_sysadm
+    params[:cond] = '' if @title.creater_id == Site.user.code if @is_sysadm
+    params[:cond] = 'admin' unless @title.creater_id == Site.user.code if @is_sysadm
 
     ret = false
     ret = true if @is_sysadm
-    ret = true if @title.creater_id == Core.user.code  if @title.admin_setting == 0
-    ret = true if @title.section_code == Core.user_group.code  if @title.admin_setting == 1
+    ret = true if @title.creater_id == Site.user.code  if @title.admin_setting == 0
+    ret = true if @title.section_code == Site.user_group.code  if @title.admin_setting == 1
     return ret
   end
 
   def index
-    #return error_auth unless is_creator
+    #return authentication_error(403) unless is_creator
 
     item = Questionnaire::TemplateBase.new
     item.and :state ,'public'
-    item.and "sql", "admin_setting = 1 OR (admin_setting = 0 AND createrdivision_id = '#{Core.user_group.code}')"
+    item.and "sql", "admin_setting = 1 OR (admin_setting = 0 AND createrdivision_id = '#{Site.user_group.code}')"
     item.page(params[:page], params[:limit])
-    @items = item.find(:all, :order=>'updated_at DESC, id ASC')
+    @items = item.find(:all, :order=>'expiry_date DESC, id DESC')
     _index @items
   end
 
   #既存の設問を削除後選択されたテンプレートをコピーする
   def apply_template
-    #return error_auth unless is_creator
+    #return authentication_error(403) unless is_creator
 
     @title.form_body = nil
     @title.save
 
-    Questionnaire::FormField.where(:parent_id => @title.id).destroy_all
+    Questionnaire::FormField.destroy_all("parent_id=#{@title.id}")
 
-    items = Questionnaire::TemplateFormField.where(:state => 'public', :parent_id => params[:id]).order(:sort_no, :id)
+    item = Questionnaire::TemplateFormField.new
+    item.and :state, 'public'
+    item.and :parent_id, params[:id]
+    item.order 'sort_no, id'
+    items = item.find(:all)
     for fld in items
       field = Questionnaire::FormField.create({
         :unid => fld.unid ,
@@ -75,13 +81,15 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
         :group_code => fld.group_code ,
         :group_field => fld.group_field ,
         :group_body => fld.group_body ,
-        :group_repeat => fld.group_repeat,
-        :group_name => fld.group_name
+        :group_repeat => fld.group_repeat
       })
 
       unless field.post_permit.blank?
         #入力許可設定の参照先のレコードidが変わっているので調整する
-        pitem = Questionnaire::FormField.where(:content_id => field.post_permit, :parent_id => @title.id).first
+        pitem = Questionnaire::FormField.new
+        pitem.and :content_id, field.post_permit
+        pitem.and :parent_id , @title.id
+        pitem = pitem.find(:first)
         unless pitem.blank?
           field.post_permit = pitem.id
           field._skip_logic = true
@@ -94,14 +102,20 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
     end unless items.blank?
 
     #複製された内容から設問を構築更新
-    item = Questionnaire::FormField.where(:state => 'public', :parent_id => @title.id).first
+    item = Questionnaire::FormField.new
+    item.and :state, 'public'
+    item.and :parent_id, @title.id
+    item = item.find(:first)
     item.create_form_fields unless item.blank?
 
     redirect_to questionnaire_menu_form_fields_path(@title)
   end
   #
   def add_option_records(template_id, field_id)
-    items = Questionnaire::TemplateFieldOption.where(:field_id => template_id).order(:sort_no, :id)
+    item = Questionnaire::TemplateFieldOption.new
+    item.and :field_id, template_id
+    item.order 'sort_no, id'
+    items = item.find(:all)
     for option in items
       Questionnaire::FieldOption.create({
         :unid => option.unid ,
@@ -120,41 +134,40 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
 
   def new_base
     system_admin_flags
-    #return error_auth unless @is_sysadm
-
-    if @is_sysadm
-      admin_param = "1"
-    else
-      admin_param = "0"
-    end
+    #return authentication_error(403) unless @is_sysadm
 
     @item = Questionnaire::TemplateBase.new({
       :state => 'public',
-      :section_code => Core.user_group.code ,
+      :section_code => Site.user_group.code ,
       :send_change => '1',  #配信先は所属
       :spec_config => 3 ,   #他の回答者名を表示する
-      :manage_title => @title.title,
-      :title => "",
+      :manage_title => '',
+      :title => @title.title,
       :able_date => Time.now.strftime("%Y-%m-%d"),
       #:expiry_date => 7.days.since.strftime("%Y-%m-%d %H:00"),
       :default_limit => 100,
-      :admin_setting => admin_param
+      :admin_setting => 1
     })
   end
 
   def create_base
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
     @item = Questionnaire::TemplateBase.new(params[:item])
 
     @item.able_date = Time.now.strftime("%Y-%m-%d")
-    @item.section_code = Core.user_group.code
+    @item.section_code = Site.user_group.code
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.creater_id = Core.user.code
-    @item.creater = Core.user.name
-    @item.createrdivision = Core.user_group.name
-    @item.createrdivision_id = Core.user_group.code
+    @item.creater_id = Site.user.code
+    @item.creater = Site.user.name
+    @item.createrdivision = Site.user_group.name
+    @item.createrdivision_id = Site.user_group.code
+
+    if @is_sysadm
+    else
+      @item.admin_setting = 0
+    end
 
     if @item.save
       location = "/questionnaire/#{params[:parent_id]}/templates/#{@item.id}/copy_form_fields"
@@ -169,7 +182,7 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
 
     location = "/questionnaire/templates"
     #return redirect_to location if base_item.blank?
-    @template_title = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @template_title = Questionnaire::TemplateBase.find_by_id(params[:id])
     @template_title.form_body = nil
     #@template_title.state = "public"
     @template_title.save
@@ -206,8 +219,7 @@ class Questionnaire::Admin::Menus::TemplatesController < Gw::Controller::Admin::
         :group_code => fld.group_code ,
         :group_field => fld.group_field ,
         :group_body => fld.group_body ,
-        :group_repeat => fld.group_repeat,
-        :group_name => fld.group_name
+        :group_repeat => fld.group_repeat
       })
 
       unless field.post_permit.blank?

@@ -1,3 +1,4 @@
+#encoding:utf-8
 class Gw::Admin::TestController < ApplicationController
   include System::Controller::Scaffold
 
@@ -25,7 +26,7 @@ class Gw::Admin::TestController < ApplicationController
         hx = YAML.load(s_from)
         s_to = hx.to_json
       when 2
-        hx = ::JSON.parse(s_from)
+        hx = ::JsonParser.new.parse(s_from)
         s_to = hx.to_yaml
       when 3
         hx = YAML.load(s_from)
@@ -37,7 +38,7 @@ class Gw::Admin::TestController < ApplicationController
         hx = Hash.from_xml(s_from)
         s_to = hx.to_json
       when 6
-        hx = ::JSON.parse(s_from)
+        hx = ::JsonParser.new.parse(s_from)
         s_to = hx.to_xml
       when 7
         hx = Gw::Script::Tool.from_notes_xml(s_from)
@@ -55,7 +56,7 @@ class Gw::Admin::TestController < ApplicationController
         hx = eval(s_from)
         s_to = hx.to_xml
       when 13
-        hx = ::JSON.parse(s_from)
+        hx = ::JsonParser.new.parse(s_from)
         s_to = PP.pp(hx,'')
       when 14
         require '/usr/local/lib/ruby/gems/1.8/gems/atomutil-0.0.9/lib/atomutil.rb'
@@ -79,7 +80,7 @@ class Gw::Admin::TestController < ApplicationController
         end
         s_to = PP.pp(ret.to_s,'')
       when 16
-        ret = Gw::Tool::Reminder.checker_api(Core.user.id)
+        ret = Gw::Tool::Reminder.checker_api(Site.user.id)
         s_to  = PP.pp(ret[:xml].to_s)
       end
     end
@@ -122,8 +123,8 @@ class Gw::Admin::TestController < ApplicationController
     raise Gw::SystemError, '呼び出しが不正です。' if !Gw.int?(id)
     id = id.to_i
 
-    item = Gw::EditLinkPiece.where(:id =>id).first
-
+    item = Gw::EditLinkPiece.find_by_id(id)
+    
     raise Gw::SystemError, '呼び出しが不正です。' if item.blank?
 
     redirect_page = redirect_page_create(item.link_url, item.field_account, item.field_pass)
@@ -156,8 +157,8 @@ function PostToAuth(){
 </head>
 <body onLoad="PostToAuth();">
 <form name="loginform" action="#{url}" method="post" >
-<input type="hidden" name="#{field_account}" value="#{Core.user.code}">
-<input type="hidden" name="#{field_pass}" value="#{Core.user.password}">
+<input type="hidden" name="#{field_account}" value="#{Site.user.code}">
+<input type="hidden" name="#{field_pass}" value="#{Site.user.password}">
 </form>
 </body>
 </html>

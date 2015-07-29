@@ -1,5 +1,5 @@
 <%
-  help_item = Questionnaire::Property::HelpLink.first_or_new
+  array_help = get_enquete_help
   if @item.group_code.blank?
     sort_display   = ""
     g_sort_display = "display: none;"
@@ -13,86 +13,62 @@
     end
   end
 %>
-
+<%= raw(gw_js_include_full) %>
 <%= required_head %>
 <table class="show bbstext">
-  <tr>
-    <th>状態</th>
-    <td><%= f.collection_radio_buttons :state, @item.states, :first, :last %></td>
-  </tr>
-  <tr>
-    <th>設問内容<br /><%= required('ラベルテキスト以外必須※') %></th>
-    <td><%= f.text_area :title, cols: "80", rows: "4" %></td>
-  </tr>
-  <tr id="item_sort_no_tr" style="<%= sort_display %>">
-    <th>並び順<%= required '※' %></th>
-    <td><%= text_field_tag :n_sort_no, @item.sort_no, size: 5 %></td>
-  </tr>
-  <tr>
-    <th>設問形式</th>
-    <td><%= f.select :question_type, @item.form_field_type, {}, {class: 'admin_setting', onchange: "check_option_display();"} %><span class="help"><%=raw help_item.options_value[3][0] %></span></td>
-  </tr>
+<tr><th>状態</th>
+<td><%=radio f, :state, @item.states, :class => 'state' %></td></tr>
+<tr><th>設問内容<br /><%= required('ラベルテキスト以外必須※') %></th>
+<td><%= f.text_area :title, :cols=>"80", :rows=>"4" %></td></tr>
+<tr  id="item_sort_no_tr" style="<%=sort_display%>"><th>並び順<%= required('※') %></th>
+<td><%= text_field_tag "n_sort_no", @item.sort_no ,:size=>5 %></td></tr>
+<tr><th>設問形式</th>
+<td><%= f.select(:question_type,  @item.form_field_type , :class => 'admin_setting') %><span class="help"><%=show_enquete_help(3,array_help)%></span></td></tr>
 </table>
-
-<div id="item_option_group_name" style="display:inline;" >
-<table class="show bbstext">
-  <tr>
-    <th>グループ名称</th>
-    <td><%= f.text_field :group_name %></td>
-  </tr>
-</table>
-</div>
 
 <div id="item_option_group" style="display:inline;" >
 <table class="show bbstext">
-  <tr>
-    <th>グループ名称</th>
-    <td><%= f.select :group_code, @item.group_number_names(params[:parent_id]), {include_blank: true}, {onchange: "check_group_display();"} %></td>
-  </tr>
-  <tr id="item_group_sort_no_tr" style="<%= g_sort_display %>">
-    <th>並び順<%= required('※') %></th>
-    <td><%= text_field_tag :g_sort_no, @item.sort_no, size: 5 %></td>
-  </tr>
+<tr><th>グループ番号</th>
+<td><%= f.select(:group_code, @item.group_number_states, {:include_blank => true}) %></td></tr>
+<tr  id="item_group_sort_no_tr"  style="<%=g_sort_display%>"><th>並び順<%= required('※') %></th>
+<td><%= text_field_tag "g_sort_no", @item.sort_no ,:size=>5 %></td></tr>
 </table>
 </div>
 
 <div id="item_option_group_repeat" style="display:inline;" >
 <table class="show bbstext">
-  <tr>
-    <th>グループ行数</th>
-    <td><%= f.select :group_repeat, @item.group_number_states, {include_blank: true} %></td>
-  </tr>
+<tr><th>グループ行数</th>
+<td><%= f.select(:group_repeat, @item.group_number_states, {:include_blank => true}) %></td></tr>
 </table>
 </div>
 
 <div id="item_option_text" style="display:inline;" >
 <table class="show bbstext">
-  <tr><th>テキスト枠の長さ</th>
-  <td><%= f.text_field :field_cols, size: 5 %> テキスト枠の長さを設定します。</td></tr>
+<tr><th>テキスト枠の長さ</th>
+<td><%= f.text_field :field_cols, :size => 5 %> テキスト枠の長さを設定します。</td></tr>
 </table>
 </div>
 
 <div id="item_option_textarea" style="display:inline;" >
 <table class="show bbstext">
-  <tr><th>表示行数</th>
-  <td><%= f.text_field :field_rows, size: 5 %>テキストエリアの行数を設定します。</td></tr>
+<tr><th>表示行数</th>
+<td><%= f.text_field :field_rows, :size => 5 %>テキストエリアの行数を設定します。</td></tr>
 </table>
 </div>
 
 <div id="item_option_post_permit" style="display:inline;" >
 <table class="show bbstext">
-  <tr>
-    <th>入力必須チェック</th>
-    <td><%= f.select :required_entry, @item.required_entry_states %></td>
-  </tr>
-  <tr>
-    <th>投稿許可設定</th>
-    <td>
-      <%= link_to "設問構成一覧を開く", questionnaire_template_form_fields_path(@title), {target: "_blank", class: 'btText'} %><br />
-      <%= f.select :post_permit, @permit_select, {include_blank: true} %> 許可する値<%= f.text_field :post_permit_value, size: 10 %>
-      <span class="help"><%=raw help_item.options_value[4][0] %></span>
-    </td>
-  </tr>
+<tr><th>入力必須チェック</th>
+<td><%= f.select(:required_entry, @item.required_entry_states) %>
+</td></tr>
+<tr><th>
+投稿許可設定
+</th>
+<td>
+<%=link_to("設問構成一覧を開く", questionnaire_template_form_fields_path(@title), {:target=>"_blank",:class=>'btText'})%><br />
+<%= f.select(:post_permit, @permit_select, {:include_blank => true}) %> 許可する値<%= f.text_field :post_permit_value, :size => 10 %>
+<span class="help"><%=show_enquete_help(4,array_help)%></span>
+</td></tr>
 </table>
 </div>
 
@@ -100,6 +76,7 @@
 <%= option_form f, @item %>
 </div>
 
+<%= observe_field "item_question_type", :function => " check_option_display();" %>
 <script type="text/javascript">
 //<![CDATA[
   var browser = navigator.appName;
@@ -143,7 +120,6 @@
     }
     switch (idx) {
     case 'text':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: inline;");
       $('item_option_group').setStyle("display: inline;");
       $('item_option_group_repeat').setStyle("display: none;");
@@ -154,20 +130,16 @@
       }else{
         $('item_option_post_permit').setStyle("display: none;");
       }
-      $('item_group_code').disabled = false;
       break;
     case 'textarea':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: inline;");
       $('item_option_group').setStyle("display: none;");
       $('item_option_group_repeat').setStyle("display: none;");
       $('item_option_textarea').setStyle("display: inline;");
       $('item_option_select').setStyle("display: none;");
       $('item_option_post_permit').setStyle("display: inline;");
-      $('item_group_code').disabled = false;
       break;
     case 'radio':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: none;");
       $('item_option_group').setStyle("display: inline;");
       $('item_option_group_repeat').setStyle("display: none;");
@@ -178,20 +150,16 @@
       }else{
         $('item_option_post_permit').setStyle("display: none;");
       }
-      $('item_group_code').disabled = false;
       break;
     case 'checkbox':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: none;");
       $('item_option_group').setStyle("display: none;");
       $('item_option_group_repeat').setStyle("display: none;");
       $('item_option_textarea').setStyle("display: none;");
       $('item_option_select').setStyle("display: inline;");
       $('item_option_post_permit').setStyle("display: inline;");
-      $('item_group_code').disabled = false;
       break;
     case 'select':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: none;");
       $('item_option_group').setStyle("display: inline;");
       $('item_option_group_repeat').setStyle("display: none;");
@@ -202,34 +170,29 @@
       }else{
         $('item_option_post_permit').setStyle("display: none;");
       }
-      $('item_group_code').disabled = false;
       break;
     case 'display':
-      $('item_option_group_name').setStyle("display: none;");
       $('item_option_text').setStyle("display: none;");
       $('item_option_group').setStyle("display: none;");
       $('item_option_group_repeat').setStyle("display: none;");
       $('item_option_textarea').setStyle("display: none;");
       $('item_option_select').setStyle("display: none;");
       $('item_option_post_permit').setStyle("display: none;");
-      $('item_group_code').disabled = false;
       break;
     case 'group':
-      $('item_option_group_name').setStyle("display: inline;");
       $('item_option_text').setStyle("display: none;");
-      $('item_option_group').setStyle("display: none;");
+      $('item_option_group').setStyle("display: inline;");
       $('item_option_group_repeat').setStyle("display: inline;");
       $('item_option_textarea').setStyle("display: none;");
       $('item_option_select').setStyle("display: none;");
       $('item_option_post_permit').setStyle("display: none;");
-      $('item_group_code').disabled = true;
       break;
     }
   }
   check_option_display();
 //]]>
 </script>
-
+<%= observe_field "item_group_code", :function => " check_group_display();" %>
 <script type="text/javascript">
 //<![CDATA[
   var browser = navigator.appName;

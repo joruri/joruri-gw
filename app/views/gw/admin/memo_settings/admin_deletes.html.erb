@@ -1,32 +1,37 @@
 <div class="piece memo setting">
-<%= render 'header_str' %>
-<div class="pieceBody">
+<%#= render :partial => '/gw/admin/memos/piece_header' %>
+<%= render :partial => 'header_str' %>
+  <div class="pieceBody">
 <div class="pieceBodyHeader">
 <div class="titleLine">
 <span class="title">連絡メモ削除設定</span>
 </div>
 </div>
-
+  
 <div class="pieceBodyBody">
 
-<%= form_tag "/gw/memo_settings/edit_admin_deletes", {:method => :put, :multipart => true} do %>
-<table class="show">
-  <tr>
-    <th>既読</th>
-    <td><%= select_tag 'item[memos][read_memos_admin_delete]', options_for_select(@item.delete_options, @item.read_memos_admin_delete) %>経過した既読メモを削除</td>
-  </tr>
-  <tr>
-    <th>未読</th>
-    <td><%= select_tag 'item[memos][unread_memos_admin_delete]', options_for_select(@item.delete_options, @item.unread_memos_admin_delete) %>経過した未読メモを削除</td>
-  </tr>
-</table>
-<div class="submitters"><%= submit_tag '保存' %></div>
-<% end %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+<% @key = 'admin_deletes' %>
+<a name="<%=@key%>"></a>
 
+<%= form_for :item, :url => "/gw/memo_settings/edit_#{@key}", :html => {:method=>:put, :multipart => true} do |f| %>
+<table class="show">
+    <tr><th>既読</th><td>
+    <%= select_by_list(f, :read_memos_admin_delete, Gw.yaml_to_array_for_select('gw_memos_admin_delete_term', :for_select_by_list=>1),{}, @item[:read_memos_admin_delete].to_i) %>
+    経過した既読メモを削除
+    </td></tr>
+    <tr><th>未読</th><td>
+    <%= select_by_list(f, :unread_memos_admin_delete, Gw.yaml_to_array_for_select('gw_memos_admin_delete_term', :for_select_by_list=>1), {}, @item[:unread_memos_admin_delete].to_i) %>
+    経過した未読メモを削除
+    </td></tr>
+    </table>
+    <%= submit_for(f, {:caption => '保存', :id=>"item_submit_#{@key}"}) %>
+<% end %>
+ 
 </div>
 
 <div class="btReturn">
-  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
+  <%=link_to '管理者設定へ戻る', config_url(:config_settings_sakujo) %>
 </div>
 
 </div>

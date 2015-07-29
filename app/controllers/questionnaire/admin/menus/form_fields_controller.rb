@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #フォーム情報
 ################################################################################
@@ -5,36 +6,36 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   include System::Controller::Scaffold
   include Questionnaire::Model::Database
   include Questionnaire::Model::Systemname
-  layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  layout "admin/template/portal_1column"
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート集計システム（設問登録）'
+    @system_title = 'アンケート集計システム（設問登録）'
+    Page.title = @system_title
     @system_path = "/#{self.system_name}"
     params[:limit] = 100
 
-    @title = Questionnaire::Base.where(:id => params[:parent_id]).first
+    @title = Questionnaire::Base.find_by_id(params[:parent_id])
     return http_error(404) unless @title
     permit_selection
   end
 
   def is_creator
     system_admin_flags
-    params[:cond] = '' if @title.creater_id == Core.user.code if @is_sysadm
-    params[:cond] = 'admin' unless @title.creater_id == Core.user.code if @is_sysadm
+    params[:cond] = '' if @title.creater_id == Site.user.code if @is_sysadm
+    params[:cond] = 'admin' unless @title.creater_id == Site.user.code if @is_sysadm
 
     ret = false
     ret = true if @is_sysadm
-    ret = true if @title.creater_id == Core.user.code  if @title.admin_setting == 0
-    ret = true if @title.section_code == Core.user_group.code  if @title.admin_setting == 1
+    ret = true if @title.creater_id == Site.user.code  if @title.admin_setting == 0
+    ret = true if @title.section_code == Site.user_group.code  if @title.admin_setting == 1
     return ret
   end
 
   def index
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     item = Questionnaire::FormField.new
-    item.and "sql", %Q((question_type = "group" or group_code IS NULL))
     item.and :parent_id, @title.id
     item.order :sort_no, :id
     item.page params[:page], params[:limit]
@@ -43,7 +44,7 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   end
 
   def new
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     options = []
     for i in 0..9
@@ -66,7 +67,7 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   end
 
   def create
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
     @item = Questionnaire::FormField.new(params[:item])
     if params[:n_sort_no].blank?
@@ -82,21 +83,21 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   end
 
   def show
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
-    @item = Questionnaire::FormField.where(:id => params[:id]).first
+    @item = Questionnaire::FormField.find_by_id(params[:id])
   end
   def edit
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
-    @item = Questionnaire::FormField.where(:id => params[:id]).first
+    @item = Questionnaire::FormField.find_by_id(params[:id])
     permit_selection(@item.sort_no)
   end
 
   def update
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
-    @item = Questionnaire::FormField.where(:id => params[:id]).first
+    @item = Questionnaire::FormField.find_by_id(params[:id])
     return http_error(404) unless @item
     @item.attributes = params[:item]
     if params[:n_sort_no].blank?
@@ -116,9 +117,9 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   end
 
   def destroy
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
 
-    @item = Questionnaire::FormField.where(:id => params[:id]).first
+    @item = Questionnaire::FormField.find_by_id(params[:id])
     location = questionnaire_menu_form_fields_path(@title)
     _destroy(@item, :success_redirect_uri=>location)
   end
@@ -146,7 +147,8 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
       d.and :sort_no, '<=', sort_no unless sort_no.blank?
       d.and :id, '!=', params[:id] unless params[:id].blank?
    }
-   @permit_select = Questionnaire::FormField.where(sql.where).order('sort_no, id').collect{ |i| [cut_off(i.title,40), i.id]}
+    item = Questionnaire::FormField.new
+    @permit_select = item.find(:all, :conditions=>sql.where, :order=>'sort_no, id').collect{ |i| [cut_off(i.title,40), i.id]}
   end
 
   def cut_off(text, len)

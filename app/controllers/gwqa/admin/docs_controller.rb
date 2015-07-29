@@ -1,53 +1,139 @@
 class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+
+  include Gwboard::Controller::Scaffold
   include Gwboard::Controller::Common
+  include Gwqa::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
+
   layout "admin/template/gwqa"
 
-  before_action :check_title_readable, only: [:index, :show]
-  before_action :check_title_writable, only: [:new, :create, :edit, :update, :destroy, :settlement]
-
-  def pre_dispatch
-    @title = Gwqa::Control.find(params[:title_id])
-
+  def initialize_scaffold
+    @title = Gwqa::Control.find_by_id(params[:title_id])
+    return http_error(404) unless @title
     Page.title = @title.title
 
     str_param = ''
     str_param += "&state=#{params[:state]}" unless params[:state].blank?
     return redirect_to(gwqa_docs_path({:title_id=>@title.id}) + "#{str_param}") if params[:reset]
 
-    _search_condition
+    begin
+      _search_condition
+    rescue
+      return error_gwbbs_no_database
+    end
 
     initialize_value_set_new_css
   end
 
   def _search_condition
-    @categories1 = @title.categories.select(:id, :name).where(level_no: 1).order(:sort_no, :id)
-    @d_categories = @categories1.index_by(&:id)
+    item = gwqa_db_alias(Gwqa::Category)
+    item = item.new
+    item.and :level_no, 1
+    item.and :title_id, params[:title_id]
+    @categories1 = item.find(:all, :order =>'sort_no, id')
+    @d_categories = item.find(:all,:select=>'id, name', :order =>'sort_no, id').index_by(&:id)
+    Gwqa::Category.remove_connection
   end
 
   def index
-    @items = @title.docs.index_select.search_with_params(@title, params)
-      .index_docs_with_params(@title, params)
-      .index_order_with_params(@title, params)
-      .question_docs
-      .paginate(page: params[:page], per_page: params[:limit])
+    get_role_index
+    return authentication_error(403) unless @is_readable
+
+    if params[:kwd].blank?
+      index_normal
+    else
+      index_search
+    end
+
+    Gwqa::Doc.remove_connection
+  end
+
+  def index_normal
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :title_id, params[:title_id]
+    item.and :doc_type, 0
+    item.and "sql", gwqa_select_status(params)
+    item.search params
+    item.order  gwboard_sort_key(params)
+    item.page   params[:page], params[:limit]
+    @items = item.find(:all)
+  end
+
+  def index_search
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :title_id, params[:title_id]
+    item.and "sql", gwqa_select_status(params)
+    item.search params
+    records = item.find(:all,:select=>'parent_id', :group=>'parent_id')
+    unless records.blank?
+
+      strsql = ''
+      for record in records
+        strsql += ' OR ' unless strsql.blank?
+        strsql += "id=#{record.parent_id}"
+      end
+      strsql = "(#{strsql})" unless strsql.blank?
+    else
+
+      strsql = '(id=0)'
+    end
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :title_id, params[:title_id]
+    item.and :doc_type, 0
+    item.and "sql", strsql
+    item.and "sql", gwqa_select_status(params)
+    item.order  gwboard_sort_key(params)
+    item.page   params[:page], params[:limit]
+    @items = item.find(:all)
   end
 
   def show
-    @item = @title.docs.find_by(id: params[:id])
-    return find_migrated_item unless @item
-    return http_error(404) if @item.doc_type != 0
-    return error_auth if !@item.is_editable? && @item.state == "draft"
+    get_role_index
+    return authentication_error(403) unless @is_readable
 
-    if params[:qsort].to_s == 'DESC'
-      @answers = @item.public_answers.reorder(created_at: :desc)
-    else
-      @answers = @item.public_answers.reorder(created_at: :asc)
-    end
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :id, params[:id]
+    item.and :doc_type, 0
+    item.and :title_id, params[:title_id]
+    @item = item.find(:first)
+    return http_error(404) unless @item
+
+    get_role_new
+    @is_editable = Gwqa::Model::DbnameAlias.get_editable_flag(@item, @is_admin, @is_writable)
+
+    return http_error(404) if @item.state == "draft" unless @is_editable
+
+    item = gwqa_db_alias(Gwqa::File)
+    item = item.new
+    item.and :title_id, params[:title_id]
+    item.and :parent_id, @item.id
+    item.order  'id'
+    @files = item.find(:all)
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :parent_id, params[:id]
+    item.and :doc_type, 1
+    item.and :title_id, params[:title_id]
+    item.and :state, 'public'
+    item.order  'created_at' unless params[:qsort].to_s == 'DESC'
+    item.order  'created_at DESC' if params[:qsort].to_s == 'DESC'
+    @answers = item.find(:all)
+
+    Gwqa::Doc.remove_connection
   end
 
   def new
     return http_error(404) if params[:p_id].blank?
+
+    get_role_new
+    return authentication_error(403) unless @is_writable
 
     doc_type = 0
     parent_id = 0
@@ -55,13 +141,20 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
       doc_type = 1
       parent_id = params[:p_id]
     end
+    return http_error(404) unless is_integer(parent_id)
 
     if doc_type == 1
-      @parent = @title.docs.find(parent_id)
-      return http_error(404) if @parent.doc_type != 0
+      item = gwqa_db_alias(Gwqa::Doc)
+      item = item.new
+      item.and :id, parent_id
+      item.and :doc_type, 0
+      item.and :title_id, params[:title_id]
+      @parent = item.find(:first)
+      return http_error(404) unless @parent
     end
 
-    @item = Gwqa::Doc.create(
+    item = gwqa_db_alias(Gwqa::Doc)
+    @item = item.create({
       :doc_type =>  doc_type ,
       :state => 'preparation',
       :title_id   => @title.id ,
@@ -71,21 +164,37 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
       :title => '',
       :body => '',
       :answer_count => 0,
-      :section_code => Core.user_group.code,
-      :latest_updated_at => Time.now,
-      :wiki => 0
-    )
+      :section_code => Site.user_group.code,
+      :latest_updated_at => Time.now
+    })
 
     @item.state = 'draft'
+    reference_docs if doc_type == 1
   end
 
   def edit
-    @item = @title.docs.find(params[:id])
-    return error_auth unless @item.is_editable?
+    get_role_new
+    return authentication_error(403) unless @is_writable
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :id, params[:id]
+    item.and :title_id, params[:title_id]
+    @item = item.find(:first)
+    Gwqa::Doc.remove_connection
+    return http_error(404) unless @item
+
+    @is_editable = Gwqa::Model::DbnameAlias.get_editable_flag(@item, @is_admin, @is_writable)
+    return authentication_error(403) unless @is_editable
+
+    reference_docs if @item.doc_type == 1
   end
 
   def update
     return http_error(404) if params[:p_id].blank?
+
+    get_role_new
+    return authentication_error(403) unless @is_writable
 
     doc_type = 0
     parent_id = params[:id]
@@ -95,22 +204,45 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
     else
       parent_id = params[:id]
     end
+    return http_error(404) unless is_integer(parent_id)
 
-    @item = @title.docs.find(params[:id])
+    item = gwqa_db_alias(Gwqa::Doc)
+    @item = item.find(params[:id])
 
     @item.attributes = params[:item]
     @item.latest_updated_at = Core.now
     @item.doc_type = doc_type
     @item.parent_id = parent_id
     @item.category_use = @title.category
-    @item.section_name = @item.section.code + @item.section.name if @item.section
 
-    _update @item, success_redirect_uri: gwqa_docs_path(title_id: @title.id)
+    update_creater_editor
+
+    group = Gwboard::Group.new
+    group.and :state , 'enabled'
+    group.and :code ,@item.section_code
+    group = group.find(:first)
+    @item.section_name = group.code + group.name if group
+    @item._note_section = group.name if group
+
+    @item._bbs_title_name = @title.title
+    @item._notification = @title.notification
+
+    _update_plus_location @item, gwqa_docs_path({:title_id=>@title.id})
   end
 
   def destroy
-    @item = @title.docs.find(params[:id])
-    return error_auth unless @item.is_editable?
+    get_role_new
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    @item = item.new.find(params[:id])
+
+    @is_editable = Gwqa::Model::DbnameAlias.get_editable_flag(@item, @is_admin, @is_writable)
+    return authentication_error(403) unless @is_editable
+
+    destroy_atacched_files
+    destroy_files
+
+    @item._notification = @title.notification
 
     str_param = ''
     str_param = "&state=#{params[:state]}" unless params[:state].blank?
@@ -118,13 +250,42 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
     str_param = "&page=#{params[:page]}" unless params[:page].blank?
     str_param = "&limit=#{params[:limit]}" unless params[:limit].blank?
     str_param = "&kwd=#{params[:kwd]}" unless params[:kwd].blank?
-    _destroy @item, success_redirect_uri: "#{gwqa_docs_path({:title_id=>@title.id})}#{str_param}"
+    local = "#{gwqa_docs_path({:title_id=>@title.id})}#{str_param}"
+    _destroy_plus_location(@item, local)
+  end
+
+  def sql_where
+    sql = Condition.new
+    sql.and "parent_id", @item.id
+    sql.and "title_id", @item.title_id
+    return sql.where
+  end
+
+  def destroy_atacched_files
+    item = gwqa_db_alias(Gwqa::File)
+    item.destroy_all(sql_where)
+    Gwqa::File.remove_connection
+  end
+
+  def destroy_files
+    item = gwqa_db_alias(Gwqa::DbFile)
+    item.destroy_all(sql_where)
+    Gwqa::DbFile.remove_connection
   end
 
   def settlement
-    @item = @title.docs.find(params[:id])
-    return error_auth unless @item.is_editable?
+    get_role_new
+    return authentication_error(403) unless @is_writable
 
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :id, params[:id]
+    item.and :title_id, @title.id
+    @item = item.find(:first)
+    Gwqa::Doc.remove_connection
+    return http_error(404) unless @item
+    @is_editable = Gwqa::Model::DbnameAlias.get_editable_flag(@item, @is_admin, @is_writable)
+    return authentication_error(403) unless @is_editable
     @item.content_state = 'resolved'
     @item.save
 
@@ -139,7 +300,7 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
   end
 
   def latest_answer
-    item = Gwqa::Doc
+    item = gwqa_db_alias(Gwqa::Doc)
     item = item.new
     item.and :title_id, params[:title_id]
     item.and :doc_type, 1
@@ -151,21 +312,45 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
     redirect_to "/gwqa"
   end
 
-  private
-
-  def check_title_readable
-    return error_auth unless @title.is_readable?
-  end
-
-  def check_title_writable
-    return error_auth unless @title.is_writable?
-  end
-
-  def find_migrated_item
-    if @item = @title.docs.find_by(serial_no: params[:id], migrated: 1)
-      redirect_to url_for(params.merge(id: @item.id, title_id: @item.title_id))
+  def is_integer(no)
+    if no == nil
+      return false
     else
-      http_error(404)
+      begin
+        Integer(no)
+      rescue
+        return false
+      end
     end
   end
+
+  def reference_docs
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :id, @item.parent_id
+    item.and :doc_type, 0
+    item.and :title_id, @title.id
+    @reference_item = item.find(:first)
+    return http_error(404) unless @reference_item
+
+    item = gwqa_db_alias(Gwqa::File)
+    item = item.new
+    item.and :title_id, @title.id
+    item.and :parent_id, @reference_item.id
+    item.order  'id'
+    @files = item.find(:all)
+
+    item = gwqa_db_alias(Gwqa::Doc)
+    item = item.new
+    item.and :parent_id, @item.parent_id
+    item.and :doc_type, 1
+    item.and :title_id, @title.id
+    item.and :state, 'public'
+    item.order  'created_at' unless params[:qsort].to_s == 'DESC'
+    item.order  'created_at DESC' if params[:qsort].to_s == 'DESC'
+    @reference_answers = item.find(:all)
+
+    Gwqa::Doc.remove_connection
+  end
+
 end

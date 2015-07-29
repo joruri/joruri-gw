@@ -1,71 +1,111 @@
+# encoding: utf-8
 class Gwboard::Admin::Piece::SynthesesController < ApplicationController
-  include System::Controller::Scaffold
-  layout false
+  include Gwboard::Controller::Scaffold
+  include Gwboard::Controller::Authorize
+  layout 'base'
+  
+  def initialize_scaffold
+    item = Gwboard::Synthesetup.new
+    item.and :content_id, 0
+    @select = item.find(:first)
 
-  def init_params
-    @setup = Gwboard::Synthesetup.where(content_id: 0).first
-
-    case Gwboard::Synthesetup.where(content_id: 2).first.try(:limit_date)
+    item = Gwboard::Synthesetup.new
+    item.and :content_id, 2
+    item = item.find(:first)
+    limit_date = ''
+    limit_date = item.limit_date  unless item.blank?
+    case limit_date
     when 'today'
       @msg = '本日'
-      @date = Date.today
+      @date = Date.today.strftime('%Y-%m-%d')
     when 'yesterday'
       @msg = '前日から'
-      @date = Date.yesterday
+      @date = Date.yesterday.strftime('%Y-%m-%d')
     when '3.days'
       @msg = '3日前から'
-      @date = 3.days.ago
+      @date = 3.days.ago.strftime('%Y-%m-%d')
     when '4.days'
       @msg = '4日前から'
-      @date = 4.days.ago
+      @date = 4.days.ago.strftime('%Y-%m-%d')
     else
       @msg = '本日'
-      @date = Date.yesterday
+      @date = Date.yesterday.strftime('%Y-%m-%d')
     end
+    @date = @date + " 00:00:00"
   end
-
+  
   def index
-    init_params
-    if @setup
-      index_gwbbs if @setup.gwbbs_check
-      index_gwfaq if @setup.gwfaq_check
-      index_gwqa if @setup.gwqa_check
-      index_doclib if @setup.doclib_check
-      index_digitallib if @setup.digitallib_check
-    end
+    index_gwbbs       if @select && @select.gwbbs_check
+    index_gwfaq       if @select && @select.gwfaq_check
+    index_gwqa        if @select && @select.gwqa_check
+    index_doclib      if @select && @select.doclib_check
+    index_digitallib  if @select && @select.digitallib_check
 
-    @none_dsp = [@bbs_docs, @faq_docs, @qa_docs, @doclib_docs, @digitallib_docs].all?(&:zero?)
+    @none_dsp = true
+    @none_dsp = false unless @bbs_docs.blank?
+    @none_dsp = false unless @faq_docs.blank?
+    @none_dsp = false unless @qa_docs.blank?
+    @none_dsp = false unless @doclib_docs.blank?
+    @none_dsp = false unless @digitallib_docs.blank?
   end
-
-  private
-
+  
   def index_gwbbs
-    @bbs_docs = Gwbbs::Doc.public_docs.latest_updated_since(@date).with_notification_enabled.satisfy_restrict_access
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwbbs::Control.is_sysadm? }
-      .distinct(:id).count
+    item = Gwboard::Synthesis.new
+    item.gwbbs_readable_syntheses(@date)
+    items = item.find(:all, 
+      :select => 'latest_updated_at',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
+    
+    if items.length > 0
+      @bbs_docs = "#{@msg} #{items.length}件の更新あり。最新記事は [ #{items[0].latest_updated_at.strftime('%Y年%m月%d日 %H時%M分').to_s} ] に更新。"
+    end
   end
-
+  
   def index_gwfaq
-    @faq_docs = Gwfaq::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .distinct(:id).count
+    item = Gwboard::Synthesis.new
+    item.gwfaq_readable_syntheses(@date)
+    items = item.find(:all, 
+      :select => 'latest_updated_at',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
+    
+    if items.length > 0
+      @faq_docs = "#{@msg} #{items.length}件の更新あり。最新記事は [ #{items[0].latest_updated_at.strftime('%Y年%m月%d日 %H時%M分').to_s} ] に更新。"
+    end
   end
-
+  
   def index_gwqa
-    @qa_docs = Gwqa::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Gwfaq::Control.is_sysadm? }
-      .distinct(:id).count
+    item = Gwboard::Synthesis.new
+    item.gwqa_readable_syntheses(@date)
+    items = item.find(:all, 
+      :select => 'latest_updated_at',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
+    
+    if items.length > 0
+      @qa_docs = "#{@msg} #{items.length}件の更新あり。最新記事は [ #{items[0].latest_updated_at.strftime('%Y年%m月%d日 %H時%M分').to_s} ] に更新。"
+    end
   end
-
+  
   def index_doclib
-    @doclib_docs = Doclibrary::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user).in_readable_folder(Core.user) unless Doclibrary::Control.is_sysadm? }
-      .distinct(:id).count
+    item = Gwboard::Synthesis.new
+    item.doclibrary_readable_syntheses(@date)
+    items = item.find(:all, 
+      :select => 'latest_updated_at', 
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
+    
+    if items.length > 0
+      @doclib_docs = "#{@msg} #{items.length}件の更新あり。最新記事は [ #{items[0].latest_updated_at.strftime('%Y年%m月%d日 %H時%M分').to_s} ] に更新。"
+    end
   end
-
+  
   def index_digitallib
-    @digitallib_docs = Digitallibrary::Doc.public_docs.latest_updated_since(@date).with_notification_enabled
-      .tap{|d| break d.with_readable_role(Core.user) unless Digitallibrary::Control.is_sysadm? }
-      .distinct(:id).count
+    item = Gwboard::Synthesis.new
+    item.digitallibrary_readable_syntheses(@date)
+    items = item.find(:all, 
+      :select => 'latest_updated_at',
+      :order => 'gwboard_syntheses.latest_updated_at DESC')
+    
+    if items.length > 0
+      @digitallib_docs = "#{@msg} #{items.length}件の更新あり。最新記事は [ #{items[0].latest_updated_at.strftime('%Y年%m月%d日 %H時%M分').to_s} ] に更新。"
+    end
   end
 end

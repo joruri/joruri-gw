@@ -1,18 +1,17 @@
 <div class="piece headerMenu">
 <div class="pieceBody">
 <ul>
-<%= cache_if Joruri.config.application['gw.cache_header_menu'], @items + [@portal_mode, Core.user] do %>
-<%
+<% 
 @items.each_with_index do |item, idx|
-  item.opened_children.preload_opened_children.each_with_index do |level3_item, idx3|
-    next if @portal_mode.normal_mode? && level3_item.mode == 3
-    next if @portal_mode.disaster_mode? && level3_item.mode == 2
+  item.opened_children.each_with_index do |level3_item, idx3|
+    next if @portal_mode.options == '2' && level3_item.mode == 3
+    next if @portal_mode.options == '3' && level3_item.mode == 2
     if level3_item.has_display_auth?
       level3_options = level3_item.link_options
-
+      
       concat raw %Q(<li class="#{level3_options[:disabled]}">)
       concat raw %Q(<span class="#{level3_options[:css_class]} #{level3_options[:icon_class]}">)
-
+      
       level3_item.opened_children.each_with_index do |level4_item, idx4|
         if level4_item.has_display_auth?
           level4_options = level4_item.link_options
@@ -23,15 +22,15 @@
             concat raw link_to(level4_item.name.to_s.html_safe,
               level4_options[:url], :class => "#{level4_options[:css_class]} #{level4_options[:icon_class]} #{level4_options[:disabled]}", :target => level4_options[:target], :title => level4_item.name)
           end
-        end
-      end
+        end 
+      end 
       concat raw %Q(</span><br />)
-
+      
       #if level3_options[:icon_path]
-      #  concat raw link_to(image_tag(level3_options[:icon_path], :alt => level3_item.name, :title => level3_item.name, :border => 0),
+      #  concat raw link_to(image_tag(level3_options[:icon_path], :alt => level3_item.name, :title => level3_item.name, :border => 0), 
       #    level3_options[:url], :target => level3_options[:target])
       #else
-        concat raw link_to(level3_item.name.to_s.html_safe,
+        concat raw link_to(level3_item.name.to_s.html_safe, 
           level3_options[:url], :target => level3_options[:target])
       #end
       concat raw %Q(</li>)
@@ -39,7 +38,6 @@
   end
 end
 %>
-<% end # cache %>
 </ul>
 </div>
 </div>

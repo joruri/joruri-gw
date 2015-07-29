@@ -1,0 +1,29 @@
+<%# 記事管理の左サイド、%>
+<!--
+<%#if @title.left_banner.blank?%>
+  <%#=link_to h(@title.title), @title.docs_path %>
+<%#else%>
+  <%#*<a href ="<%=@title.docs_path%>">%>
+  <%#=@title.left_banner.to_s%>
+  <%#*</a>%>
+<%#end%>
+-->
+<div class="sideMenu">
+  <div class="menuBody">
+  </div>
+</div>
+
+<!--
+<%#*<div class="SideListTitle"><%=gwbbs_sidelist_title%></div>%>
+<%#*<div class="sideList" <%=@title.sidelist_style%>>%>
+  <%#unless @items.blank?%>
+    <%#if params[:pp].blank?%>
+      <%#= render :partial => 'whats_new'%>
+    <%#else%>
+      <%#= render :partial => 'titlelist'%>
+    <%#end%>
+  <%#else%>
+    <%#="<br />\n" * @loop%>
+  <%#end%>
+<%#*</div>%>
+-->

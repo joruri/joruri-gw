@@ -1,16 +1,18 @@
 <div class="bbsDocList circular">
-<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+<div class="pieceHeader"><h2 class="pieceTitle"><%=@system_title%></h2></div>
 
 <div class="pieceBody">
-<%= render 'header' %>
-<%= render 'title_info' %>
+<%= render :partial => 'header' %>
 
-<%= render 'form' %>
+<%=render :partial => 'title_info' %>
+
+<%=render :partial => 'form' %>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '管理一覧へ戻る', '/questionnaire/' %>
+  <%=link_to '管理一覧へ戻る', '/questionnaire/' %>
 </div>
 
 </div>
+
 </div>

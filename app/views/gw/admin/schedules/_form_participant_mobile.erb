@@ -1,5 +1,5 @@
 <%
-@users_json = [["1",Core.user.id,Core.user.display_name]].to_json if @users_json.blank?
+@users_json = [["1",Site.user.id,Site.user.display_name]].to_json if @users_json.blank?
 unless params[:item].blank?
   users_json = []
   if params[:item][:schedule_users].blank?
@@ -7,7 +7,7 @@ unless params[:item].blank?
   else
     params[:item][:schedule_users].each do |u|
       if u[1].to_i != 0
-        user_name = System::User.where(:id => u[1]).first
+        user_name = System::User.find_by_id(u[1])
         users_json << ["1",u[1],"#{user_name.name}"]
       end
     end
@@ -29,7 +29,7 @@ if users_json.blank?
   selected_field  << ["選択なし",0]
 }
 else
-items = ::JSON.parse(users_json)
+items = ::JsonParser.new.parse(users_json)
 limit = items.size - 1
 10.times { |i|
   if i <= limit
@@ -50,8 +50,11 @@ a[1] <=> b[1]
 参加者<br />
 <%10.times { |i|%>
 <%= hidden_field_tag "item[schedule_users][uid_#{i+1}]", (selected_field[i][1].to_i) %>
-<%user = System::User.where(:id =>selected_field[i][1]).first%>
+<%user = System::User.find_by_id(selected_field[i][1])%>
 <%unless user.blank?%>
+<%
+is_mobile = Gw::UserProperty.new.find(:first, :conditions=>["uid = ? and class_id = 1 and name = 'mobile'", selected_field[i][1]])
+%>
 ・<%=user.display_name %><br />
 <%end%>
 <%}%>

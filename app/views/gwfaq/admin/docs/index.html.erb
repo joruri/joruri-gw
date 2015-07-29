@@ -1,18 +1,12 @@
-<%= render 'header' %>
 
-<% case params[:state] %>
-<% when "GROUP" %>
-  <%= render 'index_group' %>
-<% when "CATEGORY" %>
-  <%= render 'index_category' %>
-<% else %>
-  <%= render 'index_date' %>
-<% end %>
+<%= render :partial => 'header' %>
 
-<%= render 'limit_change' %>
+<%= gwfaq_form_indices %>
+
+<%= render :partial => 'limit_change' %>
 
 <%= paginate @items %>
 
 <div class="btReturn">
-  <%= link_to "FAQ一覧へ戻る", "/gwfaq/" %>
+　　<%= link_to "FAQ一覧へ戻る", "/gwfaq/" %>
 </div>

@@ -10,13 +10,13 @@ elsif params[:view] == "edit"
 else
  @str = "作成"
 end
-u = Core.user
+u = Site.user
 uid = u.id
 link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{uid}", "cgid=#{params[:cgid]}","dis=#{params[:dis]}"])
 %>
 <p class="mobileScheduleCurrent">スケジュール</p>
 <p class="bgAsh"><%=@str%></p>
-
+<%= div_notice -%>
 <%= form_tag '', :method => :get, :class => 'search', :name => 'groupForm' do %>
   <%= select_tag( 'group_id',options_for_select( groups ,@group_id ) ,:style=>'width:200px;margin-top: 5px;') %>
   <%= hidden_field_tag :view, params[:view] %>
@@ -49,7 +49,7 @@ link_params = Gw.a_to_qs(["gid=#{params[:gid]}", "uid=#{uid}", "cgid=#{params[:c
     <% if !session[:mobile][t].blank? %>
       <% session[:mobile][t].each_with_index do |u,idx| %>
       <%= submit_tag '削除', :class => 'deleteItem', :name => "deleteMember[#{t}_#{idx}]" %>
-      <%to_user = System::User.where(:id => u).first%>
+      <%to_user = System::User.find_by_id(u)%>
       <%= to_user.display_name unless to_user.blank? %>
       <br />
       <% end %>

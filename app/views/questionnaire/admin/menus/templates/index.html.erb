@@ -1,40 +1,39 @@
 <div class="bbsDocList circular">
 <div class="pieceHeader">
 <h2 class="pieceTitle">テンプレート作成</h2>
-<div class="btsHeaderLeft"><span class="btNew"><%= link_to '新規作成', new_questionnaire_template_path if @is_sysadm %></span></div>
+<div class="btsHeaderLeft"><span class="btNew"><%=link_to('新規作成', new_questionnaire_template_path) if @is_sysadm%></span></div>
+<%if @is_sysadm%>
+<%end%>
 </div>
 
 <div class="pieceBody">
-<%= render 'header' %>
-
+<%= render :partial => 'header' %>
 <div class="editingBox">
-  <span class="docLink"><%= link_to '<< 設問登録', questionnaire_menu_form_fields_path(@title) %></span>
+<span class="docLink"><%= link_to '>> 設問登録', questionnaire_menu_form_fields_path(@title) %></span>
 </div>
 
 <table class="index">
-  <tr>
-    <th style="width: 60px; text-align: center;"></th>
-    <th style="width: 60px; text-align: center;"></th>
-    <th style="width: 220px;">タイトル</th>
-    <th>概要説明</th>
-    <th style="width: 120px;">最終更新日</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: left;"><%= link_to '適用する', apply_template_questionnaire_menu_template_path(@title, item), :confirm => "既に設定されている設問がある場合は削除されます。このテンプレートを利用しますか？" %></td>
-    <td style="text-align: left;"><%= link_to 'プレビュー', new_questionnaire_template_preview_path(item) , :target => "_blank" %></td>
-    <td style="text-align: left;"><%= item.manage_title %></td>
-    <td style="text-align: left;"><%= item.title %></td>
-    <td style="text-align: left;"><%= item.updated_at.strftime('%Y-%m-%d %H:%M') %></td>
-  </tr>
-  <% end %>
+<tr>
+<th style="width: 60px; text-align: center;"></th>
+<th style="width: 60px; text-align: center;"></th>
+<th style="width: 220px;">タイトル</th>
+<th>概要説明</th>
+<th style="width: 120px;">最終更新日</th>
+</tr>
+<%for item in @items %>
+<tr class="<%= cycle '', 'cycle' %>">
+<td style="text-align: left;"><%=link_to('適用する', apply_template_questionnaire_menu_template_path(@title, item), :confirm => "既に設定されている設問がある場合は削除されます。このテンプレートを利用しますか？") %></td>
+<td style="text-align: left;"><%=link_to('プレビュー', questionnaire_template_previews_path(item) , :target => "_blank") %></td>
+<td style="text-align: left;"><%=item.manage_title %></td>
+<td style="text-align: left;"><%=item.title %></td>
+<td style="text-align: left;"><%=item.updated_at.strftime('%Y-%m-%d %H:%M')%></td>
+</tr>
+<%end %>
 </table>
-
 <%= paginate @items %>
 
-<div class="btReturn">
-  <%= link_to '設問登録へ戻る', questionnaire_menu_form_fields_path(@title) %>
-</div>
+<div class="btReturn"><%=link_to('設問登録へ戻る', questionnaire_menu_form_fields_path(@title)) %></div>
 
 </div>
+
 </div>

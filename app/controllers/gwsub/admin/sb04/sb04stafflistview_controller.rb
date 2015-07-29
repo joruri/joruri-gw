@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録"
   end
@@ -51,7 +52,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
   end
   def create
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id =>params['item_user_id']).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params['item_user_id'])
     return http_error(404)
 
     params[:item]['id'] = @item.id
@@ -61,7 +62,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
 
   def edit
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     item = Gwsub::Sb04stafflist.new
@@ -73,7 +74,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
   end
   def update
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     @item.attributes = params[:item]
@@ -83,8 +84,8 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
     @u_role = @role_developer || @role_admin
     @menu_header3 = 'sb04stafflistview'
     @menu_title3  = '職員録'
@@ -178,7 +179,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
       if par_item[:select]=='all'
         select = "section_code,section_name,assignedjobs_code,assignedjobs_name,divide_duties_order,assignedjobs_tel,staff_no,divide_duties,official_title_name,name,name_print,kana,extension,remarks"
       else
-        cols = par_item[:chks].to_a.sort
+        cols = par_item[:chks].to_a.sort.collect{|k,v| v}
         sel_cols = cols.join(',')
         select = "section_code,section_name,assignedjobs_name,assignedjobs_tel,staff_no,official_title_name,name"
         select += ",#{sel_cols}" if !sel_cols.blank?
@@ -260,10 +261,6 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
           select_jp << "\n"
           select_jp << file
           send_data(NKF::nkf(nkf_options,select_jp) , :filename=>"#{filename}" )
-        elsif  par_item[:form] == "pdf"
-          filename = "#{fyear_markjp}_Syokuinroku_#{group_code}#{"_executive" if par_item[:executive] == "1"}"
-          items = Gwsub::Script::Tool.stafflistview_output_list(staffs, :cols=>select,:header=>false,:quotes=>true)
-          pdf_create(items, filename, par_item,nkf_options)
         end
       end
     else
@@ -285,9 +282,17 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
   end
 
   def section_fields
-    fyed_id = Gwsub.set_fyear_select(params[:fyed_id])
-    sections = Gwsub::Sb04section.sb04_group_select(fyed_id.to_i, nil)
-    render text: view_context.options_for_select(sections), layout: false
+    @fyed_id = Gwsub.set_fyear_select(params[:fyed_id])
+    params[:fyed_id] = nz(params[:fyed_id],@fyed_id)
+
+    @sections = Gwsub::Sb04section.sb04_group_select(@fyed_id.to_i , nil )
+    _html_select = ''
+    @sections.each do |value , key|
+      _html_select << "<option value='#{key}'>#{value}</option>"
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def set_param
@@ -304,62 +309,5 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
 #    end
     @param = nil
     return @param
-  end
-
-private
-  def pdf_create(items, filename, par_item = params[:item],nkf_options)
-    #init_params
-    # PDF作成
-    #require 'prawn/layout' # これが無いとテーブル作成が不可。参考：http://groups.google.com/group/prawn-ruby/browse_thread/thread/62a6a86dde010ad2
-
-    file_path = "#{Rails.root.to_s}/tmp/#{filename}.pdf"
-    pdf = Prawn::Document.new(
-      :page_layout => :landscape, # 横
-      :page_size => "A4",
-      :left_margin => 36,
-      :right_margin => 24,
-      :top_margin => 24,
-      :bottom_margin => 24
-    )
-    pdf.font "#{Rails.root.to_s}/vendor/fonts/ipaexfont/ipaexg.ttf"
-    pdf.text '電子職員録'
-
-    _table = Array.new
-    items.each_with_index do |item, x|
-      item_text = Array.new
-      item.each do |i|
-        if i.blank?
-          item_text << ""
-        else
-          item_text << i
-        end
-      end
-        _table << item_text
-    end
-
-    if par_item[:executive] == "1"
-      headers = ['部名・所属名', '職員番号', '職名', '区分', '氏名']
-      column_widths = {0 => 150, 1 => 60, 2 => 120, 3 => 120}
-    else
-      headers = ['部名・所属名', '担当名', '担当電話', '職員番号', '職名', '区分', '氏名']
-      column_widths = {0 => 120, 1 => 100, 2 => 100, 3 => 50, 4 => 100, 5 => 100}
-    end
-    table_width = 0
-    column_widths.each{|key, value| table_width += value}
-    pdf.table _table, {:header => true, :cell_style=>{ :size => 8 , :padding => [4,4,5,5]}} do |table|
-        table.header             = headers
-        table.width              = table_width
-        table.row(0).cell_style  = { :size => 8, :padding => [4,4,5,5] , :align => "center"}
-        table.column_widths      = column_widths
-        table.row_colors         = %w[eeeeee ffffff]
-    end
-
-
-    pdf.render_file(file_path)
-
-    file = File.open(file_path)
-    send_data(file.read, :filename=>"#{filename}.pdf" )
-    file.close
-    File.delete(file_path)
   end
 end

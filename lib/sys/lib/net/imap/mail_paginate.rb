@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Net::Imap::MailPaginate < Array
   attr_reader :total_pages, :current_page, :previous_page, :next_page
   

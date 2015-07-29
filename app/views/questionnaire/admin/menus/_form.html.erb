@@ -1,120 +1,50 @@
 <%
-help_item = Questionnaire::Property::HelpLink.first_or_new
+array_help = get_enquete_help
 %>
+<%= raw(gw_js_include_full) %>
 <%= required_head %>
-<%= f.hidden_field :send_to_kind %>
+
 <table class="show">
-  <tr>
-    <th>形式選択</th>
-    <td>
-      <% if @item.state == 'public' %>
-        <%= @item.enquete_division_state_name %>
-      <% else %>
-        <%= f.select :enquete_division, @item.enquete_division_states, :class => 'select' %><span class="help"><%=raw help_item.options_value[0][0] %></span>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th>記事管理設定</th>
-    <td><%= f.select :admin_setting, @item.admin_setting_name, :class => 'admin_setting' %><span class="help"><%=raw help_item.options_value[1][0] %></span></td>
-  </tr>
-  <tr>
-    <th>配信先設定</th>
-    <td><%= f.select :send_to, @item.send_to_name, {}, {class: 'admin_setting', onchange: "send_to_kind_diplay();"} %><span class="help"><%=raw help_item.options_value[6][0] %></td>
-  </tr>
-  <!--<tr id="send_to_group_tr"><th>所属回答者区分</th>
-  <td><%#= f.select :send_to_kind, @item.send_to_kind_name , :class => 'admin_setting'%></td></tr>-->
-  <tr id="include_index_tr_1">
-    <th>一覧に表示</th>
-    <td><%= f.select :include_index, @item.include_index_states, :class => 'admin_setting' %><span class="help"><%=raw help_item.options_value[2][0] %></span></td>
-  </tr>
-  <tr id="include_index_tr_2">
-    <th>一覧に表示</th>
-    <td>一覧に表示しない<span class="help"><%=raw help_item.options_value[2][0] %></span></td>
-  </tr>
-  <tr>
-    <th>公開用タイトル<%= required('※') %></th>
-    <td><%= f.text_field :title, :class => 'string title', :size => 80 %></td>
-  </tr>
-  <tr id="remarks_tr"><th>注意事項</th>
-    <td><%= f.text_area :remarks, :cols => 80, :rows => 5 %></td>
-  </tr>
-  <tr>
-    <th>注意事項　表示</th>
-    <td><%= f.select :remarks_setting, @item.remarks_state, {}, {class: 'admin_setting', onchange: "remarks_display();"} %><span class="help"><%=raw help_item.options_value[5][0] %></span></td>
-  </tr>
+<tr><th>形式選択</th>
+<td>
+<%if @item.state == 'public'%>
+  <%=@item.enquete_division_state_name%><%= hidden_field_tag(:enquete_division, @item.enquete_division) %>
+<%else%>
+  <%= f.select :enquete_division, @item.enquete_division_states , :class => 'select'%><span class="help"><%=show_enquete_help(0,array_help)%></span>
+<%end%>
+</td></tr>
+<tr><th>記事管理設定</th>
+<td><%= f.select :admin_setting, @item.admin_setting_name , :class => 'admin_setting'%><span class="help"><%=show_enquete_help(1,array_help)%></span></td></tr>
+<tr><th>一覧に表示</th>
+<td><%= f.select :include_index, @item.include_index_states , :class => 'admin_setting'%><span class="help"><%=show_enquete_help(2,array_help)%></span></td></tr>
+<tr><th>公開用タイトル<%= required('※') %></th>
+<td><%= f.text_field :title, :class => 'string title' %></td></tr>
+<tr><th>注意事項</th>
+<td><%= f.text_area  :remarks , :cols=>80 ,:rows=>5 %></td></tr>
+<tr><th>注意事項　表示</th>
+<td><%= f.select :remarks_setting, @item.remarks_state , :class => 'admin_setting'%><span class="help"><%=show_enquete_help(5,array_help)%></span></td></tr>
 </table>
 
 <table class="show">
-  <tr>
-    <th>回答期限日時<%= required('※') %></th>
-    <td>
-    <%
-      dd = Gw.date8_to_date(params[:expiry_date], :default=>'')
-      d_load_org = params[:expiry_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
-      @item.expiry_date = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
-    %>
-    <%= f.datetimepicker :expiry_date %>
-    </td>
-  </tr>
+<tr><th>回答期限日時<%= required('※') %></th>
+<td>
+<%
+  dd = Gw.date8_to_date(params[:expiry_date], :default=>'')
+  # date_picker は、f.text_field をそのまま呼ぶため、nil 渡しで DB 値を読んでくれるが、
+  # date_picker2 は、text_field_tag 利用のため、value はセット済で呼んでやる必要がある。
+  # 現時点では必ずフォーマット済日付をわたすようにしている。
+  d_load_org = params[:expiry_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
+  d_load = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
+  #concat "#{date_picker3 f, 'expiry_date', d_load, :errors=>@item.errors}"
+%>
+<%= f.calendar_date_select :expiry_date, :value=>d_load, :popup => "force", :time=>true%>
+</td></tr>
 </table>
 
-
-<%= f.hidden_field :state, :id=>"item_state" %>
+<%= hidden_field_tag("item[state]", @item.state, :id=>"item_state") %>
 
 <script type="text/javascript">
 //<![CDATA[
-  var browser = navigator.appName;
-  function remarks_display() {
-    remark_type = $("item_remarks_setting").value;
-    option_display(remark_type);
-    // alert(question_type );
-  }
-
-  function option_display(idx){
-    if (idx == 'close') {
-      $('remarks_tr').setStyle("display: none;");
-    }else{
-      if(browser == "Microsoft Internet Explorer") {
-        $('remarks_tr').setStyle("display : block;");
-      }else {
-        $('remarks_tr').setStyle("display : table-row;");
-      }
-    }
-  }
-  remarks_display();
-
-  function send_to_kind_diplay(){
-    send_type = $('item_send_to').value;
-    send_option_display(send_type);
-  }
-  function send_option_display(idx){
-    if(idx==0){
-      //$('send_to_group_tr').setStyle("display: none;");
-      if(browser == "Microsoft Internet Explorer") {
-        $('include_index_tr_1').setStyle("display : block;");
-      }else {
-        $('include_index_tr_1').setStyle("display : table-row;");
-      }
-      $('include_index_tr_2').setStyle("display: none;");
-    }else{
-      $('item_include_index').selectedIndex = 1;
-      /*if(browser == "Microsoft Internet Explorer") {
-        $('send_to_group_tr').setStyle("display : block;");
-      }else {
-        $('send_to_group_tr').setStyle("display : table-row;");
-      }*/
-      $('include_index_tr_1').setStyle("display: none;");
-      if(browser == "Microsoft Internet Explorer") {
-        $('include_index_tr_2').setStyle("display : block;");
-      }else {
-        $('include_index_tr_2').setStyle("display : table-row;");
-      }
-      $('include_index_tr_1').setStyle("display: none;");
-    }
-  }
-  send_to_kind_diplay();
-
 var my_submit = function(state) {
     var st = $('item_state');
     st.value = state;

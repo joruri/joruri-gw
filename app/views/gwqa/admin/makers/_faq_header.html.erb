@@ -1,7 +1,6 @@
 <div class="contentMenu faq">
-  <span class="btNew "><%=link_to 'FAQを作成する', '/_admin/gwfaq/makers/new/' if Gwfaq::Control.is_sysadm? %></span>
+  <span class="btNew "><%=link_to 'FAQを作成する', '/_admin/gwfaq/makers/new/' if @is_sysadm %></span>
 </div>
-
 <div class="tabBox">
 <table class="tabtable">
   <tr>

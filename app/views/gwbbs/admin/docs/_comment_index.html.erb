@@ -1,36 +1,41 @@
 <div class="docsInnerBox">
 <table class="bbsCommentlist">
-  <tr>
-    <th class = "comment">コメント
-    <% if @item.one_line_note == 1 %><%#1行コメント使用する%>
-    <span class="btComment"><%= link_to 'コメント作成', "#{@item.new_comment_path}#{gwbbs_params_set}" %></span>
-    <% end %>
-    </th>
-    <th class="order">順番</th>
-    <th class="group">所属</th>
-    <th class="daytime">登録日時</th>
-    <th class="delete"></th>
-  </tr>
-  <% @item.comments.each.with_index(1) do |item, i| %>
-  <tr>
-    <td class="comment">
-      <% if item.editable? %>
-        <%= link_to hbr(item.body), "#{edit_gwbbs_comment_path(item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %>
-      <% else %>
-        <%= item.body %>
-      <% end %>
-    </td>
-    <td class="order"><%= i %></td>
-    <td class="group"><%= item.creater_or_editor_label %></td>
-    <td class="daytime"><%= item.created_at.strftime('%Y-%m-%d %H:%M') %></td>
-    <td class="delete">
-      <span class="btComment del">
-      <% if item.deletable? %>
-        <%= link_to '削除', "#{gwbbs_comment_path(item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", confirm: '削除をすると元に戻せません。削除しますか', method: :delete %>
-      <% end %>
-      </span>
-    </td>
-  </tr>
-  <% end %>
+ <tr>
+  <th class = "comment">コメント
+  <%if @item.one_line_note == 1%><%#1行コメント使用する%>
+  <span class="btComment"><%=link_to('コメント作成', "#{@item.new_comment_path}#{gwbbs_params_set}")%></span>
+  <%end%>
+  <%= div_notice %>
+  </th>
+  <th class="order">順番</th>
+  <th class="group">所属</th>
+  <th class="daytime">登録日時</th>
+  <th class="delete"></th>
+ </tr>
+<%@i = 0%>
+<% for item in @comments %>
+ <%@i = @i + 1%>
+ <tr>
+  <td class="comment">
+  <%if item.editor_id == Core.user.code%>
+    <%=link_to hbr(item.body), "#{edit_gwbbs_comment_path(item,{:title_id=>@item.title_id})}#{gwbbs_params_set}"%>
+  <%else%>
+    <%=item.body%>
+  <%end%>
+  </td>
+  <td class="order"><%=@i%></td>
+  <td class="group">
+  <%=item.editordivision %>
+  <%=' : ' %>
+  <%=item.editor %>
+  </td>
+  <td class = "daytime"><%= item.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+  <td class = "delete"><span class="btComment del">
+  <%if is_comment_delete(@item.section_code, item.editor_id, @is_admin)%>
+    <%=link_to('削除', "#{gwbbs_comment_path(item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete)%>
+  <%end%>
+  </span></td>
+ </tr>
+<% end %>
 </table>
 </div>

@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_props/index.html.erb</p>%>
 <%
 options1 =  {  'table_name'      => 'gwsub_sb01_trainings' , :action=>'bbs',  'link_to_show'    => 0}
 options1['field_td_criteria'] = {
@@ -20,11 +21,12 @@ options['field__td_criteria']={
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/menu' %>
 </div>
 <div class="pieceBody">
 <br />
 <%= raw(table_to_show2(@item1,options1)) %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <%= raw(table_to_index2(@items,options)) %>
 <br/>
 <%= paginate @items %>

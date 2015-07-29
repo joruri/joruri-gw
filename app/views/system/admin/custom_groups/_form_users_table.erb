@@ -1,41 +1,39 @@
-<table border="1" id="schedule_users_table">
-  <tr>
-    <th>並び順</th>
-    <th>アイコン</th>
-    <th>役職</th>
-    <th>氏名</th>
-    <th>削除</th>
-  </tr>
-  <%- template_item = System::UsersCustomGroup.new(sort_no: 0, icon: 1) -%>
-  <% ([template_item] + @item.user_custom_group.order(sort_no: :asc, rid: :asc)).each_with_index do |cuser, i| %>
-    <%= f.fields_for :user_custom_group, cuser do |f2| %>
-      <tr data-user-id="<%= cuser.user_id if i != 0 %>" <%=raw %(id="template" style="display:none;") if i == 0 %>>
-        <td>
-          <%= f2.text_field :sort_no, size: 2, maxlength: 10 %>
-          <%= f2.hidden_field :user_id %>
-        </td>
-        <td>
-          <%= f2.select :icon, options_for_select([['アイコン1','1'],['アイコン2','2'],['アイコン3','3'],['アイコン4','4'],['アイコン5','5'],['アイコン6','6'],['アイコン7','7'],['アイコン8','8'],['アイコン9','9']], cuser.icon) %>
-          <span class="userIcon<%= cuser.icon %>" />
-        </td>
-        <td><%= f2.text_field :title, size: 25, maxlength: 20 %></td>
-        <td class="u_name"><%= "#{cuser.user.name} (#{cuser.user.code})" if cuser.user %></td>
-        <td><%= f2.check_box :_destroy %><%= f2.label :_destroy, '削除' %></td>
-      </tr>
-    <% end %>
-  <% end %>
+<div id="item_schedule_users_add_buf_list">
+<script type="text/javascript">
+function changeUserIcon(id) {
+	var sel = $(id);
+    var elem = $('preview-'+id);
+    elem.className = 'userIcon'+sel.options[sel.selectedIndex].value;
+}
+</script>
+<table border=1>
+<tr>
+	<th>並び順</th>
+	<th>アイコン</th>
+	<th>役職</th>
+	<th>氏名</th>
+	<th>削除</th>
+</tr>
+<%
+if params[:item] && @users_json
+  users = ::JsonParser.new.parse(@users_json)
+  @users = []
+  users.each{|user|
+    @users.push [nil, user[1], user[2],params['title_'+user[1].to_s], params['icon_'+user[1].to_s], params['sort_no_'+user[1].to_s]]
+  }
+end
+%>
+<% @users.each{|user|  %>
+<tr>
+	<td><input type="text" name="sort_no_<%=user[1]%>" value="<%= user[5] %>" size="2" maxlength="10" /></td>
+	<td>
+		<%= select_tag "icon_#{user[1]}", options_for_select( [['アイコン1','1'],['アイコン2','2'],['アイコン3','3'],['アイコン4','4'],['アイコン5','5'],['アイコン6','6'],['アイコン7','7'],['アイコン8','8'],['アイコン9','9']],user[4]), :onchange=>"changeUserIcon('icon_#{user[1]}')" %>
+		<span id="preview-icon_<%=user[1]%>" class="userIcon<%= (user[4].blank? ? "1" : user[4]) %>" />
+	</td>
+	<td><input type="text" name="title_<%=user[1]%>" value="<%=user[3]%>" size="25"  maxlength="20" /></td>
+	<td><%= user[2] %></td>
+	<td><%= submit_to_remote "", "削除",:update => "item_schedule_users_add_buf_list" ,:before => "select_options_delete($('item_schedule_users_add_buf'), '#{user[1]}');set_users_json();",	:submit => "schedule_users_table",	:url => "/system/custom_groups/get_users.xml" %></td>
+</tr>
+<% } %>
 </table>
 </div>
-
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $(document).on('change', 'select[id$=_icon]', function() {
-      $(this).siblings('span').attr('class', 'userIcon' + $(this).val());
-    });
-    $('form').on('submit', function() {
-      $('#template').remove();
-    });
-  });
-})(jQuery);
-</script>

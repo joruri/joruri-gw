@@ -1,171 +1,232 @@
-require 'net/http'
+# encoding: utf-8
 class Gw::Admin::LinkSsoController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
-  layout false
+  layout 'base'
 
   def index
+
   end
 
-  def redirect_tab
-    item = Gw::EditTab.find_by(id: params[:id])
-    raise '呼び出しが不正です。' unless item
-
-    @params = {
-      title: item.name,
-      url: item.link_url,
-      method: 'post',
-      account_field: item.field_account,
-      password_field: item.field_pass
-    }
-    render :redirect
+  def redirect_pref_cms
+    id = params[:id]
+    raise Gw::SystemError, '呼び出しが不正です。' if !Gw.int?(id)
+    id = id.to_i
+    item = Gw::EditTab.find_by_id(id)
+    raise Gw::SystemError, '呼び出しが不正です。' if item.blank?
+    redirect_page = <<-EOL
+<html>
+<head>
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>redirect</title>
+<!--JavaScript-->
+<script language="JavaScript">
+<!--
+function PostToAuth(){
+  document.loginform.submit();
+}
+-->
+</script>
+</head>
+<body onLoad="PostToAuth();">
+<form name="loginform" action="#{item.link_url}" method="post" >
+<input type="hidden" name="#{item.field_account}" value="#{Site.user.code}">
+<input type="hidden" name="#{item.field_pass}" value="#{Site.user.password}">
+</form>
+</body>
+</html>
+EOL
+    render :text => redirect_page
   end
 
-  def redirect_link_piece
-    item = Gw::EditLinkPiece.find_by(id: params[:id])
-    raise '呼び出しが不正です。' unless item
 
-    if item.name == 'メール' || item.id == 64 || item.id == 65
-      params[:to] = 'mail'
-      return redirect_to_joruri
-    end
-
-    @params = {
-      title: item.name,
-      url: item.link_url,
-      method: 'post',
-      account_field: item.field_account,
-      password_field: item.field_pass
-    }
-    render :redirect
-  end
-
-  def redirect_portal_adds
-    item = Gw::PortalAdd.find_by(id: params[:id])
-    raise '呼び出しが不正です。' unless item
-
-    @params = {
-      title: item.title,
-      url: item.link_url,
-      method: 'post',
-      account_field: item.field_account,
-      password_field: item.field_pass
-    }
-    render :redirect
-  end
-
-  def redirect_to_external
-    raise '呼び出しが不正です。' if params[:url].blank?
-
-    @params = {
-      url: params[:url],
-      method: params[:method] || 'post',
-      account_field: params[:user_field] || 'systemid',
-      password_field: params[:pass_field] || 'systempasswd'
-    }
-    render :redirect
-  end
-
-  def redirect_to_joruri
-    raise 'リダイレクト先の指定がありません。' unless params[:to]
-
-    @product = System::Product.where(:product_type => params[:to]).first
-    raise 'リダイレクト先の設定がありません。' unless @product
-
-    @uri = request.mobile? ? @product.sso_uri_mobile : @product.sso_uri
-    raise 'リダイレクト先の設定がありません。' unless @uri
-
+ def redirect_to_plus
+    plus_uri = Gw::UserProperty.find(:first,
+              :conditions=>["class_id = ? AND name = ? ",3,"plus_sso"])
+    host = ""
+    host = plus_uri.options unless plus_uri.blank?
+    pass = Site.user.password
+    para = CGI.escape(pass)
+    require 'net/http'
     Net::HTTP.version_1_2
-    http = Net::HTTP.new(@uri.host, @uri.port, Core.proxy_uri.try(:host), Core.proxy_uri.try(:port))
-    if @uri.scheme == 'https'
+    plus_use_ssl = Gw::UserProperty.find(:first,
+      :conditions=>["class_id = ? AND name = ? and options = ?",3,"plus_ssl","true"])
+    if plus_use_ssl.blank?
+      sso_use_ssl = false
+    else
+      sso_use_ssl = true
+    end
+    if sso_use_ssl == true
+      http     = Net::HTTP.new(host, 443)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http_prefix = "https://"
+    else
+      http = Net::HTTP.new(host, 80)
+      http_prefix = "http://"
     end
 
-    @token = nil
-    http.start do |agent|
-      parameters = "account=#{Core.user.code}&password=#{CGI.escape(Core.user.password.to_s)}"
-      parameters << "&mobile_password=#{CGI.escape(Core.user.mobile_password.to_s)}" if request.mobile?
-      response = agent.post(@uri.path, parameters)
-      @token = response.body =~ /^OK/i ? response.body.gsub(/^OK /i, '') : nil
-    end
+    res      = http.post("/_admin/air_sso", "account=#{Site.user.code}&password=#{para}")
+    token    = (res.body.to_s =~ /^OK/i) ? res.body.to_s.gsub(/^OK /i, '') : nil
+    next_uri = "#{http_prefix}#{host}/_admin/air_sso?account=#{Site.user.code}&token=#{token}"
+    next_uri += "&path=#{params[:path]}" unless params[:path].blank?
 
-    unless @token
-      @uri.path = '/'
-      return redirect_to @uri.to_s
-    end
-
-    if request.get?
-      query = "account=#{Core.user.code}&token=#{@token}"
-      query << "&path=#{CGI.escape(params[:path])}" if params[:path]
-      @uri.query = query
-      return redirect_to @uri.to_s
-    end
+    return redirect_to next_uri
   end
 
-  def redirect_to_dcn
-    sso = Gw::DcnApproval.find_by(id: params[:id])
-    return redirect_to "/" if sso.blank?
-
-    sso.options = sso.options.gsub('"','')
-    options = sso.options.split(',')
-    sso_options = []
-    options.each do |o|
-      if o =~ /\{/
-          w_options = o.sub('{','').split(':')
-          if w_options[0]=='url'
-            sso_options << [w_options[0],w_options[1].to_s+':'+w_options[2].to_s]
-          else
-            sso_options << [w_options[0],w_options[1]]
-          end
-      else
-        if o =~ /\}/
-          w_options = o.sub('}','').split(':')
-          if w_options[0]=='url'
-            sso_options << [w_options[0],w_options[1].to_s+':'+w_options[2].to_s]
-          else
-            sso_options << [w_options[0],w_options[1]]
-          end
-        else
-          w_options = o.split(':')
-          if w_options[0]=='url'
-            sso_options << [w_options[0],w_options[1].to_s+':'+w_options[2].to_s]
-          else
-            sso_options << [w_options[0],w_options[1]]
-          end
-        end
-      end
-    end
-
-    options = sso_options.sort
-    return redirect_to "/" unless options.assoc('url')
-    @url = options.assoc('url')[1]
-    return redirect_to "/" unless options.assoc('confirmdocno')
-    @confirmdocno = options.assoc('confirmdocno')[1]
-    return redirect_to "/" unless options.assoc('routetype')
-    @routetype = options.assoc('routetype')[1]
-    # 自動設定
-    unless options.assoc('deptno')
-      options <<['deptno' , "36000-#{Core.user.code}"]
-    end
-    @deptno  = options.assoc('deptno')[1]
-    unless options.assoc('systemid')
-      options << ['systemid' , "#{Core.user.code}"]
-    end
-    @systemid  = options.assoc('systemid')[1]
-    unless options.assoc('systempasswd')
-      pass  = Core.user.password
-      options << ['systempasswd' , "#{pass}"]
-    end
-    @systempasswd  = options.assoc('systempasswd')[1]
-  end
-
-  # deprecated
   def redirect_pref_pieces
-    redirect_link_piece
+    id = params[:id]
+    raise Gw::SystemError, '呼び出しが不正です。' if !Gw.int?(id)
+
+    id = id.to_i
+    if params[:src] == 'tab'
+      item = Gw::EditTab.find_by_id(id)
+    else
+      item = Gw::EditLinkPiece.find_by_id(id)
+    end
+    raise Gw::SystemError, '呼び出しが不正です。' if item.blank?
+
+    if item.name=='メール' or  params[:id].to_i==64 or params[:id].to_i==65
+      if request.mobile?
+        mobile_uri = Gw::UserProperty.find(:first,
+          :conditions=>["class_id = ? AND name = ? ",3,"mobile_mail"])
+        if mobile_uri.blank?
+          redirect_page = redirect_page_mail_mobile(item.link_url, item.field_account, item.field_pass,"mobile_password")
+          return redirect_to(redirect_page)
+        else
+          redirect_page = redirect_page_mail_mobile(mobile_uri.options, item.field_account, item.field_pass,"mobile_password")
+          return redirect_to(redirect_page)
+        end
+      else
+        redirect_page = redirect_page_mail(item.link_url, item.field_account, item.field_pass)
+      end
+    else
+      redirect_page = redirect_page_create(item.link_url, item.field_account, item.field_pass)
+    end
+    render :text => redirect_page
   end
 
-  # deprecated
-  def redirect_pref_soumu
-    redirect_tab
+
+
+
+
+private
+
+  def redirect_page_create(url, field_account, field_pass)
+
+    redirect_page = <<-EOL
+<html>
+<head>
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>redirect</title>
+<!--JavaScript-->
+<script language="JavaScript">
+<!--
+function PostToAuth(){
+  document.loginform.submit();
+}
+-->
+</script>
+</head>
+<body onLoad="PostToAuth();">
+<form name="loginform" action="#{url}" method="post" >
+<input type="hidden" name="#{field_account}" value="#{Site.user.code}">
+<input type="hidden" name="#{field_pass}" value="#{Site.user.password}">
+</form>
+</body>
+</html>
+EOL
+
+    return redirect_page
   end
+
+  def redirect_page_mail(host, field_account, field_pass)
+		uri_base = host
+		_url = uri_base.split(':')
+		host = _url[0]
+		port = _url[1].nil? ? '80' : _url[1]
+		
+    pass = Site.user.password
+    para = CGI.escape(pass)
+    require 'net/http'
+    Net::HTTP.version_1_2
+    http     = Net::HTTP.new(host, port)
+    res      = http.post("/_admin/air_sso", "account=#{Site.user.code}&password=#{para}")
+    token    = (res.body.to_s =~ /^OK/i) ? res.body.to_s.gsub(/^OK /i, '') : nil
+    next_uri = "http://#{uri_base}/_admin/air_sso?account=#{Site.user.code}&token=#{token}"
+
+    redirect_page = <<-EOL
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Language" content="ja">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>Login</title>
+EOL
+
+    if token
+      redirect_page += %Q(<script type="text/javascript">\n//<![CDATA[\n)
+      redirect_page += %Q(location.href = "#{next_uri}";\n)
+      redirect_page += %Q(//]]>\n</script>\n)
+    end
+
+    redirect_page += %Q(</head><body>\n)
+
+    if token.nil?
+      redirect_page += %Q(<div>\n)
+      redirect_page += %Q(ログインに失敗しました。<br />時間をおいてお試しください。<br />\n)
+      redirect_page += %Q(</div>\n)
+    end
+
+    redirect_page += %Q(</body></html>\n)
+
+    return redirect_page
+  end
+
+  def redirect_page_mail_mobile(host, field_account, field_pass,filed_mobile_pass)
+    pass = Site.user.password
+    para = CGI.escape(pass)
+    mobile_pass = Site.user.mobile_password
+    mobile_para = CGI.escape(mobile_pass)
+    require 'net/http'
+    Net::HTTP.version_1_2
+    mobile_use_ssl = Gw::UserProperty.find(:first,
+      :conditions=>["class_id = ? AND name = ? and options = ?",3,"mobile_ssl","true"])
+    if mobile_use_ssl.blank?
+      sso_use_ssl = false
+    else
+      sso_use_ssl = true
+    end
+    if sso_use_ssl == true
+      http     = Net::HTTP.new(host, 443)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http_prefix = "https://"
+    else
+      http = Net::HTTP.new(host, 80)
+      http_prefix = "http://"
+    end
+
+    res      = http.post("/_admin/air_sso", "account=#{Site.user.code}&password=#{para}&mobile_password=#{mobile_para}")
+    token    = (res.body.to_s =~ /^OK/i) ? res.body.to_s.gsub(/^OK /i, '') : nil
+    next_uri = "#{http_prefix}#{host}/_admin/air_sso?account=#{Site.user.code}&token=#{token}"
+
+    return next_uri
+  end
+
 end

@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to  :fy_rel     ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
-  has_many    :staffs  , ->{order('kana')}   ,:foreign_key=>:section_id    ,:class_name=>'Gwsub::Sb04CheckStafflist'
+  has_many    :staffs     ,:foreign_key=>:section_id    ,:class_name=>'Gwsub::Sb04CheckStafflist' , :order=>'kana'
 
   validates_presence_of :code
   validates_presence_of :name
@@ -19,7 +20,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -34,7 +35,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
     unless self.ldap_code.blank?
       g_cond  = "state='enabled' and code='#{self.ldap_code}'"
       g_order = "end_at is null , start_at DESC"
-      group = System::GroupHistory.where(g_cond).order(g_order).first
+      group = System::GroupHistory.find(:first,:conditions=>g_cond,:order=>g_order)
     end
 
     if group.blank?
@@ -48,7 +49,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
     selects = []
 
     g_order = "code, id"
-    items = self.new.find(:all,:order=>g_order)
+    items = self.find(:all,:order=>g_order)
 
     return selects << ['所属未設定','0'] if items.blank?
 
@@ -115,7 +116,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
         else
           csv = CSV.parse(file)
 
-          year_fiscal = Gw::YearFiscalJp.where(:id =>par_item[:fyed_id]).first
+          year_fiscal = Gw::YearFiscalJp.find_by_id(par_item[:fyed_id])
           csv.each_with_index do |row, i|
             error_msg_row = Array.new
             error_csv_row = row.dup
@@ -163,7 +164,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
               else
                 error_msg_row << 'CSVの列数が不正です。'
               end
-
+              
               # エラーメッセージ
               if error_msg_row.empty?
                 import_csv << _csv
@@ -219,7 +220,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
 
     g_cond  = "state='enabled' and code='#{ldap_code}'"
     g_order = "end_at is null , start_at DESC"
-    group = System::GroupHistory.where(g_cond).order(g_order).first
+    group = System::GroupHistory.find(:first,:conditions=>g_cond,:order=>g_order)
     if group.blank?
       ldap_name  = nil
     else
@@ -232,8 +233,9 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
     # codeが存在するかどうかのチェック。コードが返れば存在するとする。
     return nil if section_code.blank?
 
+    cond  = "code='#{section_code}'"
     order = "id"
-    item = Gwsub::Sb04CheckSection.where(:code => section_code).order(order).first
+    item = Gwsub::Sb04CheckSection.find(:first, :conditions=>cond, :order=>order)
     if item.blank?
       ldap_name  = nil
     else
@@ -244,11 +246,17 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
 
   def self.check_fyear_id(fyear_id = nil)
     # 指定fyear_idと、違うデータがないかどうかチェックする。
-    items = self.all
+    items = self.find(:all)
     items.each do |item|
       return false if item.fyear_id.to_i != fyear_id.to_i #違うデータがあればfalse
     end
     return true
+  end
+
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `#{self.table_name}` ;"
+    connect.execute(truncate_query)
   end
 
   def self.set_autoincrement_number
@@ -263,7 +271,7 @@ class Gwsub::Sb04CheckSection < Gwsub::GwsubPref
   def self.import_table(fyear_id = nil)
     Gwsub::Sb04section.destroy_all(:fyear_id=>fyear_id)
     fields = Array.new
-    items = self.all.order(:id)
+    items = self.find(:all, :order => 'id')
 
     self.columns.each do |column|
       fields << "#{column.name}"

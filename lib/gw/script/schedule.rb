@@ -1,82 +1,58 @@
-class Gw::Script::Schedule < System::Script::Base
-
+# encoding: utf-8
+class Gw::Script::Schedule
   def self.delete
-    run do
-      settings = Gw::Property::ScheduleAdminDelete.first_or_new.schedules
-      months = 6 * settings['schedules_admin_delete'].to_i
-      return if months <= 0
-  
-      d1 = Date.today << months
-  
-      log "繰り返しスケジュール削除処理: #{I18n.l(d1)} 以前を削除" do
-        del = 0
-        Gw::ScheduleRepeat.where(["ed_date_at < ?", d1]).find_each do |repeat|
-          if repeat.schedules.all? {|repeat_sche| repeat_sche.todo != 1} && repeat.delete
-            del += 1
-          end
-        end
-        log "#{del} deleted"
-      end
+    puts "#{self}.delete"
+    dump "#{self}.delete"
+    success = 0
+    error   = 0
 
-      log "スケジュール削除処理: #{I18n.l(d1)} 以前を削除" do
-        del = 0
-        Gw::Schedule.where(todo: 0).where("ed_at < ?", d1).find_each do |sche|
-          sche.schedule_props.each {|sp| sp._skip_destroy_actual = true }
-          if sche.destroy
-            del += 1
-          end
-        end
-        log "#{del} deleted"
-      end
+    key = 'schedules'
+    options = {}
+    options[:class_id] = 3
+    settings = Gw::Model::Schedule.get_settings key, options
+    return if settings['schedules_admin_delete'].blank?
+    x = 6 * settings['schedules_admin_delete'].to_i
+    return if x <= 0
 
-      log "テーブル最適化" do
-        Gw::Schedule.optimize_and_analyze_table
-        Gw::ScheduleUser.optimize_and_analyze_table
-        Gw::SchedulePublicRole.optimize_and_analyze_table
-        Gw::ScheduleRepeat.optimize_and_analyze_table
-        Gw::ScheduleProp.optimize_and_analyze_table
-        Gw::ScheduleEvent.optimize_and_analyze_table
+    d1 = Date.today
+    d1 = d1 << x
+    sches = Gw::Schedule.find_by_sql(["select * from gw_schedules where ed_at < :d", {:d => "#{d1.strftime('%Y-%m-%d 0:0:0')}"} ])
+    sches.each do |schedule|
+      if schedule.delete
+        puts "  => success.\n"
+        success += 1
+
+        schedule.schedule_users.each do |schedule_user|
+          schedule_user.delete
+        end
+
+        schedule.schedule_props.each do |schedule_props|
+          schedule_props.delete
+        end
+
+      else
+        puts "  => failed.\n"
+        error   += 1
       end
     end
-  end
 
-  def self.todo_delete
-    run do
-      settings = Gw::Property::TodoAdminDelete.first_or_new.todos
-      months = 6 * settings['todos_admin_delete'].to_i
-      next if months <= 0
-
-      d1 = Date.today << months
-
-      log "ToDo削除処理: #{I18n.l(d1)} 以前を削除" do
-        del = 0
-        Gw::Schedule.where(todo: 1).where(["ed_at < ?", d1]).find_each do |sche|
-          if sche.schedule_todo && sche.schedule_todo.is_finished.to_i == 1 && sche.schedule_todo.todo_ed_at_indefinite.to_i == 0
-            if sche.destroy
-              del += 1
-            end
-          end
-        end
-        log "#{del} deleted"
-      end
-
-      log "繰り返しToDo削除処理: #{I18n.l(d1)} 以前を削除" do
-        del = 0
-        Gw::ScheduleRepeat.where(["ed_date_at < ?", d1]).find_each do |repeat|
-          if repeat.schedules.count == 0 && repeat.delete
-            del += 1
-          end
-        end
-        log "#{del} deleted"
-      end
-
-      log "テーブル最適化" do
-        Gw::Schedule.optimize_and_analyze_table
-        Gw::ScheduleUser.optimize_and_analyze_table
-        Gw::SchedulePublicRole.optimize_and_analyze_table
-        Gw::ScheduleTodo.optimize_and_analyze_table
-        Gw::ScheduleRepeat.optimize_and_analyze_table
-      end
+    repeats = Gw::ScheduleRepeat.find_by_sql(["select * from gw_schedule_repeats where ed_date_at < :d", {:d => "#{d1.strftime('%Y-%m-%d 0:0:0')}"} ])
+    repeats.each do |repeat|
+      repeat.delete
     end
+
+    if success > 0
+      ActiveRecord::Base::connection::execute 'optimize table gw_schedules;'
+      ActiveRecord::Base::connection::execute 'optimize table gw_schedule_users;'
+      ActiveRecord::Base::connection::execute 'optimize table gw_schedule_repeats;'
+      ActiveRecord::Base::connection::execute 'optimize table gw_schedule_props;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_schedules;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_schedule_users;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_schedule_repeats;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_schedule_props;'
+    end
+
+    puts "#{Core.now} - Success:#{success}, Error:#{error}"
+    dump "#{Core.now} - Success:#{success}, Error:#{error}"
   end
 end

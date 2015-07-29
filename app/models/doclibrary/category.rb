@@ -1,35 +1,32 @@
+# -*- encoding: utf-8 -*-
 class Doclibrary::Category < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
   include System::Model::Tree
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::Operator
   include Doclibrary::Model::Systemname
 
-  acts_as_tree order: { sort_no: :asc }
+  acts_as_tree :order => 'sort_no'
 
-  has_many :docs, :foreign_key => :category2_id
-  has_many :files, :foreign_key => :parent_id
-  belongs_to :control, :foreign_key => :title_id
+  validates_presence_of :state
+  after_validation :validate_value
 
-  validates :state, presence: true
-  with_options unless: :state_preparation? do |f|
-    f.validates :wareki, presence: true
-    f.validates :nen, presence: true
-    f.validates :gatsu, presence: true
-    f.validates :sono, presence: true
-  end
 
-  def state_preparation?
-    state == 'preparation'
-  end
+  def validate_value
+    if self.wareki.blank?
+      errors.add :wareki, "を入力してください。"
+    end unless self.state == 'preparation'
 
-  def wiki_enabled?
-    false
-  end
+    if self.nen.blank?
+      errors.add :nen, "を入力してください。"
+    end unless self.state == 'preparation'
 
-  def display_files
-    files
+    if self.gatsu.blank?
+      errors.add :gatsu, "を入力してください。"
+    end unless self.state == 'preparation'
+
+    if self.sono.blank?
+      errors.add :sono, "を入力してください。"
+    end unless self.state == 'preparation'
   end
 
   def link_list_path
@@ -55,4 +52,5 @@ class Doclibrary::Category < Gwboard::CommonDb
   def update_path
     return "/doclibrary/categories/#{self.id}?title_id=#{self.title_id}"
   end
+
 end

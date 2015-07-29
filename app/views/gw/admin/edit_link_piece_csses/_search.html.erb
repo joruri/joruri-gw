@@ -1,0 +1,22 @@
+<% 
+javascript_fname = 'search_submit();'
+blank = [['すべて' , 0], ['今月以降すべて' , 100]]
+year = Date.today.year
+content_for :search do
+  form_tag '', :method => :get, :class => 'search', :name => 'search' do
+%>
+<table class="noBorderTable">
+  <tr>
+    <td>
+      <%= hidden_field_tag('uid', params[:uid]) %>
+      <%= select_tag('s_year' , options_for_select( ((year - 5)..(year + 5)).to_a, @s_year ), :onchange=>"select_year()" ) %> 年
+    </td>
+    <td>
+      <%= select_tag('s_month' , options_for_select( blank + (1..12).to_a, @s_month ), :onchange=>"select_month()" ) %> 月
+    </td>
+  </tr>
+</table>
+<%
+  end
+end
+%>

@@ -5,7 +5,7 @@ headline_at = '4月1日'
 
 unless fyear.blank?
   name_jp = fyear.namejp
-  editable_date = Gwsub::Sb04EditableDate.where(:fyear_id=>fyear.id).first
+  editable_date = Gwsub::Sb04EditableDate.find_by_fyear_id(fyear.id)
   headline_at = "#{editable_date.headline_at.month}月#{editable_date.headline_at.day}日" if !editable_date.blank? && !editable_date.headline_at.blank?
 end
 if name_jp.blank?
@@ -15,14 +15,15 @@ else
 end
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 </div>
 
 <div class="pieceBody">
-<div><h4><%= header_str %></h4></div>
-<%= render 'gwsub/admin/sb04/sb04divideduties/show', base_url: "#{@csv_base_url}" %>
+<%= div_notice %>
+<div><h4><%= h header_str %></h4></div>
+<%= render :partial => 'gwsub/admin/sb04/sb04divideduties/show',:locals=>{:base_url=>"#{@csv_base_url}"} %>
   <div class="btReturn">
   <%= link_to '一覧に戻る',"#{@csv_base_url}?#{@qs}" %>
   </div>

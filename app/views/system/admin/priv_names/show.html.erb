@@ -1,7 +1,7 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
+
 <div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
  <span class="btEdit"><%= link_to "編集", "/system/priv_names/#{@item.id}/edit?#{@qs}" if @item.editable? %></span>
@@ -29,7 +29,7 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '戻る', "/system/priv_names?#{@qs}" %>
+  <%=link_to '戻る', "/system/priv_names?#{@qs}" %>
 </div>
 
 </div>

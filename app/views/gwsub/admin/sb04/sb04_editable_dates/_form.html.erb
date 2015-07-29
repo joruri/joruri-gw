@@ -14,17 +14,24 @@ fyears = Gw::YearFiscalJp.select_dd_markjp_id(nil,6)
 </tr>
 <tr>
 <th>編集開始日<%= required %></th>
-<td><%= f.datetimepicker :start_at %></td>
+<td>
+  <%= date_picker3(f, :start_at, Gw.datetime_str(@item.start_at) , {}) %>
+</td>
 </tr>
 <tr>
 <th>編集終了日<%= required %></th>
-<td><%= f.datetimepicker :end_at %></td>
+<td>
+<%= date_picker3(f, :end_at, Gw.datetime_str(@item.end_at) , {}) %>
+</td>
 </tr>
 <tr>
 <th>見出し日付<%= required %></th>
-<td><%= f.datepicker :headline_at %></td>
+<td>
+<%= date_picker3(f, :headline_at, Gw.date_str(@item.headline_at) , {:time=>false}) %>
+</td>
 </tr>
 </table>
 <div class="preserve">
 <%= f.submit '保存' %>
 </div>
+<%= raw(gw_js_include_full) %>

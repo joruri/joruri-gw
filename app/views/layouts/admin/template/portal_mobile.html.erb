@@ -1,40 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
+
 <meta http-equiv="content-type" content="text/html;charset=<%= request.mobile.default_charset %>" />
 <meta http-equiv="content-style-type" content="text/css" />
 <meta http-equiv="content-script-type" content="text/javascript" />
 <title><%= Page.title || @page_title %> - <%= Site.title -%></title>
 <link rel="stylesheet" type="text/css" href="/layout/portal/mobile.css" />
+
+
 </head>
 <body <%= Page.body_id %>>
 <div id="container">
-<%= render 'layouts/admin/gw/piece_header' %>
-<%= render 'layouts/admin/gw/notice' %>
-
-<% recent_mail = session[:recent_mail] %>
-<% if recent_mail.blank? || recent_mail == "0" || recent_mail == "-1" %>
-<p class="mobileMail">
-<img src="/_common/themes/gw/files/mobile/ic-mobile-mail.gif">
-<%= link_to "メール", "/_admin/gw/link_sso/redirect_to_joruri?to=mail", target: "_blank" -%>
-</p>
-<% else %>
-<p class="mobileMail">
-<img src="/_common/themes/gw/files/mobile/ic-mobile-mail.gif">
-<%= link_to "<b>メール（#{recent_mail}）</b>".html_safe, "/_admin/gw/link_sso/redirect_to_joruri?to=mail", target: "_blank" -%>
-</p>
-<% end %>
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
+<%
+recent_mail = session[:recent_mail]
+if recent_mail == "0" or recent_mail.blank? or recent_mail == "-1"%>
+<p class="mobileMail"><%= link_to  "メール" ,"/_admin/gw/link_sso/64/redirect_pref_pieces",:target=>"_blank" -%></p>
+<%else%>
+<p class="mobileMail"><%= link_to  raw("<b>メール（#{recent_mail}）</b>") ,"/_admin/gw/link_sso/64/redirect_pref_pieces",:target=>"_blank" -%></p>
+<%end%>
 
 <hr class="borderDash"/>
+
 <%= render_component :controller => 'gw/admin/piece/schedules', :action => 'index' %>
+
 <hr class="borderDash"/>
+
 <%= render_component :controller => 'gw/admin/piece/reminder', :action => 'index' %>
 <hr class="borderDouble"/>
 <%= render_component :controller => 'gwboard/admin/piece/portals', :action => 'index' %>
+
 <hr class="borderDouble"/>
 <%= render_component :controller => 'gw/admin/piece/mobile_portal_functions', :action => 'index' %>
+
 <hr class="borderDouble"/>
-<%= render 'layouts/admin/gw/piece_footer' %>
+
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
 <p class="footer"><img src="/_common/themes/gw/files/mobile/footer.gif" border="0" /></p>
 </div>
 </body>

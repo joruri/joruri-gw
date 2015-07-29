@@ -1,13 +1,15 @@
-<%= render '/gw/admin/todos/header' %>
+<%# app/views/gw/admin/todos/index.html.erb %>
+<%=render(:partial => '/gw/admin/todos/header')%>
 <div class="piece todo form">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render(:partial => '/gw/admin/todos/piece_header')%>
 <div class="pieceBody"><div class="pieceBodyBody">
+<%=raw(div_notice)%>
+<%=form_for :item, :url => gw_todo_path(@item), :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f|%>
+<%#=f.error_messages%>
+<%=render(:partial => 'form', :locals => {:f => f})%>
+<%=raw(submit_for_update(f, :caption=>'確定する'))%>
+<%end%>
+</div>
+</div>
+</div>
 
-<%= form_for :item, :url => gw_todo_path(@item), :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
-<%#= f.error_messages%>
-<%= render 'form', f: f %>
-<%= raw(submit_for_update(f, :caption=>'確定する')) %>
-<% end %>
-</div>
-</div>
-</div>

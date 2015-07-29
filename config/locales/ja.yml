@@ -1,13 +1,15 @@
-ja:
-  activerecord:
-    models:
-    attributes:
-    errors:
-      template:
-        header:
-          #one: "%{model}にエラーが発生しました。"
-          one: "入力内容に誤りがあります。"
-          #other: "%{model}に%{count}つのエラーが発生しました。"
-          other: "%{count}個の入力内容に誤りがあります。"
-        # The variable :count is also available
-        body: "次の項目を確認してください。"
+ja: 
+  activerecord: 
+    models: 
+    attributes: 
+  errors:
+    template:
+      header:
+        #one: "%{model}にエラーが発生しました。"
+        one: "入力内容に誤りがあります。"
+        #other: "%{model}に%{count}つのエラーが発生しました。"
+        other: "%{count}個の入力内容に誤りがあります。"
+      # The variable :count is also available
+      body: "次の項目を確認してください。"
+  will_paginate:
+    page_gap: …

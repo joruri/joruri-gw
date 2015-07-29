@@ -1,0 +1,29 @@
+<div class="piece gadget circular">
+
+<div class="pieceHeader"><h3>回覧板</h3></div>
+
+<div class="pieceBody">
+<%if @items.blank?%>
+未読の回覧はありません。
+<%else%>
+<table class="index">
+<%for item in @items%>
+  <tr class="article">
+    <td class="state" style="width: 50px;">
+      <span class="notice"><%=item.status_name_mobile%></span>
+  </td>
+  <td>
+      <%=link_to(item.title, show_path(item))%>
+      <span class="expireDate">回覧期限：<%=item.expiry_date.strftime('%Y-%m-%d %H:%M').to_s %></span>
+    </td>
+  </tr>
+<%end%>
+</table>
+<%end%>
+<div class="bbsContinue">
+<%= link_to '回覧板一覧',"/gwcircular?cond=already"  %>
+</div>
+
+</div>
+
+</div>

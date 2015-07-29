@@ -1,49 +1,89 @@
 <div class="piece bbs">
 <div class="pieceHeader">
-  <h2>掲示板</h2>
+<h2>掲示板</h2>
 </div>
 <div class="pieceBody">
-
 <div class="editingBox">
-  <span class="btEdit"><%= link_to '編集', edit_gwbbs_maker_path(@item) + "?state=#{params[:state]}" %></span>
-  <span class="btDestroy"><%= link_to '削除', gwbbs_maker_path(@item), confirm: '削除をすると元に戻せません。削除しますか', method: :delete %></span>
-  <% if @item.form_name == 'form009' %>
-    <span class="docLink">
-      <%= link_to 'CSV出力 >>', "/gwbbs/csv_exports/#{@item.id}" %>
-      <%= link_to '分類編集画面へ >>', @item.categorys_path %>
-      <%= link_to '公開画面へ >>', @item.docs_path %>
-    </span>
-  <% else %>
-    <span class="docLink">
-      <%= link_to '分類編集画面へ >>', @item.categorys_path %>
-      <%= link_to '公開画面へ >>', @item.docs_path %>
-    </span>
-  <% end %>
+  <span class="btEdit"><%=link_to('編集', edit_gwbbs_maker_path(@item) + "?state=#{params[:state]}") %></span>
+  <span class="btDestroy"><%=link_to('削除', gwbbs_maker_path(@item), :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete) %></span>
+<%if @item.form_name == 'form009'%>
+  <span class="docLink"><%=link_to('CSV出力 >>', "/_admin/gwbbs/csv_exports/#{@item.id}") %><%= link_to '分類編集画面へ &gt;&gt;', @item.categorys_path %><%=link_to('公開画面へ &gt;&gt;', @item.docs_path) %></span>
+<%else%>
+  <span class="docLink"><%= link_to '分類編集画面へ >>', @item.categorys_path %>
+  <%=link_to('公開画面へ >>', @item.docs_path) %></span>
+<%end%>
 </div>
 
 <table class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= @item.states[@item.state] %></td>
-  </tr>
+<tr>
+<th>状態</th>
+<td><%=@item.states[@item.state]%></td>
+</tr>
+</table>
+<table class="show">
+<tr>
+<th>掲示板タイトル</th>
+<td><%= h @item.title%></td>
+</tr>
+<tr>
+<th>一覧表示行数</th>
+<td><%=@item.default_limit%></td>
+</tr>
 </table>
 
 <table class="show">
-  <tr>
-    <th>掲示板タイトル</th>
-    <td><%= @item.title %></td>
-  </tr>
-  <tr>
-    <th>一覧表示行数</th>
-    <td><%= @item.default_limit %></td>
-  </tr>
+<tr>
+<th>管理部門</th>
+<td>
+<% for admingrp in @admingrps %>
+<%=%Q[#{admingrp[2]}]%><br />
+<%end if @admingrps%>
+</td>
+</tr>
+<tr>
+<th>管理者</th>
+<td>
+<% for adm in @adms %>
+<%=%Q[#{adm[2]}]%><br />
+<%end if @adms%>
+</td>
+</tr>
+<tr>
+<th>編集部門設定</th>
+<td>
+<% for editor in @editors %>
+<%=%Q[#{editor[2]}]%><br />
+<%end if @editors%>
+</td>
+</tr>
+<tr>
+<th>編集者設定</th>
+<td>
+<% for sueditor in @sueditors %>
+<%=%Q[#{sueditor[2]}]%><br />
+<%end if @sueditors%>
+</td>
+</tr>
+<tr>
+<th>閲覧部門設定</th>
+<td>
+<% for reader in @readers %>
+<%=%Q[#{reader[2]}]%><br />
+<%end if @readers%>
+</td>
+</tr>
+<tr>
+<th>閲覧者設定</th>
+<td>
+<% for sureader in @sureaders %>
+<%=%Q[#{sureader[2]}]%><br />
+<%end if @sureaders%>
+</td>
+</tr>
 </table>
-
-<%= render '/gwboard/admin/adms/show' %>
-
 <div class="btReturn">
-  <%= link_to '管理一覧へ戻る', gwbbs_makers_path + "?state=#{params[:state]}" %>
+  <%=link_to('管理一覧へ戻る', gwbbs_makers_path + "?state=#{params[:state]}") %>
 </div>
-
 </div>
 </div><!--piece gwfaq-->
+

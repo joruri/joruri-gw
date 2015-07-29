@@ -1,0 +1,39 @@
+<%
+    # 議員控え室　表示用ユーザーアカウント
+    _cond = "class_id=3 and name='pref_only_assembly' and type_name='account' "
+    _order = "class_id desc"
+    only_pref_account   = Gw::UserProperty.find(:first , :conditions=>_cond ,:order=>_order)
+    if only_pref_account.blank?
+      # 未登録時　or テスト
+      only_assembly_user_account = '502'
+    else
+      only_assembly_user_account = only_pref_account.options
+    end
+    if Site.user.code.to_s == only_assembly_user_account
+      location = "/gw/pref_only_assembly"
+    else
+      location = "/"
+    end
+%>
+<div class="piece"><h1><a href="<%= location %>">Joruri Gw</a></h1>
+<div class="personal">
+<% if Site.user %>
+  <% if Site.user.code.to_s == only_assembly_user_account %>
+    <span class="name"><%=h Site.user.name %></span>
+  <% else %>
+    <%=raw %Q(<span class="department">#{Site.user_group.name}</span>) unless Site.user_group.nil? %>
+    <span class="name"><%=h Site.user.display_name %></span>
+  <% end %>
+<% end %>
+</div>
+<div class="logout"><a href="/_admin/logout">ログアウト</a></div>
+<% if Site.user.code.to_s == only_assembly_user_account.to_s %>
+<% else %>
+<!--  <div class="joruricms"><%= Gw.links_to_pref_portal 'sso_pref_portal_joruricms' %></div>-->
+  <div class="previousLogin">
+  前回ログイン日時　<%= Site.user.previous_login_date ?
+       Site.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+       '---' %>
+  </div>
+<% end %>
+</div>

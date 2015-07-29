@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Ldap::User < Sys::Lib::Ldap::Entry
   ## Initializer.
   def initialize(connection, attributes = {})
@@ -45,10 +46,5 @@ class Sys::Lib::Ldap::User < Sys::Lib::Ldap::Entry
   ## Attribute: assigned_job
   def assigned_job
     get(:employeeType)
-  end
-  
-  ## Attribute: group_s_name
-  def group_s_name
-    get(:roomNumber)
   end
 end

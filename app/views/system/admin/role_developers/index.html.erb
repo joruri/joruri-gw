@@ -1,10 +1,11 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
+
 <div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
 
 <div class="editingBox">
   <span class="btNew"><%= link_to '新規作成', "/system/role_developers/new" %></span>
+  <span class="docLink"><%= link_to '管理者権限設定', "/system/roles" %></span>
 </div>
 
 <table class="index">
@@ -18,7 +19,7 @@
       <th>ユーザ/グループ</th>
       <th style="width: 60px; text-align: center;">許可</th>
     </tr>
-    <% @items.each do |item| %>
+    <% for item in @items %>
     <tr class="<%= cycle '', 'cycle' %>">
       <td style="text-align: center;"><%= link_to '詳細', "/system/role_developers/#{item.id}" %></td>
       <td><%= item.role_name.display_name %></td>
@@ -32,7 +33,9 @@
   </tbody>
 </table>
 
+<br/>
 <%= paginate @items %>
+<br/>
 
 </div>
 </div>

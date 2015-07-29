@@ -1,28 +1,29 @@
 <div class="bbsDocList circular">
-<div class="pieceHeader">
-<h2 class="pieceTitle"><%= Page.title %></h2>
-<div class="btsHeaderLeft">
-  <%= render 'header_button' %>
-</div>
-</div>
-
-<div class="pieceBody">
-<%= render 'header' %>
-
-<%= form_for :item, :url => {:action => :update} ,:html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters">
-  <div align="center">
-    <table>
-      <tr>
-        <td><%= submit_for_update(f, :js_submitter => "my_submit('public');", :caption => '公開する') -%></td>
-        <td><%= submit_for_update(f, :js_submitter => "my_submit('draft');", :caption => '下書き') %></td>
-      </tr>
-    </table>
+  <div class="pieceHeader">
+    <h2 class="pieceTitle"><%=@system_title%></h2>
+    <div class="btsHeaderLeft">
+      <%= render :partial => 'header_button' %>
+    </div>
   </div>
-  </div>
-<% end %>
+  <div class="pieceBody">
+    <%= render :partial => 'header' %>
 
-</div>
+    <%= form_for :item, :url => {:action => :update} ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
+      <%= f.error_messages %>
+
+      <%= render :partial => 'form', :locals => {:f => f} %>
+
+      <div class="submitters">
+        <div align="center">
+          <table>
+            <tr>
+              <td><%= submit_for(f,{:caption=>'公開する', :js_submitter => "my_submit('public')"}) %></td>
+              <td><%= submit_for(f,{:caption=>'下書き', :js_submitter => "my_submit('draft')"}) %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
 </div>

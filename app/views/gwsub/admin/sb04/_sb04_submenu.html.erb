@@ -55,7 +55,7 @@ when 'sb04stafflistview_masters'
 else
 end
 %>
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
 <% unless link_str1.blank? %>
 <div class="menu">
 <%= link_to raw(link_str1) , url_for(link_url1)  unless link_str1.blank? %>

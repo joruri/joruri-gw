@@ -1,42 +1,63 @@
-<div class="piece prop index">
-<div class="pieceHeader">
-<%= render 'piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render 'prop_master_menu' %>
-  <%= render 'titleline' %>
-</div>
-<div class="pieceBodyBody">
-<%=  render 'search' -%>
-<% if @items.blank? -%>
-  <%= show_notice -%>
-<% else -%>
-<table class="index">
-  <tr>
-    <th class="action"></th>
-    <th>予約</th>
-    <th>種別</th>
-    <th>名称</th>
-    <th>施設管理所属</th>
-    <th>予約可能所属</th>
-    <th>照会可能所属</th>
-  </tr>
-  <% @items.each do |item| -%>
-  <tr class="<%= cycle '', 'cycle' -%>">
-    <td><%= link_to '詳細', {action: :show, id: item.id} -%></td>
-    <td><%= item.reserved_state_label -%></td>
-    <td><%= safe{item.prop_type.name} -%></td>
-    <td><%= item.name -%></td>
-    <td><%=br item.admin_role_corrected_group_names.join('<br />') -%></td>
-    <td><%=br item.edit_role_corrected_group_names.join('<br />') -%></td>
-    <td><%=br item.read_role_corrected_group_names.join('<br />') -%></td>
-  </tr>
-  <% end %>
-</table>
-<% end -%>
-</div>
-<%= paginate @items %>
+<%
+reserved_state = Gw.yaml_to_array_for_select("t1f0_kyoka_fuka")
+parent_groups = Gw::PropOther.get_parent_groups
+@prop_master = @genre
 
+@hedder2lnk = 2
+@hedder3lnk = 2
+@sp_mode = :prop
+params[:s_genre] = @genre
+
+%>
+<div class="piece prop index">
+  <div class="pieceHeader">
+  <%= render :partial => '/gw/admin/prop_others/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+  <div class="pieceBodyHeader">
+    <%= render(:partial => '/gw/admin/prop_others/prop_master_menu') %>
+    <%= render(:partial => '/gw/admin/prop_others/titleline') %>
+  </div>
+  <div class="pieceBodyBody">
+    <%=  render(:partial => 'search') -%>
+    <% if @items.blank? -%>
+      <%= Gw.div_notice('表示する項目はありません。') -%>
+    <% else -%>
+    <%= div_notice -%>
+    <table class="index">
+      <tr>
+        <th></th>
+        <th>予約</th>
+        <th>種別</th>
+        <th>名称</th>
+        <th>施設管理所属</th>
+        <th>予約可能所属</th>
+        <th>照会可能所属</th>
+      </tr>
+      <% @items.each do | item| -%>
+      <%
+      -%>
+      <tr class="<%= cycle '', 'cycle' -%>">
+        <td><%= link_to('詳細', "/gw/prop_#{@genre}s/#{item.id}?cls=#{@cls}") -%></td>
+        <td><%= reserved_state[item.reserved_state][0] -%></td>
+        <td><%= safe{item.prop_type.name} -%></td>
+        <td><%= item.name -%></td>
+        <td><%= raw(Gw.join [item.admin(:show, parent_groups)], '<br />') -%></td>
+        <td><%= raw(Gw.join [item.editor(:show, parent_groups)], '<br />') -%></td>
+        <td><%= raw(Gw.join [item.reader(:show, parent_groups)], '<br />') -%></td>
+      </tr>
+      <% end %>
+    </table>
+    <% end -%>
+  </div>
+  <%=  nz(paginate(@items)) %>
+
+  </div>
 </div>
-</div>
+<script language = "JavaScript" type="text/javascript">
+//<![CDATA[
+var search_submit = function () {
+  document.forms['search'].submit();
+}
+//]]>
+</script>

@@ -14,14 +14,14 @@
 
 <body id="page-gw-schedules-<%= params[:action] -%>">
 <div id="container">
-<%= render 'layouts/admin/gw/piece_header' %>
-<%= render 'layouts/admin/gw/notice' %>
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
+
 
 <%= yield %>
 
 <hr class="borderDouble"/>
 
-<%= render 'layouts/admin/gw/piece_footer' %>
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
 <p class="footer"><img src="/_common/themes/gw/files/mobile/footer.gif" border="0" /></p>
 </div>
 </body>

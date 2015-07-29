@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingSchedulePropsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
@@ -90,14 +91,14 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulePropsController < Gw::Controller::
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 表示行数　設定
     @limits = nz(params[:limit],30)
     # 研修id
-    @t_id_top = Gwsub::Sb01Training.order("fyear_markjp DESC").first
+    @t_id_top = Gwsub::Sb01Training.find(:first,:order=>"fyear_markjp DESC")
     @t_id = nz(params[:t_id],@t_id_top.id)
     # 経路
     @top_menu = nz(params[:t_menu],'entries')

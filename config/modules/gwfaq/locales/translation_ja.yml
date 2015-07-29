@@ -10,7 +10,6 @@ ja:
         upload_document_file_size_capacity: 添付の総容量制限
         upload_graphic_file_size_max: 画像ファイルのサイズ制限
         upload_document_file_size_max: 添付ファイルのサイズ制限
-        monthly_view_line: 月別件数行数
       gwfaq/category:
         sort_no: 並び順
         name: 名称
@@ -19,10 +18,3 @@ ja:
         title: 質問
         category1_id: 分類
         category1: 分類
-        recognizers: 承認者
-      gwfaq/file:
-        file: ファイル
-        filename: ファイル名
-      gwfaq/image:
-        file: ファイル
-        filename: ファイル名

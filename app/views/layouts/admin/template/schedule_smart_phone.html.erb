@@ -1,8 +1,26 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
 <head>
-<%= render 'layouts/admin/gw/header_tag' %>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
 <title><%= Page.title || @page_title %> - <%= Site.title -%></title>
+<script src="/javascripts/prototype.js" type="text/javascript"></script>
+<script src="/_common/js/rails.js" type="text/javascript"></script>
+<script src="/_common/js/prettyprint.js" type="text/javascript"></script>
+<script src="/_common/js/gw.js" type="text/javascript"></script>
+<script src="/_common/js/effects.js" type="text/javascript"></script>
+<script src="/_common/js/gw_schedules.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/yahoo-dom-event/yahoo-dom-event.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/yahoo/yahoo-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/connection/connection-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/treeview/treeview-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/datasource/datasource-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/dom/dom-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/event/event-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/container/container-min.js" type="text/javascript"></script>
+<script src="/_common/js/yui/build/menu/menu-min.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="/_common/themes/gw/css/print_schedule.css" media="print"/>
 <link rel="stylesheet" type="text/css" href="/layout/schedule/smartphone.css" />
 </head>
@@ -11,7 +29,7 @@
 <div id="smartPhoneContainer">
 <div id="header">
 <div id="headerBody">
-<%= render 'layouts/admin/gw/piece_header' %>
+<%= render :partial => 'layouts/admin/gw/piece_header' %>
 </div>
 </div>
 <!--ここからバナー-->
@@ -22,16 +40,12 @@
 <%= render_component :controller => 'gw/admin/piece/header_menus', :action => 'index', :piece_param => '61' %>
 </div>
 </div>
+
+
 </div>
+
 </div>
 <!--ここまでバナー-->
-
-<div id="navi">
-<div id="naviBody">
-<%= render 'layouts/admin/gw/notice' %>
-</div>
-</div>
-
 <!--ここからナビ2-->
 <div id="navi2">
 <div id="navi2Body">
@@ -80,7 +94,7 @@
 <div id="footerHeader">
 </div>
 <div id="footerBody">
-<%= render 'layouts/admin/gw/piece_footer' %>
+<%= render :partial => 'layouts/admin/gw/piece_footer' %>
 
 </div>
 <div id="footerFooter"></div>

@@ -1,6 +1,6 @@
-<div style="margin: 10px 0;">
-<%= link_to '会派一覧', {action: :index, g_cat: nil} %>
-<% if params[:g_cat].present? && @items.present? %>
-<span>＞</span> <%= link_to @items[0].g_name, {action: :index, g_cat: @items[0].g_order} %>
-<% end %>
-</div>
+<%= link_to '会派一覧' , "#{@public_uri}/" %>
+<%if @g_cat != '0'%>
+　＞　<%= link_to "#{@items[0].g_name}" , "#{@public_uri}/?g_cat=#{@items[0].g_order}" unless @items.blank?%>
+<%end%>
+<br />
+<br />

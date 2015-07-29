@@ -1,0 +1,38 @@
+<%
+cur = nz(@piece_param, "1")
+%>
+<div id="docTab" class="docTab">
+<div class="tabs">
+<%
+uri = ''
+@items.each_with_index do |item, idx|
+  uri = nz(item.other_controller_url, "/tab_main/#{item.tab_keys}")
+  if item.published == 'opened'
+    current = 'current' if item.tab_keys.to_s == cur
+    end_tab = 'endTab' if idx ==  @items.count-1
+    grayout = 'grayout' if item.state == 'disabled'
+    uri = '#void' if item.state == 'disabled'
+    
+    concat raw link_to(item.name.to_s.html_safe, uri, :class => "tab#{idx+1} #{current} #{grayout} #{end_tab}")
+  end
+end
+concat raw link_to('', uri, :class => 'end')
+%>
+</div>
+<%
+potal_display_url = "/gw/schedule_settings/potal_display?url=#{CGI.escape(session[:request_fullpath])}"
+schedule_settings = Gw::Model::Schedule.get_settings 'schedules', {}
+if schedule_settings.present? && schedule_settings.key?(:view_portal_schedule_display) && 
+    nz(schedule_settings[:view_portal_schedule_display], 1).to_i == 0
+
+  class_str = "off"
+  potal_display_str = "スケジュールを表示"
+else
+  class_str = "on"
+  potal_display_str = "スケジュールを非表示"
+end
+-%>
+<div class="btSchedule">
+  <a class="<%= class_str -%>" href="<%= potal_display_url -%>"><%= potal_display_str -%></a>
+</div>
+</div>

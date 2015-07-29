@@ -1,22 +1,29 @@
 <div class="bbsDocList circular">
-<%= render 'gwmonitor/admin/menus/piece_header' %>
+<div class="pieceHeader">
+<h2 class="pieceTitle"><%=@system_title%></h2>
+<div class="btsHeaderLeft">
+<span class="btNew"><%=link_to('新規作成', "/gwmonitor/builders/new")%></span>
+</div>
+<div class="btsHeadeRight"><%=raw(gwmonitor_settings)%></div>
+</div><!--pieceHeader-->
 
 <div class="pieceBody">
-<%= render 'gwmonitor/admin/menus/tabbox' %>
+
+<%=render :partial => 'header' %>
 
 <div class="docsInnerBox">
 <div class="bbsUserform">
 <table class="bbsUserformBody">
-  <tr><td class="docTitle"><span><%=hbr @title.title %></span></td></tr>
+<tr><td class="docTitle"><span><%=hbr(@title.title)%></span></td></tr>
 </table>
 </div>
 </div>
 
-<%= render 'form' %>
+<%=render :partial => 'form' %>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '一覧へ戻る', @title.builder_path %>
+  <%=link_to '管理一覧へ戻る', @title.builder_path %>
 </div>
 </div><!--pieceBody-->
 </div><!--piece gwbbs-->

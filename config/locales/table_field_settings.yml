@@ -1,0 +1,179 @@
+# -*- encoding: utf-8 -*-
+#初期値設定
+
+gw_schedules_settings_ind:
+  _cols: month_view_leftest_weekday:view_place_display:view_portal_schedule_display
+  month_view_leftest_weekday: 月表示左端曜日
+  week_view_piecehead_format: 週表示ピースヘッダ日付書式指定子
+  week_view_dayhead_format: 週表示日ヘッダ書式指定子
+  month_view_piecehead_format: 月表示ピースヘッダ日付書式指定子
+  month_view_dayhead_format: 月表示日ヘッダ書式指定子
+  header_each: n行毎にヘッダを表示(0で最上部のみ)
+  view_place_display: 場所表示
+  view_portal_schedule_display: ポータル画面のスケジューラー表示設定
+gw_schedules_settings_system_default:
+  _cols: month_view_leftest_weekday:view_place_display
+  month_view_leftest_weekday: 1
+  week_view_piecehead_format: "%Y年%m月%d日（%_wd）"
+  week_view_dayhead_format: "%m/%d(%_wd)"
+  month_view_piecehead_format: "%Y年%m月"
+  month_view_dayhead_format: "%_d"
+  header_each: 5
+  view_place_display: 0
+  view_portal_schedule_display: 1
+  # 以下、画面からは設定させない項
+  dayview_button_caption: 日表示
+  weekview_button_caption: 週表示
+  monthview_button_caption: 月表示
+  custom_button_caption: カスタマイズ
+  list_button_caption: 一覧
+  restrict_regist_with_pm_by_operation_time: 1
+  restrict_regist_with_pm_operation_time: 08:30-18:15
+  restrict_regist_with_pm_by_reservation_time: 1
+  restrict_regist_with_pm_reservation_time: 08:30-18:00
+  restrict_regist_with_pm_by_rentcar_reservation_time: 1
+  restrict_regist_with_pm_rentcar_reservation_time: 08:30-18:15
+  schedules_admin_delete: 4
+gw_schedules_month_view_leftest_weekday:
+  0: 日曜日
+  1: 月曜日
+gw_schedule_props_settings_system_default:
+  _cols: guardview_refresh
+  # 以下、画面からは設定させない項
+  guardview_refresh: 300
+  add_memo_send_to_confirm: 1
+  add_memo_send_to_to_confirm: 4777-4782
+  add_memo_send_to_announce: 1
+gw_schedules_admin_delete_term:
+#  0: 削除しない
+#  1: ６ヶ月
+#  2: １年
+  3: １年６ヶ月
+  4: ２年
+  5: ２年６ヶ月
+  6: ３年
+  7: ３年６ヶ月
+gw_memos_settings_system_default:
+  _cols: read_memos_display:unread_memos_display:read_memos_admin_delete:unread_memos_admin_delete
+  read_memos_display: 0
+  unread_memos_display: 3
+  read_memos_admin_delete: 1
+  unread_memos_admin_delete: 1
+gw_memos_display_term:
+  0: 表示しない
+  1: 当日のみ表示する
+  2: ２日間表示する
+  3: ３日間表示する
+  4: ４日間表示する
+  5: ５日間表示する
+gw_memos_admin_delete_term:
+#  0: 削除しない
+  1: ５日
+  2: １０日
+  3: ２０日
+  4: ３０日
+gw_todos_settings_system_default:
+  _cols: read_memos_display:unread_memos_display:todos_admin_delete:todos_display_schedule_done:todos_display_schedule_doing
+  finish_todos_display: 0
+  unfinish_todos_display_start: 4
+  unfinish_todos_display_end: 4
+  todos_admin_delete: 4
+  todos_display_schedule_done: 0
+  todos_display_schedule_doing: 1
+gw_todos_display_term:
+  0: 表示しない
+  1: 当日のみ表示する
+  2: 前日からを表示する
+  3: ２日前からを表示する
+  4: ３日前からを表示する
+  5: ４日前からを表示する
+  6: ５日前からを表示する
+gw_todos_display_start_term:
+  0: 表示しない
+  1: 当日から
+  2: 前日から
+  3: ２日前から
+  4: ３日前から
+  5: ４日前から
+  6: ５日前から
+gw_todos_display_end_term:
+  0: 表示しない
+  1: 当日までを表示する
+  2: 翌日までを表示する
+  3: ２日先までを表示する
+  4: ３日先までを表示する
+  5: ４日先までを表示する
+  6: ５日先までを表示する
+  7: ６日先までを表示する
+  8: ７日先までを表示する
+gw_todos_display_schedule_done:
+  0: 表示しない
+  1: 表示する
+gw_todos_display_schedule_doing:
+  0: 表示しない
+  1: 表示する
+gw_todos_admin_delete_term:
+#  0: 削除しない
+  1: ６ヶ月
+  2: １年
+  3: １年６ヶ月
+  4: ２年
+  5: ２年６ヶ月
+  6: ３年
+  7: ３年６ヶ月
+gw_ssos_settings_ind:
+  _cols: id:pw
+  _password_fields: pw
+  id: ID
+  pw: パスワード
+gw_mobiles_settings_system_default:
+  _cols: ktrans:kmail
+  ktrans: 2
+  kmail: ""
+  admin_email_from: admin@192.168.0.2
+  subject: "[連絡メモ]送信者："
+gw_mobiles_settings_ind:
+  _cols: ktrans:kmail
+  ktrans: r:携帯等メール転送:t1f2_edj
+  kmail: 携帯等メールアドレス
+gw_ind_portal_settings_system_default:
+  max_contents: 20
+gw_ind_portal_pieces_system_default:
+  1:
+    tid: 0
+    sort_no: 10
+    name: ツール/メモ帳
+    title: メモ帳
+    piece: gw-notes
+    genre: tool
+    limit: 5
+    position: main
+  2:
+    tid: 0
+    sort_no: 20
+    name: ツール/リンクピース
+    title: リンクピース
+    piece: gw-ind-link-pieces
+    genre: tool
+    limit: 5
+    position: left
+gw_settings:
+  _cols: schedules:ssos:mobiles
+  schedules: スケジューラ設定
+  ssos: 総務事務システムシングルサインオン設定
+  mobiles: 携帯メール転送設定
+  # 以下、画面からは設定させない項
+  portals: 個人ポータル設定
+  schedule_props: 設備予約設定
+gw_holiday_categories:
+  1: 国民の祝日
+  2: 閉庁日
+  3: 全庁共通イベント
+gw_event_master_range:
+  1: 部局
+  2: 所属
+gw_schedule_pref_admin_default:
+  pref_admin_code: 000001_0
+
+gw_workflow_settings_system_default:
+  admin_email_from: admin@192.168.3.129

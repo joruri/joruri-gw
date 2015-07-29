@@ -1,8 +1,37 @@
-<% if item.schedule_users.present? %>
-<p class="leftPad2"><%= item.participant_title %></p>
+<%
+partitipants = []
+schedule_users.each do |x|
+  begin
+    case x.class_id
+    when 0
+      th = 'すべて'
+      td = ''
+    when 1
+      th = 'ユーザー'
+      user = System::User.find(:first, :conditions => "id=#{x.uid}")
+      if user.blank? || user.state != 'enabled'
+      else
+        partitipants <<  user.display_name
+      end
+
+    when 2
+      th = 'グループ'
+      group = System::Group.find(:first, :conditions => "id=#{x.uid}")
+      if group.blank? || group.state != 'enabled'
+      else
+        partitipants <<  group.name
+      end
+
+    end
+  rescue
+  end
+end
+%>
+<%unless partitipants.blank?%>
+<p class="leftPad2">参加者</p>
 <p class="leftPad1">
-<% item.schedule_users.each do |su| %>
-  <%= su.get_object.try(:display_name) if su.class_id != 0 %><br />
-<% end %>
+<%for p_user in partitipants%>
+<%= p_user%><br />
+<%end%>
 </p>
-<% end %>
+<%end%>

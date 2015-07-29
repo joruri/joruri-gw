@@ -1,37 +1,39 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_members/new.html.erb</p>%>
 <%
 state = Gwsub::Sb01TrainingSchedule.state_show(@ts.state)
 %>
 <table class="show  leftSide">
-  <tr>
-    <th>受付</th>
-    <td><%= state %></td>
-  </tr>
-  <tr>
-    <th>場所</th>
-    <td><%= @ts.prop_name%></td>
-  </tr>
-  <tr>
-    <th>定員</th>
-    <td><%= @ts.members_max %></td>
-  </tr>
-  <tr>
-    <th>申込人数</th>
-    <td><%= @ts.members_current %></td>
-  </tr>
-  <tr>
-    <th>企画所属 </th>
-    <td><%= safe{@ts.training.group_name} %></td>
-  </tr>
-  <tr>
-    <th>企画者</th>
-    <td><%= safe{@ts.training.member_name} %></td>
-  </tr>
-  <tr>
-    <th>連絡先電話番号</th>
-    <td><%= safe{@ts.training.member_tel} %></td>
-  </tr>
-  <tr>
-    <th>最終更新日</th>
-    <td><%= safe{@ts.updated_at.strftime('%Y-%m-%d')} %></td>
-  </tr>
+<tr>
+<th>受付</th>
+<td><%=h state%></td>
+</tr>
+<tr>
+<th>場所</th>
+<td><%=h @ts.prop_name%></td>
+</tr>
+<tr>
+<th>定員</th>
+<td><%=h @ts.members_max%></td>
+</tr>
+<tr>
+<th>申込人数</th>
+<td><%=h @ts.members_current%></td>
+</tr>
+<tr>
+<th>企画所属 </th>
+<td><%=h ass{@ts.training.group_name}%></td>
+</tr>
+<tr>
+<th>企画者</th>
+<td><%=h ass{@ts.training.member_name}%></td>
+</tr>
+<tr>
+<th>連絡先電話番号</th>
+<td><%=h ass{@ts.training.member_tel}%></td>
+</tr>
+<tr>
+<th>最終更新日</th>
+<td><%=h ass{@ts.updated_at.strftime('%Y-%m-%d')} %></td>
+</tr>
 </table>
+

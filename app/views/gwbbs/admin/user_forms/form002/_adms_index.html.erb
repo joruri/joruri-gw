@@ -1,0 +1,16 @@
+<table class="index">
+<tr>
+ <th style="width: 60px; text-align: center;">状態</th>
+ <th style="width: 120px; text-align: center;">研修開始日</th>
+ <th style="width: 120px; text-align: center;">申込締切日</th>
+ <th style="width: 40px; text-align: center;">単位</th>
+</tr>
+<% @items.each do |item| %>
+<tr>
+ <td><%=link_to item.ststus_name, item.show_path%></td>
+ <td><%=item.inpfld_001%></td>
+ <td><%=item.inpfld_002%></td>
+ <td><%=item.inpfld_004%></td>
+</tr>
+<% end %>
+</table>

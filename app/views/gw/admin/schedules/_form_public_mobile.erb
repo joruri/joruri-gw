@@ -5,7 +5,7 @@
 <%= f.radio_button :is_public, 3, :class => 'state'%><label for="item_is_public_3">非公開（参加者のみ）</label><br />
 
 <%
-@public_groups_json = [["1",Core.user_group.id,Core.user_group.name]].to_json if @public_groups_json.blank?
+@public_groups_json = [["1",Site.user_group.id,Site.user_group.name]].to_json if @public_groups_json.blank?
 unless params[:item].blank?
   groups_json = []
   if params[:item][:public_groups].blank?
@@ -13,7 +13,7 @@ unless params[:item].blank?
   else
     params[:item][:public_groups].each do |u|
       if u[1].to_i != 0
-        group_name = System::Group.where(:id => u[1]).first
+        group_name = System::Group.find_by_id(u[1])
         groups_json << ["1",u[1],"#{group_name}"]
       end
     end
@@ -35,7 +35,7 @@ if groups_json.blank?
   selected_field  << ["選択なし",0]
 }
 else
-items = ::JSON.parse(groups_json)
+items = ::JsonParser.new.parse(groups_json)
 limit = items.size - 1
 5.times { |i|
   if i <= limit
@@ -49,7 +49,7 @@ end
 group_cond    = "state='enabled'"
 c_group_cond = group_cond + " AND level_no = 3"
 group_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
-c_groups = System::Group.where(c_group_cond).order(group_order)
+c_groups = System::Group.find(:all,:conditions=>c_group_cond,:order=>group_order)
 groups = [["選択なし",0]]
 c_groups.each{|x|
   groups << ["(#{x.code})#{x.name}", x.id]

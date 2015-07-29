@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01TrainingGuide  < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fyear           ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
   #has_many :training_schedule ,:class_name=>'Gwsub::Sb01TrainingScheduleProp'
@@ -18,15 +19,13 @@ class Gwsub::Sb01TrainingGuide  < Gwsub::GwsubPref
   before_create :before_create_setting_columns
   before_update :before_update_setting_columns
 
-  def self.is_dev?(user = Core.user)
-    user.has_role?('gwsub/developer')
+  def self.is_dev?(uid = Site.user.id)
+    System::Model::Role.get(1, uid ,'gwsub', 'developer')
   end
-
-  def self.is_admin?(user = Core.user)
-    user.has_role?('sb01/admin')
+  def self.is_admin?(uid = Site.user.id)
+    System::Model::Role.get(1, uid ,'sb01', 'admin')
   end
-
-  def self.is_editor?(org_code , g_code = Core.user_group.group_code)
+  def self.is_editor?(org_code , g_code = Site.user_group.group_code)
     return false unless g_code.to_s == org_code.to_s
     return true
   end
@@ -111,8 +110,8 @@ class Gwsub::Sb01TrainingGuide  < Gwsub::GwsubPref
     Gwsub.gwsub_set_editors(self)
   end
   def before_save_setting_columns
-    self.member_id  = Core.user.id
-    self.group_id   = Core.user_group.id
+    self.member_id  = Site.user.id
+    self.group_id   = Site.user_group.id
   end
 
   def self.bbs_docs_link_check(url=nil)
@@ -153,18 +152,20 @@ class Gwsub::Sb01TrainingGuide  < Gwsub::GwsubPref
     return false if title_id.blank?
     return false if doc_id.blank?
 
-    bbs_board_exist = Gwbbs::Control.where("id=#{title_id}").count
+    bbs_board_exist = Gwbbs::Control.count(:all,:conditions=>"id=#{title_id}")
     # 掲示板がみつからなければurl不正
     return false if bbs_board_exist==0
-    bbs_board = Gwbbs::Control.where("id=#{title_id}")
+    bbs_board = Gwbbs::Control.find(:all,:conditions=>"id=#{title_id}")
 
-
+    cnn = Gwbbs::Doc.establish_connection
+    cnn.spec.config[:database] = bbs_board[0].dbname.to_s
+    bbs_doc1 = Gwboard::CommonDb.establish_connection(cnn.spec)
     bbs_doc1 = Gwbbs::Doc.new
-    bbs_doc_exist = bbs_doc1.where("id=#{doc_id} and state='public'").count
+    bbs_doc_exist = bbs_doc1.count(:all,:conditions=>"id=#{doc_id} and state='public'")
     # 公開記事がみつからなければ、リンクきれ
     return false if bbs_doc_exist==0
     # 期限切れは、見せないので、リンクを切る
-    bbs_docs = bbs_doc1.where("id=#{doc_id} and state='public'")
+    bbs_docs = bbs_doc1.find(:all,:conditions=>"id=#{doc_id} and state='public'")
     return false if bbs_docs.blank?
     from_at   = bbs_docs[0].able_date
     to_at     = bbs_docs[0].expiry_date

@@ -1,56 +1,103 @@
-<div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBody">
-<%= render 'header_new_botton' %>
-<%= render 'header_navi' %>
+<%
+  cond  = " state!='deleted' and parent_id=#{@parent.id} "
+  order = " sort_no "
+  max_count = Gw::EditTab.count(:all,:conditions=>cond,:order=>order)
+%>
 
-<% if @items.size == 0 %>
+<div class="piece AdminSetting">
+<%= render :partial => 'header_str' %>
+
+<div class="pieceBody">
+<%= render :partial => 'header_new_botton' %>
+<%= render :partial => 'header_navi' %>
+
+<%= div_notice %>
+<% if max_count==0 %>
 <div class="notice">表示対象がありません。</div>
 <% else %>
 <table class="index">
   <tr>
+  <% unless @parent.level_no == 3 %>
+    <th class="action"><%# 展開 %></th>
+  <% end %>
+  <th class="action"><%# 詳細 %></th>
+  <th class="state">公開</th>
+  <th class="state">状態</th>
+  <th class="sort" colspan="2" >並び順</th>
+  <th class="title">表示名</th>
+  <% if @parent.level_no ==3 %>
+  <th class="url">リンク先URL</th>
+  <th class="ext">接続先区分</th>
+  <th class="sso">SSO利用</th>
+  <% end %>
+  <% if @parent.level_no >= 2 %>
+  <th class="is_public">公開区分</th>
+  <% end %>
+  </tr>
+  <% @c_idx = 0 %>
+  <% @items.each do |item| %>
+    <%
+      f_expand = true
+      if @parent.level_no == 3
+        f_expand = false
+      end
+      if item.other_controller_use == 1
+        f_expand = false
+      end
+    %>
+    <%
+      if item.state == 'enabled'
+        item_state_color = ''
+      else
+        item_state_color = 'class="required"'
+      end
+      if item.published == 'opened'
+        item_published_color = ''
+      else
+        item_published_color = 'class="required"'
+      end
+      if item.state == 'enabled' and item.published == 'opened'
+        item_name_color = ''
+      else
+        item_name_color = 'class="required"'
+      end
+    %>
+    <%
+      @c_idx = @c_idx + 1
+      cond_up   = true
+      cond_down = true
+      if max_count==1
+        cond_up   = false
+        cond_down = false
+      else
+        if @c_idx == 1
+          cond_up = false
+        else
+          if @c_idx == max_count
+            cond_down = false
+          end
+        end
+      end
+    %>
+  <tr class="<%= cycle '', 'cycle' %>">
     <% unless @parent.level_no == 3 %>
-      <th class="action"><%# 展開 %></th>
+      <td><%= link_to '展開' , "/gw/edit_tabs?pid=#{item.id}"  if f_expand == true %></td>
     <% end %>
-    <th class="action"><%# 詳細 %></th>
-    <th class="state">公開</th>
-    <th class="state">状態</th>
-    <th class="sort" colspan="2" >並び順</th>
-    <th class="title">表示名</th>
+    <td><%= link_to '詳細' , "/gw/edit_tabs/#{item.id}?pid=#{@parent.id}" %></td>
+    <td><span <%=raw item_published_color %> ><%= Gw::EditTab.published_show(item.published) %></span></td>
+    <td><span <%=raw item_state_color %> ><%= Gw::EditTab.state_show(item.state) %></span></td>
+    <td class="up" ><%= link_to '▲'   , "/gw/edit_tabs/#{item.id}/updown?pid=#{@parent.id}&order=up"   if cond_up   == true %></td>
+    <td class="down" ><%= link_to '▼'   , "/gw/edit_tabs/#{item.id}/updown?pid=#{@parent.id}&order=down" if cond_down == true %></td>
+    <td><span <%=raw item_name_color %> ><%=raw item.name %></span></td>
     <% if @parent.level_no ==3 %>
-    <th class="url">リンク先URL</th>
-    <th class="ext">接続先区分</th>
-    <th class="sso">リンク種別</th>
+    <td><%= item.link_url %></td>
+    <td><%= Gw::EditTab.external_show(item.class_external) %></td>
+    <td><%= Gw::EditTab.sso_show(item.class_sso) %></td>
     <% end %>
     <% if @parent.level_no >= 2 %>
-    <th class="is_public">公開区分</th>
+    <td><%= Gw::EditTab.is_public_show(item.is_public) %></td>
     <% end %>
   </tr>
-  <% @items.each_with_index do |item, idx| %>
-    <% 
-      uid = did = 0
-      uid = @items[idx-1].id if idx >= 1
-      did = @items[idx+1].id if idx <= @items.length-2
-    %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <% if item.level_no < 4 %>
-        <td><%= link_to '展開', {action: :index, pid: item.id} if item.other_controller_use.to_i != 1 && item.other_controller_use.to_i != 3 %></td>
-      <% end %>
-      <td><%= link_to '詳細', {action: :show, id: item.id, pid: item.parent_id} %></td>
-      <td><span class="<%= 'required' if item.published != 'opened' %>"><%= item.published_label %></span></td>
-      <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
-      <td class="up" ><%= link_to '▲', {action: :updown, id: item.id, order: 'up'} if uid != 0 %></td>
-      <td class="down" ><%= link_to '▼', {action: :updown, id: item.id, order: 'down'} if did != 0 %></td>
-      <td><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=raw item.name %></span></td>
-      <% if @parent.level_no ==3 %>
-      <td><%= item.link_url %></td>
-      <td><%= item.class_external_label %></td>
-      <td><%= item.class_sso_label %></td>
-      <% end %>
-      <% if @parent.level_no >= 2 %>
-      <td><%= item.is_public_label %></td>
-      <% end %>
-    </tr>
   <% end %>
 </table>
 <%= paginate @items %>

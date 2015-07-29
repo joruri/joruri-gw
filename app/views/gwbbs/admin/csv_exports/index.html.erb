@@ -4,7 +4,7 @@
 </div>
 
 <div class="pieceBody">
-<%= render 'header' %>
+<%=render :partial => 'header' %>
 <div class="docsInnerBox">
 
 <div class="bbsUserform">
@@ -14,7 +14,7 @@
 </div>
 </div>
 
-<%= render 'form' %>
+<%= render :partial => 'form' %>
 <!--戻るボタン-->
 <div class="btReturn">
   <%= link_to '掲示板管理詳細へ戻る', "/gwbbs/makers/#{@title.id}" %>

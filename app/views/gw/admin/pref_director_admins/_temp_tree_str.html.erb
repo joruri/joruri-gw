@@ -1,6 +1,0 @@
-<div style="margin: 10px 0;">
-<%= link_to '所属一覧', {action: :temp_index, g_cat: nil} %>
-<% if params[:g_cat].present? && @items[0] %>
-　<span>＞</span>　<%= link_to @items[0].parent_g_name, {action: :temp_index, g_cat: @items[0].parent_g_order} %>
-<% end %>
-</div>

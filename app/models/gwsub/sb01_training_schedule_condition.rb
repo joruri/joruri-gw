@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01TrainingScheduleCondition < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :training_rel   ,:foreign_key=>'training_id'     ,:class_name=>"Gwsub::Sb01Training"
   belongs_to :user_rel       ,:foreign_key=>'member_id'       ,:class_name=>"System::User"
@@ -86,15 +87,6 @@ class Gwsub::Sb01TrainingScheduleCondition < Gwsub::GwsubPref
     Gwsub.gwsub_set_editors(self)
   end
 
-  def states_no
-    [['準備中',1], ['受付中',2], ['締切 ',3], ['終了',4], ['その他 ',5]]
-  end
-
-  def state_label
-    states_no.each {|a| return a[0] if a[1] == state.to_i }
-    return nil
-  end
-
   def repeat_no
     [['なし',1],['あり',2]]
   end
@@ -116,7 +108,7 @@ class Gwsub::Sb01TrainingScheduleCondition < Gwsub::GwsubPref
     new_params = items
     if items[:repeat_flg].to_i ==  2
       unless items[:repeat_weekday].blank?
-        new_params[:repeat_weekday] = items[:repeat_weekday].select(&:present?).join(',').to_s
+        new_params[:repeat_weekday] = items[:repeat_weekday].values.join(',').to_s
       end
     else
     end

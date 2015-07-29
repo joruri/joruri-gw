@@ -1,22 +1,23 @@
+# encoding: utf-8
 class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "組織変更"
     @role_developer  = System::User.is_dev?
     @role_admin      = System::User.is_admin?
     @role_editor     = System::User.is_editor?
     @u_role = @role_developer || @role_admin || @role_editor
-    return error_auth unless @u_role
 
     @limit = nz(params[:limit],30)
     @css = %w(/layout/admin/style.css)
+    return redirect_to "/_admin" unless @u_role
     @start_at = get_start_at
   end
 
   def get_start_at
-    fyears = System::GroupChangeDate.order("start_at DESC").first
+    fyears = System::GroupChangeDate.find(:first , :order=>"start_at DESC")
     if fyears.blank?
       return nil
     end
@@ -40,12 +41,13 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   end
 
   def show
-    @item = Gwboard::RenewalGroup.where(:id => params[:id]).first
+    @item = Gwboard::RenewalGroup.find_by_id(params[:id])
   end
 
   def new
-    @item = Gwboard::RenewalGroup.new(
+    @item = Gwboard::RenewalGroup.new({
       :start_date => @start_at
+    }
     )
   end
 
@@ -56,11 +58,11 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   end
 
   def edit
-    @item = Gwboard::RenewalGroup.where(:id => params[:id]).first
+    @item = Gwboard::RenewalGroup.find_by_id(params[:id])
   end
 
   def update
-    @item = Gwboard::RenewalGroup.where(:id => params[:id]).first
+    @item = Gwboard::RenewalGroup.find_by_id(params[:id])
     @item.attributes = params[:item]
     if @item.save
       flash[:notice]="組織変更データを編集しました"
@@ -72,36 +74,68 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
 
 
   def destroy
-    @item = Gwboard::RenewalGroup.where(:id => params[:id]).first
+    @item = Gwboard::RenewalGroup.find(:first,:conditions=>["id = ?",params[:id]])
     _destroy @item
   end
 
 
   def csvup
-    @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if request.get?
-
-    @item.attributes = params[:item]
-    return unless @item.valid_file?
-
-    items = Gwboard::RenewalGroup.from_csv(@item.file_data)
-    items.each do |item|
-      item.start_date = @start_at
-      if g = System::Group.where(state: 'enabled', code: item.present_group_code).first
-        item.present_group_id = g.id
-      end
-    end
-
-    ret = {:result => true, :count => 0, :error => 0}
-    items.each do |item|
-      if item.save
-        ret[:count] += 1
+    if params[:do] == "up" && params[:item] && params[:item][:file]
+      invalid_filetype = false
+      if params[:item][:file].original_filename =~ /csv/
+        ret = import_csv_data(params,@start_at)
       else
-        ret[:error] += 1
+        invalid_filetype = true
+        ret = {:result => false}
+      end
+      if ret[:result]
+        flash[:notice]="#{ret[:count]}件のデータを登録しました。"
+        return redirect_to url_for({:action=>:index})
+      else
+        if invalid_filetype
+          flash[:notice]="選択された種別と、実際のファイル拡張子が異なっています。"
+        else
+          flash[:notice]="CSVの解析に失敗しました。"
+        end
+        return redirect_to url_for({:action=>:csv_up})
       end
     end
+  end
 
-    redirect_to url_for(action: :index), notice: "#{ret[:count]}件のデータを登録しました。"
+
+  def import_csv_data(params, start_at)
+    require 'csv'
+    column = nil
+    data = nil
+    count = 0
+    csv = NKF.nkf('-w', params[:item][:file].read)
+    CSV.parse(csv) do |row|
+      if column.blank?
+        column = row
+        next
+      else
+        data = {}
+        row.each_with_index{|row_item, i|
+          next if row_item.blank?
+          next if column[i].blank?
+          data[column[i].to_sym] = row_item
+        }
+      end
+      unless data[:present_group_id]
+        present_group = System::Group.new
+        present_group.and "sql", "end_at IS NULL"
+        present_group.and :state , "enabled"
+        present_group.and :code, data[:present_group_code]
+        p_group = present_group.find(:first)
+        data[:present_group_id] = p_group.id if p_group
+      end
+      item = Gwboard::RenewalGroup.new
+      item.start_date = start_at
+      item.attributes = data
+      item.save
+      count += 1
+    end
+    return {:result => true, :count => count}
   end
 
   def do_annual_change(start_at)

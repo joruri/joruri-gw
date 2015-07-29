@@ -1,31 +1,31 @@
 <table class="show">
-  <tr>
-    <th>システム所属状態</th>
-    <td>
-      <% if @item.parent.try(:use_state) == 'public' %>
-        <%= f.radio_buttons :use_state, @item.status_select %></td>
-      <% else %>
-        <%= required '親フォルダの状態が継承されます。' %><%= f.hidden_field :use_state %>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th>所属フォルダ状態</th>
-    <td>
-      <% if @item.state == 'public' %>
-        <%= '記事が存在します。' %>
-      <% else %>
-        <%= '記事がありません。' %>
-      <% end %>
-    </td>
-  </tr>
-  <tr>
-    <th>並び順</th>
-    <td><%= f.text_field :sort_no, :class => 'num sort_no' %></td>
-  </tr>
-  <tr>
-    <th>名称</th>
-    <td><%= f.text_field :name, :class => 'string name', :style => 'width: 200px;' %></td>
-  </tr>
+<%if @parent_state == 'public'%>
+<tr>
+<th>システム所属状態</th>
+<td><%=radio f, :use_state, @item.status_name, :class => 'state' %></td>
+</tr>
+<%else%>
+<tr>
+<th>システム所属状態</th>
+<td><%= required('親フォルダの状態が継承されます。') %><%= f.hidden_field :use_state %></td>
+</tr>
+<%end%>
+<tr>
+<th>所属フォルダ状態</th>
+<%
+  strmsg = '記事が存在します。' if @item.state == 'public'
+  strmsg = '記事がありません。' unless @item.state == 'public'
+%>
+<td><%=strmsg%></td>
+</tr>
+<tr>
+<th>並び順</th>
+<td><%= f.text_field :sort_no, :class => 'num sort_no' %></td>
+</tr>
+<tr>
+<th>名称</th>
+<td><%= f.text_field :name, :class => 'string name', :style => 'width: 200px;' %></td>
+</tr>
 </table>
-<%= render 'doclibrary/admin/docs/hidden_form' %>
+<%= render :partial => 'doclibrary/admin/docs/hidden_form' %>
+

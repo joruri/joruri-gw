@@ -12,10 +12,10 @@ end
 _input = Proc.new do |index, name, width, imeoff|
   _name = f.object_name.to_s + "[_options][#{index}][#{name}]"
   value = ""
-  if safe{params[f.object_name][:_options][index.to_s]}
+  if ass{params[f.object_name][:_options][index.to_s]}
     value = params[f.object_name][:_options][index.to_s][name]
   else
-    eval("value = safe{item.options[#{index}].#{name}}") if value == "" && item.options && item.options[index]
+    eval("value = ass{item.options[#{index}].#{name}}") if value == "" && item.options && item.options[index]
   end
 
   style = ""
@@ -30,17 +30,17 @@ end
 _hidden = Proc.new do |index, name|
   _name = f.object_name.to_s + "[_options][#{index}][#{name}]"
   value = ""
-  if safe{params[f.object_name][:_options][index.to_s]}
+  if ass{params[f.object_name][:_options][index.to_s]}
     value = params[f.object_name][:_options][index.to_s][name]
   else
-    eval("value = safe{item.options[#{index}].#{name}}") if value == "" && item.options && item.options[index]
+    eval("value = ass{item.options[#{index}].#{name}}") if value == "" && item.options && item.options[index]
   end
 
   hidden_field_tag _name, value
 end
 
 
-if safe{params[f.object_name][:_options]}
+if ass{params[f.object_name][:_options]}
   temp_options = params[f.object_name][:_options]
 else
   temp_options = item.options

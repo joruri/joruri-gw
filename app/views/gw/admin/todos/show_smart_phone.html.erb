@@ -1,3 +1,4 @@
+<%# app/views/gw/public/todos/show_mobile.html.erb %>
 <%
 if @item.is_finished.blank?
   finish_str = '完了する'
@@ -9,10 +10,13 @@ end
 %>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/todos/piece_header' %>
+<%=render :partial => '/gw/admin/todos/piece_header'%>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
+
+<%=div_notice -%>
+
 
 <div class="editingBox">
  <span class="btEdit"><%= link_to '編集', "/gw/todos/#{@item.id}/edit" if @item.is_finished != 1 -%></span>
@@ -21,7 +25,7 @@ end
  <span class="btDestroy"><%= link_to_destroy @item.id %></span>
 </div>
 <table class="show">
-  <tr><th>状態</th><td><%= Gw::Todo.finished_show(@item.is_finished) -%></td></tr>
+  <tr><th>状態</th><td><%=h Gw::Todo.finished_show(@item.is_finished) -%></td></tr>
   <tr><th>期限日</th><td><%= @item.ed_at.strftime('%Y-%m-%d %H:%M') unless @item.ed_at.blank?%></td></tr>
   <tr><th>内容</th><td><%= @item.title%></td></tr>
   <tr><th>備考</th><td><%= @item.body%></td></tr>

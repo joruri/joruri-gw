@@ -1,5 +1,5 @@
 <%
-sect = Gwsub::Sb04section.where(:id => @items[0].section_id).first
+sect = Gwsub::Sb04section.find_by_id(@items[0].section_id)
 sect_bbs_url = nil
 seat_str = nil
 unless sect.blank?
@@ -8,12 +8,12 @@ unless sect.blank?
     seat_str = link_to("事務分掌表・座席表", sect_bbs_url, {:target=>"_blank", :title => @bbs_link_title})
   end
 end
-edit_state1 = Gwsub::Sb04stafflist.duties_editable?(Core.user.id , @items[0] , @u_role)
+edit_state1 = Gwsub::Sb04stafflist.duties_editable?(Site.user.id , @items[0] , @u_role)
 unless edit_state1 == true
   edit_state1 = true if @role_sb04_dev && Gwsub::Sb04stafflistviewMaster.is_sb04_dev_group_role(@items[0].fyear_id, @items[0].section_code)
 end
 
-assigned_job  = Gwsub::Sb04assignedjob.where(:id => @items[0].assignedjobs_id).first
+assigned_job  = Gwsub::Sb04assignedjob.find_by_id(@items[0].assignedjobs_id)
 edit_state1 =false unless @menu_header3 == 'sb04divideduties'
 if edit_state1 == true
   jobs_edit_str  = "#{base_url}/#{@items[0].id}/assigned_job_edit?#{@qs}"
@@ -25,7 +25,7 @@ staff                       = Gwsub::Sb04stafflist.new
 staff.fyear_id              = @items[0].fyear_id
 staff.section_id            = @items[0].section_id
 staff.assignedjobs_code_int = nil
-user_no_assigned_count      = staff.find(:all).count
+user_no_assigned_count      = staff.count(:all)
 
 if @items[0].assignedjobs_id.to_i==0
   jobs_name     = @items[0].assignedjobs_name
@@ -99,7 +99,7 @@ end
   </tr>
   <%  @items.each do |d| %>
   <tr>
-    <% edit_state = Gwsub::Sb04stafflist.duties_editable?(Core.user.id , d , @u_role) %>
+    <% edit_state = Gwsub::Sb04stafflist.duties_editable?(Site.user.id , d , @u_role) %>
     <%
     unless edit_state == true
       edit_state = true if @role_sb04_dev && Gwsub::Sb04stafflistviewMaster.is_sb04_dev_group_role(d.fyear_id, d.section_code)
@@ -115,12 +115,12 @@ end
       <% end %>
     </td>
     <% end %>
-    <td style="width:05%; text-align:center;"><%= d.divide_duties_order %></td>
+    <td style="width:05%; text-align:center;"><%= h d.divide_duties_order %></td>
     <td style="width:43%;"><%= hbr d.divide_duties %></td>
-    <td style="width:12%;"><%= d.official_title_name %></td>
-    <td style="width:10%;"><%= d.name %></td>
-    <td style="width:05%;"><%= d.extension %></td>
-    <td ><%= d.remarks %></td>
+    <td style="width:12%;"><%= h d.official_title_name %></td>
+    <td style="width:10%;"><%= h d.name %></td>
+    <td style="width:05%;"><%= h d.extension %></td>
+    <td ><%= h d.remarks %></td>
   </tr>
   <% end %>
   <%# if edit_state1 == true %>

@@ -1,3 +1,20 @@
+<%
+help_select = [['表示する','0'],['表示しない','1']]
+%>
+<script type="text/javascript">
+//<![CDATA[
+  function notesForm(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    } else if (display == '') {
+      obj.innerHTML = '開く▼';
+    }
+    Element.toggle($(changeObjId));
+  }
+//]]>
+</script>
+
 <table class="show">
   <tr>
     <th class="blueIndex">拡張項目</th>
@@ -8,15 +25,17 @@
 </table>
 
 <table id="notes_field_form" border="0" class="show" style="display: none;">
-  <% if @item.is_sysadm? %>
-  <tr style="display: none;">
-    <th class="blueIndex">データベース指定<br /><%= required '※通常は変更不可' %></th>
+<%if @is_sysadm%>
+  <tr>
+    <th class="blueIndex">データベース指定<%= required('<br/>※通常は変更不可') %></th>
     <td><%= f.text_field :dbname, :class=>'mockblock' %></td>
   </tr>
-  <% end %>
+<%else%>
+  <%=hidden_field_tag(:dbname, @item.dbname) %>
+<%end%>
   <tr>
     <th class="blueIndex">右上バナー指定<br />(HTML形式)</th>
-    <td><%= f.text_area :banner, :cols => 84, :rows => 4 , :class => 'string banner'%></td>
+    <td><%= f.text_area :banner , :cols => 84, :rows => 4 , :class => 'string banner'%></td>
   </tr>
   <tr>
     <th class="blueIndex">左上バナー指定<br />(HTML形式)</th>
@@ -52,7 +71,7 @@
   </tr>
   <tr>
     <th class="blueIndex">ヘルプリンク</th>
-    <td><%= f.select :help_display, options_for_select([['表示する','0'],['表示しない','1']], @item.help_display) %></td>
+    <td><%= f.select  :help_display, options_for_select(help_select,@item.help_display) %></td>
   </tr>
   <tr>
     <th class="blueIndex">ヘルプ　URL</th>
@@ -63,17 +82,3 @@
     <td><%= f.text_field :help_admin_url, :size => '80' %></td>
   </tr>
 </table>
-
-<script type="text/javascript">
-//<![CDATA[
-  function notesForm(obj,changeObjId) {
-    var display = document.getElementById(changeObjId).style.display;
-    if (display == 'none') {
-      obj.innerHTML = '閉じる▲';
-    } else if (display == '') {
-      obj.innerHTML = '開く▼';
-    }
-    Element.toggle($(changeObjId));
-  }
-//]]>
-</script>

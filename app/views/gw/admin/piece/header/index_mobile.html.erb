@@ -1,0 +1,27 @@
+<%# app/views/gw/admin/piece/header/index.html.erb %>
+<%
+%>
+<h1>
+<div class="headerTop">
+<%= link_to image_tag('/_common/themes/gw/files/mobile/header-logo.gif', { :border => '0', :alt => 'Joruriグループウェア'}), '/' %>
+</div>
+</h1>
+<% if Site.user %>
+<%#= %Q(<span class="department">&nbsp;&nbsp;#{Site.user_group.name}</span>) unless Site.user_group.nil? %>
+<span class="name"><%=h Site.user.display_name %></span>
+<% end %>
+<hr class="borderDash"/>
+<%
+recent_mail = session[:recent_mail]
+%>
+<%if recent_mail == "0" or recent_mail.blank? or recent_mail == "-1"%>
+<p class="mobileMail"><%= link_to  "メール" ,"/_admin/gw/link_sso/64/redirect_pref_pieces",:target=>"_blank" -%></p>
+<%else%>
+<p class="mobileMail"><%= link_to  raw("<b>メール（#{recent_mail}）</b>") ,"/_admin/gw/link_sso/64/redirect_pref_pieces",:target=>"_blank" -%></p>
+<%end%>
+<!--<span class="previousLogin">
+前回ログイン日時　<%#= Site.user.previous_login_date ?
+     Site.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+     '---' -%>
+</span>-->
+

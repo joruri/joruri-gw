@@ -1,23 +1,71 @@
+<%
+recent_mail = session[:recent_mail]
+if recent_mail == "0" or recent_mail.blank? or recent_mail == "-1"
+  mail_tag = 0
+else
+  mail_tag = recent_mail.to_i
+end
+todos = []
+  %w(todo ).each{|mod|
+      todos += eval("Gw::Model::#{mod.capitalize}.remind.collect{|x| x[:c]='#{mod}'; x}")
+  }
+if todos.size > 0
+  latest_todo = todos.size.to_s
+else
+  latest_todo = 0
+end
+memo = Gw::Memo.new
+memo_cond = Gw::Model::Memo.recv_cond(Site.user.id)
+memo_cond += %Q( and coalesce(is_finished, 0) != 1)
+memos = memo.find(:all,
+        :conditions => memo_cond, :joins=>'left join gw_memo_users on gw_memos.id = gw_memo_users.schedule_id',:select=>'gw_memos.*')
+latest_memo = memos.size
+%>
 <ul>
-  <li class="menu_portal">
-    <span class="menuIcon"><%= link_to "ポータル", "/" -%></span>
-  </li>
-  <li class="menu_mailer">
-    <span class="menuIcon"><%= link_to "メール", "/_admin/gw/link_sso/redirect_to_joruri?to=mail" -%></span>
-    <% if mail_tag != 0 %>
-      <span class="noRead"><%= link_to mail_tag.to_s, "/_admin/gw/link_sso/redirect_to_joruri?to=mail" -%></span>
-    <% end %>
-  </li>
-  <li class="menu_schedules">
-    <span class="menuIcon"><%= link_to "スケジュール", "/gw/schedules/" -%></span>
-  </li>
-  <li class="menu_todo">
-    <span class="menuIcon"><%= link_to "ToDo", "/gw/schedule_todos/" -%></span>
-  </li>
-  <li class="menu_memo">
-    <span class="menuIcon"><%= link_to "連絡メモ", "/gw/memos/" -%></span>
-    <% if (count = latest_memo_count) != 0 %>
-      <span class="noRead"><%= link_to "#{count}", "/gw/memos/" -%></span>
-    <% end %>
-  </li>
+<li class="menu_portal">
+  <span class="menuIcon">
+    <%= link_to  "ポータル","/" -%>
+  </span>
+</li>
+
+<li class="menu_mailer">
+  <span class="menuIcon">
+    <%= link_to  "メール","/_admin/gw/link_sso/64/redirect_pref_pieces" -%>
+  </span>
+  <%if mail_tag != 0%>
+    <span class="noRead">
+      <%= link_to  "#{mail_tag.to_s}","/_admin/gw/link_sso/64/redirect_pref_pieces" -%>
+    </span>
+  <%end%>
+</li>
+
+
+<li class="menu_schedules">
+  <span class="menuIcon">
+    <%= link_to  "スケジュール","/gw/schedules/" -%>
+  </span>
+</li>
+
+
+<li class="menu_todo">
+  <span class="menuIcon">
+    <%= link_to  "ToDo","/gw/todos/" -%>
+  </span>
+  <%if latest_todo != 0%>
+    <span class="noRead">
+      <%= link_to  "#{latest_todo}","/gw/todos/" -%>
+    </span>
+  <%end%>
+</li>
+
+<li class="menu_memo">
+  <span class="menuIcon">
+    <%= link_to  "連絡メモ","/gw/memos/" -%>
+  </span>
+  <%if latest_memo != 0%>
+    <span class="noRead">
+      <%= link_to  "#{latest_memo}","/gw/memos/" -%>
+    </span>
+  <%end%>
+</li>
 </ul>

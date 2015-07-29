@@ -1,23 +1,23 @@
 <h4 class="docFileTitle">ファイル一覧</h4>
 <table class="docformTitle">
-  <tr>
-    <th style="width:200px;text-align: left;">所属名</th>
-    <% if params[:state] != 'CATEGORY' %>
-    <th style="width:200px;text-align: left;">分類名</th>
-    <% end %>
-    <th style="text-align: left;">タイトル</th>
-    <th style="width: 120px; text-align: center;">更新日時</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td><%= gwbd_category_name(@groups, item.section_code) %></td>
-    <% if params[:state] != 'CATEGORY' %>
-    <td><%= gwbd_category_name(@categories, item.category1_id) %></td>
-    <% end %>
-    <td><%= link_to item.title, "#{doclibrary_show_uri(item,params)}#{doclib_params_set_index}" %></td>
-    <td><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') if item.latest_updated_at %></td>
-  </tr>
+<tr>
+  <th style="width:200px;text-align: left;">所属名</th>
+  <% if params[:state] != 'CATEGORY' %>
+  <th style="width:200px;text-align: left;">分類名</th>
   <% end %>
+  <th style="text-align: left;">タイトル</th>
+  <th style="width: 120px; text-align: center;">更新日時</th>
+</tr>
+<% for item in @items %>
+<tr>
+  <td><%= gwbd_category_name(@groups, item.section_code) %></td>
+  <% if params[:state] != 'CATEGORY' %>
+  <td><%= gwbd_category_name(@categories, item.category1_id) %></td>
+  <% end %>
+  <td><%= link_to item.title, "#{doclibrary_show_uri(item,params)}#{doclib_params_set_index}" %></td>
+  <td><%= item.updated_at.strftime('%Y-%m-%d %H:%M') %></td>
+</tr>
+<% end %>
 </table>
 <%= paginate @items %>
-<%= render "#{@title.doclib_form_name}limit_change" %>
+<%= render :partial => "#{@title.doclib_form_name}limit_change" %>

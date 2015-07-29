@@ -1,0 +1,30 @@
+<%# app/views/gw/admin/pref_executive_admins/show.html %>
+<%
+options={
+  'table_name' => 'system_groups',
+  :action=>'show'
+}
+options['field_td_criteria'] = {
+  'code' => Proc.new{|item|
+    if item.level_no.to_i > 2
+      item.code.to_i == 0 ? item.code : sprintf("%06d",item.code.to_i)
+    else
+      item.code
+    end
+#    item.code
+  },
+  '_groups' => Proc.new{|item| item.parent.ou_name  }
+}
+%>
+<div class="showMenu">
+<%=link_to_edit     @item  %>
+<%=link_to_destroy @item  %>
+</div>
+<br />
+<div>
+ユーザーが所属している所属の削除はできません。
+<br />また、削除は、終了日を設定し、状態を「無効」に変更するだけです。現在は、コード・名称の再利用はできませんので、注意してください。
+</div>
+
+<%#= table_to_show2 @item %>
+<%= table_to_show2(@item,options) %>

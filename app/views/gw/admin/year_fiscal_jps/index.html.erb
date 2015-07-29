@@ -1,46 +1,23 @@
+<%#*<p>Find me in app/views/gw/admin/year_fiscal_jps/index.html.erb</p>%>
+<%
+  options={
+    :table_name=>"gw_year_fiscal_jps",
+    :action=>"index",
+    :link_to_show=>1
+    }
+%>
+
 <div class="piece YearFiscalJp">
-<%= render 'header_str' %>
+
+  <%= render :partial => 'header_str' %>
+
 <div class="pieceBody">
-<%= render 'header' %>
-<%= render 'search' %>
+  <%= render :partial => 'header' %>
+  <%= render :partial => 'search' %>
 
- <table class="index">
-  <colgroup class="action"></colgroup>
-  <colgroup class="start_at"></colgroup>
-  <colgroup class="end_at"></colgroup>
-  <colgroup class="fyear"></colgroup>
-  <colgroup class="fyear_f"></colgroup>
-  <colgroup class="markjp"></colgroup>
-  <colgroup class="markjp_f"></colgroup>
-  <colgroup class="namejp"></colgroup>
-  <colgroup class="namejp_f"></colgroup>
-  <tr>
-    <th></th>
-    <th>開始日（西暦）</th>
-    <th>終了日（西暦）</th>
-    <th>年度（西暦）</th>
-    <th>年度（西暦：年度付）</th>
-    <th>年度（記号）</th>
-    <th>年度（記号：年度付）</th>
-    <th>年度（和暦）</th>
-    <th>年度（和暦：年度付）</th>
-  </tr>
-  <% @items.each do |item| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
-      <td><%= item.start_at.strftime('%Y-%m-%d') if item.start_at %></td>
-      <td><%= item.end_at.strftime('%Y-%m-%d') if item.end_at %></td>
-      <td><%= item.fyear %></td>
-      <td><%= item.fyear_f %></td>
-      <td><%= item.markjp %></td>
-      <td><%= item.markjp_f %></td>
-      <td><%= item.namejp %></td>
-      <td><%= item.namejp_f %></td>
-    </tr>
-  <% end %>
-</table>
-
-<%= paginate @items %>
+  <%= raw(table_to_index2 @items,options) %>
+  <%= paginate @items %>
 
 </div>
-</div><!--piece YearFiscalJp-->
+
+</div><!--piece admin_messages-->

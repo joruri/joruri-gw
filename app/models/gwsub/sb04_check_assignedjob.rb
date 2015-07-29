@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fy_rel     ,:foreign_key=>:fyear_id           ,:class_name=>'Gw::YearFiscalJp'
   belongs_to :section    ,:foreign_key=>:section_id         ,:class_name=>'Gwsub::Sb04CheckSection'
@@ -19,7 +20,7 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -30,7 +31,7 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
       else
         order = "code"
         conditions = "fyear_markjp = '#{self.fyear_markjp}' and code = '#{self.section_code}'"
-        section = Gwsub::Sb04CheckSection.where(conditions).order(order).first
+        section = Gwsub::Sb04CheckSection.find(:first,:conditions=>conditions,:order=>order)
         if section.blank?
           self.section_id = 0
         else
@@ -68,7 +69,7 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
   end
 
   def self.csv_check(params)
-
+    
     error_msg = Array.new
     check = Hash::new
     check_ldap_code = Hash::new # コード重複チェック（所属コードと連携するため、他のCSV追加と違ってハッシュとなっていることに注意）
@@ -101,7 +102,7 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
         else
           csv = CSV.parse(file)
 
-          year_fiscal = Gw::YearFiscalJp.where(:id =>par_item[:fyed_id]).first
+          year_fiscal = Gw::YearFiscalJp.find_by_id(par_item[:fyed_id])
           csv.each_with_index do |row, i|
             error_msg_row = Array.new
             error_csv_row = row.dup
@@ -207,11 +208,17 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
   end
 
   def self.check_fyear_id(fyear_id = nil)
-    items = self.all
+    items = self.find(:all)
     items.each do |item|
       return false if item.fyear_id.to_i != fyear_id.to_i #違うデータがあればfalse
     end
     return true
+  end
+  
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `#{self.table_name}` ;"
+    connect.execute(truncate_query)
   end
 
   def self.set_autoincrement_number
@@ -225,7 +232,7 @@ class Gwsub::Sb04CheckAssignedjob < Gwsub::GwsubPref
   def self.import_table(fyear_id = nil)
     Gwsub::Sb04assignedjob.destroy_all(:fyear_id=>fyear_id)
     fields = Array.new
-    items = self.all.order(:id)
+    items = self.find(:all, :order => 'id')
 
     self.columns.each do |column|
       fields << "#{column.name}"

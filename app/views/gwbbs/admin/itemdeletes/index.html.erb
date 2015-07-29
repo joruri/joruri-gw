@@ -1,3 +1,7 @@
+<%
+cron_edit = new_gwbbs_itemdelete_path
+direct_edit = "#{gwbbs_itemdeletes_path}/direct/target_record"
+%>
 <div class="piece bbs">
 <div class="pieceHeader">
 <h2>掲示板記事削除</h2>
@@ -6,22 +10,19 @@
 <div class="editingBox">
 <span class="docLink"><%#link_to('管理者設定 >>', '/gw/config_settings') %></span>
 </div>
-
 <table class="index">
-  <tr>
-    <td style="width: 100px; text-align: center;"><%= link_to '削除設定', action: :new %></td>
-    <td>削除対象期間を設定します。毎日夜間に削除を実行します</td>
-  </tr>
-  <tr>
-    <td style="width: 100px; text-align: center;"><%= link_to '直接削除', action: :edit, id: 0 %></td>
-    <td>管理者が、即時で削除を実行します</td>
-  </tr>
+<tr>
+<td style="width: 100px; text-align: center;"><%=link_to('削除設定', cron_edit)%></td>
+<td>削除対象期間を設定します。毎日午前3時に削除を実行します</td>
+</tr>
+<tr>
+<td style="width: 100px; text-align: center;"><%=link_to('直接削除', direct_edit)%></td>
+<td>管理者が、即時で削除を実行します</td>
+</tr>
 </table>
-
+</div>
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
-</div>
-
+  <%=link_to '管理者設定へ戻る', '/gw/config_settings?c1=1&c2=7' %>
 </div>
 </div><!--piece gwbbs-->

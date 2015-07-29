@@ -1,32 +1,35 @@
+# encoding: utf-8
 class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout 'admin/template/admin'
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = '携帯アクセス設定'
   end
 
   def index
     init_params
-    @user = System::User.where(:code => Core.user.code).first
+    @user = System::User.find_by_code(Site.user.code)
     return http_error(404) if @user.blank?
   end
 
   def access_edit
     init_params
-    @user = System::User.where(:code => Core.user.code).first
+    @user = System::User.find_by_code(Site.user.code)
     return http_error(404) if @user.blank?
   end
 
   def access_updates
     init_params
-    @user = System::User.where(:code => Core.user.code).first
+    @user = System::User.find_by_code(Site.user.code)
     return http_error(404) if @user.blank?
 
     @user.mobile_access = params[:user]['mobile_access'].to_i
     @user.save(:validate => false)
 
-    @mail_user = Sys::User.where(account: Core.user.code).order(:account).first rescue nil
+    u_cond = "account='#{Site.user.code}'"
+    u_order = "account"
+    @mail_user  = Sys::User.find(:first, :conditions => u_cond, :order => u_order) rescue nil
     if @mail_user.blank?
     else
       @mail_user.mobile_access = params[:user]['mobile_access'].to_i
@@ -39,14 +42,14 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
 
   def password_edit
     init_params
-    @user = System::User.where(:code => Core.user.code).first
+    @user = System::User.find_by_code(Site.user.code)
     return http_error(404) if @user.blank?
   end
 
   def password_updates
     init_params
 
-    @user = System::User.where(:code => Core.user.code).first
+    @user = System::User.find_by_code(Site.user.code)
     return http_error(404) if @user.blank?
 
     @user.mobile_password = params[:user]['mobile_password'].to_s
@@ -55,7 +58,9 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
     if ret == true
       @user.save(:validate => false)
       # mail sys_users update
-      @mail_user = Sys::User.where(account: Core.user.code).order(:account).first rescue nil
+      u_cond = "account='#{Site.user.code}'"
+      u_order = "account"
+      @mail_user  = Sys::User.find(:first, :conditions => u_cond, :order => u_order) rescue nil
       if @mail_user.blank?
       else
         @mail_user.mobile_password = params[:user]['mobile_password'].to_s

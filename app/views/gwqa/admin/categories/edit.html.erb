@@ -1,12 +1,12 @@
 <div class="piece gwfaq">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 <div class="pieceBody">
 
 <%= form_for :item, :url => gwqa_category_path(@item,{:title=>params[:title],:parent_id=>params[:parent_id]}), :html => {:method => :put} do |f| %>
 
 <%= f.error_messages %>
 
-<%= render 'form', f: f %>
+<%= render :partial => 'form', :locals => {:f => f} %>
 
 <%= submit_for(f,{:caption=>'編集する'}) %>
 <% end %>

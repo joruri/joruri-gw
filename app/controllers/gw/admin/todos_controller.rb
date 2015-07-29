@@ -1,9 +1,10 @@
+# encoding: utf-8
 class Gw::Admin::TodosController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/todo"
 
-  def pre_dispatch
+  def initialize_scaffold
     @s_finished = params[:s_finished] || '1'
     Page.title = "ToDo"
     @redirect_uri = gw_todos_path({:s_finished=>@s_finished})
@@ -62,7 +63,7 @@ class Gw::Admin::TodosController < Gw::Controller::Admin::Base
     #  @item.ed_at = Gw.date_common(Gw.get_parsed_date(params[:item][:ed_at]))
     #rescue
     #end
-    _create @item, :notice => 'ToDoの登録に成功しました'
+    _create @item, :success_redirect_uri => '/gw/todos/[[id]]', :notice => 'ToDoの登録に成功しました'
   end
 
   def update
@@ -76,7 +77,7 @@ class Gw::Admin::TodosController < Gw::Controller::Admin::Base
     rescue
     end
     @item.attributes = item
-    _update @item, :notice => "ToDoの更新に成功しました"
+    _update @item, :success_redirect_uri => '/gw/todos/[[id]]', :notice => "ToDoの更新に成功しました"
   end
 
   def destroy
@@ -128,28 +129,28 @@ class Gw::Admin::TodosController < Gw::Controller::Admin::Base
   def auth_cndt(item_id)
     if item_id
       item = Gw::Todo.find(item_id)
-      return (Core.user.id != item[:uid])
+      return (Site.user.id != item[:uid])
     end
     return true
   end
   alias authcheck_show show
   def show
-    return error_auth if auth_cndt(params[:id])
+    return authentication_error(403) if auth_cndt(params[:id])
     authcheck_show
   end
   alias authcheck_delete delete
   def delete
-    return error_auth if auth_cndt(params[:id])
+    return authentication_error(403) if auth_cndt(params[:id])
     authcheck_delete
   end
   alias authcheck_update update
   def update
-    return error_auth if auth_cndt(params[:id])
+    return authentication_error(403) if auth_cndt(params[:id])
     authcheck_update
   end
   alias authcheck_destroy destroy
   def destroy
-    return error_auth if auth_cndt(params[:id])
+    return authentication_error(403) if auth_cndt(params[:id])
     authcheck_destroy
   end
 

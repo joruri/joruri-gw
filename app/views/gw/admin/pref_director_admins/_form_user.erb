@@ -1,21 +1,39 @@
-<table border="1" id="selected_directors">
-  <tr>
-    <th>並び順<%= required %></th>
-    <th>Gwに表示</th>
-    <th>役職<%= required %></th>
-    <th>氏名</th>
-    <th>削除</th>
-  </tr>
-  <% ([Gw::PrefDirector.new] + @item.group_directors).each_with_index do |director, i| %>
-    <%= f.fields_for :group_directors, director do |f2| %>
-      <tr data-user-id="<%= director.uid if i != 0 %>" <%=raw %(id="template" style="display:none;") if i == 0 %>">
-        <td><%= f2.text_field :u_order, size: 2, maxlength: 10 %><%= f2.hidden_field :uid %></td>
-        <td><%= f2.check_box :is_governor_view %><%= f2.label :is_governor_view, '表示' %></td>
-        <td><%= f2.text_field :title, size: 25, maxlength: 20 %></td>
-        <td class="u_name"><%= "#{director.u_name} (#{director.u_code})" %></td>
-        <td><%= f2.check_box :_destroy_flag %><%= f2.label :_destroy_flag, '削除' %></td>
-      </tr>
-    <% end %>
-  <% end %>
+<% hidden_users_json_s = hidden_field_tag('init[schedule_users_json]', nz(@users_json) ) %>
+<!--<%=@users_json%>-->
+<%= hidden_users_json_s %>
+
+<%
+  u = Site::user
+  ucls = 1
+  uid = u.id
+  uname = u.name
+%>
+
+<%= hidden_field_tag('init[ucls]', ucls) %>
+<%= hidden_field_tag('init[uid]', uid) %>
+<%= hidden_field_tag('init[uname]', uname) %>
+
+<%= f.fields_for :schedule_users do |schedule_user| %>
+<table border="0" id="schedule_users_table">
+<tr>
+<td class="userChange">
+  <%= select_tag 'item[schedule_users][user_type_id]', Gw.options_for_select(System::Group.get_group_select('','group_', {:add_conditions=>'parent_id='+@parent_gid.to_s}), '', :title=>1), :size=>1,  :style => 'width:300px;', :onchange => 'update_user_cand();', :multiple => false %>
+<br />
+  <%= select_tag 'item[schedule_users][uid]', Gw.options_for_select(System::User.get_user_select(@current_gid), Site.user.id, :title=>1), :size=>10, :style => 'width:300px;', :multiple => true %>
+</td>
+<td class="roleChange">
+  <%= submit_to_remote "", "追加 ↓",:update => "item_schedule_users_add_buf_list" ,:before => "add_users();set_users_json();",	:submit => "schedule_users_table", :url => "/gw/pref_director_admins/get_users.xml" %>
+<br />
+</td>
+<td><br />
+  <%= select_tag 'item[schedule_users_add_buf]', '', :size=>10, :style => 'width:200px;display:none;', :multiple => true %>
+  <%= hidden_field_tag 'item[schedule_users_json]', '' %>
+</td>
+</tr>
+<tr>
+<td colspan="3">
+  <%= render(:partial => 'form_users_table') %>
+</td>
+</tr>
 </table>
-</div>
+<% end %>

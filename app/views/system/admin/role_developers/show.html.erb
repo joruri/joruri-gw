@@ -1,8 +1,7 @@
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%= render :partial => 'header' %>
 
+<div class="pieceBody">
 <div class="editingBox">
  <span class="btEdit"><%= link_to "編集" , "/system/role_developers/#{@item.id}/edit" if @item.editable? %></span>
  <span class="btDestroy"><%= link_to "削除" , "/system/role_developers/#{@item.id}", :confirm => "削除して、よろしいですか？", :method => :delete if @item.deletable? %></span>
@@ -37,7 +36,7 @@
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to '戻る', "/system/role_developers" %>
+  <%=link_to '戻る', "/system/role_developers" %>
 </div>
 
 </div>

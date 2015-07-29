@@ -1,11 +1,18 @@
+<%
+  @action = "create"
+  @create_path = "#{@public_uri}/"
+%>
+
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
+
+<%= render :partial => 'header_str' %>
+
 <div class="pieceBody">
-<%= render 'header_new_botton' %>
-
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, id: "itemForm", multipart: true} do |f| %>
-  <%= render 'form', f: f %>
-<% end %>
-
+  <%= render :partial => 'header_new_botton' %>
+  <%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+  <%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:id => "itemForm", :multipart => true} do |f| %>
+    <%= render :partial => 'form', :locals => {:f => f} %>
+  <% end  %>
 </div>
+
 </div>

@@ -1,0 +1,20 @@
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab1_class += ' current' if params[:cond].blank?
+str_tab2_class += ' current' if params[:cond] == 'block'
+%>
+<!--タブ-->
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=str_tab1_class%>"><%=link_to "通知", "#{Site.current_node.public_uri}#{params[:parent_id]}/commissions" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%=link_to "非通知", "#{Site.current_node.public_uri}#{params[:parent_id]}/commissions?cond=block" %></td>
+<td class="spaceRight">
+</td></tr>
+</tbody>
+</table>
+</div><!--tabBox-->

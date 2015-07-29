@@ -14,7 +14,6 @@ ja:
         required_entry: ""
         group_code: ""
         group_repeat: ""
-        group_name: グループ名称
       questionnaire/preview:
         state: ""
         field_001: ""
@@ -92,7 +91,6 @@ ja:
         title: "設問内容"
         post_permit_value: ""
         required_entry: ""
-        group_name: グループ名称
       questionnaire/template_preview:
         state: ""
         field_001: ""

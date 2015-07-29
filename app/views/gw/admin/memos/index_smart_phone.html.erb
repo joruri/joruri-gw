@@ -1,36 +1,41 @@
+<%
+@s_finised = nz(params[:s_finished],'1')
+send_cls = nz(params[:s_send_cls], 1).to_s
+%>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/memos/piece_header' %>
+<%= render :partial => '/gw/admin/memos/piece_header' %>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'search' %>
-<%= render 'tabmenu' %>
+<%= render(:partial => 'search') %>
+<%= memos_tabbox_struct send_cls, @qsa %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <div id="contentTable">
-<% if @items.blank? %>
+<%if @items.blank?%>
 <div class="notice">表示対象がありません</div>
-<% else %>
+<%else%>
 <table class="index" id="contentTable">
-  <tr>
-    <th class="state">状態</th>
-    <th>相手</th>
-    <th>時刻</th>
-  </tr>
-  <% @items.each do |item| -%>
-  <tr>
-    <td rowspan="2">
-      <% if item.is_finished? %>
-        <%= item.is_finished_label %>
-      <% else %>
-        <span class="textRed"><%= item.is_finished_label %></span>
-      <% end %>
-    </td>
-    <td><%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%></td>
-    <td><%= Gw.date_common(item.ed_at) -%></td>
-  </tr>
-  <tr>
-    <td colspan="2"><%= link_to item.title, {action: :show, id: item.id} %></td>
-  </tr>
+<th class="state">状態</th>
+<th>相手</th>
+<th>時刻</th>
+</tr>
+<%  @items.each do |item| -%>
+<%if item.is_finished.blank?
+
+finised_str = %Q(<span class="textRed">#{item._is_finished}</span>)
+else
+finised_str = %Q(#{item._is_finished})
+end
+%>
+<tr>
+<td rowspan="2"><%=raw(finised_str)%></td>
+<td><%= item._send_cls(@s_send_cls) -%></td>
+<td><%= Gw.date_common(item.ed_at) -%></td>
+</tr>
+<tr>
+<td colspan="2"><%=link_to h(item.title), "/gw/memos/#{item.id}?s_send_cls=#{@s_send_cls}&s_finished=#{@s_finised}"%></td>
+</tr>
 <% end -%>
 </table>
 <%= paginate @items %>
@@ -41,3 +46,4 @@
 <div id="loadImg" style="display: none;">Now Loading...</div>
 </div>
 </div>
+

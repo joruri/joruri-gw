@@ -1,11 +1,19 @@
 <%
-titles = {
-  'gwbbs' => '掲示板',
-  'gwfaq' => 'ＦＡＱ',
-  'gwqa' => 'Ｑ＆Ａ',
-  'doclibrary' => '書庫',
-  'digitallibrary' => '電子図書'
-}
+s_title = ''
+case params[:system].to_s
+when 'gwbbs'
+  s_title = '掲示板'
+when 'gwfaq'
+  s_title = 'ＦＡＱ'
+when 'gwqa'
+  s_title = 'Ｑ＆Ａ'
+when 'doclibrary'
+  s_title = '書庫'
+when 'digitallibrary'
+  s_title = '電子図書'
+else
+  s_title = ''
+end
 %>
 <div class="bbsDocList">
 <div class="pieceHeader">
@@ -13,29 +21,40 @@ titles = {
 </div><!--pieceHeader-->
 <!--カラム用タグ-->
 <div class="pieceBanner">
-<h3><%= titles[params[:system]] %>更新一覧</h3>
+<h3><%=s_title%>更新一覧</h3>
 <div class="helpBox">
 </div>
 </div>
 <div class="pieceBody">
-<%= render 'header' %>
+<%=render :partial => 'header' %>
 <table class="index">
-  <tr>
-    <th style="width:220px; text-align: left;"></th>
-    <th>記事タイトル</th>
-    <th style="width:160px; text-align: left;">記事管理所属</th>
-    <th style="width:120px; text-align: left;">最終更新日時</th>
-  </tr>
-  <% @items.each do |item| %>
-  <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: left;"><%= item.control.title %></td>
-    <td style="text-align: left;"><%= link_to item.title, item.portal_show_path %></td>
-    <td style="text-align: left;"><%= item.section_name %></td>
-    <td style="text-align: left;"><%=l item.latest_updated_at if item.latest_updated_at %></td>
-  </tr>
-  <% end %>
+<tr>
+<th style="width:220px; text-align: left;"></th>
+<th>記事タイトル</th>
+<th style="width:160px; text-align: left;">記事管理所属</th>
+<th style="width:120px; text-align: left;">最終更新日時</th>
+</tr>
+<%unless @admin_items.blank?%>
+<%for item in @admin_items%>
+<tr class="<%= cycle '', 'cycle' %>">
+<td style="text-align: left;"><%=item.board_name%></td>
+<td style="text-align: left;"><%=link_to(item.title,item.url)%></td>
+<td style="text-align: left;"><%=item.editordivision%></td>
+<td style="text-align: left;"><%=item.latest_updated_at.strftime('%y-%m-%d %H:%M').to_s %></td>
+</tr>
+<%end%>
+<%end%>
+
+<%for item in @items%>
+<tr class="<%= cycle '', 'cycle' %>">
+<td style="text-align: left;"><%=item.board_name%></td>
+<td style="text-align: left;"><%=link_to(item.title,item.url)%></td>
+<td style="text-align: left;"><%=item.editordivision%></td>
+<td style="text-align: left;"><%=item.latest_updated_at.strftime('%y-%m-%d %H:%M').to_s %></td>
+</tr>
+<%end%>
 </table>
-<%= paginate @items %>
-<div class="btReturn"><%= link_to 'ポータルへ戻る', '/' %></div>
+<%=paginate @items %>
+<div class="btReturn"><%=link_to('ポータルへ戻る', '/') %></div>
 </div><!--pieceBody-->
 </div><!--piece gwbbs-->

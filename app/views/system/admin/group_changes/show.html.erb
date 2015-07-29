@@ -1,7 +1,7 @@
 <div class="piece AdminSetting AdminGroups">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'navi' %>
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => 'navi' %>
 
 <table class="show">
   <tr>
@@ -31,10 +31,8 @@
     <td><%= @item.present_group_name %></td>
   </tr>
 </table>
-
-<div class="btReturn">
-  <%= link_to '戻る', system_group_changes_path %>
-</div>
-
+    <div class="btReturn">
+      <%=link_to '戻る', system_group_changes_path %>
+    </div>
 </div>
 </div>

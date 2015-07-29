@@ -1,13 +1,14 @@
+<%
+  @edit_path = "/system/role_names/#{@item.id}"
+%>
 <div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%= render :partial => 'header' %>
 
-<%= form_for :item, :url => "/system/role_names/#{@item.id}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+<div class="pieceBody">
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
   <%= submit_for(f, {:caption => '保存'}) %>
 <% end %>
-
 </div>
 </div>

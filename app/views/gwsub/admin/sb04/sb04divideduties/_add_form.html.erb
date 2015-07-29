@@ -11,7 +11,7 @@ assignedjobs    = Gwsub::Sb04assignedjob.sb04_assignedjobs_id_select(@item.fyear
 # 職名選択肢
 official_titles = Gwsub::Sb04officialtitle.sb04_official_titles_id_select(@item.fyear_id)
 staff_id = params[:show]
-staff = Gwsub::Sb04stafflist.find_by(:id, staff_id)
+staff = Gwsub::Sb04stafflist.find_by_id(staff_id)
 if staff.blank?
   assigned_jobs_id = 0
 else
@@ -28,7 +28,7 @@ if staff.assignedjobs_id.to_i==0
 else
   user_cond  = "fyear_id=#{@item.fyear_id} and section_id=#{grped_id} and assignedjobs_id != #{assigned_jobs_id} and multi_section_flg = '1'"
 end
-users                       = Gwsub::Sb04stafflist.where(user_cond).order(user_order).collect{|x|[x.name,x.id]}
+users                       = Gwsub::Sb04stafflist.find(:all,:conditions=>user_cond,:order=>user_order).collect{|x|[x.name,x.id]}
 # ユーザー選択初期値
 user_id                     = 0
 if @item.id.to_i==0

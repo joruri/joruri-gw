@@ -1,6 +1,7 @@
+# encoding: utf-8
 class Sys::Admin::AirController < ApplicationController
   include Sys::Controller::Admin::Auth
-  layout false
+  layout 'base'
 
   protect_from_forgery :except => [:old_login, :login]
 
@@ -45,7 +46,7 @@ class Sys::Admin::AirController < ApplicationController
       c.and :air_login_id, 'IS NOT', nil
       c.and :air_login_id, 'LIKE', "#{System::User.escape_like(token)} %"
     end
-    user = System::User.where(cond.where).first
+    user = System::User.find(:first, :conditions => cond.where)
     return render(:text => "ログインに失敗しました。") unless user
 
     token, enc_password = user.air_login_id.split(/ /)
@@ -56,6 +57,7 @@ class Sys::Admin::AirController < ApplicationController
     user.password = Util::String::Crypt.decrypt(Base64.decode64(enc_password))
 
     set_current_user(user)
+    System::Session.delete_past_sessions_at_random
 
     redirect_to @admin_uri
   end

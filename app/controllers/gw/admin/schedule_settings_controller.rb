@@ -1,41 +1,64 @@
+# encoding: utf-8
 class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/schedule"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "スケジュール個人設定画面"
   end
 
-  def init_admin_deletes
+  def admin_deletes
+    check_gw_system_admin
+    return http_error(403) unless @is_sysadm
+    
     @css = %w(/_common/themes/gw/css/schedule.css)
+    key = 'schedules'
+    options = {}
+    options[:class_id] = 3
+    @item = Gw::Model::Schedule.get_settings key, options
     Page.title = "削除設定 - #{Page.title}"
   end
 
-  def admin_deletes
-    init_admin_deletes
-    return error_auth unless Core.user.has_role?('_admin/admin')
-
-    @item = Gw::Property::ScheduleAdminDelete.first_or_new
-  end
-
   def edit_admin_deletes
-    init_admin_deletes
-    return error_auth unless Core.user.has_role?('_admin/admin')
+    check_gw_system_admin
+    return http_error(403) unless @is_sysadm
+    
+    @css = %w(/_common/themes/gw/css/schedule.css)
+    Page.title = "削除設定 - #{Page.title}"
+    key = 'schedules'
+    options = {}
+    options[:class_id] = 3
 
-    @item = Gw::Property::ScheduleAdminDelete.first_or_new
-    @item.options_value = params[:item]
+    _params = params[:item]
+    hu = nz(Gw::Model::UserProperty.get(key.singularize, options), {})
+    default = Gw::NameValue.get_cache('yaml', nil, "gw_#{key}_settings_system_default")
 
-    if @item.save
-      flash_notice('スケジュール削除設定処理', true)
-      redirect_to "/gw/config_settings?c1=1&c2=7"
+    hu[key] = {} if hu[key].nil?
+    hu_update = hu[key]
+    hu_update['schedules_admin_delete']     = _params['schedules_admin_delete']
+    hu_update['month_view_leftest_weekday'] = '1'
+    hu_update['view_place_display']         = '0' 
+    
+    ret = Gw::Model::UserProperty.save(key.singularize, hu, options)
+    if ret == true
+       flash_notice('スケジュール削除設定処理', true)
+       redirect_to "/gw/config_settings?c1=1&c2=7"
     else
-      render :admin_deletes
+      respond_to do |format|
+        format.html {
+          hu_update['errors'] = ret
+          hu_update.merge!(default){|k, self_val, other_val| self_val}
+          @item = hu[key]
+          render :action => "admin_deletes"
+        }
+        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
+      end
     end
   end
 
   def export
-    uid = Core.user.id
-    gid = Core.user.user_groups[0].id
+    uid = Site.user.id
+    gid = Site.user.user_groups[0].id
     d1 = Date.today - 365 * 3
     d2 = Date.today + 365 * 3
     sche = Gw::Schedule.new
@@ -63,7 +86,7 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
     @items = parent_items
     ical = Gw::Controller::Schedule.convert_ical( @items )
     filename = "schedules.ics"
-    send_data( ical,:filename => filename,:status => 200)
+    send_download "#{filename}", ical
   end
 
   def import
@@ -110,7 +133,7 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
           file_data =  NKF::nkf('-w',tempfile.read)
       end
       require 'ri_cal'
-      categories = I18n.t('enum.gw/schedule.title_category_id').invert
+      categories = Gw::NameValue.get_cache('yaml', nil, "gw_schedules_title_categories")
       begin
         cals = RiCal.parse_string( file_data )
       rescue Exception => e
@@ -142,15 +165,15 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
         _params[:item][:memo]  = "#{event.description}"
         _params[:item][:place] = "#{event.location}"
         _params[:item][:schedule_props_json] = "[]"
-        _params[:item][:schedule_users_json] = "[[\"1\", \"#{Core.user.id}\", \"#{Core.user.name}\"]]"
+        _params[:item][:schedule_users_json] = "[[\"1\", \"#{Site.user.id}\", \"#{Site.user.name}\"]]"
         _params[:item][:public_groups_json] = '["", "", ""]'
-        _params[:item][:owner_uid] = "#{Core.user.id}"
-        _params[:item][:creator_uid] = "#{Core.user.id}"
-        _params[:item][:creator_gid] = "#{Core.user_group.id}"
+        _params[:item][:owner_uid] = "#{Site.user.id}"
+        _params[:item][:creator_uid] = "#{Site.user.id}"
+        _params[:item][:creator_gid] = "#{Site.user_group.id}"
         _params[:item][:is_public] = "3"
         _params[:item][:st_at] = "#{dtstart.strftime('%Y-%m-%d %H:%M')}"
         event.categories_property.map{|category|
-          _params[:item][:title_category_id] = categories[category.to_s.gsub(':','')]
+          _params[:item][:title_category_id] = categories.index(category.to_s.gsub(':',''))
         }
         if dtstart.class == Class::Date || ( dtstart == dtend - 1 && dtstart.hour == 0 && dtstart.min == 0)
           _params[:item][:allday_radio_id] = '2'
@@ -262,11 +285,11 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
               _params[:item][:memo]  = "#{row[6]}"
               _params[:item][:place] = "#{row[7]}"
               _params[:item][:schedule_props_json] = "[]"
-              _params[:item][:schedule_users_json] = "[[\"1\", \"#{Core.user.id}\", \"#{Core.user.name}\"]]"
+              _params[:item][:schedule_users_json] = "[[\"1\", \"#{Site.user.id}\", \"#{Site.user.name}\"]]"
               _params[:item][:public_groups_json] = '["", "", ""]'
-              _params[:item][:owner_uid] = "#{Core.user.id}"
-              _params[:item][:creator_uid] = "#{Core.user.id}"
-              _params[:item][:creator_gid] = "#{Core.user_group.id}"
+              _params[:item][:owner_uid] = "#{Site.user.id}"
+              _params[:item][:creator_uid] = "#{Site.user.id}"
+              _params[:item][:creator_gid] = "#{Site.user_group.id}"
               _params[:item][:is_public] = "3"
               _params[:init][:repeat_mode] = "1"
 
@@ -336,17 +359,45 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
     end
   end
 
-  def portal_display
-    @item = Gw::Property::ScheduleSetting.where(uid: Core.user.id).first_or_new
+  def potal_display
+    redirect_url = params[:url].to_s
 
-    if @item.view_portal_schedule_display == '1'
-      @item.view_portal_schedule_display = '0'
-    else
-      @item.view_portal_schedule_display = '1'
+    key = 'schedules'
+    hu = nz(Gw::Model::UserProperty.get(key.singularize), nil)
+    if hu.blank?
+      hash = {key => {}}
+      trans_raw = Gw::NameValue.get('yaml', nil, "gw_#{key}_settings_ind")
+      cols = trans_raw['_cols'].split(":")
+
+      default = Gw::NameValue.get('yaml', nil, "gw_#{key}_settings_system_default")
+      cols.each do |col|
+        hash[key][col] = default[col].to_s
+      end
+      hu = hash
     end
 
-    @item.save
+    hu[key]['view_portal_schedule_display'] = '1' unless hu[key].key?('view_portal_schedule_display')
 
-    redirect_to params[:url].to_s
+    hu_update = hu[key]
+    if hu_update['view_portal_schedule_display'] == '1'
+      hu_update['view_portal_schedule_display'] = '0'
+    else
+      hu_update['view_portal_schedule_display'] = '1'
+    end
+
+    ret = Gw::Model::UserProperty.save(key.singularize, hu, {})
+
+    if ret == true
+      redirect_to redirect_url
+    else
+      redirect_to redirect_url
+    end
   end
+protected
+  
+  def check_gw_system_admin
+    @is_sysadm = System::Model::Role.get(1, Site.user.id ,'_admin', 'admin') || 
+      System::Model::Role.get(2, Site.user_group.id ,'_admin', 'admin')
+  end
+
 end

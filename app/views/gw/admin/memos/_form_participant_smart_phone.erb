@@ -1,10 +1,55 @@
+
+<%= hidden_field_tag 'init[schedule_users_json]', (params[:item].nil? ? nz(@users_json) : params[:item][:schedule_users_json]) %>
 <%
-@item.selected_receiver_uids ||= @item.memo_users.map(&:uid)
+if params[:item].blank?
+ users_json = @users_json
+else
+ users_json = params[:item][:schedule_users_json]
+end
+selected_field = []
+
+if users_json.blank?
+10.times { |i|
+  selected_field  << ["選択なし",0]
+}
+else
+items = ::JsonParser.new.parse(users_json)
+limit = items.size - 1
+10.times { |i|
+  if i <= limit
+    selected_field  << [items[i][2],items[i][1]]
+  else
+    selected_field  << 0
+  end
+}
+end
+users = System::User.get_user_select(nil, nil, {:ldap => 1})
+users << ["選択なし",0]
+users = users.sort{|a,b|
+a[1] <=> b[1]
+}
+select_style ='width:200px;margin-top: 5px;'
 %>
+
+
 <table class="show">
-  <tr><th>送り先</th></tr>
-  <% Gw::Memo.receiver_options(@item.selected_receiver_uids, with_image_class: true).each do |option| %>
-    <tr><td><%= option[0] %><%= hidden_field_tag 'item[selected_receiver_uids][]', option[1] %></td></tr>
-  <% end %>
+<tr><th>送り先</th></tr>
+
+<%10.times { |i|%>
+<%= hidden_field_tag "item[schedule_users][uid_#{i+1}]", (selected_field[i][1].to_i) %>
+<%user = System::User.find_by_id(selected_field[i][1])%>
+<%unless user.blank?%>
+<%
+is_mobile = Gw::UserProperty.new.find(:first, :conditions=>["uid = ? and class_id = 1 and name = 'mobile'", selected_field[i][1]])
+if is_mobile.blank?
+  mobile_mark = "　"
+else
+  mobile_mark = "M "
+end
+%>
+<tr><td><%=mobile_mark%><%=user.display_name %></td></tr>
+<%end%>
+<%#= select_tag("item[schedule_users][uid_#{i+1}]", options_for_select(users, selected_field[i][1].to_i), :style => select_style )%>
+<%}%>
 </table>
 <br />

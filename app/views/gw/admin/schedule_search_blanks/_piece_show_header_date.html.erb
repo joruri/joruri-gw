@@ -1,9 +1,0 @@
-<div class="dayInformation dateShow" style="text-align:left; margin-left:10px;">
-開始日時: <%= @sdt.strftime('%Y年%m月%d日') + "（#{Gw.weekday(@sdt.wday)}） " + (@all_day == 0 ? @sdt.strftime('%H:%M') : (@all_day == 1 ? "時間未定" : "終日")) %>
-</div><br />
-<div class="dayInformation dateShow" style="text-align:left; margin-left:10px;">
-終了日時: <%= @edt.strftime('%Y年%m月%d日') + "（#{Gw.weekday(@edt.wday)}） " + (@all_day == 0 ? @edt.strftime('%H:%M') : (@all_day == 1 ? "時間未定" : "終日")) %>
-</div><br />
-<div class="dayInformation dateShow" style="<%= "height: 100%;" if mode == 'day' %>">
-<%= date_format(@schedule_settings["week_view_piecehead_format"], @s_date) %>
-</div>

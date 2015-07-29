@@ -43,17 +43,7 @@ ja:
         # These three are to override number.format and are optional
         # separator: 
         delimiter: ""
-        precision: 3
-      storage_units:
-        format: "%n%u"
-        units:
-          byte:
-            one: "B"
-            other: "B"
-          kb: "KB"
-          mb: "MB"
-          gb: "GB"
-          tb: "TB"
+        precision: 1
 
   # Used in distance_of_time_in_words(), distance_of_time_in_words_to_now(), time_ago_in_words()
   datetime:

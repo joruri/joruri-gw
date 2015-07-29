@@ -2,11 +2,13 @@
 @action = "edit"
 @edit_path = "#{Core.current_node.public_uri}#{@item.id}"
 %>
-<%= render 'header' %>
-<%= form_for :item, :url => @edit_path ,:action=>:update ,:html => {:method=>:put , :multipart => true} do |f| %>
+<%= render :partial => 'header' %>
+<% form_for :item, :url => @edit_path ,:action=>:update ,:html => {:method=>:put , :multipart => true} do |f| %>
+
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
   <div class="submitters">
   <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
   </div>
+
 <% end %>

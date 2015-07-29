@@ -1,9 +1,10 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_props/show.html.erb</p>%>
 <%
 #申込ボタンのリンクチェック
 schedule_check = Gwsub::Sb01TrainingSchedule.schedule_link_check(@item.schedule_id)
 skd_link  = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{@item.training_id}&p_id=#{@item.id.to_s}&t_menu=entries"
 edit_path = "/gwsub/sb01/sb01_training_schedules/#{@item.id.to_s}/edit?t_id=#{@item.training_id}&t_menu=plans"
-editor_role = Gwsub::Sb01Training.is_editor?(@item1.group_code.slice(0,6),Core.user_group.code)
+editor_role = Gwsub::Sb01Training.is_editor?(@item1.group_code.slice(0,6),Site.user_group.code)
 docs_editor = editor_role || @u_role
 preparable = false
 preparable = true if @item.members_current.to_i==0
@@ -32,22 +33,23 @@ member_new   = "/gwsub/sb01/sb01_training_schedule_members/new?t_id=#{@t_id}&p_i
 prop_close   = "/gwsub/sb01/sb01_training_schedules/#{@item.id}/closed?t_id=#{@t_id}&t_menu=#{@top_menu}"
 prop_prepare = "/gwsub/sb01/sb01_training_schedules/#{@item.id}/prepared?t_id=#{@t_id}&t_menu=#{@top_menu}"
 member_csv   = "/gwsub/sb01/sb01_training_schedules/csvput?t_id=#{@t_id}&p_id=#{@item.id}"
-members = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id=#{@item.id}")
+members = Gwsub::Sb01TrainingScheduleMember.find(:all,:conditions=>"training_schedule_id=#{@item.id}")
 -%>
 <div class="gwsub sb01">
 <div class="pieceHeader">
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_level1_menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_level1_menu' %>
 <% if @top_menu=='entries' -%>
-<%= render 'gwsub/admin/sb01/sb01_training_entries/level2_menu_header' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/level2_menu_header' %>
 <%else%>
-<%= render 'gwsub/admin/sb01/sb01_training_plans/level2_menu_header' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_plans/level2_menu_header' %>
 <%end%>
 </div>
 <div class="pieceBody">
 <br />
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <div class="titleLine"><p class="date_title">研修内容</p></div>
 <%if expiry == true and docs_editor == true and @top_menu=='plans' %>
   <span class="required">開催日時を過ぎています。この開催日を締切にしてください。</span><br /><br />
@@ -78,7 +80,7 @@ members = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id=#{@item.
   <%end%>
 <% end -%>
 </div>
-<%= render 'gwsub/admin/sb01/sb01_training_schedules/training_show' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_schedules/training_show' %>
 <br />
 <div class="titleLine"><p class="date_title">受講者一覧</p></div>
 <%  if @top_menu=='plans' %>
@@ -89,19 +91,19 @@ members = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id=#{@item.
 <table class="index">
   <colgroup class="id"></colgroup>
   <colgroup class="training_user_id"></colgroup>
-  <colgroup class="training_group_id"></colgroup>
+  <colgroup class="training_group_id"></colgroup>  
   <tbody>
-  <tr>
-    <th>詳細</th>
-    <th>受講者</th>
-    <th>受講者所属</th>
-  </tr>
+	<tr>
+	  <th>詳細</th>
+	  <th>受講者</th>
+	  <th>受講者所属</th>
+	</tr>
 <% members.each do |member| %>
-  <tr  class="<%= cycle '', 'cycle' %>">
-    <td><%= link_to '詳細', "/gwsub/sb01/sb01_training_schedule_members/#{member.id}?t_id=#{@t_id}&p_id=#{@item.id}&t_menu=#{@top_menu}" %></td>
-    <td><%= member.training_user_name %></td>
-    <td><%= member.training_user_group_name %></td>
-  </tr>
+	<tr>
+	  <td><%= link_to '詳細', "/gwsub/sb01/sb01_training_schedule_members/#{member.id}?t_id=#{@t_id}&p_id=#{@item.id}&t_menu=#{@top_menu}" %></td>
+	  <td><%= member.training_user_name %></td>
+	  <td><%= member.training_user_group_name %></td>
+	</tr>
 <% end %>
   </tbody>
 </table>

@@ -1,61 +1,116 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
-<%= render 'menu' %>
-<%= render 'header_new_botton' %>
-<%= render 'header_navi' %>
+<%= render :partial => 'menu', :locals => {:d => @st_date, :mode => 'month'} %>
+<%= render :partial => 'header_new_botton' %>
+<%= render :partial => 'header_navi' %>
 
+<%= div_notice %>
 <% if @items.size == 0 %>
 <div class="notice">表示対象がありません。</div>
 <% else %>
 <table class="index">
   <tr>
-  <th class="action"></th>
+  <th class="action"><%# 詳細 %></th>
   <th class="state">公開</th>
   <th class="state">状態</th>
   <th class="level">階層</th>
   <th class="order">並び順</th>
   <th class="title">表示名</th>
   <th class="ext">接続先区分</th>
-  <th class="sso">リンク種別</th>
+  <th class="sso">SSO利用</th>
   <th class="mode">表示モード</th>
   </tr>
   <% @items.each do |item| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', {action: :show, id: item.id, pid: item.parent_id} %></td>
-      <td><span class="<%= 'required' if item.published != 'opened' %>"><%= item.published_label %></span></td>
-      <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
-      <td><%= item.level_no_label %></td>
-      <td><%= item.sort_no %></td>
-      <td><span style="margin-left:0em;"><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=raw item.name %></span></span></td>
-      <td></td>
-      <td></td>
+  <%# タブ表示 %>
+    <%
+      if item.state == 'enabled'
+        item_state_color = ''
+      else
+        item_state_color = 'class="required"'
+      end
+      if item.published == 'opened'
+        item_published_color = ''
+      else
+        item_published_color = 'class="required"'
+      end
+      if item.state == 'enabled' and item.published == 'opened'
+        item_name_color = ''
+      else
+        item_name_color = 'class="required"'
+      end
+    %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細' , "/gw/edit_link_pieces/#{item.id}?pid=#{item.parent_id}" %></td>
+    <td><span <%= item_published_color %> ><%= Gw::EditLinkPiece.published_show(item.published) %></span></td>
+    <td><span <%= item_state_color %> ><%= Gw::EditLinkPiece.state_show(item.state) %></span></td>
+    <td><%= Gw::EditLinkPiece.level_show(item.level_no) %></td>
+    <td><%= item.sort_no %></td>
+    <td><span style="margin-left:0em;"><span <%= item_name_color %> ><%=raw item.name %></span></span></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <% item.get_child.each do |blk| %>
+    <%# ブロック表示 %>
+      <%
+        if blk.state == 'enabled'
+          blk_state_color = ''
+        else
+          blk_state_color = 'class="required"'
+        end
+        if blk.published == 'opened'
+          blk_published_color = ''
+        else
+          blk_published_color = 'class="required"'
+        end
+        if blk.state == 'enabled' and blk.published == 'opened'
+          blk_name_color = ''
+        else
+          blk_name_color = 'class="required"'
+        end
+      %>
+    <tr class="<%= cycle '', 'cycle'  %>">
+      <td><%= link_to '詳細' , "/gw/edit_link_pieces/#{blk.id}?pid=#{blk.parent_id}" %></td>
+      <td><span <%= blk_published_color %> ><%= Gw::EditLinkPiece.published_show(blk.published) %></span></td>
+      <td><span <%= blk_state_color %> ><%= Gw::EditLinkPiece.state_show(blk.state) %></span></td>
+      <td><%= Gw::EditLinkPiece.level_show(blk.level_no) %></td>
+      <td><%= blk.sort_no %></td>
+      <td><span style="margin-left:2em;"><span <%= blk_name_color %> ><%=raw blk.name %></span></span></td>
+      <td><%= Gw::EditLinkPiece.external_show(blk.class_external) %></td>
+      <td><%= Gw::EditLinkPiece.sso_show(blk.class_sso) %></td>
+      <td><%= blk.mode_label %></td>
     </tr>
-    <% item.children.order(sort_no: :asc).each do |blk| %>
-      <tr class="<%= cycle '', 'cycle'  %>">
-        <td><%= link_to '詳細', {action: :show, id: blk.id, pid: blk.parent_id} %></td>
-        <td><span class="<%= 'required' if blk.published != 'opened' %>"><%= blk.published_label %></span></td>
-        <td><span class="<%= 'required' if blk.state != 'enabled' %>"><%= blk.state_label %></span></td>
-        <td><%= blk.level_no_label %></td>
-        <td><%= blk.sort_no %></td>
-        <td><span style="margin-left:2em;"><span class="<%= 'required' if blk.state != 'enabled' || blk.published != 'opened' %>"><%=raw blk.name %></span></span></td>
-        <td><%= blk.class_external_label %></td>
-        <td><%= blk.class_sso_label %></td>
-        <td><%= blk.mode_label %></td>
+      <% blk.get_child.each do |lnk| %>
+      <%# リンク表示 %>
+      <%
+        if lnk.state == 'enabled'
+          lnk_state_color = ''
+        else
+          lnk_state_color = 'class="required"'
+        end
+        if lnk.published == 'opened'
+          lnk_published_color = ''
+        else
+          lnk_published_color = 'class="required"'
+        end
+        if lnk.state == 'enabled' and lnk.published == 'opened'
+          lnk_name_color = ''
+        else
+          lnk_name_color = 'class="required"'
+        end
+      %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細' , "/gw/edit_link_pieces/#{lnk.id}?pid=#{lnk.parent_id}" %></td>
+        <td><span <%=raw lnk_published_color %> ><%= Gw::EditLinkPiece.published_show(lnk.published) %></span></td>
+        <td><span <%=raw lnk_state_color %> ><%= Gw::EditLinkPiece.state_show(lnk.state) %></span></td>
+        <td><%= Gw::EditLinkPiece.level_show(lnk.level_no) %></td>
+        <td><%= lnk.sort_no %></td>
+        <td><span style="margin-left:4em;"><span <%= lnk_name_color %> ><%=raw lnk.name %></span></span></td>
+        <td><%= Gw::EditLinkPiece.external_show(lnk.class_external) %></td>
+        <td><%= Gw::EditLinkPiece.sso_show(lnk.class_sso) %></td>
+        <td><%= lnk.mode_label %></td>
       </tr>
-      <% blk.children.order(sort_no: :asc).each do |lnk| %>
-        <tr class="<%= cycle '', 'cycle' %>">
-          <td><%= link_to '詳細', {action: :show, id: lnk.id, pid: lnk.parent_id} %></td>
-          <td><span class="<%= 'required' if lnk.published != 'opened' %>"><%= lnk.published_label %></span></td>
-          <td><span class="<%= 'required' if lnk.state != 'enabled' %>"><%= lnk.state_label %></span></td>
-          <td><%= lnk.level_no_label %></td>
-          <td><%= lnk.sort_no %></td>
-          <td><span style="margin-left:4em;"><span class="<%= 'required' if lnk.state != 'enabled' || lnk.published != 'opened' %>"><%=raw lnk.name %></span></span></td>
-          <td><%= lnk.class_external_label %></td>
-          <td><%= lnk.class_sso_label %></td>
-          <td><%= lnk.mode_label %></td>
-        </tr>
       <% end %><%# do lnk %>
     <% end %><%# do blk %>
   <% end %><%# do item %>

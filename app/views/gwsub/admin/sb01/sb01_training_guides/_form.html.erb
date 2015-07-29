@@ -1,3 +1,4 @@
+<%# app/views/gwsub/public/sb04/sb04_seating_lists/_form %>
 <%
 cats = Gwsub::Sb01TrainingGuide.select_cats(nil)
 mark_jp = Gw::YearFiscalJp.select_dd_markjp_id(nil,5)
@@ -8,32 +9,26 @@ mark_jp = Gw::YearFiscalJp.select_dd_markjp_id(nil,5)
 <%= hidden_field_tag 'fyed_id', @fyed_id %>
 <%= hidden_field_tag 'pre_fyear', @fyed_id %>
 <%= f.error_messages %>
-<%= required_head %>
+<%= raw(required_head) %>
 <table class="show">
-  <tr>
-    <th>分類<%= required %></th>
-    <td><%= f.select(:categories, options_for_select(cats ,@cat.to_i) ) %></td>
-  </tr>
-  <tr>
-    <th>年度<%= required %></th>
-    <td><%= f.select(:fyear_id, options_for_select(mark_jp ,@fyed_id) ) %></td>
-  </tr>
-  <tr>
-    <th>見出し<%= required %></th>
-    <td><%= f.text_field :title ,:size=>80 %></td>
-  </tr>
-  <tr>
-    <th>URL<%= required %></th>
-    <td><%= f.text_field :bbs_url ,:size=>80 %></td>
-  </tr>
-  <tr>
-    <th>備考</th>
-    <td><%= f.text_field :remarks ,:size=>80 %></td>
-  </tr>
+<tr><th>分類<%= raw(required) %></th>
+<td><%= f.select(:categories, options_for_select(cats ,@cat.to_i) ) %></td>
+</tr>
+<tr><th>年度<%= raw(required) %></th>
+<td><%= f.select(:fyear_id, options_for_select(mark_jp ,@fyed_id) ) %></td>
+</tr>
+<tr><th>見出し<%= raw(required) %></th>
+<td><%= f.text_field :title ,:size=>80 %></td>
+</tr>
+<tr><th>URL<%= raw(required) %></th>
+<td><%= f.text_field :bbs_url ,:size=>80 %></td>
+</tr>
+<tr><th>備考</th>
+<td><%= f.text_field :remarks ,:size=>80 %></td>
 </table>
 <br />
 <div class="preserve">
 <%= f.submit '保存' %>
 </div>
 <br />
-<%#= render 'gwsub/public/sb04/sb04_common_info_form', f: f %>
+<%#= render :partial => 'gwsub/public/sb04/sb04_common_info_form', :locals => {:f => f} %>

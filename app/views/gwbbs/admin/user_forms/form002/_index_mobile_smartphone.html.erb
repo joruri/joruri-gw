@@ -1,0 +1,45 @@
+<%# 自治研修センター 研修案内 -%>
+<table class="index">
+
+<% for item in @items
+    i = 0
+    flg = false
+    label_str = case params[:state]
+    when "GROUP"
+      unless brk_code == item.section_name.to_s
+        flg =true
+        brk_code = item.section_name.to_s
+      end
+    when "CATEGORY"
+      unless brk_code == item.category1_id.to_s
+        flg = true
+        brk_code = item.category1_id.to_s
+        gwbd_category_name(@d_categories,item.category1_id)
+      end
+    else # when "DATE"
+      unless brk_code == item.latest_updated_at.strftime('%Y-%m-%d').to_s
+        flg = true
+        brk_code = item.latest_updated_at.strftime('%Y-%m-%d').to_s
+      end
+      item.latest_updated_at.strftime('%Y-%m-%d').to_s
+    end
+    if flg
+%>
+  <tr class="subIndex">
+    <th><%=label_str%></th>
+    <th>単位</th>
+  </tr>
+  <%end%>
+  <%# i += 1 %>
+  <%#= (i%2 == 0) ? '<tr>' : '<tr class="cycle">' %>
+  <tr class="article">
+  <td class="leftLine docTitle"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+  <td rowspan="2"><%= item.inpfld_004%></td>
+  </tr><tr>
+  <td class="group leftLine">
+    <span>研修開始：<%= item.inpfld_001%><br />申込締切：<%= item.inpfld_002%></span></p>
+  </tr>
+<%end%>
+</table>
+
+

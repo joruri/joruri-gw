@@ -1,8 +1,9 @@
+# encoding: utf-8
 class Gwboard::Admin::SiteinfoController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+  include Gwboard::Controller::Scaffold
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "接続情報確認"
     @css = ["/_common/themes/gw/css/bbs.css"]
   end

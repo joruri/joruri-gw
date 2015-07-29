@@ -1,24 +1,20 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_trainings/_menu.html.erb</p>%>
 <%
 link_str1 = %Q(<span>研修管理</span>)
 link_url1 = "/gwsub/sb01/sb01_trainings"
 link_str2 = %Q(<span>利用の手引き</span>)
 link_url2 = "/gwsub/sb01/sb01_training_guides"
-link_str3 = %Q(<span>掲示板設定</span>)
-link_url3 = "/gwsub/sb01/sb01_training_boards"
 case @l2_current
 when '01'
 link_str1 = %Q(<span class="gwsub_current_menu">研修管理</span>)
 when '02'
 link_str2 = %Q(<span class="gwsub_current_menu">利用の手引き</span>)
-when '03'
-link_str3 = %Q(<span class="gwsub_current_menu">掲示板設定</span>)
 else
 end
 %>
 <% unless link_str1.blank? %>
 <div class="menu">
-<%= link_to raw(link_str1), url_for(link_url1) -%>
-<%= link_to raw(link_str2), url_for(link_url2) -%>
-<%= link_to raw(link_str3), url_for(link_url3) -%>
+<%= link_to raw(link_str1) , url_for(link_url1) -%>
+<%= link_to raw(link_str2) , url_for(link_url2) -%>
 </div>
 <% end %>

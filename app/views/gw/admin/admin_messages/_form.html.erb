@@ -1,12 +1,13 @@
+<% states = Gw::AdminMessage.state_select %>
 <%= required_head %>
 <table class="show">
   <tr>
     <th>表示モード<%= required('※') %></th>
-    <td><%= f.radio_buttons :mode, @item.modes %></td>
+    <td><%= radio f, :mode, @item.modes, :class => 'state' %></td>
   </tr>
   <tr>
     <th>表示<%= required('※') %></th>
-    <td><%= f.radio_buttons :state, Gw::AdminMessage.state_select %></td>
+    <td><%= radio f, :state, states, :class => 'state' %></td>
   </tr>
   <tr>
     <th>表示順<%= required('※') %></th>

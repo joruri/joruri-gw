@@ -1,0 +1,12 @@
+<table class="index" cellspacing="0" cellpadding="0">
+<tbody>
+<% for i in @start .. @end %>
+  <tr>
+  <%item = @items[i - 1]%>
+  <td class="title"><%=link_to(hbr(item.title), item.show_path + "&pp=#{i}" + gwbbs_params_set)%></td>
+  </tr>
+<% end %>
+</tbody>
+</table>
+
+<%="<br />\n" * @loop%>

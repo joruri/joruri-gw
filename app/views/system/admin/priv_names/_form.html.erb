@@ -3,7 +3,7 @@
 <table class="show">
   <tr>
     <th>ステータス<%= required %></th>
-    <td><%= f.radio_buttons :state, @item.state_no %></td>
+    <td><%= radio f, 'state', @item.state_no %></td>
   </tr>
   <tr>
     <th>権限対象名<%= required %></th>

@@ -1,12 +1,15 @@
-require 'csv'
+# encoding: utf-8
 class System::UsersGroupsCsvdata < ActiveRecord::Base
   include System::Model::Base
+  include System::Model::Base::Config
   include System::Model::Base::Content
-
   belongs_to :parent, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata'
-  has_many :children, -> { order(:code, :sort_no, :id) }, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata'
-  has_many :groups, -> { where(:data_type => 'group').order(:code, :sort_no, :id) }, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata'
-  has_many :users, -> { where(:data_type => 'user').order(:code, :sort_no, :id) }, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata'
+  has_many :children, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata',
+    :order => 'code, sort_no, id'
+  has_many :groups, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata',
+    :conditions => {:data_type => 'group'}, :order => 'code, sort_no, id'
+  has_many :users, :foreign_key => :parent_id, :class_name => 'System::UsersGroupsCsvdata',
+    :conditions => {:data_type => 'user'}, :order => 'code, sort_no, id'
 
   def self.csvget
     csv = Array.new
@@ -20,7 +23,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         csv << c_group.csvget_data
         c_group.users.each do |user|
           csv_row = Array.new
-          user_group = System::UsersGroup.where("user_id = ? and group_id = ?", user.id, c_group.id).first
+          user_group = System::UsersGroup.find(:first, :conditions=>["user_id = ? and group_id = ?", user.id, c_group.id])
           csv_row << System::UsersGroup.state_show(user.state)
           csv_row << "user"
           csv_row << ""
@@ -43,239 +46,267 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         end
       end
     end
-
+    
     return csv
   end
 
-  def self.csvup(item)
+
+  def self.csvup(params)
     error_msg = Array.new
     check = Hash::new
     error_row_cnt = 0
-    
+    require 'csv'
 
-    ldap_states = System::User.ldap_options
+    ldap_states = Gw.yaml_to_array_for_select('system_users_ldaps')
     ldap_states_0 = ldap_states.map {|x| x[0]}
-    states = System::User.state_options
+    states = Gw.yaml_to_array_for_select('system_states')
     states_0 = states.map {|x| x[0]}
-    job_order_states = System::UsersGroup.job_order_options
+    job_order_states = Gw.yaml_to_array_for_select('system_ugs_job_orders')
     job_order_states_0 = job_order_states.map {|x| x[0]}
-    mobile_access_states = System::User.mobile_access_csv_show
+    mobile_access_states = Gw.yaml_to_array_for_select('t1f0_kyoka_fuka')
     mobile_access_states_0 = mobile_access_states.map {|x| x[0]}
 
-    csv = CSV.parse(item.file_data)
-    csv_hashed = Array.new # ハッシュ変換用
-    error_csv_row = csv.dup # エラー返却用CSVデータ
-    hankaku_error_string = "半角英数字、および半角アンダーバーのみのデータとしてください。"
+    par_item = params[:item]
+    if par_item.nil? || par_item[:nkf].nil? || par_item[:file].nil?
+      error_msg << 'ファイル名を入力してください'
+    else
 
-    code_data = Array.new # コードの値をまとめる配列
-    groups_code_data = Array.new # グループのコードの値をまとめる配列
-    users_code_pcode_data = Array.new # ユーザーのコード、親グループコードの値をまとめる配列
-    users_code_honmu_data = Array.new # 「本務・兼務」本務の時の、ユーザーのコードをまとめる配列
-    keys = csv_header.keys
-
-    admin_user_check = false
-    csv.each_with_index do |row, i| # 配列をハッシュに変換。また、チェック用のデータを作成する。
-      if i == 0  # 最初の1行はフィールド名なので無視する。
-        error_csv_row[i] << 'error'
-        next
-      elsif row.empty? # 改行のみの行は空の配列となるので、それも無視する。
-        next
-      end
-
-      hashed_row = Hash[*keys.zip(row).flatten]
-      hashed_row[:id] = i
-      hashed_row[:start_time] = nil
-      hashed_row[:end_time] = nil
-      hashed_row[:error] = ""
-
-      csv_hashed << hashed_row # ハッシュに変換したデータを格納
-      code_data << hashed_row[:code]
-      if hashed_row[:data_type] == "group"
-        groups_code_data << hashed_row[:code]
-      elsif hashed_row[:data_type] == "user"
-        users_code_pcode_data << [hashed_row[:parent_code], hashed_row[:code]]
-        if hashed_row[:job_order] == "本務"
-          users_code_honmu_data << hashed_row[:parent_code]
-        end
-      end
-
-      # 管理権限チェック
-      if hashed_row[:data_type] == "user" && hashed_row[:state] == "有効"
-        user = System::User.where("code = ?",hashed_row[:code]).first
-        if user.present? && System::User.is_admin?(user)
-          admin_user_check = true
-        end
-      end
-
-    end
-    uniq_groups_code_data = Gw.get_uniq_data(groups_code_data) # 重複したコード
-    uniq_users_code_pcode_data = Gw.get_uniq_data(users_code_pcode_data) # 重複したコード
-    uniq_users_code_honmu_data = Gw.get_uniq_data(users_code_honmu_data) # 重複したコード
-
-    csv_hashed.each do |row|
-      # 状態
-      if row[:state].blank?
-        row[:error] << "「#{csv_header[:state]}」は必須です。"
-      elsif states_0.index(row[:state]).blank?
-        row[:error] << "「#{csv_header[:state]}」に、「#{Gw.join(states_0, "・")}」以外のデータが入っています。"
-      end
-
-      # 種別
-      if row[:data_type].blank?
-        row[:error] << "「#{csv_header[:data_type]}」は必須です。"
-      elsif ["group", "user"].index(row[:data_type]).blank?
-        row[:error] << "「#{csv_header[:data_type]}」に、「group・user」以外のデータが入っています。"
-      end
-
-      # 階層
-      if row[:data_type] == "group"
-        if row[:level].blank?
-          row[:error] << "「#{csv_header[:level]}」は必須です。"
-        elsif ["部局", "所属"].index(row[:level]).blank?
-          row[:error] << "「#{csv_header[:level]}」に、「部局・所属」以外のデータが入っています。"
-        end
-      end
-
-      # 親グループコード
-      if row[:parent_code].blank?
-        row[:error] << "「#{csv_header[:parent_code]}」は必須です。"
-      elsif Gw.half_width_characters?(row[:parent_code]) != true
-        row[:error] << "「#{csv_header[:parent_code]}」は、#{hankaku_error_string}"
-      elsif row[:data_type] == "group" && row[:level] == "部局" && row[:parent_code] != "1"
-        row[:error] << "「#{csv_header[:level]}」が部局の時、、「#{csv_header[:parent_code]}」は1としてください。"
-      elsif row[:data_type] == "group" && row[:level] == "所属" && code_data.index(row[:parent_code]).blank?
-        row[:error] << "「#{csv_header[:level]}」が所属の時、、「#{csv_header[:parent_code]}」は「#{csv_header[:code]}」に存在するデータとしてください。"
-      elsif row[:data_type] == "user" && code_data.index(row[:parent_code]).blank?
-        row[:error] << "「#{csv_header[:data_type]}」がuserの時、、「#{csv_header[:parent_code]}」は「#{csv_header[:code]}」に存在するデータとしてください。"
-      end
-
-      # コード
-      if row[:code].blank?
-        row[:error] << "「#{csv_header[:code]}」は必須です。"
-      elsif System::User.valid_user_code_characters?(row[:code]) != true
-        row[:error] << "「#{csv_header[:code]}」は、#{hankaku_error_string}"
+      upload_data = par_item[:file]
+      filename =  upload_data.original_filename
+      extname = File.extname(filename)
+      # 拡張子が異なる場合、エラーを返す。
+      if extname != '.csv'
+        error_msg << '拡張子がCSV形式のものと異なります。拡張子が「csv」のファイルを指定してください。'
       else
-        if row[:data_type] == "group" # グループ
-          if uniq_groups_code_data.index(row[:code]).present?
-            row[:error] << "「#{csv_header[:data_type]}」がgroupのデータは、「#{csv_header[:code]}」が重複してはなりません。"
+        f = upload_data.read
+
+        nkf_options = case par_item[:nkf]
+        when 'utf8'
+          '-w -W'
+        when 'sjis'
+          '-w -S'
+        end
+        file =  NKF::nkf(nkf_options, f)
+
+        if file.blank?
+        else
+          csv = CSV.parse(file)
+          csv_hashed = Array.new # ハッシュ変換用
+          error_csv_row = csv.dup # エラー返却用CSVデータ
+          hankaku_error_string = "半角英数字、および半角アンダーバーのみのデータとしてください。"
+          
+          code_data = Array.new # コードの値をまとめる配列
+          groups_code_data = Array.new # グループのコードの値をまとめる配列
+          users_code_pcode_data = Array.new # ユーザーのコード、親グループコードの値をまとめる配列
+          users_code_honmu_data = Array.new # 「本務・兼務」本務の時の、ユーザーのコードをまとめる配列
+          keys = csv_header.keys
+
+          admin_user_check = false
+          csv.each_with_index do |row, i| # 配列をハッシュに変換。また、チェック用のデータを作成する。
+            if i == 0  # 最初の1行はフィールド名なので無視する。
+              error_csv_row[i] << 'error'
+              next
+            elsif row.empty? # 改行のみの行は空の配列となるので、それも無視する。
+              next
+            end
+
+            hashed_row = Hash[*keys.zip(row).flatten]
+            hashed_row[:id] = i
+            hashed_row[:start_time] = nil
+            hashed_row[:end_time] = nil
+            hashed_row[:error] = ""
+
+            csv_hashed << hashed_row # ハッシュに変換したデータを格納
+            code_data << hashed_row[:code]
+            if hashed_row[:data_type] == "group"
+              groups_code_data << hashed_row[:code]
+            elsif hashed_row[:data_type] == "user"
+              users_code_pcode_data << [hashed_row[:parent_code], hashed_row[:code]]
+              if hashed_row[:job_order] == "本務"
+                users_code_honmu_data << hashed_row[:parent_code]
+              end
+            end
+
+            # 管理権限チェック
+            if hashed_row[:data_type] == "user" && hashed_row[:state] == "有効"
+              user = System::User.find(:first, :conditions => ["code = ?",hashed_row[:code] ])
+              if user.present? && System::User.is_admin?(user.id)
+                admin_user_check = true
+              end
+            end
+
           end
-          if row[:code] == '1'
-            row[:error] << "「#{csv_header[:code]}」に「1」は使用できません。"
+          uniq_groups_code_data = Gw.get_uniq_data(groups_code_data) # 重複したコード
+          uniq_users_code_pcode_data = Gw.get_uniq_data(users_code_pcode_data) # 重複したコード
+          uniq_users_code_honmu_data = Gw.get_uniq_data(users_code_honmu_data) # 重複したコード
+
+          csv_hashed.each do |row|
+            # 状態
+            if row[:state].blank?
+              row[:error] << "「#{csv_header[:state]}」は必須です。"
+            elsif states_0.index(row[:state]).blank?
+              row[:error] << "「#{csv_header[:state]}」に、「#{Gw.join(states_0, "・")}」以外のデータが入っています。"
+            end
+
+            # 種別
+            if row[:data_type].blank?
+              row[:error] << "「#{csv_header[:data_type]}」は必須です。"
+            elsif ["group", "user"].index(row[:data_type]).blank?
+              row[:error] << "「#{csv_header[:data_type]}」に、「group・user」以外のデータが入っています。"
+            end
+
+            # 階層
+            if row[:data_type] == "group"
+              if row[:level].blank?
+                row[:error] << "「#{csv_header[:level]}」は必須です。"
+              elsif ["部局", "所属"].index(row[:level]).blank?
+                row[:error] << "「#{csv_header[:level]}」に、「部局・所属」以外のデータが入っています。"
+              end
+            end
+
+            # 親グループコード
+            if row[:parent_code].blank?
+              row[:error] << "「#{csv_header[:parent_code]}」は必須です。"
+            elsif Gw.half_width_characters?(row[:parent_code]) != true
+              row[:error] << "「#{csv_header[:parent_code]}」は、#{hankaku_error_string}"
+            elsif row[:data_type] == "group" && row[:level] == "部局" && row[:parent_code] != "1"
+              row[:error] << "「#{csv_header[:level]}」が部局の時、、「#{csv_header[:parent_code]}」は1としてください。"
+            elsif row[:data_type] == "group" && row[:level] == "所属" && code_data.index(row[:parent_code]).blank?
+              row[:error] << "「#{csv_header[:level]}」が所属の時、、「#{csv_header[:parent_code]}」は「#{csv_header[:code]}」に存在するデータとしてください。"
+            elsif row[:data_type] == "user" && code_data.index(row[:parent_code]).blank?
+              row[:error] << "「#{csv_header[:data_type]}」がuserの時、、「#{csv_header[:parent_code]}」は「#{csv_header[:code]}」に存在するデータとしてください。"
+            end
+
+            # コード
+            if row[:code].blank?
+              row[:error] << "「#{csv_header[:code]}」は必須です。"
+            elsif System::User.valid_user_code_characters?(row[:code]) != true
+              row[:error] << "「#{csv_header[:code]}」は、#{hankaku_error_string}"
+            else
+              if row[:data_type] == "group" # グループ
+                if uniq_groups_code_data.index(row[:code]).present?
+                  row[:error] << "「#{csv_header[:data_type]}」がgroupのデータは、「#{csv_header[:code]}」が重複してはなりません。"
+                end
+                if row[:code] == '1'
+                  row[:error] << "「#{csv_header[:code]}」に「1」は使用できません。"
+                end
+              end
+              if admin_user_check != true
+                row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれてはなりません。"
+                admin_user_check = true # 最初の1件のみに追加する。
+              end
+              if row[:data_type] == "user" # ユーザー
+                if uniq_users_code_pcode_data.index( [row[:parent_code], row[:code]] ).present?
+                  row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、1つの「#{csv_header[:parent_code]}」に、複数の「#{csv_header[:code]}」が含まれてはなりません。"
+                end
+                if uniq_users_code_honmu_data.index(row[:code]).present?
+                  row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:job_order]}」が本務のデータは、各「#{csv_header[:code]}」で1つにし、他は「兼務・仮所属」にしてください。"
+                end
+              end
+            end
+
+            # LDAP同期
+            if row[:ldap].blank?
+              row[:error] << "「#{csv_header[:ldap]}」は必須です。"
+            elsif ldap_states_0.index(row[:ldap]).blank?
+              row[:error] << "「#{csv_header[:ldap]}」に、「#{Gw.join(ldap_states_0, "・")}」以外のデータが入っています。"
+            end
+
+            # 本務・兼務
+            if row[:data_type] == "user"
+              if row[:job_order].blank?
+                row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:job_order]}」は必須です。"
+              elsif job_order_states_0.index(row[:job_order]).blank?
+                row[:error] << "「#{csv_header[:job_order]}」に、「#{Gw.join(job_order_states_0, "・")}」以外のデータが入っています。"
+              end
+            end
+
+            # 名前
+            if row[:name].blank?
+              row[:error] << "「#{csv_header[:name]}」は必須です。"
+            end
+
+            # パスワード
+            if row[:data_type] == "user"
+              if row[:password].blank?
+                row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:password]}」は必須です。"
+              elsif Gw.half_width_characters?(row[:code]) != true
+                row[:error] << "「#{csv_header[:code]}」は、#{hankaku_error_string}"
+              end
+            end
+
+            # モバイルアクセス許可
+            if row[:data_type] == "user"
+              if row[:mobile_access].blank?
+                row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:mobile_access]}」は必須です。"
+              elsif mobile_access_states_0.index(row[:mobile_access]).blank?
+                row[:error] << "「#{csv_header[:mobile_access]}」に、「#{Gw.join(mobile_access_states_0, "・")}」以外のデータが入っています。"
+              end
+            end
+
+            # モバイルパスワード
+            if row[:mobile_access] == "許可"
+              if row[:mobile_access].blank?
+                row[:error] << "「#{csv_header[:mobile_access]}」が許可の時、「#{csv_header[:mobile_password]}」は必須です。"
+              elsif Gw.half_width_characters?(row[:code]) != true
+                row[:error] << "「#{csv_header[:mobile_password]}」は、#{hankaku_error_string}"
+              end
+            end
+
+            # 電子メールアドレス
+            if row[:email].present? && Gw.is_simplicity_valid_email_address?(row[:email]) != true
+              row[:error] << "「#{csv_header[:email]}」が正常なメールアドレスではありません。"
+            end
+
+            # 開始日
+            start_time = nil
+            end_time = nil
+            if row[:start_at].blank?
+              row[:error] << "「#{csv_header[:start_at]}」は必須です。"
+            else
+              begin
+                start_time = DateTime.parse(row[:start_at])
+              rescue # 日付が異常、もしくは日付が存在しない場合
+                row[:error] << "「#{csv_header[:start_at]}」に、日付以外のデータが入っています。"
+              end
+
+              if Time.local(start_time.year, start_time.month, start_time.day, 0, 0, 0) > Time.local(Time.now.year, Time.now.month, Time.now.day, 0, 0, 0)
+                row[:error] << "「#{csv_header[:start_at]}」は当日より前のデータとしてください。"
+              end
+            end
+            row[:start_time] = start_time
+
+            # 終了日
+            if row[:state] == "無効" && row[:end_at].blank?
+              row[:error] << "「#{csv_header[:state]}」が無効の時、「#{csv_header[:end_at]}」は必須です。"
+            end
+            if row[:end_at].present?
+              begin
+                end_time = DateTime.parse(row[:end_at])
+              rescue # 日付が異常、もしくは日付が存在しない場合
+                row[:error] << "「#{csv_header[:end_at]}」に、日付以外のデータが入っています。"
+              end
+
+              if start_time.present? && end_time.present?
+                if row[:state] == "無効" && Time.local(end_time.year, end_time.month, end_time.day, 0, 0, 0) > Time.local(Time.now.year, Time.now.month, Time.now.day, 0, 0, 0)
+                  row[:error] << "「#{csv_header[:state]}」が無効の時、「#{csv_header[:end_at]}」は当日より前のデータとしてください。"
+                elsif row[:state] == "有効"
+                  row[:error] << "「#{csv_header[:state]}」が有効の時、「#{csv_header[:end_at]}」は空欄としてください。"
+                end
+                if end_time <= start_time
+                  row[:error] << "「#{csv_header[:end_at]}」は、「#{csv_header[:start_at]}」より後のデータとしてください。"
+                end
+              end
+            end
+            row[:end_time] = end_time
+            
+            if row[:error].present?
+              error_row_cnt += 1
+              error_csv_row[row[:id]] << row[:error]
+              error_msg << row[:error]
+            end
           end
         end
-        if admin_user_check != true
-          row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれてはなりません。"
-          admin_user_check = true # 最初の1件のみに追加する。
-        end
-        if row[:data_type] == "user" # ユーザー
-          if uniq_users_code_pcode_data.index( [row[:parent_code], row[:code]] ).present?
-            row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、1つの「#{csv_header[:parent_code]}」に、複数の「#{csv_header[:code]}」が含まれてはなりません。"
-          end
-          if uniq_users_code_honmu_data.index(row[:code]).present?
-            row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:job_order]}」が本務のデータは、各「#{csv_header[:code]}」で1つにし、他は「兼務・仮所属」にしてください。"
-          end
-        end
-      end
-
-      # LDAP同期
-      if row[:ldap].blank?
-        row[:error] << "「#{csv_header[:ldap]}」は必須です。"
-      elsif ldap_states_0.index(row[:ldap]).blank?
-        row[:error] << "「#{csv_header[:ldap]}」に、「#{Gw.join(ldap_states_0, "・")}」以外のデータが入っています。"
-      end
-
-      # 本務・兼務
-      if row[:data_type] == "user"
-        if row[:job_order].blank?
-          row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:job_order]}」は必須です。"
-        elsif job_order_states_0.index(row[:job_order]).blank?
-          row[:error] << "「#{csv_header[:job_order]}」に、「#{Gw.join(job_order_states_0, "・")}」以外のデータが入っています。"
-        end
-      end
-
-      # 名前
-      if row[:name].blank?
-        row[:error] << "「#{csv_header[:name]}」は必須です。"
-      end
-
-      # パスワード
-      if row[:data_type] == "user"
-        if row[:password].blank? && row[:ldap] == '非同期'
-          row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:password]}」は必須です。"
-        elsif Gw.half_width_characters?(row[:code]) != true
-          row[:error] << "「#{csv_header[:code]}」は、#{hankaku_error_string}"
-        end
-      end
-
-      # モバイルアクセス許可
-      if row[:data_type] == "user"
-        if row[:mobile_access].blank?
-          row[:error] << "「#{csv_header[:data_type]}」がuserの時、「#{csv_header[:mobile_access]}」は必須です。"
-        elsif mobile_access_states_0.index(row[:mobile_access]).blank?
-          row[:error] << "「#{csv_header[:mobile_access]}」に、「#{Gw.join(mobile_access_states_0, "・")}」以外のデータが入っています。"
-        end
-      end
-
-      # モバイルパスワード
-      if row[:mobile_access] == "許可"
-        if row[:mobile_access].blank?
-          row[:error] << "「#{csv_header[:mobile_access]}」が許可の時、「#{csv_header[:mobile_password]}」は必須です。"
-        elsif Gw.half_width_characters?(row[:code]) != true
-          row[:error] << "「#{csv_header[:mobile_password]}」は、#{hankaku_error_string}"
-        end
-      end
-
-      # 電子メールアドレス
-      if row[:email].present? && Gw.is_simplicity_valid_email_address?(row[:email]) != true
-        row[:error] << "「#{csv_header[:email]}」が正常なメールアドレスではありません。"
-      end
-
-      # 開始日
-      start_time = nil
-      end_time = nil
-      if row[:start_at].blank?
-        row[:error] << "「#{csv_header[:start_at]}」は必須です。"
-      else
-        begin
-          start_time = DateTime.parse(row[:start_at])
-        rescue # 日付が異常、もしくは日付が存在しない場合
-          row[:error] << "「#{csv_header[:start_at]}」に、日付以外のデータが入っています。"
-        end
-
-        if Time.local(start_time.year, start_time.month, start_time.day, 0, 0, 0) > Time.local(Time.now.year, Time.now.month, Time.now.day, 0, 0, 0)
-          row[:error] << "「#{csv_header[:start_at]}」は当日より前のデータとしてください。"
-        end
-      end
-      row[:start_time] = start_time
-
-      # 終了日
-      if row[:state] == "無効" && row[:end_at].blank?
-        row[:error] << "「#{csv_header[:state]}」が無効の時、「#{csv_header[:end_at]}」は必須です。"
-      end
-      if row[:end_at].present?
-        begin
-          end_time = DateTime.parse(row[:end_at])
-        rescue # 日付が異常、もしくは日付が存在しない場合
-          row[:error] << "「#{csv_header[:end_at]}」に、日付以外のデータが入っています。"
-        end
-
-        if start_time.present? && end_time.present?
-          if row[:state] == "無効" && Time.local(end_time.year, end_time.month, end_time.day, 0, 0, 0) > Time.local(Time.now.year, Time.now.month, Time.now.day, 0, 0, 0)
-            row[:error] << "「#{csv_header[:state]}」が無効の時、「#{csv_header[:end_at]}」は当日より前のデータとしてください。"
-          elsif row[:state] == "有効"
-            row[:error] << "「#{csv_header[:state]}」が有効の時、「#{csv_header[:end_at]}」は空欄としてください。"
-          end
-          if end_time <= start_time
-            row[:error] << "「#{csv_header[:end_at]}」は、「#{csv_header[:start_at]}」より後のデータとしてください。"
-          end
-        end
-      end
-      row[:end_time] = end_time
-
-      if row[:error].present?
-        error_row_cnt += 1
-        error_csv_row[row[:id]] << row[:error]
-        error_msg << row[:error]
       end
     end
 
@@ -322,7 +353,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         else
           level_no = nil
         end
-
+        
 
         item = self.new
         item.state = state
@@ -346,13 +377,13 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         item.end_at = row[:end_time].strftime("%Y-%m-%d 0:0:0") if row[:end_time].present?
         item.save(:validate => false)
       end
-
-      all_items = self.all
+      
+      all_items = self.find(:all)
       all_items.each do |item|
         if item.parent_code.to_s == "1"
           item.parent_id = 0
         else
-          code_item = self.where(:code => item.parent_code).first
+          code_item = self.find(:first, :conditions=>["code = ?", item.parent_code])
           item.parent_id = code_item.id
         end
         item.save(:validate => false)
@@ -366,7 +397,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         check[:error_msg] = "#{error_row_cnt}行、エラーが存在します。"
         check[:error_kind] = 'csv_error'
         check[:csv_data] = error_csv_row
-        check[:error_csv_filename] = "#{item.filename}_エラー箇所追記.csv"
+        check[:error_csv_filename] = "#{filename}_エラー箇所追記.csv"
       end
     end
     return check
@@ -403,6 +434,11 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
     end
   end
 
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `#{self.table_name}` ;"
+    connect.execute(truncate_query)
+  end
   def self.set_autoincrement_number
     # auto_incrementを設定。truncate_tableの後に実行。
     id = self.maximum(:id)

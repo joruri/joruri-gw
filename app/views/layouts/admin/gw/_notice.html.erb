@@ -1,3 +1,27 @@
-<% if flash[:notice].present? %>
-<div id="flashNotice" class="flashNotice"><%=raw flash[:notice] %></div>
+<% if flash[:notice] %>
+<div id="notice" class="notice"><p><%= flash[:notice] %></p></div>
+
+<script type="text/javascript">
+//<![CDATA[
+var timeoutID = undefined;
+Event.observe(window, 'load', function(e) {
+  if ($('notice')) {
+    timeoutID = setTimeout(function() {
+      hideNotice();
+    }, 2000);
+  }
+});
+function hideNotice() {
+  $('notice').style.display = 'none';
+  //$('noticeIcon').style.display = 'block';
+  if (timeoutID) {
+    clearTimeout(timeoutID);
+  }
+}
+function showNotice() {
+  $('notice').style.display = 'block';
+  $('noticeIcon').style.display = 'none';
+}
+//]]>
+</script>
 <% end %>

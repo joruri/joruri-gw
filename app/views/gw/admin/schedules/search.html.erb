@@ -5,11 +5,11 @@ d8_s = Gw.date8_str(d)
 
 <div class="piece schedulePiece setting">
   <div class="pieceHeader">
-    <%= render '/gw/admin/schedules/piece_header' -%>
+    <%= render(:partial => '/gw/admin/schedules/piece_header') -%>
   </div>
   <div class="pieceBody">
     <div class="pieceBodyHeader">
-      <%= render '/gw/admin/schedules/schedule_bt_box', d: Date.today, mode: 'form' -%>
+      <%= render(:partial => '/gw/admin/schedules/schedule_bt_box', :locals=>{:d=>Date.today, :mode=>'form'}) -%>
     <div class="pieceBodyBody">
       <div>
         <table class="index">

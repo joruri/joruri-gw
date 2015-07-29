@@ -1,0 +1,11 @@
+<div id="javascript_tab">
+<ul id="tab">
+<li class="selected">
+<%=link_to_remote "リマインダー", :update=>"portalContent", :url=>"/gw/mobile/portal?cond=reminder"%>
+<%=link_to_remote "スケジュール", :update=>"portalContent", :url=>"/gw/mobile/portal?cond=schedule"%>
+<%=link_to_remote "全庁掲示板", :update=>"portalContent", :url=>"/gw/mobile/portal?cond=bbs"%>
+</ul>
+<div id="portalContent">
+<%=render :partial => '/gw/admin/piece/reminder/index'%>
+</div>
+</div>

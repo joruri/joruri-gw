@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Gw::Script::PrefTool
   require 'csv'
   require 'pp'
@@ -20,6 +21,9 @@ class Gw::Script::PrefTool
       csv.each do |x|
         hxx = Hash.new
         fields.keys.each do |y|
+          dump x
+          dump y
+          dump csv_titles
           idx = csv_titles.index(y)
           hxx["#{fields[y]}"] = "#{x[idx]}"
         end
@@ -50,7 +54,8 @@ class Gw::Script::PrefTool
     #return ret
   end
   def self.user_select(u_code)
-    p_user = System::User.where("code = ? AND state = 'enabled'",u_code).first
+    p_user = System::User.find(:first,
+      :conditions=>["code = ? AND state = 'enabled'",u_code])
    return p_user
   end
 
@@ -66,21 +71,21 @@ class Gw::Script::PrefTool
 
   def self.update_executives(users)
     ret_no_user = ""
-    old_executives = Gw::PrefExecutive.where("deleted_at IS NULL")
+    old_executives = Gw::PrefExecutive.find(:all,:conditions=>["deleted_at IS NULL"])
     old_executives.each_with_index{|old_user, y|
       use = 0
       users.each_with_index{|user, y|
         if old_user.u_code == user["u_code"] and old_user.title == user["title"]
-          old_user_data = System::User.where(:id =>old_user.uid).first
+          old_user_data = System::User.find_by_id(old_user.uid)
           if old_user_data.blank?
             ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
           else
             old_user.u_code           = old_user_data.code
-            old_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid).first
+            old_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid])
             if old_user_group_rel.blank?
               old_user_group = nil
             else
-              old_user_group = System::Group.where(:id =>old_user_group_rel.group_id).first
+              old_user_group = System::Group.find_by_id(old_user_group_rel.group_id)
             end
             unless old_user_group.blank?
               old_user.parent_gid       = old_user_group.parent.id
@@ -112,8 +117,8 @@ class Gw::Script::PrefTool
       if use == 0
         old_user.deleted_at    = Time.now
         old_user.state         = "deleted"
-        old_user.deleted_user  = Core.user.name
-        old_user.deleted_group = Core.user_group.name
+        old_user.deleted_user  = Site.user.name
+        old_user.deleted_group = Site.user_group.name
         old_user.save
       end
     }
@@ -123,11 +128,11 @@ class Gw::Script::PrefTool
       if new_user_data.blank?
         ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
       else
-        new_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id).first
+        new_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id])
         if new_user_group_rel.blank?
           new_user_group = nil
         else
-          new_user_group = System::Group.where(:id =>new_user_group_rel.group_id).first
+          new_user_group = System::Group.find_by_id(new_user_group_rel.group_id)
         end
         unless new_user_group.blank?
           new_user.parent_gid       = new_user_group.parent.id
@@ -140,7 +145,7 @@ class Gw::Script::PrefTool
           new_user.g_order          = new_user_group.sort_no
         end
         new_user.u_code           = new_user_data.code
-        old_title_user = Gw::PrefExecutive..where("uid = ?",new_user_data.id).order("updated_at").first
+        old_title_user = Gw::PrefExecutive.find(:first, :conditions=>["uid = ?",new_user_data.id],:order=>"updated_at")
         if old_title_user.blank?
           old_state = "off"
         else
@@ -174,26 +179,26 @@ class Gw::Script::PrefTool
   def self.update_directors(users,g_cat)
     ret_no_user = ""
     ret_no_group_user=""
-    old_users = Gw::PrefDirector.where("parent_g_code = ? AND state != 'deleted' AND deleted_at IS NULL",g_cat)
+    old_users = Gw::PrefDirector.find(:all, :conditions=>["parent_g_code = ? AND state != 'deleted' AND deleted_at IS NULL",g_cat])
 
-    temp = System::Group.where("end_at IS NULL and code = ?",g_cat).first
+    temp = System::Group.find(:first,:conditions=>["end_at IS NULL and code = ?",g_cat])
     return [ret_no_user,ret_no_group_user] if temp.blank?
     old_users.each_with_index{|old_user, x|
       use = 0
       users.each_with_index{|user, y|
         if old_user.u_code == user["u_code"] and old_user.title == user["title"]
-          old_user_data = System::User.where(:id =>old_user.uid).first
+          old_user_data = System::User.find_by_id(old_user.uid)
           if old_user_data.blank?
             ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
           else
             is_group_user = true
             old_user.u_code           = old_user_data.code
             old_user.u_name           = old_user_data.name
-            old_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid).order("start_at DESC").first
+            old_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid] ,:order=>"start_at DESC")
             if old_user_group_rel.blank?
               old_user_group = nil
             else
-              old_user_group = System::Group.where(:id =>old_user_group_rel.group_id).first
+              old_user_group = System::Group.find_by_id(old_user_group_rel.group_id)
             end
             unless old_user_group.blank?
               if old_user_group.parent.id == temp.id
@@ -234,8 +239,8 @@ class Gw::Script::PrefTool
       if use == 0
         old_user.deleted_at    = Time.now
         old_user.state         = "deleted"
-        old_user.deleted_user  = Core.user.name
-        old_user.deleted_group = Core.user_group.name
+        old_user.deleted_user  = Site.user.name
+        old_user.deleted_group = Site.user_group.name
         old_user.save
       end
     }
@@ -247,11 +252,11 @@ class Gw::Script::PrefTool
         ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
       else
         is_group_user = true
-        new_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id).first
+        new_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id])
         if new_user_group_rel.blank?
           new_user_group = nil
         else
-          new_user_group = System::Group.where(:id =>new_user_group_rel.group_id).first
+          new_user_group = System::Group.find_by_id(new_user_group_rel.group_id)
         end
 
         unless new_user_group.blank?
@@ -271,7 +276,7 @@ class Gw::Script::PrefTool
         end
         new_user.u_code           = new_user_data.code
         new_user.u_name           = new_user_data.name
-        old_title_user = Gw::PrefDirector.where("uid = ?",new_user_data.id).order("updated_at").first
+        old_title_user = Gw::PrefDirector.find(:first, :conditions=>["uid = ?",new_user_data.id],:order=>"updated_at")
         if old_title_user.blank?
           old_state = "off"
         else
@@ -308,22 +313,22 @@ class Gw::Script::PrefTool
     ret_no_user = ""
     ret_no_group_user=""
     ret = ""
-    old_users = Gw::PrefDirector.where("deleted_at IS NULL")
+    old_users = Gw::PrefDirector.find(:all, :conditions=>"deleted_at IS NULL")
     old_users.each_with_index{|old_user, x|
       use = 0
       users.each_with_index{|user, y|
         if old_user.u_code == user["u_code"] and old_user.title == user["title"]
-          old_user_data = System::User.where(:id =>old_user.uid).first
+          old_user_data = System::User.find_by_id(old_user.uid)
           if old_user_data.blank?
             ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
           else
             is_group_user = true
             old_user.u_code           = old_user_data.code
-            old_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid).order("start_at DESC").first
+            old_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",old_user.uid],:order=>"start_at DESC")
             if old_user_group_rel.blank?
               old_user_group = nil
             else
-              old_user_group = System::Group.where(:id =>old_user_group_rel.group_id).first
+              old_user_group = System::Group.find_by_id(old_user_group_rel.group_id)
             end
             unless old_user_group.blank?
               old_user.parent_gid       = old_user_group.parent.id
@@ -358,8 +363,8 @@ class Gw::Script::PrefTool
       if use == 0
         old_user.deleted_at    = Time.now
         old_user.state         = "deleted"
-        old_user.deleted_user  = Core.user.name
-        old_user.deleted_group = Core.user_group.name
+        old_user.deleted_user  = Site.user.name
+        old_user.deleted_group = Site.user_group.name
         old_user.save
       end
     }
@@ -370,11 +375,11 @@ class Gw::Script::PrefTool
         ret_no_user += "#{user["u_code"]}#{user["u_name"]}<br />"
       else
         is_group_user = true
-        new_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id).order("start_at DESC").first
+        new_user_group_rel = System::UsersGroup.find(:first, :conditions=>["user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id] ,:order=>"start_at DESC")
         if new_user_group_rel.blank?
           new_user_group = nil
         else
-          new_user_group = System::Group.where(:id =>new_user_group_rel.group_id).first
+          new_user_group = System::Group.find_by_id(new_user_group_rel.group_id)
         end
         unless new_user_group.blank?
            new_user.parent_gid       = new_user_group.parent.id
@@ -388,7 +393,7 @@ class Gw::Script::PrefTool
         end
         new_user.u_code           = new_user_data.code
         new_user.u_name           = new_user_data.name
-        old_title_user = Gw::PrefDirector.where("uid = ?",new_user_data.id).order("updated_at")
+        old_title_user = Gw::PrefDirector.find(:first, :conditions=>["uid = ?",new_user_data.id],:order=>"updated_at")
         if old_title_user.blank?
           old_state = "off"
         else

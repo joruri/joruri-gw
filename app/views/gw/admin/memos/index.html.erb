@@ -1,66 +1,69 @@
 <div class="piece memo index">
-<%= render '/gw/admin/memos/piece_header' %>
+<%= render :partial => '/gw/admin/memos/piece_header' %>
+
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'search' %>
-<%= render 'tabmenu' %>
+<%= render(:partial => 'search') %>
+<%= raw(memos_tabbox_struct(@s_send_cls.to_s, @qsa)) %>
 
-<% if @items.blank? %>
-  <%= show_notice %>
-<% else %>
-  <%= form_tag url_for(action: :list), {:id => "listForm", :method => "post", :multipart => true} do %>
-  <%= render 'select_menu' %>
-  <table class='index'>
-    <tr>
-      <th></th>
-      <th></th>
-      <th><%= link_to '▲', {sort_keys: 'send_cls asc'} %><%= link_to '▼', {sort_keys: 'send_cls desc'} %><br/>相手</th>
-      <th><%= link_to '▲', {sort_keys: 'is_finished asc'} %><%= link_to '▼', {sort_keys: 'is_finished desc'} %><br/>未/既</th>
-      <th><%= link_to '▲', {sort_keys: 'fr_group asc'} %><%= link_to '▼', {sort_keys: 'fr_group desc'} %><br/>所属/担当/社名</th>
-      <th><%= link_to '▲', {sort_keys: 'fr_user asc'} %><%= link_to '▼', {sort_keys: 'fr_user desc'} %><br/>担当者</th>
-      <th><%= link_to '▲', {sort_keys: 'title asc'} %><%= link_to '▼', {sort_keys: 'title desc'} %><br/>伝言</th>
-      <th><%= link_to '▲', {sort_keys: 'ed_at asc'} %><%= link_to '▼', {sort_keys: 'ed_at desc'} %><br/>時刻</th>
-    </tr>
-    <% if params[:s_index_cls] == '2' -%>
-      <% @items.each do |item| -%>
-      <tr class="<%= cycle '', 'cycle' -%>">
-        <td><%= check_box_tag "ids[]", "#{item.id}" -%></td>
-        <td><%= link_to_show item.id -%></td>
-        <td><%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%></td>
-        <td class="<%= item.is_finished? ? 'read' : 'unRead' %>" ><%= item.is_finished_label -%></td>
-        <td><%= item.fr_group -%></td>
-        <td><%= item.fr_user -%></td>
-        <td><%= item.title -%></td>
-        <td><%=l item.ed_at if item.ed_at -%></td>
-      </tr>
-      <% end -%>
-    <% else -%>
-      <% @items.each do |item| -%>
-      <tr class="<%= cycle '', 'cycle' -%>">
-        <td rowspan="2"><%= check_box_tag "ids[]", "#{item.id}" -%></td>
-        <td rowspan="2"><%= link_to_show item.id -%></td>
-        <td><%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%></td>
-        <td class="<%= item.is_finished? ? 'read' : 'unRead' %>" ><%= item.is_finished_label -%></td>
-        <td><%= item.fr_group -%></td>
-        <td><%= item.fr_user -%></td>
-        <td><%= item.title -%></td>
-        <td><%=l item.ed_at if item.ed_at -%></td>
-      </tr>
-      <tr>
-        <td colspan="6"><%=raw item.body -%></td>
-      </tr>
-      <% end -%>
-    <% end -%>
-  </table>
-  <%= render 'select_menu' if @items.size > 0 %>
+<%= form_tag "/gw/memos/list", {:id => "listForm", :method => "post", :multipart => true} do %>
+<input type="hidden" name="s_send_cls" value="<%= nz(params[:s_send_cls], '1') %>" />
+<input type="hidden" name="s_index_cls" value="<%= nz(params[:s_index_cls], '1') %>" />
+<input type="hidden" name="s_finished" value="<%= nz(params[:s_finished], '1') %>" />
+<%= render :partial => 'select_menu' if @items.size > 0 %>
+
+<table class='index'>
+<tr>
+<th></th>
+<th></th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, '_send_cls', @qs %><br/>相手</th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, '_is_finished', @qs %><br/>未/既</th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, 'fr_group', @qs %><br/>所属/担当/社名</th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, 'fr_user', @qs %><br/>担当者</th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, 'title', @qs %><br/>伝言</th>
+<th><%= sort_link_memo @sort_keys, gw_memos_path, 'ed_at', @qs %><br/>時刻</th>
+</tr>
+<% if @s_index_cls == '2' -%>
+  <% @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' -%>">
+  <td><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+  <td><%= link_to_show item.id -%></td>
+  <td><%= raw(item._send_cls(@s_send_cls)) -%></td>
+  <td class="<%= item.is_finished.blank? ? 'unRead' : 'read' %>" ><%= item._is_finished -%></td>
+  <td><%= item.fr_group -%></td>
+  <td><%= item.fr_user -%></td>
+  <td><%= item.title -%></td>
+  <td><%= Gw.date_common(item.ed_at) -%></td>
+  </tr>
   <% end -%>
-  <%= paginate @items %>
+<% else -%>
+  <% @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' -%>">
+  <td rowspan="2"><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+  <td rowspan="2"><%= link_to_show item.id -%></td>
+  <td><%= raw(item._send_cls(@s_send_cls)) -%></td>
+  <td class="<%= item.is_finished.blank? ? 'unRead' : 'read' %>" ><%= item._is_finished -%></td>
+  <td><%= item.fr_group -%></td>
+  <td><%= item.fr_user -%></td>
+  <td><%= item.title -%></td>
+  <td><%= Gw.date_common(item.ed_at) -%></td>
+  </tr>
+  <tr>
+  <td colspan="6"><%=raw item.memo_text -%></td>
+  </tr>
+  <% end -%>
+<% end -%>
+</table>
+
+<%= render :partial => 'select_menu' if @items.size > 0 %>
 <% end -%>
 
+<%= raw(%Q(<div class="notice">表示対象がありません</div>)) if @items.blank? or @items.size==0 %>
+<%= paginate @items %>
+</div>
+<div class="pieceBodyBody"></div>
 </div>
 </div>
-</div>
-
 <script type="text/javascript">
 //<![CDATA[
 

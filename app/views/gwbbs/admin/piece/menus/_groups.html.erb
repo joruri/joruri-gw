@@ -1,12 +1,13 @@
-<h3 class="iconSideGroup">所属
-  <span class="<%= 'current' if params[:state] == 'GROUP'%>">
-    <%= link_to '所属', "#{@title.docs_path}&state=GROUP" %>
-  </span>
-</h3>
+<h3 class="iconSideGroup">所属<span class="<%= 'current' if params[:state] == 'GROUP'%>"><%=link_to('所属', "#{@title.docs_path}&state=GROUP")%></span></h3>
 <ul>
-<% @groups.each do |group| %>
-  <% next if @group_doc_counts[group.code].blank? %>
-  <% group_name = "・#{group.name}(#{@group_doc_counts[group.code]})" %>
-  <li><%= link_to group_name, "#{@title.docs_path}&state=GROUP&grp=#{group.code}" %></li>
+<% for grp_item in @groups %>
+  <%
+    str_count = ''
+    str_count = "(#{@group_doc_counts[grp_item.code].cnt.to_s})" unless @group_doc_counts[grp_item.code].blank?
+    group_name = "・#{grp_item.name}#{str_count}"
+  %>
+  <% unless str_count.blank? %>
+    <li><%= link_to group_name, "#{@title.docs_path}&state=GROUP&grp=#{grp_item.code}" %></li>
+  <% end %>
 <% end %>
 </ul>

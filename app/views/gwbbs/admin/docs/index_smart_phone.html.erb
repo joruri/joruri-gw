@@ -1,12 +1,18 @@
 <div class="piece bbs index">
 <div class="pieceHeader">
-<h2><%= @title.title if @title %></h2>
+<h2><%=@title.title unless @title.blank?%></h2>
 </div><!--pieceHeader-->
 <div class="pieceBody">
 <div class="pieceBodyBody">
-<%= render @title.gwbbs_form_name + 'index' %><br />
-<%= paginate @items %>
+<%#=render :partial => 'header' %>
+<%#=render :partial => 'explain' if @title.form_name  == 'form001' %>
+<%=render :partial => @title.gwbbs_form_name + 'index' %>
+<%#=render(:partial => 'limit_change') unless @title.form_name  == 'form001'%>
+<br />
+<%=paginate @items %>
+<%#=render :partial => 'index_attach_list' %>
 
+<!--<p class="leftPad2"><%#=link_to %Q(戻る), %Q(/gwbbs) %></p>-->
 </div><!--pieceBodyBody-->
 </div><!--pieceBody-->
 </div><!--piece-->

@@ -4,20 +4,22 @@
 </div>
 <div class="pieceBody">
 <div class="editingBox">
-  <span class="docLink"><%= link_to '管理者設定 >>', '/gw/config_settings?c1=1&c2=7' %></span>
+<span class="docLink"><%=link_to('管理者設定 >>', '/gw/config_settings?c1=1&c2=7') %></span>
 </div>
 
-<%= form_for :item, :url => {action: :create}, :html => {method: :post} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters">
-    <%= f.submit "保存" %>
-  </div>
+<%= form_for :item, :url => gwbbs_itemdeletes_path , :html => {:method => :post} do |f| %>
+<%= f.error_messages %>
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters">
+<%=f.submit("保存")%>
+</div>
+
 <% end %>
+</div>
+
 
 <div class="btReturn">
-  <%= link_to '処理選択へ戻る', action: :index %>
-</div>
-
+  <%=link_to('処理選択へ戻る', gwbbs_itemdeletes_path) %>
 </div>
 </div><!--piece gwbbs-->

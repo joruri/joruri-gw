@@ -1,69 +1,94 @@
-class Gw::Script::Memo < System::Script::Base
+# encoding: utf-8
+class Gw::Script::Memo
   def self.delete
-    run do
-      settings = Gw::Property::MemoAdminDelete.first_or_new.memos
-      return if settings['read_memos_admin_delete'].blank?
-      return if settings['unread_memos_admin_delete'].blank?
+    puts "#{self}.delete"
+    dump "#{self}.delete"
+    success = 0
+    error   = 0
 
-      log "既読メモ削除処理" do
-        del1 = delete_read_memo(settings['read_memos_admin_delete'])
-        log "#{del1} deleted"
-      end
+    key = 'memos'
+    options = {}
+    options[:class_id] = 3
+    settings = Gw::Model::Schedule.get_settings key, options
+    return if settings['read_memos_admin_delete'].blank?
+    return if settings['unread_memos_admin_delete'].blank?
 
-      log "未読メモ削除処理" do
-        del2 = delete_unread_memo(settings['unread_memos_admin_delete'])
-        log "#{del2} deleted"
-      end
-
-      log "テーブル最適化" do
-        Gw::Memo.optimize_and_analyze_table
-        Gw::MemoUser.optimize_and_analyze_table
-      end
+    case settings['read_memos_admin_delete'].to_i
+      when 1
+        x = 5
+      when 2
+        x = 10
+      when 3
+        x = 20
+      when 4
+        x = 30
+      else
+        x = 30
     end
-  end
+    return if x <= 0
 
-  private
+    d1 = Date.today
+    d1 = d1 - x
+    memos = Gw::Memo.find_by_sql(["select * from gw_memos where is_finished = 1 and created_at < :d", {:d => "#{d1.strftime('%Y-%m-%d 0:0:0')}"} ])
+    memos.each do |memo|
+      if memo.delete
+        puts "  => success.\n"
+        success += 1
 
-  def self.setting_value_to_days(value)
-    case value.to_i
-    when 1
-      5
-    when 2
-      10
-    when 3
-      20
-    when 4
-      30
-    else
-      30
-    end
-  end
-
-  def self.delete_read_memo(value)
-    date = Date.today - setting_value_to_days(value)
-    del = 0
-    Gw::Memo.where(is_finished: 1).created_before(date).find_each do |memo|
-      Gw::Memo.transaction do
-        if memo.delete
-          memo.memo_users.delete_all
-          del += 1
+        memo.memo_users.each do |memo_user|
+          memo_user.delete
         end
+
+      else
+        puts "  => failed.\n"
+        error   += 1
       end
     end
-    del
+
+
+    case settings['unread_memos_admin_delete'].to_i
+      when 1
+        x = 5
+      when 2
+        x = 10
+      when 3
+        x = 20
+      when 4
+        x = 30
+      else
+        x = 30
+    end
+    return if x <= 0
+
+    d1 = Date.today
+    d1 = d1 - x
+    memos = Gw::Memo.find_by_sql(["select * from gw_memos where ( is_finished is null or is_finished = 0 ) and  created_at < :d", {:d => "#{d1.strftime('%Y-%m-%d 0:0:0')}"} ])
+    #dump "#{d1.strftime('%Y-%m-%d 0:0:0')}"
+    memos.each do |memo|
+      if memo.delete
+        puts "  => success.\n"
+        success += 1
+
+        memo.memo_users.each do |memo_user|
+          memo_user.delete
+        end
+
+      else
+        puts "  => failed.\n"
+        error   += 1
+      end
+    end
+
+
+    if success > 0
+      ActiveRecord::Base::connection::execute 'optimize table gw_memos;'
+      ActiveRecord::Base::connection::execute 'optimize table gw_memo_users;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_memos;'
+      ActiveRecord::Base::connection::execute 'analyze table gw_memo_users;'
+    end
+
+    puts "#{Core.now} - Success:#{success}, Error:#{error}"
+    dump "#{Core.now} - Success:#{success}, Error:#{error}"
   end
 
-  def self.delete_unread_memo(value)
-    date = Date.today - setting_value_to_days(value)
-    del = 0
-    Gw::Memo.where('is_finished is null or is_finished = 0').created_before(date).find_each do |memo|
-      Gw::Memo.transaction do
-        if memo.delete
-          memo.memo_users.delete_all
-          del += 1
-        end
-      end
-    end
-    del
-  end
 end

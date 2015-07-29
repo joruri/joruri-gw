@@ -1,11 +1,13 @@
-<%= required_head %>
+<%#*<p>Find me in app/views/gw/admin/year_fiscal_jps/_form.html.erb</p>%>
+
+<%= raw(required_head)  %>
 <table class="show">
-  <tr>
-    <th></th>
-    <td>入力の西暦年度を、４月１日付けで登録します</td>
-  </tr>
-  <tr>
-    <th>西暦年度<%= required %></th>
-    <td><%= f.text_field :fyear, :class => 'IMEoff' %>&nbsp;&nbsp;半角数字４桁</td>
-  </tr>
+<tr>
+<th></th>
+<td>入力の西暦年度を、４月１日付けで登録します</td>
+</tr>
+<tr>
+<th><%= raw(required) %>西暦年度</th>
+<td><%= f.text_field :fyear ,:class=>'IMEoff' %>&nbsp;&nbsp;半角数字４桁</td>
+</tr>
 </table>

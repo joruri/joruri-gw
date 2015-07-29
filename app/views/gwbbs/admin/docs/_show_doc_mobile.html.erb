@@ -1,7 +1,12 @@
-<% if false %>
-<p class="<%=cycle('bgAsh','leftPad1')%>">公開終了日　<%=@item.expiry_date.strftime('%Y-%m-%d') unless @item.expiry_date.blank?%></p>
-<p class="<%=cycle('bgAsh','leftPad1')%>">記事管理課　<%=@item.section_name%></p>
-<% end %>
+<%
+  if Time.now <= @item.expiry_date
+    is_editable_dates = true
+  else
+    is_editable_dates = false
+  end
+%>
+<!--<p class="<%#=cycle('bgAsh','leftPad1')%>">公開終了日　<%#=@item.expiry_date.strftime('%Y-%m-%d') unless @item.expiry_date.blank?%></p>
+<p class="<%#=cycle('bgAsh','leftPad1')%>">記事管理課　<%#=@item.section_name%></p>-->
 <%if @title.importance == 1 or @title.category == 1 %>
   <%if @title.importance == 1 %>
     <p class="<%=cycle('bgAsh','leftPad1')%>">ステータス　<%=@item.importance_name%></p>
@@ -11,15 +16,40 @@
   <% end %>
 <% end %>
 <p class="<%=cycle('bgAsh','leftPad1')%>">作成　<%= @item.createrdivision %>：<%= @item.creater %>　</p>
-<% unless @item.editordivision.blank? %>
+<%unless @item.editordivision.blank?%>
 <p class="<%=cycle('bgAsh','leftPad1')%>">編集　<%= @item.editordivision %><%= "：" %><%= @item.editor %></p>
-<% end %>
-<%= render @title.gwbbs_form_name + 'show' %>
-<% if @title.use_old_upload_system? %>
- <%= render '/gwboard/admin/docs/upload_index', files: @item.files %>
-<% else %>
- <%= render '/gwboard/admin/docs/library_index', files: @item.files if @title.attachfile_index_use %>
-<% end %>
-<%= render 'comment_index' if @item.one_line_note == 1 %>
+<%end%>
+<%=render :partial => @title.gwbbs_form_name + 'show' %>
+<%if attach_use_old%>
+ <%=render(:partial => '/gwboard/admin/docs/upload_index')%>
+<%else%>
+ <%=render(:partial => '/gwboard/admin/docs/library_index') if @title.attachfile_index_use%>
+<%end%>
+<%=render(:partial => 'comment_index') if @item.one_line_note == 1%>
 
-<%= render 'show_prev_next_link' %>
+<%if @title.use_recognize%>
+<%#=render(:partial => 'recognize_users') if @item.state == 'draft'%>
+<%#=render(:partial => 'recognize_users') if @item.state == 'recognize'%>
+<%#=render(:partial => 'recognize_users') if @item.state == 'recognized'%>
+<%end%>
+
+  <%if !@previous.blank? || !@next.blank?%>
+<%#ページ移動データあり -------------------------------------------------------------------------------------- -%>
+<p class="leftPad2">
+  <%unless @title.use_other_system%>
+    <%#他シスリンクなし%>
+    <% unless @previous.blank? %>
+<%=link_to('< 前のページ', "#{@previous.show_path}&pp=#{@prev_page}#{gwbbs_params_set}")%>
+    <% else %>
+先頭ページ
+    <% end %>
+
+|
+    <% unless @next.blank? %>
+<%=link_to("次のページ>", "#{@next.show_path}&pp=#{@next_page}#{gwbbs_params_set}")%>
+    <% else %>
+最終ページ
+    <% end %>
+  <%end%>
+</p>
+<%end%>

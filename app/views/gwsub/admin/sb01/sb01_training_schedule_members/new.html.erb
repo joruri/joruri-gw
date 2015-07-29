@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_members/new.html.erb</p>%>
 <%
 show_path1 = "/gwsub/sb01/sb01_training_entries/#{@item1.id}"
 show_path2 = "/gwsub/sb01/sb01_training_schedules/#{@p_id}?t_id=#{@item1.id}&t_menu=#{@top_menu}"
@@ -9,15 +10,16 @@ show_path2 = "/gwsub/sb01/sb01_training_schedules/#{@p_id}?t_id=#{@item1.id}&t_m
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_entries/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_entries/menu' %>
 </div>
 <div class="pieceBody">
 <br/>
-<%= render 'training_show' %>
+<%= render :partial => 'training_show' %>
 
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <%= form_for :item, :url => @create_path ,:action=>:create ,:method=>:post , :html => {:multipart => true, :class => "leftSide"} do |f| %>
-  <%= render 'form', f: f %>
-<% end %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
 <div class="btReturn">
   <%= link_to '開催日程一覧に戻る' ,url_for(show_path1)  -%> ｜<%= link_to '開催予定に戻る' ,url_for(show_path2)  -%>
 </div>

@@ -1,74 +1,89 @@
+<%# app/views/gw/admin/memos/show.html.erb %>
+<%
+send_cls = nz(params[:s_send_cls], 1).to_s
+%>
+
 <div class="piece memo show">
-<%= render '/gw/admin/memos/piece_header' %>
+<%= render :partial => '/gw/admin/memos/header' %>
+<%= render :partial => '/gw/admin/memos/piece_header' %>
+
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'tabmenu' %>
+<%= raw(memos_tabbox_struct(send_cls, @qsa)) %>
 </div>
-
+  
 <div class="pieceBodyBody">
   
 <div class="editingBox">
-  <div class="btEdit"><%= link_to "編集する", action: :edit unless @item.is_finished? %></div>
-  <div class="btQuote"><%= link_to "引用作成", action: :quote %></div>
-  <% if @item.is_finished? %>
-    <div class="btUnread"><%= link_to '未読に戻す', action: :finish %></div>
-  <% else %>  
-    <div class="btRead"><%= link_to '既読にする', action: :finish %></div>
-  <% end %>
-  <div class="btDestroy"><%= link_to "削除する", {action: :destroy}, :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></div>
+<div class="btEdit"><%= link_to "編集する", edit_gw_memo_path(@item) if @item.is_finished != 1 %></div>
+<div class="btQuote"><%= link_to "引用作成", quote_gw_memo_path(@item) %></div>
+
+<% if @item.is_finished %>
+  <div class="btUnread"><%= link_to_id :finish, nil, '未読に戻す', gw_memo_path %></div>
+<% else %>  
+  <div class="btRead"><%= link_to_id :finish, nil, '既読にする', gw_memo_path %></div>
+<% end %>  
+
+<div class="btDestroy"><%= link_to "削除する", gw_memo_path(@item), :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></div>
+
 </div>
   
 <table class="show">
   <tr>
     <th>時刻</th>
-    <td><%=l @item.ed_at if @item.ed_at %></td>
+    <td><%= safe{@item.ed_at.strftime("%Y-%m-%d %H:%M")} %></td>
   </tr>
   <tr>
     <th>所属/担当/社名</th>
-    <td><%=hbr @item.fr_group %></td>
+    <td><%=hbr @item.fr_group%></td>
   </tr>
   <tr>
     <th>担当者</th>
-    <td><%=hbr @item.fr_user %></td>
+    <td>
+      <%=hbr @item.fr_user%>
+    </td>
   </tr>
   <tr>
     <th>伝言</th>
-    <td><%=hbr @item.title %></td>
+    <td>
+      <%=hbr @item.title%>
+    </td>
   </tr>
   <tr>
     <th>備考</th>
-    <td><%=br @item.body %></td>
+    <td>
+      <%=br @item.body%>
+    </td>
   </tr>
   <tr>
     <th>作成者所属</th>
-    <td><%= @item.sender.group_name %></td>
+    <td>
+      <%=hbr @item.created_by.group_name%>
+    </td>
   </tr>
   <tr>
     <th>作成者</th>
-    <td><%= "#{@item.uname}(#{@item.ucode})" %></td>
+    <td>
+      <%=hbr @item.created_by.name_and_code %>
+    </td>
   </tr>
   <tr>
     <th>登録日</th>
-    <td><%=l @item.created_at if @item.created_at %></td>
+    <td>
+      <%=hbr @item.created_at.strftime("%Y-%m-%d %H:%M")%>
+    </td>
   </tr>
   <tr>
     <th>更新日</th>
-    <td><%=l @item.updated_at if @item.updated_at %></td>
+    <td>
+      <%=hbr @item.updated_at.strftime("%Y-%m-%d %H:%M")%>
+    </td>
   </tr>
 </table>
 
-<table class="show">
-  <tr>
-    <th colspan="2">送り先</th>
-  </tr>
-  <% @item.memo_users.each do |mu| %>
-    <tr>
-      <th><%= mu.class_id_label %></th>
-      <td><%=raw mu.display_name_with_mobile_class %></td>
-    </tr>
-  <% end %>
-</table>
+<%= raw(Gw::MemoMobile.memos_users_view(@item.memo_users, :caption => '送り先')) %>
 
 </div>
 </div>
 </div>
+

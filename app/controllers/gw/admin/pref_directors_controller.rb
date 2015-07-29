@@ -1,8 +1,9 @@
+#encoding:utf-8
 class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/pref"
 
-  def pre_dispatch
+  def initialize_scaffold
     Page.title = "部課長在庁表示"
     @public_uri = '/gw/pref_directors'
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
@@ -11,14 +12,12 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
   def index
     init_params
 
-    @items = Gw::PrefDirector.where(is_governor_view: 1).order(@sort_keys)
-    @item_links = Gw::PrefDirector.where(is_governor_view: 1).group(:parent_g_code).order(:parent_g_order)
+		@items = Gw::PrefDirector.get_members.order(@sort_keys)
+		@item_links = Gw::PrefDirector.get_members.group("parent_g_code").order("parent_g_order")
   end
 
   def state_change
-    @item = Gw::PrefDirector.where(uid: params[:id]).first
-    @item.toggle_state
-
+    @item = Gw::PrefDirector.state_change(params[:id])
     location  = @public_uri
     location += "##{params[:locate]}" unless params[:locate].blank?
     return redirect_to(location)
@@ -37,10 +36,10 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
     @users = Gw::Model::Schedule.get_users(params)
     @user   = @users[0]
     @uid    = @user.id if !@user.blank?
-    @uid = nz(params[:uid], Core.user.id) if @uid.blank?
-    @myuid = Core.user.id
-    @gid = nz(params[:gid], @user.groups[0].id) rescue Core.user_group.id
-    @mygid = Core.user_group.id
+    @uid = nz(params[:uid], Site.user.id) if @uid.blank?
+    @myuid = Site.user.id
+    @gid = nz(params[:gid], @user.groups[0].id) rescue Site.user_group.id
+    @mygid = Site.user_group.id
 
     if params[:cgid].blank? && @gid != 'me'
       x = System::CustomGroup.get_my_view( {:is_default=>1,:first=>1})
@@ -51,10 +50,10 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
       @cgid = params[:cgid]
     end
 
-    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Core.user.code,:first=>1})
+    @first_custom_group = System::CustomGroup.get_my_view( {:sort_prefix => Site.user.code,:first=>1})
 
-    @ucode = Core.user.code  # ユーザーコード
-    @gcode = Core.user_group.code  # グループコード
+    @ucode = Site.user.code  # ユーザーコード
+    @gcode = Site.user_group.code  # グループコード
 
     @state_user_or_group = params[:cgid].blank? ? ( params[:gid].blank? ? :user : :group ) : :custom_group
 
@@ -73,13 +72,15 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
     @is_kauser = @kucode == @ucode ? true : false
 
     unless params[:cgid].blank?
-      @custom_group = System::CustomGroup.where(id: params[:cgid]).first
+      @custom_group = System::CustomGroup.find(:first, :conditions=>["id= ? ", params[:cgid]])
       if !@custom_group.blank?
         Page.title = @custom_group.name
       end
     end
 
-    @schedule_settings = Gw::Schedule.load_system_and_user_settings(Core.user)
+    @up_schedules = nz(Gw::Model::UserProperty.get('schedules'.singularize), {})
+
+    @schedule_settings = Gw::Model::Schedule.get_settings 'schedules', {}
 
   end
 

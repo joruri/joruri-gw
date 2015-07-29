@@ -1,15 +1,15 @@
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
-<%= render 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
-<%= render 'gwsub/admin/sb04/sb04_index_csv_confirm' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_index_csv_confirm' %>
 </div>
 <div class="pieceBody">
-<%= render 'gwsub/admin/sb04/search_check_view' %>
-
-<% if @items.blank? %>
+<%= render :partial => 'gwsub/admin/sb04/search_check_view' %>
+<%= div_notice %>
+<% if @items.size == 0 %>
   <div class="notice">表示する項目はありません。</div>
 <% else %>
 <table class="index">

@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @page_title = "電子職員録 主管課マスタ"
   end
 
@@ -18,8 +19,8 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
     @group = Core.user_group
     @gid = Core.user_group.id
 
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
     @u_role = @role_developer || @role_admin
 
     @menu_header3 = 'sb04stafflistview_masters'
@@ -33,13 +34,13 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
     @public_uri = "/gwsub/sb04/01/sb04stafflistview_masters"
 
     @fyed_id = Gwsub.set_fyear_select(params[:fyed_id],{:role=>@u_role})
-    @section = Gwsub::Sb04section.where(:fyear_id => @fyed_id).select(:id).first
+    @section = Gwsub::Sb04section.new.find(:first, :conditions=>["fyear_id = ?", @fyed_id], :select=>"id")
     @section_id = !@section.blank? ? @section.id : 1
   end
 
   def index
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l2_current = '01'
     item = @model.new
     item.page  params[:page], params[:limit]
@@ -86,16 +87,16 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
 
   def show
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @qsa = Gw.params_to_qsa(%w(s_m_gid s_d_gid sort_keys), params)
     @qs = Gw.qsa_to_qs(@qsa,{:no_entity=>true})
-    @item = @model.where(:id => params[:id]).first
+    @item = @model.find_by_id(params[:id])
     return http_error(404) if @item.blank?
   end
 
   def new
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l2_current = '02'
 
     @item = @model.new({})
@@ -103,15 +104,15 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
 
   def edit
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
 
-    @item = @model.where(:id => params[:id]).first
+    @item = @model.find_by_id(params[:id])
     return http_error(404) if @item.blank?
   end
 
   def create
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
 
     _params = put_params(params, :create)
     @item = @model.new(_params)
@@ -135,9 +136,9 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
 
   def update
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     id = params[:id]
-    @item = @model.where(:id =>id).first
+    @item = @model.find_by_id(id)
     return http_error(404) if @item.blank?
 
     _params = put_params(params, :update)
@@ -161,8 +162,8 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
 
   def destroy
     init_params
-    return error_auth unless @u_role == true
-    @item = @model.where(:id => params[:id]).first
+    return authentication_error(403) unless @u_role == true
+    @item = @model.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     @item.state          = 'deleted'
@@ -179,21 +180,31 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
 
   def section_fields_year_copy
     init_params
-    sections = if @u_role
-        Gwsub::Sb04section.sb04_group_select(params[:fyed_id].to_i, 1)
-      else
-        Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(params[:fyed_id].to_i)
+    fyed_id = nz(params[:fyed_id], @fyed_id)
+    if @u_role == true
+      sections = Gwsub::Sb04section.sb04_group_select(fyed_id, 1)
+    else
+      sections = Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(fyed_id.to_i)
+    end
+    _html_select = ''
+    if sections.blank?
+        _html_select << "<option value='0'>所属未設定</option>"
+    else
+      sections.each do |value , key|
+        _html_select << "<option value='#{key}'>#{value}</option>"
       end
-    sections = [['所属未設定', 0]] if sections.blank?
-    render text: view_context.options_for_select(sections), layout: false
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def put_params(_params, action)
     _params = _params[:item]
 
     if _params[:management_uid_sb04].present?
-      staff = Gwsub::Sb04stafflist.where(:id =>_params[:management_uid_sb04]).first
-      user = System::User.where(:code =>staff.staff_no).first
+      staff = Gwsub::Sb04stafflist.find_by_id(_params[:management_uid_sb04])
+      user = System::User.find_by_code(staff.staff_no)
       if user.present?
         _params = _params.merge({:management_uid => user.id})
         group = user.groups[0]
@@ -205,11 +216,11 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
       _params = _params.merge({:management_ucode => staff.staff_no})
     end
     if !_params[:management_gid_sb04].blank?
-      section = Gwsub::Sb04section.where(:id =>_params[:management_gid_sb04]).first
+      section = Gwsub::Sb04section.find_by_id(_params[:management_gid_sb04])
       _params = _params.merge({ :management_gcode => section.code }) if section.present?
     end
     if !_params[:division_gid_sb04].blank?
-      section = Gwsub::Sb04section.where(:id =>_params[:division_gid_sb04]).first
+      section = Gwsub::Sb04section.find_by_id(_params[:division_gid_sb04])
       _params = _params.merge({ :division_gcode => section.code }) if section.present?
     end
     _params = _params.merge({

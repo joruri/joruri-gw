@@ -1,60 +1,91 @@
+# encoding: utf-8
 class System::Admin::RoleDevelopersController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
-
-    Page.title = "開発者権限設定"
+  def initialize_scaffold
+    @css = %w(/layout/admin/style.css)
   end
 
   def index
-    @items = System::Role.includes(:role_name, :user, :group).where(:priv_name => "developer")
-      .order('system_role_names.sort_no, priv_name, idx, class_id, system_users.code, system_groups.sort_no, system_groups.code')
-      .paginate(page: params[:page], per_page: params[:limit])
+    init_params
+    return authentication_error(403) unless @is_dev
+    item = System::Role.new
+    item.page  params[:page], params[:limit]
+    condition = 'priv_name = "developer"'
+    @items = item.find(:all,
+      :include => [:role_name, :user, :group],
+      :conditions => condition,
+      :order => 'system_role_names.sort_no, priv_name, idx, class_id,system_users.code, system_groups.sort_no, system_groups.code')
   end
 
   def show
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::Role.find(params[:id])
   end
 
   def new
-    @item = System::Role.new(:class_id => '1', :priv => '1')
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::Role.new({
+      :class_id => '1',
+      :priv => '1'})
   end
 
   def create
+    init_params
+    return authentication_error(403) unless @is_dev
     conv_uidraw_to_uid
     @item = System::Role.new(params[:item])
-
-    _create @item, :success_redirect_uri => "/system/role_developers"
+    location = "/system/role_developers"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _create(@item,options)
   end
 
   def edit
-    @item = System::Role.where(:id => params[:id]).first
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::Role.find_by_id(params[:id])
   end
 
   def update
+    init_params
+    return authentication_error(403) unless @is_dev
     conv_uidraw_to_uid
-    @item = System::Role.find(params[:id])
+    @item = System::Role.new.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => "/system/role_developers/#{@item.id}"
+    location = "/system/role_developers/#{@item.id}"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _update(@item,options)
   end
 
-  def destroy
-    @item = System::Role.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => "/system/role_developers"
-  end
-
-private
-
-  def conv_uidraw_to_uid
+  def conv_uidraw_to_uid()
     params[:item]['uid'] = ( params[:item]['class_id'] == '1' ? params[:item]['uid_raw'] : params[:item]['gid_raw']) if nz(params[:item]['class_id'],'') != ''
     params[:item]['group_id'] = ( params[:item]['class_id'] == '1' ? params[:item]['gid_raw'] : '') if nz(params[:item]['class_id'],'') != ''
     params[:item].delete 'uid_raw'
     params[:item].delete 'gid_raw'
   end
+
+  def destroy
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::Role.new.find(params[:id])
+    location = "/system/role_developers"
+    options = {
+      :success_redirect_uri=>location
+      }
+    _destroy(@item,options)
+  end
+
+  def init_params
+    @is_dev = System::Role.is_dev?
+    @is_admin = System::Role.is_admin?
+    Page.title = "開発者権限設定"
+  end
+
 end

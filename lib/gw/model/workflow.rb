@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gw::Model::Workflow
 
   def self.how_long_notifying
@@ -6,7 +7,7 @@ module Gw::Model::Workflow
     5.day
   end
 
-  def self.remind(uid = Core.user.id)
+  def self.remind(uid = Site.user.id)
     to_reminders(Gwworkflow::Doc.all, uid).map{|title, date|
       {
       :date_str => date.strftime("%m/%d %H:%M"),

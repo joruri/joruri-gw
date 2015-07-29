@@ -1,19 +1,36 @@
 <table class="index">
   <tr>
-    <th></th>
-    <th></th>
-    <th class="sort" colspan="2">表示順</th>
-    <th>会派</th>
-    <th>氏名</th>
+  <th><%# 詳細 %></th>
+  <th></th>
+  <th class="sort" colspan="2" >表示順</th>
+  <th>会派</th>
+  <th>氏名</th>
   </tr>
-  <% @items.each_with_index do |item, idx| -%>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
-      <td><%= link_to '編集', {action: :edit, id: item.id} %></td>
-      <td class="up"><%= link_to '▲', {action: :updown, id: item.id, order: 'up'} if @items.offset + idx >= 1 %></td>
-      <td class="down"><%= link_to '▼', {action: :updown, id: item.id, order: 'down'} if @items.offset + idx < @items.total_entries - 1 %></td>
-      <td><%= item.g_name %></td>
-      <td><%= item.u_lname %>　<%= item.u_name %></td>
-    </tr>
+  <% @items.each_with_index do |item, cnt| -%>
+  <%#for item in @items%>
+  <%
+    cond_up   = true
+    cond_down = true
+    if length == 1
+      cond_up   = false
+      cond_down = false
+    else
+      if cnt == 0
+        cond_up = false
+      else
+        if cnt == length - 1
+          cond_down = false
+        end
+      end
+    end
+  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to '詳細' , "#{@public_uri}/#{item.id}" %></td>
+    <td><%= link_to '編集' , "#{@public_uri}/#{item.id}/edit" %></td>
+    <td class="up" ><%= link_to '▲'   , "#{@public_uri}/#{item.id}/updown?order=up"   if cond_up   == true %></td>
+    <td class="down" ><%= link_to '▼'   , "#{@public_uri}/#{item.id}/updown?order=down" if cond_down == true %></td>
+    <td><%= item.g_name %></td>
+    <td><%= item.u_lname %>　<%= item.u_name %></td>
+  </tr>
   <% end -%>
 </table>

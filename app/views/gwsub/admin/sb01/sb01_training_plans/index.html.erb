@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_plans/index.html.erb</p>%>
 <%
 today = Time.now
 options =  {  'table_name'      => 'gwsub_sb01_trainings',  :action=>'bbs_plan',  'link_to_show'    => 0}
@@ -9,21 +10,21 @@ options['field_td_criteria'] = {
     %Q(#{item.title})
     },
   'state' => Proc.new{|item|
-    str = safe{item.state_label}
+    str = ass{item.state_label}
     if item.state == '3'
       %Q(#{str})
     else
-      t_skd = Gwsub::Sb01TrainingSchedule.where('training_id = ?',item.id).order('IF( ISNULL( from_start ) , 1, 0 ) ASC , from_start DESC ').first
+      t_skd = Gwsub::Sb01TrainingSchedule.find(:first, :conditions => ['training_id = ?',item.id],:order => 'IF( ISNULL( from_start ) , 1, 0 ) ASC , from_start DESC ')
       if t_skd.blank?
-        safe{%Q(#{str})}
+        ass{%Q(#{str})}
       else
         if t_skd.from_start.blank? || today.blank?
-          safe{%Q(#{str})}
+          ass{%Q(#{str})}
         else
           if t_skd.from_start < today
-            safe{%Q(<span class="required">#{str}</span>)}
+            ass{%Q(<span class="required">#{str}</span>)}
           else
-            safe{%Q(#{str})}
+            ass{%Q(#{str})}
           end
         end
       end
@@ -36,9 +37,10 @@ options['field_td_criteria'] = {
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_plans/menu' %>
 </div>
 <div class="pieceBody">
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <%= raw(table_to_index2(@items, options)) %>
 <br/>
 <%= paginate @items %>

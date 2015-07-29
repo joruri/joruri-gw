@@ -1,13 +1,18 @@
-<%= form_for :item, :url => "#{Core.current_node.public_uri}create/?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= render @title.gwbbs_form_name + 'form', f: f %>
-  <div class="submitters">
-    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
-    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
-    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognized';" type="submit" value="添付ファイル" />
-    <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
-  </div>
+<% form_for :item, :url => "#{Core.current_node.public_uri}create/?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= render :partial => @title.gwbbs_form_name + 'form', :locals => {:f => f} %>
+
+<div class="submitters">
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='recognized';" type="submit" value="添付ファイル" />
+  <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+</div>
+
 <% end %>
 
 <input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />

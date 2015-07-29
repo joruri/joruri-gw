@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #フォーム情報
 ################################################################################
@@ -7,12 +8,13 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
   include Questionnaire::Model::TemplateSystemname
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-		Page.title = 'テンプレート管理（設問登録）'
+    @system_title = 'テンプレート管理（設問登録）'
+    Page.title = @system_title
     @system_path = "/#{self.system_name}"
 
-    @title = Questionnaire::TemplateBase.where(:id => params[:parent_id]).first
+    @title = Questionnaire::TemplateBase.find_by_id(params[:parent_id])
     return http_error(404) unless @title
     permit_selection
     params[:cond] = "template"
@@ -22,11 +24,10 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     system_admin_flags
     _item_show_flg
     _item_edit_flg
-    return error_auth unless @item_show_flg
+    return authentication_error(403) unless @item_show_flg
 
     item = Questionnaire::TemplateFormField.new
     item.and :parent_id, @title.id
-    item.and "sql", %Q((question_type = "group" or group_code IS NULL))
     item.order :sort_no, :id
     item.page params[:page], params[:limit]
     @items = item.find(:all)
@@ -37,7 +38,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     system_admin_flags
 
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
     options = []
     for i in 0..9
@@ -63,7 +64,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     system_admin_flags
 
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
     @item = Questionnaire::TemplateFormField.new(params[:item])
     if params[:n_sort_no].blank?
@@ -83,17 +84,17 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
 
     _item_show_flg
     _item_edit_flg
-    return error_auth unless @item_show_flg
-    @item = Questionnaire::TemplateFormField.where(:id => params[:id]).first
+    return authentication_error(403) unless @item_show_flg
+    @item = Questionnaire::TemplateFormField.find_by_id(params[:id])
   end
 
   def edit
     system_admin_flags
 
     _item_edit_flg
-    return error_auth unless @item_edit_flg
-
-    @item = Questionnaire::TemplateFormField.where(:id => params[:id]).first
+    return authentication_error(403) unless @item_edit_flg
+    
+    @item = Questionnaire::TemplateFormField.find_by_id(params[:id])
     permit_selection(@item.sort_no)
   end
 
@@ -101,9 +102,9 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     system_admin_flags
 
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
-    @item = Questionnaire::TemplateFormField.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateFormField.find_by_id(params[:id])
     return http_error(404) unless @item
     @item.attributes = params[:item]
     if params[:n_sort_no].blank?
@@ -125,9 +126,9 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     system_admin_flags
 
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
-    @item = Questionnaire::TemplateFormField.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateFormField.find_by_id(params[:id])
     location = questionnaire_template_form_fields_path(@title)
     _destroy(@item, :success_redirect_uri=>location)
   end
@@ -156,7 +157,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
       d.and :id, '!=', params[:id] unless params[:id].blank?
    }
     item = Questionnaire::TemplateFormField.new
-    @permit_select = Questionnaire::TemplateFormField.where(sql.where).order('sort_no, id').collect{ |i| [cut_off(i.title,40), i.id]}
+    @permit_select = item.find(:all, :conditions=>sql.where, :order=>'sort_no, id').collect{ |i| [cut_off(i.title,40), i.id]}
   end
 
   def cut_off(text, len)
@@ -172,12 +173,12 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
   end
 
   def _item_show_flg
-    if @is_sysadm || @title.admin_setting == 1 || (@title.admin_setting == 0 && @title.createrdivision_id == Core.user_group.code)
+    if @is_sysadm || @title.admin_setting == 1 || (@title.admin_setting == 0 && @title.createrdivision_id == Site.user_group.code)
       @item_show_flg = true
     end
   end
   def _item_edit_flg
-    if @is_sysadm || (@title.admin_setting == 0 && @title.createrdivision_id == Core.user_group.code)
+    if @is_sysadm || (@title.admin_setting == 0 && @title.createrdivision_id == Site.user_group.code)
       @item_edit_flg = true
     end
   end

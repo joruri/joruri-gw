@@ -1,6 +1,6 @@
-<% if @title.content_id == 9 %>
+<%if @title.content_id == 9%>
 <!--用地保証Q&Aのみcontent_id == 9を設定-->
-  <%= render '/gwboard/admin/docs/library_index', files: @item.files unless @title.use_old_upload_system? %>
-<% else %>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.files if @title.use_old_upload_system? %>
-<% end %>
+<%=render(:partial => '/gwboard/admin/docs/library_index') unless attach_use_old%>
+<%else%>
+<%=render(:partial => '/gwboard/admin/docs/upload_index') if attach_use_old %>
+<%end%>

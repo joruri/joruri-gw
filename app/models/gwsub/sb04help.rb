@@ -1,6 +1,8 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04help < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
+
 
   validates_presence_of :categories,:title,:bbs_url
 

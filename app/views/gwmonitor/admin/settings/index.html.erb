@@ -1,6 +1,6 @@
 <div class="bbsDocList circular setting">
 <div class="pieceHeader">
-<h2 class="pieceTitle"><%= @system_title %>機能設定</h2>
+<h2 class="pieceTitle"><%=@system_title%>機能設定</h2>
 </div><!--pieceHeader-->
 <!--カラム用タグ-->
 <div class="pieceBanner">
@@ -8,24 +8,23 @@
 
 <div class="pieceBody">
 
-<div class="pieceBodyBody">
-<ul>
-  <li>
-    <span class="function"><a href="/gwmonitor/custom_groups">所属配信先グループカスタム設定</a></span>
-    <span class="explanation">個人毎に所属配信先グループの雛形が登録できます。</span>
-  </li>
-  <% if Gwmonitor::Control.is_sysadm? %>
-  <li>
-    <span class="function"><a href="/gwmonitor/help_configs">照会・回答システムヘルプ設定</a></span>
-    <span class="explanation">照会・回答システムヘルプ設定ができます。</span>
-  </li>
-  <% end %>
+<div class="pieceBodyBody"><ul>
+<li>
+<span class="function"><a href="/gwmonitor/custom_groups">所属配信先グループカスタム設定</a></span>
+<span class="explanation">個人毎に所属配信先グループの雛形が登録できます。</span>
+</li>
+<% if @is_sysadm %>
+<li>
+<span class="function"><a href="/gwmonitor/help_configs">照会・回答システムヘルプ設定</a></span>
+<span class="explanation">照会・回答システムヘルプ設定ができます。</span>
+</li>
+<% end %>
 </ul>
 </div>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to "#{@system_title}一覧へ戻る", "/gwmonitor/builders" %>
+  <%=link_to "#{@system_title}一覧へ戻る", "/gwmonitor/builders" %>
 </div>
 </div><!--pieceBody-->
 </div><!--bbsDocList circular-->

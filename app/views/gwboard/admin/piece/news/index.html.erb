@@ -1,36 +1,77 @@
-<div class="piece gadget bbs <%= 'emergency' if @portal_mode.disaster_mode? && @portal_disaster_bbs && @title.id == @portal_disaster_bbs.options.to_i %>">
-<div class="pieceHeader">
-  <h3><%= @title.title %>新着情報
-    <% if @title.is_writable? %>
-      <span class="btNew"><%= link_to '新規作成', "/gwbbs/docs/new?title_id=#{@title.id}" %></span>
-    <% end %>
-  </h3>
-</div>
+<% unless @title.blank? %>
+<div class="piece gadget bbs <%= 'emergency' if @portal_mode.options == '3' && @portal_disaster_bbs && @title.id == @portal_disaster_bbs.options.to_i %>">
+<div class="pieceHeader"><h3><%= @title.title %>新着情報
+ <% if @is_writable %>
+  <span class="btNew"><%= link_to '新規作成', "/gwbbs/docs/new?title_id=#{@title.id}" %></span>
+ <% end %>
+  </h3></div>
 <div class="pieceBody">
-<% if @items.length > 0 %>
-  <table class="index">
-  <% @items.each_with_index do |item, idx| %>
-    <% if idx == 0 || item.latest_updated_at.to_date != @items[idx-1].latest_updated_at.to_date %>
-    <tr>
-      <th colspan="5"><h4><%=l item.latest_updated_at.to_date %></h4></th>
-    </tr>
-    <% end %>
-    <tr>
-      <td class="bbsImportant"><%=raw '<span></span>' if item.importance == 0 %></td>
-      <td class="title"><%= link_to hbr(item.title), item.portal_show_path + gwbbs_params_set %><%=raw '<span class="new">new</span>' if item.new_mark_flg %></td>
-      <td class="bbsAttach"><%=raw "<span>#{item.attachmentfile}</span>" if item.attachmentfile != 0 %></td>
-      <td class="bbsBalloon"><%=raw "<span>#{item.comments_only_id.size == 0 ? '&nbsp;' : item.comments_only_id.size}</span>" if item.one_line_note == 1 %></td>
-      <td class="group"><%= link_to item.section_name, item.portal_index_path + gwbbs_params_set + "&state=GROUP&grp=#{item.section_code}" %></td>
-    </tr>
-  <% end %>
-  </table>
-<% else %>
-  <div style="color: #080;">表示する内容はありません。</div>
-<% end %>
-<% if @items.total_entries > @limit_portal -%>
+<%
+if @items.length > 0
+  brk_key = nil
+  concat raw '<table class="index">'
+  idx = 1
+  @items.each do |item|
+    break if idx > @limit_portal.to_i - 1
+    unless brk_key == item.latest_updated_at.strftime('%Y-%m-%d').to_s
+      concat raw %Q(<tr><th colspan="5"><h4>#{item.latest_updated_at.strftime('%Y-%m-%d').to_s}</h4></th></tr>)
+    end
+    if item.importance.to_i == 1
+      importance_str = ''
+    else
+      importance_str = %Q(<span>#{item.importance}</span>)
+    end
+    if item.attachmentfile.to_i == 0
+      attachmentfile_str = ''
+    else
+      attachmentfile_str = %Q(<span>#{item.attachmentfile}</span>)
+    end
+    if item.one_line_note.to_i == 0
+      comment_str = ''
+    else
+      if item.comment.count.to_i==0
+        comment_str = %Q(<span>&nbsp;</span>)
+      else
+        comment_str = %Q(<span>#{item.comment.count}</span>)
+      end
+    end
+
+    if item.createdate.blank?
+      new_mark_str  = %Q(<span></span>)
+    else
+      begin
+        new_mark_start = Time.parse(item.createdate) + 86400
+        time_now = Time.now
+        if new_mark_start >= time_now
+          new_mark_str  = %Q(<span class="new">new</span>)
+        else
+          new_mark_str  = %Q(<span></span>)
+        end
+      rescue
+        new_mark_str  = %Q(<span></span>)
+      end
+    end
+
+    concat raw %Q(<tr>)
+    concat raw %Q(<td class="bbsImportant">#{importance_str}</td>) if @title.importance == 1
+    concat raw %Q(<td class="title">#{link_to(hbr(item.title), item.portal_show_path + gwbbs_params_set)}#{new_mark_str}</td>)
+    concat raw %Q(<td class="bbsAttach">#{attachmentfile_str}</td>)
+    concat raw %Q(<td class="bbsBalloon">#{comment_str}</td>)
+    concat raw %Q(<td class="group">#{item.section_name}</td>)
+    concat raw %Q(</tr>)
+    brk_key = item.latest_updated_at.strftime('%Y-%m-%d').to_s
+    idx = idx + 1
+  end
+  concat raw '</table>'
+else
+  concat raw '<div style="color: #080;">表示する内容はありません。</div>'
+end
+%>
+<% if @items.length > @limit_portal.to_i - 1 -%>
   <div class="bbsContinue">
-  <%= link_to '続き・・・', @items.first.portal_index_path %>
+  <%= link_to '続き・・・', @items[10].portal_index_path + gwbbs_params_set %>
   </div>
 <% end -%>
 </div>
 </div>
+<%end%>

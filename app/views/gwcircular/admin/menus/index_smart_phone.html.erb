@@ -1,30 +1,29 @@
 <div class="piece circular index">
 <div class="pieceHeader">
-<%= render '/gwcircular/admin/menus/piece_header_smart_phone'%>
+<%=render :partial => '/gwcircular/admin/menus/piece_header'%>
 </div>
 <div class="pieceBody">
-<%= render '/gwcircular/admin/menus/search_smart_phone'%>
+<%=render :partial => '/gwcircular/admin/menus/search_smartphone'%>
 <div id="contentTable">
-
 <table class="index">
-  <tr class="headIndex">
-    <th style="width:40px;">状態</th>
-    <th class="docTitle">回覧件名</th>
+<tr class="headIndex">
+<th style="width:40px;">状態</th>
+<th class="docTitle">回覧件名</th>
+</tr>
+<%for item in @items%>
+ <tr>
+   <td class="state" rowspan="2"><span class="<%=item.state%>"><%=item.status_name%></span></td>
+   <td class="title"><%=link_to(item.title, show_path(item))%></td>
+  </tr><tr class="expirydate">
+    <td>回覧期限：<%=item.expiry_date.strftime('%Y-%m-%d %H:%M').to_s %></td>
   </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td class="state" rowspan="2"><span class="<%= item.state %>"><%= item.status_name.html_safe %></span></td>
-    <td class="title"><%= link_to item.title, item.show_path %></td>
-  </tr>
-  <tr class="expirydate">
-    <td>回覧期限：<%=l item.expiry_date if item.expiry_date %></td>
-  </tr>
-  <% end %>
+<%end%>
 </table>
-<%= paginate @items %>
+<%= nz(paginate(@items)) %>
 
 </div>
 <div id="loadImg">Now Loading...</div>
 </div>
 
 </div>
+

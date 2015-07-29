@@ -1,32 +1,30 @@
 <div class="bbsDocList circular">
-<%= render 'gwcircular/admin/menus/piece_header' %>
-<%= render 'gwcircular/admin/menus/piece_banner' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_header' %>
+<%= render :partial => 'gwcircular/admin/menus/piece_banner' %>
 
 <div class="pieceBody">
-<%= render 'gwcircular/admin/menus/tabbox' %>
+<%= render :partial => 'header' %>
 
-<%= form_for :item, :url => {action: :update}, :html => {method: :put, multipart: true, id: 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <div class="docsInnerBox">
-  <div class="bbsUserform">
-  <table class="bbsUserformBody">
-    <tr><td class="docTitle"><span><%=hbr @parent.title %></span></td></tr>
-    <tr><td class="spaceBottom"></td></tr>
-    <tr>
-      <% if @parent.wiki_enabled? -%>
-        <td class="wiki"><%=raw wiki_show(@parent.body) -%></td>
-      <% else -%>
-        <td><%=raw @parent.body -%></td>
-      <% end -%>
-    </tr>
-  </table>
-  </div>
-  </div>
-  <%= render 'form', f: f %>
-  <div class="submitters">
-    <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='already';" type="submit" value="返信・既読" />
-    <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
-  </div>
+<%= form_for :item, :url => "/gwcircular/docs/#{@item.id}", :html => {:method => :put, :multipart => true, :id => 'itemForm'} do |f| %>
+<%= f.error_messages %>
+
+<div class="docsInnerBox">
+<div class="bbsUserform">
+<table class="bbsUserformBody">
+<tr><td class="docTitle"><span><%= hbr(@parent.title) %></span></td></tr>
+<tr><td class="spaceBottom"></td></tr>
+<tr><td><%= raw(@parent.body) %></td></tr>
+</table>
+</div>
+</div>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters">
+  <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='already';" type="submit" value="返信・既読" />
+  <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
+</div>
+
 <% end %>
 
 </div><!--pieceBody-->

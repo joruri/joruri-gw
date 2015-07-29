@@ -1,8 +1,17 @@
+<%
+  if @user.mobile_password.blank?
+    password_str = "未設定"
+  else
+    password_str = "設定済み"
+  end
+%>
+
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
 
+<%= div_notice %>
 <table class="index">
   <tr>
     <th></th>
@@ -19,12 +28,12 @@
   <tr>
     <td><%= link_to '編集' , "/gw/mobile_settings/password_edit?#{@qs}" %></td>
     <td>携帯アクセスパスワード設定</td>
-    <td><%= @user.mobile_password.blank? ? '未設定' : '設定済み' %></td>
+    <td><%= password_str %></td>
     <td>携帯からアクセスするときの、携帯用パスワードを設定します。</td>
   </tr>
 </table>
 <div class="btReturn">
-  <%= link_to '個人設定へ戻る', "/gw/config_settings/ind_settings?#{@qs}" %>
+  <%=link_to '個人設定へ戻る', "/gw/config_settings/ind_settings?#{@qs}" %>
 </div>
 
 </div>

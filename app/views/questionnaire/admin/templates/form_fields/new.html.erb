@@ -1,14 +1,17 @@
 <div class="bbsDocList circular">
-<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+<div class="pieceHeader"><h2 class="pieceTitle"><%=@system_title%></h2></div>
 
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
-<%= form_for :item, :url => {:action => :create}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for f ,:caption => '保存する' %>
+<%= form_for :item, :url => questionnaire_template_form_fields_path(@title) ,:action=>:create ,:html => {:method=>:post , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<%= submit_for f ,:caption=>'保存する' %>
+
 <% end %>
-
 </div>
 </div>

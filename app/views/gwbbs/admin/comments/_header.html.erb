@@ -15,23 +15,24 @@ str_tab3_class += ' current' if params[:state] == 'NEVER'
 str_tab4_class += ' current' if params[:state] == 'VOID'
 gwbbs_uri = "/gwbbs/docs" + "?title_id=" + params[:title_id].to_s + "&limit=" + params[:limit].to_s
 %>
+<%= render :partial => 'header_help' %>
 <!--掲示板タブ-->
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-    <tr>
-      <td class="spaceLeft"></td>
-      <td class="<%= str_tab1_class %>"><%= link_to "公開記事一覧", gwbbs_uri %></td>
-      <% if @title.is_writable? %>
-      <td class="spaceCenter"></td>
-      <td class="<%= str_tab2_class %>"><%= link_to "下書一覧", gwbbs_uri + "&state=DRAFT" %></td>
-      <td class="spaceCenter"></td>
-      <td class="<%= str_tab3_class %>"><%= link_to "公開前一覧", gwbbs_uri + "&state=NEVER" %></td>
-      <td class="spaceCenter"></td>
-      <td class="<%= str_tab4_class %>"><%= link_to "期限切れ", gwbbs_uri + "&state=VOID" %></td>
-      <% end %>
-      <td class="spaceRight"></td>
-    </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft">
+</td><td class="<%=str_tab1_class%>"><%=link_to "公開記事一覧", gwbbs_uri %></td>
+<%if @is_writable%>
+  <td class="spaceCenter"></td>
+  <td class="<%=str_tab2_class%>"><%=link_to "下書一覧", gwbbs_uri + "&state=DRAFT" %></td>
+  <td class="spaceCenter">
+  </td><td class="<%=str_tab3_class%>"><%=link_to "公開前一覧", gwbbs_uri + "&state=NEVER" %></td>
+  <td class="spaceCenter">
+  </td><td class="<%=str_tab4_class%>"><%=link_to "期限切れ", gwbbs_uri + "&state=VOID" %></td>
+<%end%>
+<td class="spaceRight">
+</td></tr>
+</tbody>
 </table>
 </div><!--tabBox-->

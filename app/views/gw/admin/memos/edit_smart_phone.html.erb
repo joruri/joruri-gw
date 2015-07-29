@@ -1,24 +1,37 @@
+<%
+@edit_path  = gw_memo_path(@item)
+send_cls = nz(params[:s_send_cls], 1).to_s
+%>
 <div class="piece memo index">
 <div class="pieceHeader">
-<%= render '/gw/admin/memos/piece_header' %>
+<%= render :partial => '/gw/admin/memos/piece_header' %>
 </div>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'search' %>
-<%= render 'tabmenu' %>
+  <%= render(:partial => 'search') %>
+<%= memos_tabbox_struct send_cls, @qsa %>
 <div id="contentTable">
-<%= form_for :item, :url => {action: :update}, :html => {method: :put, id: 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <div class="userSelect">
-  <%= link_to image_tag("/_common/themes/gw/files/smartphone/btn/ic_act_okuria-userchoice.gif"), "/gw/mobile_participants?view=edit&memo_id=#{@item.id}" %>
-  <span class="textRed">10人まで</span>
-  </div>
-  <%= render 'form', f: f %><br /><br />
-  <%= submit_for_create f, :caption => "送信する" %>
-<% end %>
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :id => 'itemForm'} do |f| %>
+<%= f.error_messages %>
+<table class="show">
+<tr>
+  <td>
+<span class="textRed">※</span><br />
+  </td>
+</tr>
+</table>
+
+<div class="userSelect">
+<%=link_to image_tag("/_common/themes/gw/files/smartphone/btn/ic_act_okuria-userchoice.gif"), "/gw/mobile_participants?view=edit&memo_id=#{@item.id}"%>
+<span class="textRed">10人まで</span>
+</div>
+<%= render :partial => 'form', :locals => {:f => f} %>
+<br />
+<br />
+<%=submit_for_create f, :caption=>"送信する"%>
+<% end  %>
 <p class="leftPad2">
-  <%= link_to "戻る", {action: :show, id: @item.id} %>
-</p>
+<%=link_to "戻る", "/gw/memos/#{@item.id}?s_send_cls=#{@s_send_cls}&s_finished=#{@s_finised}"%></p>
 </div>
 </div>
 <div class="pieceBodyBody"></div>

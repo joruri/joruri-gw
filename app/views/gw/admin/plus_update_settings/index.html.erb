@@ -1,17 +1,23 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBody">
 
-<%= form_tag "/gw/plus_update_settings", {:method => :post, :multipart => true, :id => 'itemForm'} do %>
-  <%= error_messages_for @item %>
-  <%= render 'form' %>
-  <div class="submitters"><%= submit_tag "保存" %></div>
+<%= render :partial => 'header_str' %>
+
+<div class="pieceBody">
+<%= show_notice %>
+
+<% form_for :item, :url => "/gw/plus_update_settings" ,:html => {:method=>:post , :multipart => true, :id => 'itemForm'} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters"><%=f.submit("保存")%></div>
+
 <% end %>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to "管理設定へ戻る", "/gw/config_settings" %>
+  <%=link_to "管理設定へ戻る", "/gw/config_settings" %>
 </div>
-
 </div>
 </div>

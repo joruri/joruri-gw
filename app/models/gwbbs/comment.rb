@@ -1,29 +1,10 @@
 class Gwbbs::Comment < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::Operator
 
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :doc, :foreign_key => :parent_id
+  belongs_to :doc,   :foreign_key => :parent_id,     :class_name => 'Gwbbs::Doc'
 
   validates_presence_of :body
-
-  def editable?(user = Core.user)
-    creater_id == user.code || editor_id == user.code
-  end
-
-  def deletable?(user = Core.user)
-    control.is_admin?(user) || doc.section_code == user.groups.first.try(:code) || editor_id == user.code
-  end
-
-  def creater_or_editor_label
-    if editordivision.present?
-      "#{editordivision} : #{editor}"
-    else
-      "#{createrdivision} : #{creater}"
-    end
-  end
 
   def item_path
     return "/gwbbs/docs/#{self.parent_id}?title_id=#{self.title_id}"
@@ -48,4 +29,5 @@ class Gwbbs::Comment < Gwboard::CommonDb
   def delete_comment_path
     return self.item_home_path + "#{self.id}?title_id=#{self.title_id}"
   end
+
 end

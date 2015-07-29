@@ -1,16 +1,18 @@
 <%
   strparam = "?title_id=#{params[:title_id]}&cat=#{params[:cat]}"
 %>
-<%= render 'folder_name' unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
+<%= render(:partial => 'folder_name') unless params[:state] == 'DRAFT' if params[:kwd].blank? %>
 
-<% if @title.is_writable? && !@title.use_recognize? %>
+<%if @is_writable%>
+<%unless @title.use_recognize%>
 <div class="editingBox">
-  <span class="btNewFile"><%= link_to "新規作成", "#{@title.item_home_path}docs/new#{strparam}" %></span>
+  <span class="btNewFile"><%=link_to("新規作成", "#{@title.item_home_path}docs/new#{strparam}") %></span>
   <% unless params[:state] == 'DATE' %>
-    <span class="btNewFolder"><%= link_to "フォルダ新規作成", "#{@title.item_home_path}folders/new?title_id=#{params[:title_id]}&cat=#{params[:cat]}" %></span>
+  <span class="btNewFolder"><%=link_to("フォルダ新規作成", "#{@title.item_home_path}folders/new?title_id=#{params[:title_id]}&cat=#{params[:cat]}") %></span>
   <% end %>
 </div>
-<% end %>
+<%end%>
+<%end%>
 
 <%
   tab_draft = ''
@@ -18,19 +20,25 @@
   tab_draft = 'current' if params[:state] == 'DRAFT'
   tab_public = 'current' unless params[:state] == 'DRAFT'
 %>
-<% if @title.is_writable? && !@title.use_recognize? %>
+<%if @is_writable%>
+<%unless @title.use_recognize%>
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-    <tr>
-      <td class="spaceLeft"></td>
-      <td class="tab <%= tab_public %>"><%= link_to 'フォルダ', "#{@title.item_home_path}folders?title_id=#{params[:title_id]}&cat=#{params[:cat]}" %></td>
-      <td class="spaceCenter"></td>
-      <td class="tab <%= tab_draft %>"><%= link_to '非公開', "#{@title.item_home_path}folders?title_id=#{params[:title_id]}&state=DRAFT" %></td>
-      <td class="spaceRight">
-      </td>
-    </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="tab <%=tab_public%>">
+<%=link_to('フォルダ', "#{@title.item_home_path}folders?title_id=#{params[:title_id]}&cat=#{params[:cat]}") %>
+</td>
+<td class="spaceCenter"></td>
+<td class="tab <%=tab_draft%>">
+<%=link_to('非公開', "#{@title.item_home_path}folders?title_id=#{params[:title_id]}&state=DRAFT") %>
+</td>
+<td class="spaceRight">
+</td>
+</tr>
+</tbody>
 </table>
 </div>
-<% end %>
+<%end%>
+<%end%>

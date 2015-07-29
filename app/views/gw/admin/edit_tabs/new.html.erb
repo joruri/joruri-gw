@@ -1,13 +1,14 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBody">
-<%= render 'header_new_botton' %>
-<%= render 'header_navi' %>
+<%= render :partial => 'header_str' %>
 
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, id: "itemForm", multipart: true} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-<% end %>
+<div class="pieceBody">
+<%= render :partial => 'header_new_botton' %>
+<%= render :partial => 'header_navi' %>
+
+<%= div_notice %>
+<%= form_for :item, :url => "/gw/edit_tabs?pid=#{@parent.id}", :action => :create, :method => :post , :html => {:id => "itemForm", :multipart => true} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
 
 </div>
 </div>

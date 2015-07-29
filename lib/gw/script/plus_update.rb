@@ -1,11 +1,13 @@
-class Gw::Script::PlusUpdate < System::Script::Base
+# encoding: utf-8
+module Gw::Script::PlusUpdate
   def self.destroy_reminders
-    run do
-      date_str = Time.now.last_month
-      log "過去のリマインダーデータ削除処理: #{I18n.l(date_str)} 以前を削除" do
-        dels = Gw::PlusUpdate.where(["doc_updated_at < ?", date_str]).destroy_all
-        log "#{dels.size} deleted"
-      end
-    end
+    title = "Gw-Plus　リマインダー連携"
+    s_method = "destroy_reminders"
+    dump "#{self}.#{s_method}, #{title}, 過去のリマインダーデータ削除処理開始：#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
+    date_str = Time.now.last_month.strftime('%Y-%m-%d 23:59:59')
+    dump "#{date_str}以前のリマインダーを削除"
+    Gw::PlusUpdate.destroy_all("doc_updated_at < '#{date_str}'")
+    dump "#{self}.#{s_method}, #{title}, 過去のリマインダーデータ削除処理終了：#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
   end
+
 end

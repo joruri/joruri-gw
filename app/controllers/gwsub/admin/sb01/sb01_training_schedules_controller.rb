@@ -1,5 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
 
   layout "admin/template/sb01_training"
 
@@ -54,7 +58,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
   def update
     init_params
     @item = Gwsub::Sb01TrainingSchedule.find(params[:id])
-    @trainig = Gwsub::Sb01Training.where(:id =>@item.training_id).first
+    @trainig = Gwsub::Sb01Training.find_by_id(@item.training_id)
     @item1 = @trainig
     case @trainig.state
       # 研修のstateに対応する開催日ごとのstateを強制設定
@@ -88,17 +92,17 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     @item.from_end   = ed_at
     location = "#{@public_uri}/#{@item.id}?t_id=#{@item.training_id}&t_menu=plans"
     after_process = Proc.new{
-      gw_skd = Gw::Schedule.where(:id =>@item.schedule_id).first
+      gw_skd = Gw::Schedule.find_by_id(@item.schedule_id)
       unless gw_skd.blank?
         gw_skd.st_at = @item.from_start
         gw_skd.ed_at = @item.from_end
         gw_skd.place = @item.prop_name
         gw_skd.save
       end
-      skd_m = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id = #{@item.id}")
+      skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "training_schedule_id = #{@item.id}")
       unless skd_m.blank?
         skd_m.each do |s|
-          gw_skd_m = Gw::Schedule.where(:id =>s.schedule_id).first
+          gw_skd_m = Gw::Schedule.find_by_id(s.schedule_id)
           unless gw_skd_m.blank?
             gw_skd_m.st_at = @item.from_start
             gw_skd_m.ed_at = @item.from_end
@@ -109,7 +113,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
       end
       if @item.state == '3'
         if @item.members_max > @item.members_current
-          skd_cond = Gwsub::Sb01TrainingSchedule.where(:id =>@item.id).first
+          skd_cond = Gwsub::Sb01TrainingSchedule.find_by_id(@item.id)
           skd_cond.state = '2'
           skd_cond.save
         end
@@ -127,7 +131,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     @item = Gwsub::Sb01TrainingSchedule.find(params[:id])
     location = "/gwsub/sb01/sb01_training_plans/#{@item.training.id}"
     after_process = Proc.new{
-        skd = Gw::Schedule.where(:id =>@item.schedule_id).first
+        skd = Gw::Schedule.find_by_id(@item.schedule_id)
         skd.destroy unless skd.blank?
         destroy_members_shcedule
       }
@@ -139,10 +143,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
   end
 
   def destroy_members_shcedule
-    skd_m = Gwsub::Sb01TrainingScheduleMember.where("training_schedule_id = #{@item.id}")
+    skd_m = Gwsub::Sb01TrainingScheduleMember.find(:all, :conditions => "training_schedule_id = #{@item.id}")
     unless skd_m.blank?
       skd_m.each do |s|
-        skd = Gw::Schedule.where(:id =>s.schedule_id).first
+        skd = Gw::Schedule.find_by_id(s.schedule_id)
         skd.destroy unless skd.blank?
         s.destroy
       end
@@ -152,14 +156,14 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 表示行数　設定
     @limits = nz(params[:limit],30)
     # 研修id
-    @t_id_top = Gwsub::Sb01Training.order("fyear_markjp DESC").first
+    @t_id_top = Gwsub::Sb01Training.find(:first,:order=>"fyear_markjp DESC")
     @t_id = nz(params[:t_id],@t_id_top.id)
     # 経路
     @top_menu = nz(params[:t_menu],'entries')
@@ -237,8 +241,8 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     after_process = Proc.new{
       if @item.state == '1'
         #準備中に戻したとき、すべての日程が「準備中」なら研修本体のステータスも準備中に
-        ts_conditions   = Gwsub::Sb01TrainingSchedule.where("training_id = #{@item.training_id}").count
-        ts_preparations = Gwsub::Sb01TrainingSchedule.where("training_id = #{@item.training_id} and state = '1'").count
+        ts_conditions   = Gwsub::Sb01TrainingSchedule.count(:all,:conditions=>"training_id = #{@item.training_id}")
+        ts_preparations = Gwsub::Sb01TrainingSchedule.count(:all,:conditions=>"training_id = #{@item.training_id} and state = '1'")
         if ts_conditions == ts_preparations
           change_training_condition('1')
         end
@@ -262,29 +266,24 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
   end
 
   def csvput
-    training = Gwsub::Sb01Training.find_by(id: params[:t_id])
-    skd      = Gwsub::Sb01TrainingSchedule.find_by(id: params[:p_id])
+    training = Gwsub::Sb01Training.find_by_id(params[:t_id])
+    skd      = Gwsub::Sb01TrainingSchedule.find_by_id(params[:p_id])
 
-    members = Gwsub::Sb01TrainingScheduleMember.where(training_schedule_id: params[:p_id])
-    if members.blank? || training.blank? ||skd.blank?
-      return redirect_to "@{public_uri}/?t_id=#{params[:t_id]}&t_menu=entries"
+    members = Gwsub::Sb01TrainingScheduleMember.find(:all,:conditions=>["training_schedule_id= ? ", params[:p_id]])
+    rets = '"職員番号","役職","受講者名","受講者所属","受講者連絡先","メールアドレス","申込者","申込者所属","申込者連絡先"'
+    rets += "\n"
+    unless (members.blank? && training.blank? && skd.blank?)
+      members.each do |m|
+        rets += %Q("#{m.user_rel1.code}","#{m.user_rel1.official_position}","#{m.user_rel1.name}","#{m.group_rel1.name}","#{m.training_user_tel}")
+        rets += %Q(,"#{m.user_rel1.email}","#{m.user_rel2.name}","#{m.group_rel2.name}","#{m.entry_user_tel}")
+        rets += "\n"
+      end
+      type_sjis = '-s'
+      filename = "名簿_#{training.title}_#{skd.from_start.strftime('%Y年%m月%d日')}.csv"
+      send_data(NKF::nkf(type_sjis,rets), :type => 'text/csv', :filename => filename)
+    else
+      location = "@{public_uri}/?t_id=#{params[:t_id]}&t_menu=entries"
+      redirect_to location
     end
-    csv = members.to_csv(headers: ["職員番号","役職","受講者名","受講者所属コード","受講者所属","受講者連絡先","メールアドレス","申込者","申込者所属","申込者連絡先"]) do |item|
-      data = []
-      data << item.user_rel1.try(:code)
-      data << item.user_rel1.try(:official_position)
-      data << item.user_rel1.try(:name)
-      data << item.group_rel1.try(:code)
-      data << item.group_rel1.try(:name)
-      data << item.training_user_tel
-      data << item.user_rel1.try(:email)
-      data << item.user_rel2.try(:name)
-      data << item.group_rel2.try(:name)
-      data << item.entry_user_tel
-      data
-    end
-
-    filename = "名簿_#{training.title}_#{skd.from_start.strftime('%Y年%m月%d日')}.csv"
-    send_data NKF::nkf('-s', csv), type: 'text/csv', filename: filename
   end
 end

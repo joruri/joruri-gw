@@ -7,6 +7,7 @@
 -------------------------------------------------*/
 #content .gwfaqDocList {
   background-image: url(/_common/themes/gw/files/title/title_qa-admin.gif);
+  margin-top: 10px;
 }
 
 /* FAQタイトル部分
@@ -89,24 +90,9 @@ table.index th.update {
   font-size: 120%;
   color: #184093;
 }
-#contentBody .gwfaqDocList table.answerArea .wiki table {
-  border: 1px solid #ccc;
-}
-#contentBody .gwfaqDocList table.answerArea .wiki th {
-  background-color: #e3efff;
-  border: 1px solid #ccc;
-  color: #000;
-  font-size: 100%;
-  padding: 4px 7px;
-}
-#contentBody .gwfaqDocList table.answerArea td {
-  border: 1px solid #ccc;
-  padding: 4px 7px;
-}
-#contentBody .gwfaqDocList table.answerArea td.answerText {
-  background-color: #fff;
-  border: medium none;
+table.answerArea td.answerText {
   padding: 10px;
+  background-color: #FFF;
 }
 
 /* 機能ボタン

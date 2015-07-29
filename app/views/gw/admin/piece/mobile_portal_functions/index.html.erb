@@ -1,0 +1,23 @@
+<%
+todos = []
+memos = []
+  %w(memo  todo ).each{|mod|
+    if mod == "todo"
+      todos += eval("Gw::Model::#{mod.capitalize}.remind.collect{|x| x[:c]='#{mod}'; x}")
+    else
+      memos += eval("Gw::Model::#{mod.capitalize}.remind.collect{|x| x[:c]='#{mod}'; x}")
+    end
+  }
+if todos.size > 0
+  latest_todo = "（未読<font color='red'>#{todos.size.to_s}</font>件）"
+else
+  latest_todo = ""
+end
+if memos.size > 0
+  latest_memo = "（未読<font color='red'>#{memos.size.to_s}</font>件）"
+else
+  latest_memo = ""
+end
+%>
+<p class="mobileTodo"><%= link_to  "Todo#{latest_todo}" ,"/gw/todos" -%></p>
+<p class="mobileMemo"><%= link_to  "連絡メモ#{latest_memo}" ,"/gw/memos" -%></p>

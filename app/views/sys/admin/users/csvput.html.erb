@@ -1,0 +1,25 @@
+<h4>CSV出力（ユーザー）</h4>
+<div>
+  <span style="color:blue">
+  出力対象を、指定の文字コードで出力します。<br />保存先は、ダウンロード時に指定できます。
+  </span>
+</div>
+<% location = csvput_sys_users_path %>
+<%= form_tag location, {:method => :get, :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','put') %>
+<table class="show">
+  <tr>
+    <th></th>
+    <td>文字コードを選択して実行してください</td>
+  </tr>
+  <tr>
+    <th>文字コード</th>
+    <td>
+      <%= radio_button_tag('item[nkf]', 'utf8', true) %><label for="item_nkf_utf8">UTF8</label>
+      <%= radio_button_tag('item[nkf]', 'sjis', false) %><label for="item_nkf_sjis">SJIS</label>
+    </td>
+  </tr>
+</table>
+<br />
+<%= submit_tag 'CSV出力' %>
+<% end %>

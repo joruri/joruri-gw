@@ -1,9 +1,0 @@
-<table class="show">
-  <tr>
-    <th>記事入力方式</th></tr><tr>
-    <td>
-      <%= f.radio_buttons :wiki, Gwbbs::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
-    </td>
-  </tr>
-</table>

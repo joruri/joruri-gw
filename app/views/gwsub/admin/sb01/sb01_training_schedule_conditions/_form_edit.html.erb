@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_conditions/form.html.erb</p>%>
 <%
 times_st   = Gwsub::Sb01TrainingScheduleCondition.select_times
 times_ed   = Gwsub::Sb01TrainingScheduleCondition.select_times_end
@@ -7,62 +8,65 @@ week_day = Gwsub::Sb01TrainingScheduleCondition.weekday_show(@item.repeat_weekda
 %>
 <%= hidden_field_tag 'limit', @limits %>
 
+
 <%= f.error_messages %>
-<%= required_head %>
+<%= raw(required_head) %>
 <table class="show">
 <tr>
-  <% if @item.repeat_flg.to_i == 1 %>
+<%if @item.repeat_flg.to_i == 1 %>
   <th>研修日 </th>
-  <% else %>
+<%else%>
   <th>期間開始日 </th>
-  <% end %>
-  <td><%= @item.from_at.strftime('%Y-%m-%d') unless @item.from_at.blank?%></td>
+<%end%>
+  <td><%=h @item.from_at.strftime('%Y-%m-%d') unless @item.from_at.blank?%></td>
 </tr>
 <tr>
-  <th>開催時刻<%= required %></th>
+  <th>開催時刻<%= raw(required) %></th>
   <td>
-    <%= f.select :from_start ,options_for_select(times_st,@item.from_start.to_s) %>　：
-    <%= f.select :from_start_min ,options_for_select(times_min,@item.from_start_min.to_s) %>　～　
-    <%= f.select :from_end ,options_for_select(times_ed,@item.from_end.to_s) %>　：
-    <span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
-    <%= f.select :from_end_min ,options_for_select(times_min,@item.from_end_min.to_s) %>
-    </span>
+<%= f.select :from_start ,options_for_select(times_st,@item.from_start.to_s) %>　：
+<%= f.select :from_start_min ,options_for_select(times_min,@item.from_start_min.to_s) %>　～　
+<%= f.select :from_end ,options_for_select(times_ed,@item.from_end.to_s) %>　：
+<span class="<%= 'fieldWithErrors' if @item.errors[:from_end] %>">
+<%= f.select :from_end_min ,options_for_select(times_min,@item.from_end_min.to_s) %>
+</span>
   </td>
 </tr>
 <tr>
-  <th>場所<%= required %></th>
+  <th>場所<%= raw(required) %></th>
   <td><%= f.text_field :prop_name,:size=>80 %></td>
 </tr>
-  <tr><th>定員<%= required %></th>
-  <td><%= f.text_field :members_max ,:size=>30, :class=>"IMEoff" %>人</td>
+<tr><th>定員<%= raw(required) %></th>
+<td><%= f.text_field :members_max ,:size=>30, :class=>"IMEoff" %>人</td>
 </tr>
 <tr>
   <th>登録所属</th>
-  <td><%= @item.training_rel.group_name%></td>
+  <td><%=h @item.training_rel.group_name%></td>
 </tr>
 <tr>
   <th>登録者</th>
-  <td><%= @item.training_rel.member_name%></td>
+  <td><%=h @item.training_rel.member_name%></td>
 </tr>
 <tr>
   <th>繰返し</th>
-  <td><%= safe{@item.repeat_label} %><%if @item.repeat_flg.to_i == 2 %>／<%= safe{@item.repeat_class_label} %><%end%></td>
+  <td><%=h ass{@item.repeat_label} %><%if @item.repeat_flg.to_i == 2 %>／<%=h ass{@item.repeat_class_label} %><%end%></td>
 </tr>
-<% if @item.repeat_class_id.to_i == 3 %>
+<%if @item.repeat_class_id.to_i == 3%>
 <tr>
   <th>曜日指定</th>
-  <td><%= week_day %></td>
+  <td><%=h week_day %></td>
 </tr>
-<% end %>
-<% if @item.repeat_flg.to_i == 2 %>
+<%end%>
+<%if @item.repeat_flg.to_i == 2 %>
 <tr>
   <th>繰返し期間終了日</th>
-  <td><%= @item.to_at.strftime('%Y-%m-%d') unless @item.to_at.blank?%></td>
+  <td><%=h @item.to_at.strftime('%Y-%m-%d') unless @item.to_at.blank?%></td>
 </tr>
-<% end %>
+<%end%>
 </table>
 <br />
 <div class="preserve">
 <%= f.submit '確定' %>
 </div>
 <br />
+<%= raw(gw_js_include_full) %>
+

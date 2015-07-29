@@ -1,0 +1,17 @@
+<%
+d_s = Gw.date_format('%Y%m%d', Date.today)
+setting_url = "/gw/schedules/setting_ind"
+
+concat <<-EOL
+<div class="menu">
+<p>スケジュール</p>
+#{link_to '新規作成', '/gw/schedules/new'}
+#{link_to '個人日表示', "/gw/schedules/#{d_s}"}
+#{link_to 'グループ日表示', "/gw/schedules/#{d_s}?gid=#{Site.user_group.id}"}
+#{link_to '個人週表示', "/gw/schedules"}
+#{link_to 'グループ週表示', "/gw/schedules?gid=#{Site.user_group.id}"}
+#{link_to '月表示', "/gw/schedules/show_month"}
+#{link_to '設定', setting_url}
+</div>
+EOL
+%>

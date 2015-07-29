@@ -1,7 +1,8 @@
+# -*- encoding: utf-8 -*-
 class Gwqa::Admin::Piece::GwqaBreadCrumbsController < ApplicationController
-  layout false
 
   def index
+    skip_layout
     index_core Gwqa::Doc.new
   end
 

@@ -1,5 +1,5 @@
 <%
-u = Core.user
+u = Site.user
 uid = u.id
 link_params = "?gid=#{params[:gid]}&uid=#{uid}&cgid=#{params[:cgid]}&dis=#{@dis}"
 schedule_users_select_path = list_gw_mobile_schedules_path({:gid=>params[:gid],:uid=>params[:uid],:cgid=>params[:cgid],:dis=>@dis,:view=>"edit",:link=>params[:link],:memo_id=>@item.id})
@@ -8,11 +8,11 @@ schedule_users_select_path = list_gw_mobile_schedules_path({:gid=>params[:gid],:
 %>
 <p class="mobileScheduleCurrent">スケジュール</p>
 <p class="bgAsh">作成</p>
-<%= form_for :item, :url => @edit_path, :html => {:method => :put, :id => 'itemForm'} do |f| %>
-<%= link_to "参加ユーザー選択", schedule_users_select_path%><span class="textRed">※</span><br />
-<%= f.error_messages %>
-<%= render 'form_mobile', f: f %>
-<%= submit_for_update f, :caption=>"確定する" %>
-<% end %>
+<%= form_for :item, :url => @edit_path, :html => {:method => :put, :id => 'itemForm'} do |f|%>
+<%=link_to "参加ユーザー選択", schedule_users_select_path%><span class="textRed">※</span><br />
+<%=f.error_messages%>
+<%=render(:partial => 'form_mobile', :locals => {:f => f})%>
+<%=submit_for_update f, :caption=>"確定する"%>
+<%end%>
 <hr class="borderDash"/>
 <p class="leftPad2"><%=link_to("<戻る", %Q(/gw/schedules/#{@item.id}/show_one#{link_params}&topdate=#{@topdate}))%></p>

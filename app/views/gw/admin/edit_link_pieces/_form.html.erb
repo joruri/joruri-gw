@@ -1,86 +1,46 @@
+<%
+  selectbox_css = Gw::EditLinkPieceCss.selectbox_id_list_css
+  selectbox_cssicon = Gw::EditLinkPieceCss.selectbox_id_list_cssicon
+%>
+<%= hidden_field_tag 'limit'  , @limits %>
 <%= f.hidden_field :class_created  %>
 <%= f.hidden_field :parent_id %>
-<%= f.hidden_field :level_no %>
-<%= f.hidden_field :sort_no %>
-
-<%= required_head %>
-<table class="show">
-  <tr>
-    <th>公開</th>
-    <td><%= f.radio_buttons :published, Gw::EditLinkPiece.published_select %></td>
-  </tr>
-  <tr>
-    <th>状態</th>
-    <td><%= f.radio_buttons :state, Gw::EditLinkPiece.state_select %></td>
-  </tr>
-  <tr>
-    <th>並び順</th>
-    <td><%= @item.sort_no %></td>
-  </tr>
-  <tr>
-    <th>表示名<%= required %></th>
-    <td><%= f.text_field :name, :size => 80 %></td>
-  </tr>
-  <% if @parent.level_no == 1 %>
-  <tr>
-    <th>タブキー<%= required %></th>
-    <td><%= f.text_field :tab_keys, :size => 10, :class => 'IMEoff' %></td>
-  </tr>
-  <% else %>
-  <%= f.hidden_field :tab_keys %>
-  <% end %>
-</table>
-
-<% if @parent.level_no >= 2 %>
-<table class="show">
-  <tr>
-    <th>表示モード</th>
-    <td><%= f.radio_buttons :mode, @item.modes %></td>
-  </tr>
-  <tr>
-    <th>CSS（アイコン）</th>
-    <td><%= f.select :block_icon_id, [['','']] + Gw::EditLinkPieceCss.selectbox_id_list_cssicon, :selected => @item.block_icon_id %></td>
-  </tr>
-  <tr>
-    <th>CSS</th>
-    <td><%= f.select :block_css_id, [['','']] + Gw::EditLinkPieceCss.selectbox_id_list_css, :selected => @item.block_css_id %></td>
-  </tr>
-  <tr>
-    <th>権限判定関数</th>
-    <td><%= f.text_field :display_auth, :size => 50 %></td>
-  </tr>
-</table>
-<table class="show">
-  <tr>
-    <th>リンク種別</th>
-    <td><%= f.select :class_sso, options_for_select(Gw::EditLinkPiece.sso_select, @item.class_sso), :class => 'state' %></td>
-  </tr>
-  <tr>
-    <th>リンク先URL</th>
-    <td><%= f.text_area :link_url, :rows => 3, :cols => 80, :class=>'IMEoff' %></td>
-  </tr>
-  <tr>
-    <th>接続先区分</th>
-    <td><%= f.radio_buttons :class_external, Gw::EditLinkPiece.external_select %></td>
-  </tr>
-  <tr>
-    <th>アカウント項目名</th>
-    <td><%= f.text_field :field_account, :size => 50, :class=>'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
-  </tr>
-  <tr>
-    <th>パスワード項目名</th>
-    <td><%= f.text_field :field_pass, :size => 50, :class => 'IMEoff' %> <%= required %>SSOを利用する場合は必須です。</td>
-  </tr>
-  <tr>
-    <th>リンク用アイコンパス</th>
-    <td><%= f.text_area :icon_path, :rows => 3, :cols => 80, :class => 'IMEoff' %></td>
-  </tr>
-</table>
-<% else %>
-<%= f.hidden_field :mode %>
-<%= f.hidden_field :class_external %>
-<%= f.hidden_field :class_sso %>
+<%= f.hidden_field :level_no  %>
+<%= f.hidden_field :sort_no   %>
+<% if @p_level_no != 1 %>
+  <%= f.hidden_field :tab_keys             %>
 <% end %>
+<% if @p_level_no < 3 %>
+  <%= f.hidden_field :class_external %>
+  <%= f.hidden_field :class_sso      %>
+<% end %>
+
+<%= f.error_messages %>
+<%= required_head %>
+  <table class="show">
+    <tr><th>公開</th><td><%= radio f, :published ,Gw::EditLinkPiece.published_select ,:class=>'state' %></td></tr>
+    <tr><th>状態</th><td><%= radio f, :state ,Gw::EditLinkPiece.state_select ,:class=>'state' %></td></tr>
+    <tr><th>並び順</th><td><%= @item.sort_no %></td></tr>
+    <tr><th>表示名<%= required %></th><td><%= f.text_field :name , :size=>80 %></td></tr>
+    <% if @p_level_no == 1 %>
+    <tr><th>タブキー<%= required %></th><td><%= f.text_field :tab_keys ,:size=>10 ,:class=>'IMEoff' %></td></tr>
+    <% end %>
+  </table>
+
+  <% if @p_level_no >= 2 %>
+  <table class="show">
+    <tr><th>表示モード</th><td><%= radio f, :mode, @item.modes %></td></tr>
+    <tr><th>CSS（アイコン）</th><td><%= f.select(:block_icon_id, selectbox_cssicon, :selected=>@item.block_icon_id) %></td></tr>
+    <tr><th>CSS</th><td><%= f.select(:block_css_id, selectbox_css, :selected=>@item.block_css_id) %></td></tr>
+    <tr><th>権限判定関数</th><td><%= f.text_field :display_auth ,:size=>50 %></td></tr>
+    <tr><th>リンク先URL</th><td><%= f.text_area :link_url , :rows=>3 , :cols=>80  ,:class=>'IMEoff' %></td></tr>
+    <tr><th>接続先区分</th><td><%= radio f, :class_external ,Gw::EditLinkPiece.external_select ,:class=>'state' %></td></tr>
+    <tr><th>SSO利用</th><td><%= radio f, :class_sso ,Gw::EditLinkPiece.sso_select ,:class=>'state' %></td></tr>
+    <tr><th>アカウント項目名</th><td><%= f.text_field :field_account ,:size=>50 ,:class=>'IMEoff' %><%= required %>SSOを利用する場合は必須です。</td></tr>
+    <tr><th>パスワード項目名</th><td><%= f.text_field :field_pass    ,:size=>50 ,:class=>'IMEoff' %><%= required %>SSOを利用する場合は必須です。</td></tr>
+    <tr><th>リンク用アイコンパス</th><td><%= f.text_area :icon_path , :rows=>3 , :cols=>80  ,:class=>'IMEoff' %></td></tr>
+  </table>
+  <% end %>
 
 <div class="preserve">
 <%= f.submit '保存' %>

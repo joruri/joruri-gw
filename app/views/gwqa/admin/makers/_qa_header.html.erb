@@ -1,7 +1,6 @@
 <div class="contentMenu qa">
-  <span class="btNew "><%= link_to 'QAを作成する', '/_admin/gwqa/makers/new/' if Gwqa::Control.is_sysadm? %></span>
+  <span class="btNew "><%=link_to 'QAを作成する', '/_admin/gwqa/makers/new/' if @is_sysadm %></span>
 </div>
-
 <div class="tabBox">
 <table class="tabtable">
   <tr>

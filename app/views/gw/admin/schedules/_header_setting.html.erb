@@ -1,0 +1,12 @@
+<%
+concat <<-EOL
+<div class="menu">
+<p>設定</p>
+#{link_to 'システム設定', "/gw/schedules/setting_system"}
+#{link_to '個人設定', "/gw/schedules/setting_ind"}
+#{link_to '休日管理', "/gw/schedules/setting_holidays"}
+#{link_to_uc 'インポート'}
+#{link_to_uc 'エクスポート'}
+</div>
+EOL
+%>

@@ -1,59 +1,8 @@
-<%
-label=["","","","","","","","","",""]
-enable  =["","","","","","","","","",""]
-main_title = ["",""]
-answers   = ["","","","","","","","","",""]
-remarks   = ["","","","","","","","","",""]
-
-unless @title.form_configs.blank?
-  configs = JSON.parse(@title.form_configs)
-  main_title = configs[0]
-  enable = configs[1]
-  label = configs[2]
-end
-unless @item.body.blank?
-  answer_sets = JSON.parse(@item.body)
-  answers = answer_sets[0]
-  remarks = answer_sets[1]
-end
-
-%>
-<table class="show">
-  <tr>
-    <th>回答</th>
-    <th><%= main_title[0] %></th>
-    <th><%= main_title[1] %></th>
-  </tr>
-  <% 10.times do |i| %>
-    <% if enable[i] != "enabled" %>
-      <%= hidden_field_tag "answer_body[answer][]", "" %>
-      <%= hidden_field_tag "answer_body[remark][]", "" %>
-    <% else %>
-      <tr>
-        <th><%= label[i] %></th>
-        <td style="vertical-align: top;">
-          <%= text_field_tag "answer_body[answer][]", answers[i], :style => 'width: 250px;' %>
-        </td>
-        <td>
-          <%= text_field_tag "answer_body[remark][]", remarks[i], :style => 'width: 250px;' %>
-        </td>
-      </tr>
-    <% end %>
-  <% end %>
+<table class="show bbsText">
+<tr>
+<th>回答</th>
+</tr>
+<tr>
+<td><%= f.text_area :body, :style => 'width:99%; height:100px' %></td>
+</tr>
 </table>
-
-<%= render 'gwmonitor/admin/tool/attachments/form', f: f, item: @item %>
-
-<script type="text/javascript">
-//<![CDATA[
-  function chageDisp(obj,changeObjId) {
-    var display = document.getElementById(changeObjId).style.display;
-    if (display == '') {
-      obj.innerHTML = '開く▼';
-    } else if (display == 'none') {
-      obj.innerHTML = '閉じる▲';
-    }
-    Element.toggle($(changeObjId));
-  }
-//]]>
-</script>

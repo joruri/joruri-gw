@@ -4,10 +4,9 @@ str_params = ''
 str_params += "&limit=#{params[:limit]}" unless params[:limit].blank?
 str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
 %>
-<%= render 'header' %>
+<%=render :partial => 'header' %>
 <div class="inner">
-
-<% if @folders.present? %>
+<%unless @folders.blank? %>
  <h4 class="docFolderTitle">見出し一覧</h4>
  <table class="docFolder">
   <tr>
@@ -17,38 +16,39 @@ str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
     <th style="width: 30px; text-align: center;">　</th>
     <th style="width: 30px; text-align: center;">　</th>
   </tr>
-  <% @folders.each do |folder| %>
+  <% for item in @folders %>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: center;"><%= folder.status_name[folder.state] %></td>
-    <td style="text-align: left;"><%= folder.seq_name %></td>
-    <td><%= folder.title %></td>
-    <td style="text-align: center;"><%= link_to_list_gwboard_category folder %></td>
-    <td style="text-align: center;"><%= link_to '詳細', folder.show_folder_path %></td>
+    <td style="text-align: center;"><%= item.status_name[item.state] %></td>
+    <td style="text-align: left;"><%= item.seq_name %></td>
+    <td><%=h item.title %></td>
+    <td style="text-align: center;"><%= link_to_list_gwboard_category item %></td>
+    <td style="text-align: center;"><%= link_to '詳細', item.show_folder_path %></td>
   </tr>
   <% end %>
 </table>
 <%= paginate @folders %>
-<% end %>
+<%end %>
 
-<% if @items.present? %>
-<h4 class="docFileTitle">記事一覧</h4>
-<table class="docformTitle">
+<%#下書き一覧表示%>
+<%unless @items.blank?%>
+ <h4 class="docFileTitle">記事一覧</h4>
+ <table class="docformTitle">
+ <tr>
+ <th style="width: 60px; text-align: center;"> </th>
+ <th style="width: 30px; text-align: left;">索引</th>
+ <th style="text-align: left;">タイトル</th>
+ <th style="width:100px; text-align: center;">最終更新日</th>
+ </tr>
+ <% for item in @items %>
   <tr>
-    <th style="width: 60px; text-align: center;"> </th>
-     <th style="width: 40px; text-align: left;">索引</th>
-    <th style="text-align: left;">タイトル</th>
-    <th style="width:100px; text-align: center;">最終更新日</th>
+  <td style="text-align: center;"><%= item.ststus_name %></td>
+  <td style="text-align: left;"><%= item.seq_name %></td>
+  <td><%= link_to(item.title, digitallibrary_doc_path(item,{:title_id=>@title.id})+ "&state=DRAFT#{cat_params(item)}")%></td>
+  <td><%= item.latest_updated_at.strftime('%y-%m-%d %H:%M').to_s  unless item.latest_updated_at.blank? %></td>
   </tr>
-  <% @items.each do |item| %>
-  <tr>
-    <td style="text-align: center;"><%= item.ststus_name %></td>
-    <td style="text-align: left;"><%= item.seq_name %></td>
-    <td><%= link_to item.title, digitallibrary_doc_path(item, title_id: @title.id)+ "&state=DRAFT#{cat_params(item)}" %></td>
-    <td><%= item.latest_updated_at.strftime('%y-%m-%d %H:%M') if item.latest_updated_at %></td>
-  </tr>
-  <% end %>
+ <% end %>
 </table>
-<%= render 'limit_change' %>
-<%= paginate @items %>
-<% end %>
+<%=render :partial => 'limit_change'%>
+<%=paginate @items %>
+<%end%>
 </div><!--inner-->

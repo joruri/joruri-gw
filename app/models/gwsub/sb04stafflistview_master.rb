@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   def self.find_uniqueness(_params, action = nil, id = nil, model = Gw::SectionAdminMaster)
     # 重複チェック
@@ -12,7 +13,8 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     cond_str += " and fyear_id_sb04 = ?"
     cond_str += " and id <> #{id}" if action == :update
     cond = [cond_str , _params[:management_uid_sb04],_params[:management_gid_sb04],_params[:division_gid_sb04],_params[:fyear_id_sb04],]
-    _item = model.where(cond).first
+
+    _item = model.find(:first, :conditions => cond)
 
     if _item.blank?
       return true
@@ -34,17 +36,18 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
   end
 
   def self.get_division_sb04_gids(uid = Core.user.id, func_name = 'gwsub_sb04', options = {})
-    items = Gw::SectionAdminMaster.where("state = 'enabled' and func_name = '#{func_name}' and range_class_id = 2 and management_uid=#{uid}").order("fyear_id_sb04 DESC, division_gcode")
+    items = Gw::SectionAdminMaster.new.find(:all, :conditions=>"state = 'enabled' and func_name = '#{func_name}' and range_class_id = 2 and management_uid=#{uid}",
+      :order=>"fyear_id_sb04 DESC, division_gcode")
 
     division_sb04_gids  = Array.new
     if items.length > 0
       items.each do |item|
         fyear_id = item.fyear_id_sb04
         cond  = "user_id=#{uid} and end_at is null"
-        group = System::UsersGroup.where(cond).first
+        group = System::UsersGroup.find(:first , :order=>"job_order,start_at desc" ,:conditions=>cond)
         if group.blank?
         else
-          sections = Gwsub::Sb04section.where("fyear_id = #{fyear_id} and ldap_code = '#{group.group_code}'")
+          sections = Gwsub::Sb04section.find(:all,  :conditions=>"fyear_id = #{fyear_id} and ldap_code = '#{group.group_code}'")
           unless sections.empty?
             sections.each do |section|
               division_sb04_gids << section.id
@@ -71,12 +74,12 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
   def self.sb04_dev_fyear_select(uid = Core.user.id, options={})
 
     cond  = "state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid}"
-    fyear_ids = Gw::SectionAdminMaster.where(cond).order("fyear_id_sb04 DESC").collect{|x| x.fyear_id_sb04}
+    fyear_ids = Gw::SectionAdminMaster.new.find(:all, :conditions=>cond, :order=>"fyear_id_sb04 DESC").collect{|x| x.fyear_id_sb04}
 
     fyear_ids = fyear_ids.uniq
     selects = []
     fyear_ids.each do |fyear_id|
-      fyear = Gwsub::Sb04EditableDate.where(:fyear_id=>fyear_id).first
+      fyear = Gwsub::Sb04EditableDate.find_by_fyear_id(fyear_id)
       if !fyear.blank?
         selects << [fyear.fyear_markjp, fyear_id]
       end
@@ -89,10 +92,10 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     gids = Array.new
     if fyear_id.to_i > 0
       cond  = "state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid} and fyear_id_sb04 = #{fyear_id}"
-      items = Gw::SectionAdminMaster.where(cond).order("fyear_id_sb04 DESC, division_gcode")
+      items = Gw::SectionAdminMaster.new.find(:all, :conditions=>cond, :order=>"fyear_id_sb04 DESC, division_gcode")
       items.each do |item|
         fyear_id = item.fyear_id_sb04
-        sections = Gwsub::Sb04section.where("fyear_id = #{fyear_id} and ldap_code = '#{Core.user_group.code}'")
+        sections = Gwsub::Sb04section.find(:all,  :conditions=>"fyear_id = #{fyear_id} and ldap_code = '#{Core.user_group.code}'")
         unless sections.empty?
           sections.each do |section|
             gids << section.id
@@ -107,7 +110,7 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     selects = []
 
     gids.each do |gid|
-      g = Gwsub::Sb04section.where(:id => gid).first
+      g = Gwsub::Sb04section.find_by_id(gid)
       if !g.blank?
         selects << [g.name, g.id]
       end
@@ -119,12 +122,12 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     # 指定した所属のidが、ログインユーザーの主管課の範囲にいるかどうか確認する
     # 返り値：true 存在する、false 存在しない
     cond  = "state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid} and division_gcode = #{division_gcode} and fyear_id_sb04 = #{fyear_id}"
-    items = Gw::SectionAdminMaster.where(cond).order("division_gcode")
+    items = Gw::SectionAdminMaster.new.find(:all, :conditions=>cond, :order=>"division_gcode")
 
     # 自所属かどうかの確認。
-    sections = Gwsub::Sb04section.where("fyear_id = #{fyear_id} and ldap_code = '#{Core.user_group.code}' and code = '#{division_gcode}'")
+    sections = Gwsub::Sb04section.find(:all, :conditions=>"fyear_id = #{fyear_id} and ldap_code = '#{Core.user_group.code}' and code = '#{division_gcode}'")
     # 指定年度に、ユーザーが主管課を持っているか確認。持っていなければ、その年度の編集権限は無し。
-    section_masters = Gw::SectionAdminMaster.where("state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid} and fyear_id_sb04 = #{fyear_id}").order("division_gcode")
+    section_masters = Gw::SectionAdminMaster.new.find(:all, :conditions=>"state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid} and fyear_id_sb04 = #{fyear_id}", :order=>"division_gcode")
 
     if items.length > 0 || (sections.length > 0 && section_masters.length > 0)
       return true
@@ -142,7 +145,7 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     unless section_id.to_i == 0
       # 指定のIDで存在チェック
       cond  = "state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid = #{uid} and division_gid_sb04 = #{section_id}"
-      items = Gw::SectionAdminMaster.where(cond).order("division_gcode").first
+      items = Gw::SectionAdminMaster.new.find(:first, :conditions=>cond, :order=>"division_gcode")
       section_selected = section_id  unless  items.blank?
       section_selected = 0           if      items.blank?
       return section_selected
@@ -152,7 +155,7 @@ class Gwsub::Sb04stafflistviewMaster < Gwsub::GwsubPref
     else
       find_cond  = "state = 'enabled' and func_name = 'gwsub_sb04' and range_class_id = 2 and management_uid=#{uid} and fyear_id_sb04 = #{fyear_id}"
       find_order = "division_gcode ASC"
-      sec = Gw::SectionAdminMaster.where(find_cond).order(find_order).first
+      sec = Gw::SectionAdminMaster.new.find(:all, :conditions=>find_cond, :order=>find_order)
     end
     section_selected = 0             if  sec.blank?
     section_selected = sec[0].id unless  sec.blank?

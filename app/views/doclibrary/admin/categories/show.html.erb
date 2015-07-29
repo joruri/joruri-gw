@@ -26,24 +26,31 @@
 <table class="docformBody">
   <tr>
     <th style="width: 50px; text-align: left;">和暦</th>
-    <td><%= @item.wareki %></td>
+    <td>
+      <%=h(@item.wareki)%>
+    </td>
   </tr>
   <tr>
     <th style="width: 50px; text-align: left;">年</th>
-    <td><%= @item.nen%></td>
+    <td>
+      <%=h(@item.nen)%>
+    </td>
   </tr>
   <tr>
     <th style="width: 50px; text-align: left;">月</th>
-    <td><%= @item.gatsu %></td>
+    <td>
+      <%=h(@item.gatsu)%>
+    </td>
   </tr>
   <tr>
     <th style="width: 50px; text-align: left;">その</th>
-    <td><%= @item.sono %></td>
+    <td>
+      <%=h(@item.sono)%>
+    </td>
   </tr>
 </table>
-
-<% if @title.use_old_upload_system? %>
-  <%= render '/gwboard/admin/docs/upload_index', files: @item.display_files %>
-<% else %>
-  <%= render '/gwboard/admin/docs/library_index', files: @item.display_files %>
-<% end %>
+<%if attach_use_old%>
+ <%=render(:partial => '/gwboard/admin/docs/upload_index')%>
+<%else%>
+ <%=render(:partial => '/gwboard/admin/docs/library_index')%>
+<%end%>

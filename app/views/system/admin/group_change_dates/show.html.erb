@@ -1,8 +1,7 @@
 <div class="piece AdminSetting AdminGroups">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'navi' %>
-
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => 'navi' %>
 <table class="show">
   <tr>
     <th><%= @item.locale(:start_at) %></th>
@@ -10,10 +9,7 @@
   </tr>
 </table>
 <br />
-
-<div class="btReturn">
-  <%= link_to '戻る', system_group_change_dates_path %>
-</div>
-
-</div>
-</div>
+    <div class="btReturn">
+      <%=link_to '戻る', system_group_change_dates_path %>
+    </div>
+</div></div>

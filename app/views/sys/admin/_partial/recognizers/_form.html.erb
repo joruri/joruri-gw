@@ -1,0 +1,92 @@
+<%
+
+users = []
+Core.user_group.users.each do |u|
+  next unless u.state == 'enabled'
+  next if u == Core.user && !Core.user.has_auth?(:manager)
+  users << u
+end
+user_ids = users.collect{|u| u.id.to_s}
+
+max     = 5
+in_name = "#{f.object_name}_in_recognizer_ids"
+e1_name = 'recognizers1'
+e2_name = 'recognizers2'
+e1_evt  = "moveSelectOptions(this.form, '#{e1_name}', '#{e2_name}', #{max});"
+e2_evt  = "moveSelectOptions(this.form, '#{e2_name}', '#{e1_name}');"
+
+e2_list = item.in_recognizer_ids.to_s.split(' ').uniq
+e2_list.each{|id| e2_list.delete(id) unless user_ids.index(id)}
+item.in_recognizer_ids = e2_list.join(' ')
+
+e1_opt  = []
+e2_opt  = []
+users.each {|u| e2_list.index(u.id.to_s) ? e2_opt << u : e1_opt << u }
+e1_opt  = options_for_select(e1_opt.collect{|u| [u.name_with_id, u.id]})
+e2_opt  = options_for_select(e2_opt.collect{|u| [u.name_with_id, u.id]})
+
+style   = "width: 240px; height: 140px;"
+e1_tag  = select_tag(e1_name, e1_opt, :multiple => true, :onDblClick => e1_evt, :style => style)
+e2_tag  = select_tag(e2_name, e2_opt, :multiple => true, :onDblClick => e2_evt, :style => style)
+
+%><script type="text/javascript">
+//<![CDATA[
+function moveSelectOptions(form, src, dst, max) {
+  src = $(src).options;
+  dst = $(dst).options;
+  
+  if (max) {
+    var num = dst.length;
+    for(var i = 0 ; i < src.length; i++) {
+      if (src[i].selected && src[i].value) num += 1;
+    }
+    if (num > max) {
+      alert("承認者は設定は5人以内で入力してください。");
+      return false;
+    }
+  }
+    
+  for (var i = 0 ; i < src.length; i++) {
+    if (!src[i].selected || !src[i].value) { continue; }
+    var exist = false;
+    for(var j = 0; j < dst.length; j++) {
+      if(dst[j].value == src[i].value) {
+        exist = true;
+        break;
+      }
+    }
+    if (!exist) dst[dst.length] = new Option(src[i].text, src[i].value);
+    src[i] = null;
+    i--;
+  }
+  
+  var ids = ''
+  if (max) {
+    for (var i = 0; i < dst.length; i++) ids += ' ' + dst[i].value;
+  } else {
+    for (var i = 0; i < src.length; i++) ids += ' ' + src[i].value;
+  }
+  $('<%= in_name %>').value = ids;
+}
+//]]>
+</script>
+
+<br />
+<p class="form">承認設定</p>
+
+<%= f.hidden_field :in_recognizer_ids %>
+<table class="show">
+  <tr>
+    <th>承認者 <span class="note">※</span></th>
+    <td>
+      <table class="noDesign"><tr><td>
+      <%= e1_tag %>
+      </td><td>
+      <input type="button" value="追加 →" onClick="<%= e1_evt %>" /><br /><br />
+      <input type="button" value="← 除外" onClick="<%= e2_evt %>" />
+      </td><td>
+      <div class="<%= 'fieldWithErrors' if @item.errors.invalid?('承認者') %>"><%= e2_tag %></div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>

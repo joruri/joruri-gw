@@ -1,133 +1,391 @@
-<%= required_head %>
+
+<%= raw(required_head) %>
 <table class="show">
-  <% if !@is_gw_admin && @item.owner_uid != Core.user.id && @item.persisted? %>
-    <tr>
-      <th>状態<%= required %></th>
-      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first, {}, {disabled: 'disabled'} %></td>
-    </tr>
-    <tr>
-      <th>名称<%= required %></th>
-      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30, disabled: 'disabled' %></td>
-    </tr>
-    <tr>
-      <th>表示順</th>
-      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4, disabled: 'disabled' %></td>
-    </tr>
-  <% elsif @is_gw_admin %>
-    <tr>
-      <th>状態<%= required %></th>
-      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first %></td>
-    </tr>
-    <tr>
-      <th>デフォルト</th>
-      <td><%= f.check_box :is_default %>デフォルトグループに設定する</td>
-    </tr>
-    <tr>
-      <th>種別</th>
-      <td><%= @item.kind_show -%></td>
-    </tr>
-    <tr>
-      <th>名称<%= required %></th>
-      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30 %></td>
-    </tr>
-    <tr>
-      <th>名称（英語）</th>
-      <td><%= f.text_field :name_en, class: 'name_en', size: 30, maxlength: 30 %></td>
-    </tr>
-    <tr>
-      <th>表示順</th>
-      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4 %></td>
-    </tr>
-  <% else %>
-    <tr>
-      <th>状態<%= required %></th>
-      <td><%= f.collection_radio_buttons :state, @item.class.states, :last, :first %></td>
-    </tr>
-    <tr>
-      <th>名称<%= required %></th>
-      <td><%= f.text_field :name, class: 'name', size: 30, maxlength: 30 %></td>
-    </tr>
-    <tr>
-      <th>表示順</th>
-      <td><%= f.text_field :sort_no, class: 'num', size: 5, maxlength: 4 %></td>
-    </tr>
-  <% end %>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>編集所属</th>
-    <td><%= render 'form_admin_group_roles', f: f %></td>
-  </tr>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>編集者</th>
-    <td><%= render 'form_admin_user_roles', f: f %></td>
-  </tr>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>スケジュール登録所属</th>
-    <td><%= render 'form_edit_group_roles', f: f %></td>
-  </tr>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>スケジュール登録者</th>
-    <td><%= render 'form_edit_user_roles', f: f %></td>
-  </tr>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>スケジュール表示所属</th>
-    <td><%= render 'form_read_group_roles', f: f %></td>
-  </tr>
-  <tr style="<%= 'display:none;' unless @is_gw_admin %>">
-    <th>スケジュール表示者</th>
-    <td><%= render 'form_read_user_roles', f: f %></td>
-  </tr>
-  <tr>
-    <th>関連づけるユーザー</th>
-    <td><%= render 'form_user', f: f %></td>
-  </tr>
+<%
+i_key = ''
+i_val = ''
+ ##　編集 && 一般ユーザー　&& 編集者の場合
+ if @action == 'edit' && @is_gw_admin != true && ( @item.owner_uid != Site.user.id )
+   i_key = :disabled
+   i_val = 'disabled'
+%>
+<tr>
+	<th>状態<%= raw(required) %></th>
+	<td><%= raw(radio f, :state, @item.states, :class => 'state', i_key => i_val) %>
+		<%= f.hidden_field :state , :value=>@item.state %>
+	</td>
+</tr>
+<%= f.hidden_field  :is_default         ,:value=>@item.is_default %>
+<tr>
+	<th>名称<%= raw(required) %></th>
+	<td><%= f.text_field :name ,  :class => 'name', :size=>30 , :maxlength=>30, i_key => i_val %>
+		<%= f.hidden_field  :name         ,:value=>@item.name %></td>
+</tr>
+
+<%= f.hidden_field  :name_en         ,:value=>@item.name_en %>
+<tr>
+	<th>表示順</th>
+	<td><%= f.text_field :sort_no, :class => 'num', :size=>5 , :maxlength=>4, i_key => i_val %>
+		<%= f.hidden_field  :sort_no         ,:value=>@item.sort_no %></td>
+
+</tr>
+
+<% elsif @is_gw_admin == true %>
+
+<tr>
+	<th>状態<%= raw(required) %></th>
+	<td><%= raw(radio f, :state, @item.states, :class => 'state') %></td>
+</tr>
+<tr>
+	<th>デフォルト</th>
+	<td><%= f.check_box :is_default %>デフォルトグループに設定する</td>
+</tr>
+<tr>
+	<th>名称<%= raw(required) %></th>
+	<td><%= f.text_field :name ,  :class => 'name', :size=>30 , :maxlength=>30 %></td>
+</tr>
+<tr>
+	<th>名称（英語）</th>
+	<td><%= f.text_field :name_en ,  :class => 'name_en', :size=>30 , :maxlength=>30 %></td>
+</tr>
+<tr>
+	<th>表示順</th>
+	<td><%= f.text_field :sort_no, :class => 'num', :size=>5 , :maxlength=>4 %></td>
+</tr>
+
+<% else %>
+
+<tr>
+	<th>状態<%= raw(required) %></th>
+	<td><%= raw(radio f, :state, @item.states, :class => 'state') %></td>
+</tr>
+<%= f.hidden_field  :is_default         ,:value=>@item.is_default %>
+<tr>
+	<th>名称<%= raw(required) %></th>
+	<td><%= f.text_field :name ,  :class => 'name', :size=>30 , :maxlength=>30 %></td>
+</tr>
+<%= f.hidden_field  :name_en         ,:value=>@item.name_en %>
+<tr>
+	<th>表示順</th>
+	<td><%= f.text_field :sort_no, :class => 'num', :size=>5 , :maxlength=>4 %></td>
+</tr>
+
+<% end %>
+
+
+
+<%
+ display_roles = ''
+ if @is_gw_admin != true
+	display_roles = "style='display:none;'"
+ end
+%>
+<tr <%=display_roles%> >
+	<th>編集所属</th>
+	<td>
+          <%= render :partial => '/system/admin/custom_groups/form_admin_group_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr <%=display_roles%> >
+	<th>編集者</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_admin_user_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr <%=display_roles%> >
+	<th>スケジュール登録所属</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_edit_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr <%=display_roles%> >
+	<th>スケジュール登録者</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_edit_user_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr <%=display_roles%> >
+	<th>スケジュール表示所属</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr <%=display_roles%> >
+	<th>スケジュール表示者</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_read_user_roles', :locals => {:f => f} %>
+	</td>
+</tr>
+<tr>
+	<th>関連づけるユーザー</th>
+	<td>
+		<%= render :partial => '/system/admin/custom_groups/form_user', :locals => {:f => f} %>
+	</td>
+</tr>
 </table>
-
 <script type="text/javascript">
-(function($) {
-  $(function() {
-    $('#admin_user_group_id, #edit_user_group_id, #read_user_group_id').on('change', function() {
-      var dest_id = $(this).attr('id').replace(/_group_id/, 's');
-      $.get('<%= url_for(action: :get_users) %>', {group_id: $(this).val()}, function(data) {
-        $('#' + dest_id).html(data);
-      });
-    });
-    $('#admin_groups, #edit_groups, #read_groups, #admin_users, #edit_users, #read_users').on('dblclick', function() {
-      var target = $(this).attr('id');
-      moveSelectedOptions('#' + target, '#selected_' + target, false);
-      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
-    });
-    $('#add_admin_groups, #add_edit_groups, #add_read_groups, #add_admin_users, #add_edit_users, #add_read_users').on('click', function() {
-      var target = $(this).attr('id').replace(/add_/, '');
-      moveSelectedOptions('#' + target, '#selected_' + target, false);
-      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
-    });
-    $('#selected_admin_groups, #selected_edit_groups, #selected_read_groups, #selected_admin_users, #selected_edit_users, #selected_read_users').on('dblclick', function() {
-      var target = $(this).attr('id').replace(/selected_/, '');
-      moveSelectedOptions('#selected_' + target, '#' + target, true);
-      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
-    });
-    $('#del_admin_groups, #del_edit_groups, #del_read_groups, #del_admin_users, #del_edit_users, #del_read_users').on('click', function() {
-      var target = $(this).attr('id').replace(/del_/, '');
-      moveSelectedOptions('#selected_' + target, '#' + target, true);
-      updateSelectedOptions('#selected_' + target, '#item_selected_' + target.replace(/s$/, '_ids'));
-    });
+//<![CDATA[
+  var add_read_users = function() {
+    add_list('item_schedule_read_users_uid', 'item_schedule_read_users_add_buf')
+  }
+  var del_read_users = function() {
+    del_list('item_schedule_read_users_add_buf')
+  }
+  var add_admin_users = function() {
+    add_list('item_schedule_admin_users_uid', 'item_schedule_admin_users_add_buf')
+  }
+  var del_admin_users = function() {
+    del_list('item_schedule_admin_users_add_buf')
+  }
+  var add_admin_groups = function() {
+    add_list('item_schedule_admin_groups_uid', 'item_schedule_admin_groups_add_buf')
+  }
+  var del_admin_groups = function() {
+    del_list('item_schedule_admin_groups_add_buf')
+  }
+  var add_edit_users = function() {
+    add_list('item_schedule_edit_users_uid', 'item_schedule_edit_users_add_buf')
+  }
+  var del_edit_users = function() {
+    del_list('item_schedule_edit_users_add_buf')
+  }
+  var add_edit_roles = function() {
+    add_list('item_schedule_edit_roles_uid', 'item_schedule_edit_roles_add_buf')
+  }
+  var del_edit_roles = function() {
+    del_list('item_schedule_edit_roles_add_buf')
+  }
+  var add_roles = function() {
+    add_list('item_schedule_roles_uid', 'item_schedule_roles_add_buf')
+  }
+  var del_roles = function() {
+    del_list('item_schedule_roles_add_buf')
+  }
+  var add_users = function() {
+    add_list('item_schedule_users_uid', 'item_schedule_users_add_buf')
+  }
+  var del_users = function() {
+    del_list('item_schedule_users_add_buf')
+  }
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  var set_users_json = function() {
+    var fr = $('item_schedule_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_users_json');
+    to.value = Object.toJSON(ary);
+  }
+  var my_submit = function() {
+    var fr = $('item_schedule_read_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_read_users_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
 
-    function moveSelectedOptions(from, to, remove_after) {
-      var from = $(from);
-      var to = $(to);
-      from.find('option:selected').each(function() {
-        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
-          to.append($(this).clone().removeAttr('selected'));
-        }
-        if (remove_after) {
-          $(this).remove();
-        }
-      });
+    var fr = $('item_schedule_admin_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_admin_users_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var fr = $('item_schedule_admin_groups_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_admin_groups_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var fr = $('item_schedule_edit_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_edit_users_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var fr = $('item_schedule_edit_roles_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_edit_roles_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var fr = $('item_schedule_roles_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_roles_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    var fr = $('item_schedule_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_users_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    $('itemForm').submit();
+  }
+  var my_load_core = function(mode) {
+
+	if (mode == 'read_user') {
+      var u = $('init_schedule_read_users_json');
+      var to = $('item_schedule_read_users_add_buf');
+	} else if (mode == 'admin_user') {
+		var u = $('init_schedule_admin_users_json');
+		var to = $('item_schedule_admin_users_add_buf');
+	} else if (mode == 'admin_group') {
+		var u = $('init_schedule_admin_groups_json');
+		var to = $('item_schedule_admin_groups_add_buf');
+	} else if (mode == 'edit_user') {
+      var u = $('init_schedule_edit_users_json');
+      var to = $('item_schedule_edit_users_add_buf');
+	} else if (mode == 'edit_role') {
+      var u = $('init_schedule_edit_roles_json');
+      var to = $('item_schedule_edit_roles_add_buf');
+	} else if (mode == 'role') {
+      var u = $('init_schedule_roles_json');
+      var to = $('item_schedule_roles_add_buf');
+    } else {
+      var u = $('init_schedule_users_json');
+      var to = $('item_schedule_users_add_buf');
     }
-    function updateSelectedOptions(from, to) {
-      var clone_options = $(from).find('option').clone().attr('selected', 'selected');
-      $(to).empty().append(clone_options);
+    if ( u != undefined && u.value != '') {
+      var roles = eval(u.value);
+      for (var i = 0; i < roles.length; i++) {
+	  	if (mode == 'user') {
+			select_options_push(to, roles[i][1], roles[i][2], roles[i][0], roles[i][3], roles[i][4], roles[i][5]);
+		} else {
+			select_options_push(to, roles[i][1], roles[i][2], roles[i][0]);
+		}
+      }
     }
-  });
-})(jQuery);
+
+    if (mode == 'admin_user')
+      if (to.options.length == 0)
+        select_options_push(to, $('init_admin_user_uid').value, $('init_admin_user_uname').value, $('init_admin_user_ucls').value);
+    if (mode == 'edit_user')
+      if (to.options.length == 0)
+        select_options_push(to, $('init_edit_user_uid').value, $('init_edit_user_uname').value, $('init_edit_user_ucls').value);
+    if (mode == 'read_user')
+      if (to.options.length == 0)
+        select_options_push(to, $('init_read_user_uid').value, $('init_read_user_uname').value, $('init_read_user_ucls').value);
+  }
+
+
+  var update_read_user_cand = function () {
+    var fr = $('item_schedule_read_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&amp;' + time_serial();
+    var to = $('item_schedule_read_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+
+  var update_admin_user_cand = function () {
+    var fr = $('item_schedule_admin_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&amp;' + time_serial();
+    var to = $('item_schedule_admin_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+
+  var update_edit_user_cand = function () {
+    var fr = $('item_schedule_edit_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&amp;' + time_serial();
+    var to = $('item_schedule_edit_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+
+  var update_user_cand = function () {
+    var fr = $('item_schedule_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&amp;' + time_serial();
+    var to = $('item_schedule_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+
+  var update_owner_uid_cand = function () {
+    var fr = $('item_owner_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=group_' + genre + '&amp;' + time_serial();
+    var to = $('item_owner_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      to.options[0] = new Option('すべて','0');
+      to.options[0].title = '1';
+      for (var i=1; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+
+
+var my_load = function() {
+  my_load_core('admin_user');
+  my_load_core('admin_group');
+  my_load_core('edit_user');
+  my_load_core('edit_role');
+  my_load_core('role');
+  my_load_core('read_user');
+  my_load_core('user');
+}
+
+window.onload = my_load;
+
+
+
+//]]>
 </script>
+<%= raw(gw_js_include_full) %>

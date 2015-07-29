@@ -1,0 +1,20 @@
+<%# if maintenance = recent_maintenance() %>
+<%#= javascript_tag do %>
+<%#*function toggleMaintenance() {%>
+  <%#*var elm = $('maintenanceMessageBody');%>
+  <%#*if (elm.style.display == "block") {%>
+    <%#*elm.style.display = "none";%>
+  <%#*} else {%>
+    <%#*elm.style.display = "block";%>
+  <%#*}%>
+  <%#*return false;%>
+<%#*}%>
+<%# end %>
+<%#*<div id="maintenanceMessage">%>
+  <%#*<div class="title">%>
+    <%#= link_to maintenance.title, '#', :onclick => 'return toggleMaintenance();' %>
+    <%#*<span>（<%= safe{maintenance.published_at.strftime('%Y-%m-%d %H:%M')} >）</span>%>
+  <%#*</div>%>
+  <%#*<div id="maintenanceMessageBody" class="message" style = "display:none;"><%=raw maintenance.body ></div>%>
+<%#*</div>%>
+<%# end %>

@@ -1,67 +1,90 @@
 <%
-holidays = Gw::Holiday.find_by_range_cache(@first_day, @end_day)
+  cond_holiday = "!('#{@first_day}' >= ed_at" +
+            " or '#{@end_day}' <= st_at)"
+  holidays = Gw::Holiday.find(:all, :order => 'st_at', :conditions => cond_holiday)
+
 %>
-<table class="index scheduleList">
-  <tr>
-    <% if action_name == 'index' -%>
-    <th class="id" style="text-align:center; width: 30px;">
-      <%= check_box_tag(:idall, value = "all", false, {:onclick=>"all_check('listForm', 'ids', this);"}) -%>
-    </th>
-    <% end -%>
-    <th class="day">日付</th>
-    <th class="st_at_time">開始時刻</th>
-    <th class="ed_at_time">終了時刻</th>
-    <th class="title">件名</th>
-    <th class="body">メモ（備考）</th>
-    <th class="place">場所</th>
-    <th class="users">参加者</th>
-  </tr>
-  <% @items.each do |item| %>
-  <%
-    # 件名カテゴリ
-    ed_at_str1 = ""
-    ed_at_str2 = ""
-    st_at_str = item.st_at.strftime('%Y-%m-%d')
-  
-    # 終了日の表示
-    if item.stepped_over?
-      # 日をまたいでいる
-      ed_at_str1 = "#{item.ed_at.strftime("%m-%d")} （#{Gw.weekday_s(item.ed_at)}）"
+<table class="index">
+<tr>
+  <% if @ids_show_flg -%>
+  <th class="id" style="text-align:center; width: 30px;">
+    <%= check_box_tag(:idall, value = "all", false, {:onclick=>"all_check('listForm', 'ids', this);"}) -%>
+  </th>
+  <% end -%>
+  <th class="day">日付</th>
+  <th class="st_at_time">開始時刻</th>
+  <th class="ed_at_time">終了時刻</th>
+  <th class="title">件名</th>
+  <th class="body">メモ（備考）</th>
+  <th class="place">場所</th>
+  <th class="users">参加者</th>
+</tr>
+<% @items.each do |item| %>
+<%
+  # 件名カテゴリ
+  ed_at_str1 = ""
+  ed_at_str2 = ""
+  st_at_str = item.st_at.strftime('%Y-%m-%d')
+
+  # 終了日の表示
+  if item.stepped_over?
+    # 日をまたいでいる
+    ed_at_str1 = "#{item.ed_at.strftime("%m-%d")} （#{Gw.weekday_s(item.ed_at)}）"
+  end
+  if item.allday.blank?
+    st_at_time = item.st_at.strftime("%H:%M")
+    ed_at_str2 = item.ed_at.strftime("%H:%M")
+  else
+    case item.allday
+    when 1
+      st_at_time = "時間未定"
+    when 2
+      st_at_time = "終日"
     end
-    if item.allday.blank?
-      st_at_time = item.st_at.strftime("%H:%M")
-      ed_at_str2 = item.ed_at.strftime("%H:%M")
-    else
-      case item.allday
-      when 1
-        st_at_time = "時間未定"
-      when 2
-        st_at_time = "終日"
-      end
-    end
-  %>
-  <tr>
-    <% if action_name == 'index' -%>
-      <td align="center"><%= check_box_tag "ids[]", "#{item.id}" -%></td>
-    <% end -%>
-    <td class="day <%= 'saturday' if item.st_at.wday == 6 %> <%= 'sunday' if item.st_at.wday == 0 %> <%= 'holiday' if holidays.any?{|h| h.st_at.strftime('%Y-%m-%d') == st_at_str} %>">
-      <%= st_at_str -%> （<%= Gw.weekday_s(item.st_at) -%>）
-      <% if ed_at_str1.present? -%>
-      <br />～ <%= ed_at_str1 -%>
-      <% end %>
-    </td>
-    <td><%= st_at_time %></td>
-    <td><%= ed_at_str2 %></td>
-    <% if item.is_public_auth?(@is_gw_admin) -%>
-      <td><%= link_to item.title, "/gw/schedules/#{item.id}/show_one" -%></td>
-      <td><%= item.memo -%></td>
-      <td><%= item.place -%></td>
-    <% else -%>
-      <td><span style="color:red;">[非公開]</span></td>
-      <td></td>
-      <td></td>
-    <% end -%>
-    <td><%= item.get_usernames -%></td>
-  </tr>
-  <% end %>
+  end
+
+  # 祝日
+  j = holidays.select{|holiday| holiday.st_at.strftime('%Y-%m-%d') == st_at_str}
+  if j.count > 0
+    holiday_class = " holiday"
+  else
+    holiday_class = ""
+  end
+
+  if item.st_at.wday == 6
+    td_class = " class=\"day saturday#{holiday_class}\""
+  elsif  item.st_at.wday == 0
+    td_class = " class=\"day sunday#{holiday_class}\""
+  else
+    td_class = " class=\"day#{holiday_class}\""
+  end
+
+  # 参加者
+  user_names = item.get_usernames
+  public =  item.is_public_auth?(@is_gw_admin)
+%>
+<tr>
+  <% if @ids_show_flg -%>
+    <td align="center"><%= check_box_tag "ids[]", "#{item.id}" -%></td>
+  <% end -%>
+  <td<%=raw td_class -%>>
+    <%= st_at_str -%> （<%= Gw.weekday_s(item.st_at) -%>）
+    <% if ed_at_str1.present? -%>
+    <br />～ <%= ed_at_str1 -%>
+    <% end %>
+  </td>
+  <td><%= st_at_time %></td>
+  <td><%= ed_at_str2 %></td>
+  <% if public -%>
+  <td><%= link_to(nz(item.title), "/gw/schedules/#{item.id}/show_one") -%></td>
+  <td><%= item.memo -%></td>
+  <td><%= item.place -%></td>
+  <% else -%>
+  <td><%= Gw.required("[非公開]") -%></td>
+  <td></td>
+  <td></td>
+  <% end -%>
+  <td><%= user_names -%></td>
+</tr>
+<% end %>
 </table>

@@ -1,31 +1,25 @@
 <div class="bbsDocList circular">
-<div class="pieceHeader"><h2 class="pieceTitle"><%= Page.title %></h2></div>
+<div class="pieceHeader"><h2 class="pieceTitle"><%=@system_title%></h2></div>
 
-<div class="pieceBody">
-<%= render 'header' %>
-<%= render 'title_info' %>
+<%= render :partial => 'header' %>
 
-<% unless @item.base.state == 'closed' %>
+<%= render :partial => 'title_info' %>
+
+<%unless @item.base.state == 'closed'%>
 <div style="text-align: center;"><%= required('※まだページを閉じないでください。　詳細表示下部の「この回答を登録する」ボタンを押すと完了です。') %></div>
-<% end %>
-<%= render 'show' %>
+<%end%>
+<%=render(:partial => 'show')%>
 
-<% unless @item.base.state == 'closed' %>
+<%unless @item.base.state == 'closed'%>
 <br />
-<div align="center">
-<table>
-  <tr>
-    <td>
-      <input type="button" value="内容を修正する" onclick="location='<%= url_for(:action => :edit) %>'"></input>
-    </td>
-    <td>　　</td>
-    <td>
-      <input type="button" value="この回答を登録する" onclick="if (confirm('<%= @title.answer_confirm_message %>')){location='<%= url_for(:action => :public_seal) %>';return true;}else{return false;};"></input>
-    </td>
-  </tr>
-</table>
-</div>
-<% end %>
 
+<div align="center">
+ <table><tr>
+ <td><input type="button" value="内容を修正する" onClick="location = '<%=@item.edit_path%>'"></input></td>
+ <td>　　</td>
+ <td><input type="button" value="この回答を登録する" onClick="if (confirm('この内容で回答します。よろしいですか？')){location = '<%=@item.seal_path%>';return true;}else{return false;};"></input></td>
+ </tr></table>
 </div>
+<%end%>
+
 </div>

@@ -1,122 +1,278 @@
-class Gw::PropOther < Gw::PropBase
+# encoding: utf-8
+class Gw::PropOther < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
 
-  has_many :images, ->{ order(:id) }, :foreign_key => :parent_id, :class_name => 'Gw::PropOtherImage', :dependent => :destroy
+  validates_presence_of :name, :type_id
   has_many :schedule_props, :class_name => 'Gw::ScheduleProp', :as => :prop
   has_many :schedules, :through => :schedule_props
-  has_many :prop_other_roles, ->{ order(:id) }, :foreign_key => :prop_id, :class_name => 'Gw::PropOtherRole'
+  has_many :images, :primary_key => 'id', :foreign_key => 'parent_id', :class_name => 'Gw::PropOtherImage', :order=>"gw_prop_other_images.id"
+  has_many :prop_other_roles, :foreign_key => :prop_id, :class_name => 'Gw::PropOtherRole', :order=>"gw_prop_other_roles.id"
   belongs_to :prop_type, :foreign_key => :type_id, :class_name => 'Gw::PropType'
-  belongs_to :owner_group, :foreign_key => :gid, :class_name => 'System::Group'
 
-  accepts_nested_attributes_for :images
+  after_save :delete_cache_admin_first
+  before_destroy :delete_cache_admin_first
 
-  validates :name, :type_id, presence: true
+  def delete_cache_admin_first
+    Rails.cache.delete(admin_first_id_cache_key)
+  end
 
-  scope :with_reservable, -> { where(reserved_state: 1) }
-  scope :with_user_auth, ->(user = Cpre.user, auth) {
-    gids = [0] + user.groups.first.self_and_ancestors.map(&:id)
-    joins(:prop_other_roles).merge(Gw::PropOtherRole.with_auth_and_gids(auth, gids))
-  }
+  def self.get_select
+    _conditions = ""
+    return find(:all, :conditions=>_conditions, :select=>"id,name", :order=>'extra_flag, gid, sort_no, name').map{|x| [ x.name, x.id ]}
+  end
 
-  def get_type_class
-    case self.type_id
-    when 200 then "room"
-    when 100 then "car"
-    else "other"
+  def is_my_belong?
+    mygid = Site.user_group.id
+    if mygid.to_s == gid.to_s
+      return true
+    else
+      return false
     end
   end
 
-  def display_prop_name
-    gname = self.gname.presence ||
-      admin_prop_other_roles.first.try(:group).try(:name) ||
-      admin_prop_other_roles.first.try(:group_history).try(:name)
-    "#{name}(#{gname})"
+  def self.is_my_belong?(prop_id = nil, gid = Site.user_group.id)
+    return false if prop_id.blank? || gid.blank?
+    prop_other = find(:first, :conditions=>"id = #{prop_id}")
+    if gid.to_s == prop_other.gid.to_s
+      return true
+    else
+      return false
+    end
   end
 
-  def display_prop_name_for_select
-    "(#{owner_group.try(:code)})#{name}"
+  def self.is_my_belong_params?(params, gid = Site.user_group.id)
+    flg = true
+    if params[:s_genre] == "other"
+      if params[:be] == "other"
+        flg = false
+      elsif !params[:prop_id].blank?
+        unless is_my_belong?(params[:prop_id], gid)
+          flg = false
+        end
+      end
+    end
+    return flg
   end
 
-  def is_admin?(user = Core.user)
-    Gw.is_admin_admin?(user) || prop_other_roles.any? {|r| r.auth_admin? && r.gid == user.groups.first.try(:id) }
+  def get_admin_gname
+    role = Gw::PropOtherRole.find(:first, :conditions=>"prop_id = #{self.id}")
+    group = System::Group.find(role.gid)
+    return group.name
   end
 
-  def is_edit?(user = Core.user)
-    gids = user.groups.first.self_and_ancestors.map(&:id)
-    Gw.is_admin_admin?(user) || prop_other_roles.any? {|r| r.auth_edit? && gids.include?(r.gid) }
+  def admin_gids
+    self.prop_other_roles.select{|x| x.auth == 'admin'}.collect{|x| x.gid}
   end
 
-  def is_read?(user = Core.user)
-    gids = [0] + user.groups.first.self_and_ancestors.map(&:id)
-    Gw.is_admin_admin?(user) || prop_other_roles.any? {|r| r.auth_read? && gids.include?(r.gid) }
+  def editor_gids
+    self.prop_other_roles.select{|x| x.auth == 'edit'}.collect{|x| x.gid}
   end
 
-  def is_admin_or_editor_or_reader?(user = Core.user)
-    is_admin?(user) || is_edit?(user) || is_read?(user)
+  def reader_gids
+    self.prop_other_roles.select{|x| x.auth == 'read'}.collect{|x| x.gid}
   end
 
-  def reserved_state_options
-    [['不可',0],['許可',1]]
+  def self.get_parent_groups
+    parent_groups = System::GroupHistory.new.find(:all, :conditions =>"level_no = 2", :order=>"sort_no , code, start_at DESC, end_at IS Null ,end_at DESC")
+    return parent_groups
   end
 
-  def reserved_state_label
-    reserved_state_options.rassoc(reserved_state).try(:first)
+  def admin(pattern = :show, parent_groups = Gw::PropOther.get_parent_groups)
+    admin = Array.new
+    groups = System::GroupHistory.new.find(:all, :conditions => ["id in (?)", self.admin_gids], :order=>"level_no,  sort_no , code, start_at DESC, end_at IS Null ,end_at DESC")
+    parent_groups.each do |parent_group|
+      groups.each do |group|
+        g = System::GroupHistory.find_by_id(group.id)
+        name = g.name
+        if !g.blank?
+          if g.id == parent_group.id
+            admin << [name] if pattern == :show
+            admin << ["", g.id, name] if pattern == :select
+          elsif g.parent_id == parent_group.id
+            if g.state == "disabled"
+              admin << ["<span class=\"required\">#{name}</span>"] if pattern == :show
+            else
+              admin << [name] if pattern == :show
+              admin << ["", g.id, name] if pattern == :select
+            end
+          end
+        else
+          admin << ["<span class=\"required\">削除所属 gid=#{group.id}</span>"] if pattern == :show
+        end
+      end
+    end
+    return admin.uniq
+  end
+  
+  def admin_first_id_cache_key
+    return "admin_first_id_#{self.id}"
+  end
+  
+  def get_admin_first_id(parent_groups = Gw::PropOther.get_parent_groups)
+    if self.gid.present?
+      return self.gid
+    else
+      Cache.load(admin_first_id_cache_key) { admin_first_id(parent_groups) }
+    end
   end
 
-  def admin_prop_other_roles
-    prop_other_roles.select(&:auth_admin?)
+  def admin_first_id(parent_groups = Gw::PropOther.get_parent_groups)
+    groups = Array.new
+    gids = self.admin_gids
+    if gids.length > 1
+      groups = System::GroupHistory.find(:all, :conditions => ["id in (?)", gids], 
+        :order=>"level_no,  sort_no , code, start_at DESC, end_at IS Null ,end_at DESC")
+    elsif gids.length == 1
+      return gids[0]
+    end
+    parent_groups.each do |parent_group|
+      groups.each do |group|
+        g = System::GroupHistory.find_by_id(group.id)
+        if g.present?
+          if g.id == parent_group.id
+            return g.id
+          elsif g.parent_id == parent_group.id
+            if g.state == "disabled"
+            else
+              return g.id
+            end
+          end
+        end
+      end
+    end
   end
 
-  def edit_prop_other_roles
-    prop_other_roles.select(&:auth_edit?)
+  def editor(pattern = :show, parent_groups = Gw::PropOther.get_parent_groups)
+    editor = Array.new
+    groups = System::GroupHistory.new.find(:all, :conditions => ["id in (?)", self.editor_gids], :order=>"level_no,  sort_no , code, start_at DESC, end_at IS Null ,end_at DESC")
+    parent_groups.each do |parent_group|
+      groups.each do |group|
+        g = System::GroupHistory.find_by_id(group.id)
+        name = g.name
+        if !g.blank?
+          if g.id == parent_group.id
+            editor << [name] if pattern == :show
+            editor << ["", g.id, name] if pattern == :select
+          elsif g.parent_id == parent_group.id
+            if g.state == "disabled"
+              editor << ["<span class=\"required\">#{name}</span>"] if pattern == :show
+            else
+              editor << [name] if pattern == :show
+              editor << ["", g.id, name] if pattern == :select
+            end
+          end
+        else
+          editor << ["<span class=\"required\">削除所属 gid=#{group.id}</span>"] if pattern == :show
+        end
+      end
+    end
+    return editor.uniq
   end
 
-  def read_prop_other_roles
-    prop_other_roles.select(&:auth_read?)
+  def reader(pattern = :show, parent_groups = Gw::PropOther.get_parent_groups)
+    reader = Array.new
+    gids = self.reader_gids
+    if !gids.index(0).nil?
+      reader << ["制限なし"] if pattern == :show
+      reader << ["", 0, '制限なし'] if pattern == :select
+    end
+    groups = System::GroupHistory.new.find(:all, :conditions => ["id in (?)", gids], :order=>"level_no,sort_no , code, start_at DESC, end_at IS Null ,end_at DESC")
+    parent_groups.each do |parent_group|
+      groups.each do |group|
+        g = System::GroupHistory.find_by_id(group.id)
+        name = g.name
+        if !g.blank?
+          if g.id == parent_group.id
+            reader << [name] if pattern == :show
+            reader << ["", g.id, name] if pattern == :select
+          elsif g.parent_id == parent_group.id
+            if g.state == "disabled" # 無効
+              reader << ["<span class=\"required\">#{name}</span>"] if pattern == :show
+            else
+              reader << [name] if pattern == :show
+              reader << ["", g.id, name] if pattern == :select
+            end
+          end
+        else
+          reader << ["<span class=\"required\">削除所属 gid=#{group.id}</span>"] if pattern == :show
+        end
+      end
+    end
+    return reader.uniq
   end
 
-  def admin_role_gids
-    admin_prop_other_roles.map(&:gid)
+  def is_auth_group?(auth, prop_id, gid)
+    items = self.prop_other_roles.select{|x| x.auth == auth && x.prop_id == prop_id && x.gid == gid}
+    if items.length > 0
+      return true
+    else
+      return false
+    end
   end
 
-  def edit_role_gids
-    edit_prop_other_roles.map(&:gid)
+  def is_admin_or_editor_or_reader?(gid = Site.user_group.id)
+    item = Gw::PropOtherRole.find(:all, :select => "id",
+      :conditions=>"prop_id = #{self.id} and gid in (#{gid}, #{Site.user_group.parent_id}, 0)" )
+
+    if item.length > 0
+      return true
+    else
+      return false
+    end
   end
 
-  def read_role_gids
-    read_prop_other_roles.map(&:gid)
-  end
+  def admin_editor_reader(pattern = :select)
+    admin_groups = []
+    edit_groups = []
+    read_groups = []
 
-  def admin_role_corrected_group_options
-    corrected_group_options(admin_prop_other_roles)
-  end
+    self.prop_other_roles.each do |role|
 
-  def edit_role_corrected_group_options
-    corrected_group_options(edit_prop_other_roles)
-  end
+      if role.auth == 'admin' && !role.group.blank?
+        if pattern == :select
+          admin_groups.push ["", role.group.id, role.group.name]
+        elsif pattern == :name
+          admin_groups.push [role.group.name]
+        end
 
-  def read_role_corrected_group_options
-    corrected_group_options(read_prop_other_roles)
-  end
+      elsif role.auth == 'edit' && !role.group.blank?
+        if pattern == :select
+          edit_groups.push ["", role.group.id, role.group.name]
+        elsif pattern == :name
+          edit_groups.push [role.group.name]
+        end
 
-  def admin_role_corrected_group_names
-    corrected_group_names(admin_prop_other_roles)
-  end
+      elsif role.auth == 'read'
+        if pattern == :select
+          if role.gid == 0
+            read_groups.push ["", 0, '制限なし']
+          elsif !role.group.blank?
+            read_groups.push [2, role.group.id, role.group.name]
+          end
+        elsif pattern == :name
+          if role.gid == 0
+            read_groups.push ['制限なし']
+          elsif !role.group.blank?
+            read_groups.push [role.group.name]
+          end
+        end
 
-  def edit_role_corrected_group_names
-    corrected_group_names(edit_prop_other_roles)
-  end
+      end
+    end
 
-  def read_role_corrected_group_names
-    corrected_group_names(read_prop_other_roles)
+    if pattern == :select
+      return admin_groups.to_json, edit_groups.to_json, read_groups.to_json
+    elsif pattern == :name
+      return admin_groups, edit_groups, read_groups
+    end
   end
 
   def save_with_rels(params, mode, options={})
 
-    admin_groups = ::JSON.parse(params[:item][:admin_json])
-    edit_groups = ::JSON.parse(params[:item][:editors_json])
-    read_groups = ::JSON.parse(params[:item][:readers_json])
+    admin_groups = ::JsonParser.new.parse(params[:item][:admin_json])
+    edit_groups = ::JsonParser.new.parse(params[:item][:editors_json])
+    read_groups = ::JsonParser.new.parse(params[:item][:readers_json])
 
     gid = nz(params[:item]['sub']['gid'])
     uid = nz(params[:item]['sub']['uid'])
@@ -200,7 +356,7 @@ class Gw::PropOther < Gw::PropBase
         new_admin_group.save
       }
 
-      old_edit_groups = Gw::PropOtherRole.where("prop_id = #{prop_id} and auth = 'edit'")
+      old_edit_groups = Gw::PropOtherRole.find(:all, :conditions=>"prop_id = #{prop_id} and auth = 'edit'")
       old_edit_groups.each_with_index{|old_edit_role, x|
         use = 0
         edit_groups.each_with_index{|edit_group, y|
@@ -223,7 +379,7 @@ class Gw::PropOther < Gw::PropBase
         new_edit_role.save
       }
 
-      old_read_groups = Gw::PropOtherRole.where("prop_id = #{prop_id} and auth = 'read'")
+      old_read_groups = Gw::PropOtherRole.find(:all, :conditions=>"prop_id = #{prop_id} and auth = 'read'")
       old_read_groups.each_with_index{|old_role, x|
         use = 0
         read_groups.each_with_index{|read_group, y|
@@ -249,36 +405,15 @@ class Gw::PropOther < Gw::PropBase
 
   end
 
-  private
-
-  def corrected_group_id_and_names(roles)
-    roles.map do |role|
-      gname = ''
-      disabled = false
-      if role.gid == 0
-        gname = "制限なし"
-      else
-        if (g = role.group || role.group_history)
-          disabled = true if g.state == 'disabled'
-          gname = g.name
-        else
-          disabled = true
-          gname = "*削除所属 (gid=#{role.gid})"
-        end
-      end
-      [role.gid, gname, disabled]
+  def get_type_class
+    case self.type_id
+    when 200
+      class_s = "room"
+    when 100
+      class_s = "car"
+    else
+      class_s = "other"
     end
-  end
-
-  def corrected_group_options(roles)
-    corrected_group_id_and_names(roles).map {|gid, gname, disabled|
-      ["", gid, gname] unless disabled
-    }.compact
-  end
-
-  def corrected_group_names(roles)
-    corrected_group_id_and_names(roles).map {|_, gname, disabled|
-      disabled ? %(<span style="color:red;">#{gname}</span>) : gname
-    }
+    return class_s
   end
 end

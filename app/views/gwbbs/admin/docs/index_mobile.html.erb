@@ -1,6 +1,9 @@
 <hr class="borderDash"/>
-<%= @title.title %><br />
-<%= render @title.gwbbs_form_name + 'index' %>
+<%#=render :partial => 'header' %>
+<%#=render :partial => 'explain' if @title.form_name  == 'form001' %>
+<%=@title.title%><br />
+<%=render :partial => @title.gwbbs_form_name + 'index' %>
+<%#=render(:partial => 'limit_change') unless @title.form_name  == 'form001'%>
 <hr class="borderDash"/>
-<%= paginate @items %>
-
+<%= raw(paginate @items) %>
+<%#=render :partial => 'index_attach_list' %>

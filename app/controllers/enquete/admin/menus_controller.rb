@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #基本情報登録
 ################################################################################
@@ -6,9 +7,10 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
   include Questionnaire::Model::Database
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート集計システム'
+    @system_title = 'アンケート集計システム'
+    Page.title = @system_title
   end
 
   def index
@@ -23,10 +25,16 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
   #未回答一覧
   def unanswered_index
     check_user_record
-    item = Questionnaire::Base.new
-    item.join "left join enquete_answers on questionnaire_bases.id = enquete_answers.title_id AND enquete_answers.user_code = '#{Core.user.code}'"
-    @items = item.find(:all, :select =>  "distinct questionnaire_bases.*, enquete_answers.id AS ans_id",
-    :conditions=>["questionnaire_bases.include_index = ? AND enquete_answers.id IS NULL AND questionnaire_bases.state = ?", true,'public' ] , :order=>:expiry_date)
+
+    sql  = "SELECT `enquete_view_questions`.*"
+    sql +=" FROM `enquete_view_questions` LEFT JOIN `enquete_answers`"
+    sql +=" ON  (`enquete_view_questions`.`id` = `enquete_answers`.`title_id`)"
+    sql +=" AND (`enquete_view_questions`.`base_user_code` = `enquete_answers`.`user_code`)"
+    sql +=" WHERE (`enquete_answers`.`state` IS NULL)"
+    sql +=" AND (`enquete_view_questions`.`include_index` = #{true})"
+    sql +=" AND (`enquete_view_questions`.`base_user_code` = '#{Site.user.code}')"
+    sql +=" ORDER BY `enquete_view_questions`.`expiry_date`"
+    @items = Enquete::ViewQuestion.find_by_sql(sql)
     _index @items
   end
 
@@ -37,7 +45,7 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
 
     item = Enquete::Answer.new
 #    item.and :enquete_division, true
-    item.and :user_code, Core.user.code
+    item.and :user_code, Site.user.code
 #    item.and :expiry_date, '>=', Time.now
     item.order 'expiry_date DESC'
     item.page(params[:page], params[:limit])
@@ -46,11 +54,11 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   def check_user_record
-    user = Enquete::BaseUser.where(:base_user_code => Core.user.code).first
+    user = Enquete::BaseUser.find_by_base_user_code(Site.user.code)
     if user.blank?
       user = Enquete::BaseUser.new({
-        :base_user_code => Core.user.code ,
-        :base_user_name => Core.user.name
+        :base_user_code => Site.user.code ,
+        :base_user_name => Site.user.name
       })
       user.save
     end

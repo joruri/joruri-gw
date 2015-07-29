@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #テンプレート基本情報登録
 ################################################################################
@@ -7,9 +8,10 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
   include Questionnaire::Model::TemplateSystemname
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート　テンプレート'
+    @system_title = 'アンケート　テンプレート'
+    Page.title = @system_title
     @system_path = "/questionnaire/templates"
     params[:cond] = "template"
   end
@@ -34,17 +36,17 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
   def index_normal
     item = Questionnaire::TemplateBase.new
     item.and :state ,'public'
-    item.and "sql", "admin_setting = 1 OR (admin_setting = 0 AND createrdivision_id = '#{Core.user_group.code}')"
+    item.and "sql", "admin_setting = 1 OR (admin_setting = 0 AND createrdivision_id = '#{Site.user_group.code}')"
     item.page(params[:page], params[:limit])
-    @items = item.find(:all, :order=>'updated_at DESC, id ASC')
+    @items = item.find(:all, :order=>'expiry_date DESC, id DESC')
   end
   def new
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
     @item = Questionnaire::TemplateBase.new({
       :state => 'draft',
-      :section_code => Core.user_group.code ,
+      :section_code => Site.user_group.code ,
       :send_change => '1',  #配信先は所属
       :spec_config => 3 ,   #他の回答者名を表示する
       :manage_title => '',
@@ -58,17 +60,17 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
 
   def create
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
     @item = Questionnaire::TemplateBase.new(params[:item])
 
     @item.able_date = Time.now.strftime("%Y-%m-%d")
-    @item.section_code = Core.user_group.code
+    @item.section_code = Site.user_group.code
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.creater_id = Core.user.code
-    @item.creater = Core.user.name
-    @item.createrdivision = Core.user_group.name
-    @item.createrdivision_id = Core.user_group.code
+    @item.creater_id = Site.user.code
+    @item.creater = Site.user.name
+    @item.createrdivision = Site.user_group.name
+    @item.createrdivision_id = Site.user_group.code
     if @is_sysadm
     else
       @item.admin_setting = 0
@@ -79,12 +81,12 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
 
   def show
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_show_flg
-    return error_auth unless @item_show_flg
+    return authentication_error(403) unless @item_show_flg
 
     item = Questionnaire::FormField.new
     item.and :parent_id, @item.id
@@ -95,24 +97,23 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
 
   def edit
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
   end
 
   #
   def update
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_edit_flg
-    return error_auth unless @item_edit_flg
-
+    return authentication_error(403) unless @item_edit_flg
 
     @before_state = @item.state
 
@@ -120,30 +121,30 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
 
     @item.state = 'closed' if @before_state == 'closed'
     @item._commission_state = @before_state
-    @item.section_code = Core.user_group.code
+    @item.section_code = Site.user_group.code
     @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.editor_id = Core.user.code
-    @item.editor = Core.user.name
-    @item.editordivision = Core.user_group.name
-    @item.editordivision_id = Core.user_group.code
+    @item.editor_id = Site.user.code
+    @item.editor = Site.user.name
+    @item.editordivision = Site.user_group.name
+    @item.editordivision_id = Site.user_group.code
     if @is_sysadm
     else
       @item.admin_setting = 0
     end
 
-    _update(@item, :success_redirect_uri=>url_for(:action => :index))
+    _update(@item, :success_redirect_uri=>location)
   end
   #
   def destroy
     system_admin_flags
-    #return error_auth unless @is_sysadm
+    #return authentication_error(403) unless @is_sysadm
 
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
-    _destroy(@item, :success_redirect_uri=>url_for(:action => :index))
+    _destroy(@item, :success_redirect_uri=>location)
   end
 
   def _self_create(item, options = {})
@@ -164,24 +165,24 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
       end
     end
   end
-
+  
   def _item_show_flg
-    if @is_sysadm || @item.admin_setting == 1 || (@item.admin_setting == 0 && @item.createrdivision_id == Core.user_group.code)
+    if @is_sysadm || @item.admin_setting == 1 || (@item.admin_setting == 0 && @item.createrdivision_id == Site.user_group.code)
       @item_show_flg = true
     end
   end
   def _item_edit_flg
-    if @is_sysadm || (@item.admin_setting == 0 && @item.createrdivision_id == Core.user_group.code)
+    if @is_sysadm || (@item.admin_setting == 0 && @item.createrdivision_id == Site.user_group.code)
       @item_edit_flg = true
     end
   end
 
   def open
-  	system_admin_flags
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    system_admin_flags
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
     @item.state = "public"
     @item.save(:validate=>false)
@@ -191,10 +192,10 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
   end
   def close
     system_admin_flags
-    @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
+    @item = Questionnaire::TemplateBase.find_by_id(params[:id])
     return http_error(404) unless @item
     _item_edit_flg
-    return error_auth unless @item_edit_flg
+    return authentication_error(403) unless @item_edit_flg
 
     @item.state = "draft"
     @item.save(:validate=>false)

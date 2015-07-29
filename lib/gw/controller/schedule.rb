@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gw::Controller::Schedule
 
   def self.convert_ical(schedules, options={})
@@ -7,7 +8,7 @@ module Gw::Controller::Schedule
     end
 
     require 'icalendar'
-    categories = I18n.t('enum.gw/schedule.title_category_id')
+    categories = Gw::NameValue.get_cache('yaml', nil, "gw_schedules_title_categories")
     cal = Icalendar::Calendar.new
 
     cal.timezone do

@@ -1,8 +1,0 @@
-<%# ＮＮ事業要綱等文書掲示板 -%>
-<%= render "gwbbs/admin/user_forms/form007/index_charge" if params[:state].to_s == 'GROUP' %>
-<%= render "gwbbs/admin/user_forms/form007/index_category" if params[:state].to_s == 'CATEGORY' %>
-<%= render "gwbbs/admin/user_forms/form007/index_date" if params[:state].to_s == 'DATE' %>
-<%= render "gwbbs/admin/user_forms/form007/index_draft" if params[:state].to_s == 'DRAFT' %>
-<%= render "gwbbs/admin/user_forms/form007/index_draft" if params[:state].to_s == 'NEVER' %>
-<%= render "gwbbs/admin/user_forms/form007/index_draft" if params[:state].to_s == 'VOID' %>
-<%= render "gwbbs/admin/user_forms/form007/index_date" if params[:state].blank? %>

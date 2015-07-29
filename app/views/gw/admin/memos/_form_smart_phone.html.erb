@@ -1,42 +1,28 @@
+<%# app/views/gw/admin/memos/_form.html.erb %>
 <%
-suffixes_raw = I18n.a('enum.gw/memo.category')
+ed_at_str = ""
+ed_at_str = @item.ed_at.strftime('%Y-%m-%d %H:%M') unless @item.ed_at.blank?
+ed_at_str = params[:item][:ed_at] unless params[:item].blank?
+ed_at_str = Time.now.strftime('%Y-%m-%d %H:%M') if ed_at_str.blank?
+dump ed_at_str
+suffixes_raw = Gw.yaml_to_array_for_select('gw_memos_categories')
 suffixes = Gw.options_for_select(suffixes_raw, nil,{:include_blank=>['', '']})
 %>
-<%= render '/gw/admin/memos/form_participant', f: f %>
+<%=render :partial => '/gw/admin/memos/form_participant', :locals => {:f => f}%>
 <table class="show">
-  <tr>
-    <th>時刻<span class="textRed">※</span></th>
-  </tr>
-  <tr>
-    <td><%= f.datetime_select_for_mobile :ed_at %></td>
-  </tr>
-  <tr>
-    <th>所属/担当/社名</th></tr>
-  <tr>
-    <td><%= f.text_area :fr_group, :rows => 5, :style => 'width:100%;' %></td>
-  </tr>
-  <tr>
-    <th>担当者</th></tr>
-  <tr>
-    <td><%= f.text_area :fr_user, :rows => 5, :style => 'width:100%;' %></td>
-  </tr>
-  <tr>
-    <th>伝言<span class="textRed">※</span></th>
-  </tr>
-  <tr>
-    <td>
-      <%= f.text_area :title, :rows => 5, :style => 'width:100%;' %><br />
-      <b>定型文</b>　<%= select_tag :_category, suffixes, :onchange => 'select_category()' %>
-    </td>
-  </tr>
-  <tr>
-    <th>備考</th>
-  </tr>
-  <tr>
-    <td><%= f.text_area :body, :rows => 6, :style => 'width:100%;' %></td>
-  </tr>
+<tr><th>時刻<span class="textRed">※</span></th></tr>
+<tr><td><%= date_picker_mobile f, 'ed_at', :errors=>@item.errors, :mode=>:datetime, :value=>ed_at_str, :minute_interval=>'1' %><br /></td></tr>
+<tr><th>所属/担当/社名</th></tr>
+<tr><td><%= f.text_area  :fr_user ,:rows=>5 , :style => 'width:100%;'%></td></tr>
+<tr><th>伝言<span class="textRed">※</span></th></tr>
+<tr><td>
+<%= f.text_area  :title ,:rows=>5 , :style => 'width:100%;' %><br />
+<b>定型文　</b><%=select_tag('_category', suffixes, :onchange => 'select_category()')%>
+</td></tr>
+<tr><th>備考</th></tr>
+<tr><td><%= f.text_area  :body ,:rows=>6 , :style => 'width:100%;' %></td></tr>
 </table>
-
+<%=raw(gw_js_include_full)%>
 <script type="text/javascript">
 //<![CDATA[
   var select_category = function() {

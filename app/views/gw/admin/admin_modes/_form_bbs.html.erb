@@ -2,6 +2,6 @@
 <table class="show">
   <tr>
     <th>災害時に表示する掲示板<%= required('※') %></th>
-    <td><%= f.collection_select :options, @item.bbs_options, :id, :title, {:include_blank => true} %></td>
+    <td><%= f.collection_select :options, @item.portal_disaster_bbs_options, :id, :title, {:include_blank => true} %></td>
   </tr>
 </table>

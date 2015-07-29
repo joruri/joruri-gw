@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #フォーム情報
 ################################################################################
@@ -5,16 +6,17 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
   include System::Controller::Scaffold
   include Questionnaire::Model::Database
   include Questionnaire::Model::TemplateSystemname
-  layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  layout "admin/template/portal_1column"
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'テンプレート管理（プレビュー）'
+    @system_title = 'テンプレート管理（プレビュー）'
+    Page.title = @system_title
     @system_path = "/#{self.system_name}"
-    @title = Questionnaire::TemplateBase.where(:id => params[:parent_id]).first
+    @title = Questionnaire::TemplateBase.find_by_id(params[:parent_id])
     return http_error(404) unless @title
     @field_lists = ''
-    @field_lists = JSON.parse(@title.form_body) unless @title.form_body.blank?
+    @field_lists = JsonParser.new.parse(@title.form_body_json) unless @title.form_body.blank?
     params[:cond] = "template"
   end
 
@@ -46,16 +48,16 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
     @item.state = 'public'
 
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.creater_id = Core.user.code unless Core.user.code.blank?
-    @item.creater = Core.user.name unless Core.user.name.blank?
-    @item.createrdivision = Core.user_group.name unless Core.user_group.name.blank?
-    @item.createrdivision_id = Core.user_group.code unless Core.user_group.code.blank?
+    @item.creater_id = Site.user.code unless Site.user.code.blank?
+    @item.creater = Site.user.name unless Site.user.name.blank?
+    @item.createrdivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.createrdivision_id = Site.user_group.code unless Site.user_group.code.blank?
 
     @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.editor_id = Core.user.code unless Core.user.code.blank?
-    @item.editor = Core.user.name unless Core.user.name.blank?
-    @item.editordivision = Core.user_group.name unless Core.user_group.name.blank?
-    @item.editordivision_id = Core.user_group.code unless Core.user_group.code.blank?
+    @item.editor_id = Site.user.code unless Site.user.code.blank?
+    @item.editor = Site.user.name unless Site.user.name.blank?
+    @item.editordivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.editordivision_id = Site.user_group.code unless Site.user_group.code.blank?
 
     @item._field_lists = @field_lists
     @item._item_params = params[:item]
@@ -69,28 +71,28 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
   def edit
     system_admin_flags
 
-    @item = Questionnaire::TemplatePreview.where(:id => params[:id]).first
+    @item = Questionnaire::TemplatePreview.find_by_id(params[:id])
     return http_error(404) unless @item
   end
 
   def update
-    @item = Questionnaire::TemplatePreview.where(:id => params[:id]).first
+    @item = Questionnaire::TemplatePreview.find_by_id(params[:id])
     return http_error(404) unless @item
     @item.attributes = params[:item]
 
     @item.state = 'public'
 
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.creater_id = Core.user.code unless Core.user.code.blank?
-    @item.creater = Core.user.name unless Core.user.name.blank?
-    @item.createrdivision = Core.user_group.name unless Core.user_group.name.blank?
-    @item.createrdivision_id = Core.user_group.code unless Core.user_group.code.blank?
+    @item.creater_id = Site.user.code unless Site.user.code.blank?
+    @item.creater = Site.user.name unless Site.user.name.blank?
+    @item.createrdivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.createrdivision_id = Site.user_group.code unless Site.user_group.code.blank?
 
     @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
-    @item.editor_id = Core.user.code unless Core.user.code.blank?
-    @item.editor = Core.user.name unless Core.user.name.blank?
-    @item.editordivision = Core.user_group.name unless Core.user_group.name.blank?
-    @item.editordivision_id = Core.user_group.code unless Core.user_group.code.blank?
+    @item.editor_id = Site.user.code unless Site.user.code.blank?
+    @item.editor = Site.user.name unless Site.user.name.blank?
+    @item.editordivision = Site.user_group.name unless Site.user_group.name.blank?
+    @item.editordivision_id = Site.user_group.code unless Site.user_group.code.blank?
 
     @item._field_lists = @field_lists
     @item._item_params = params[:item]
@@ -111,7 +113,7 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
     for fld in items
       field_name_array =[]
       groups = []
-      groups = JSON.parse(fld.group_body) unless fld.group_body.blank?
+      groups = JsonParser.new.parse(fld.group_body_json) unless fld.group_body.blank?
       field = Hash::new
       group_repeat = fld.group_repeat
       for group in groups
@@ -143,9 +145,9 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
         field[field_name] = field_arr
         field_name_array << field_name
       end
-      @item[fld.field_name] = JSON.generate(field)
+      @item[fld.field_name] = JsonBuilder.new.build(field)
       group_values = ''
-      group_values = JSON.parse(@item[fld.field_name]) unless @item[fld.field_name].blank?
+      group_values = JsonParser.new.parse(@item[fld.field_name]) unless @item[fld.field_name].blank?
 
       is_all_blank = true
       for fieldname in field_name_array

@@ -1,20 +1,27 @@
 <div class="piece todo setting">
-<%= render 'header_str' %>
+
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
+<%= raw(div_notice) %>
 <ul>
-  <li>
-    <span class="function"><%= link_to 'リマインダー表示設定', reminder_gw_todo_settings_path %></span>
-    <span class="explanation">ポータルのリマインダーに表示するToDoの設定を行います。</span>
-  </li>
-  <li>
-    <span class="function"><%= link_to 'スケジュール表示設定', schedule_gw_todo_settings_path %></span>
-    <span class="explanation">ToDoの期限日を、スケジュール上に表示する設定を行います。</span>
-  </li>
+<li>
+<span class="function"><%= link_to 'リマインダー表示設定' , reminder_gw_todo_settings_path %></span>
+<span class="explanation">ポータルのリマインダーに表示するToDoの設定を行います。</span>
+</li>
+<li>
+<span class="function"><%= link_to 'スケジュール表示設定' , schedule_gw_todo_settings_path %></span>
+<span class="explanation">ToDoの期限日を、スケジュール上に表示する設定を行います。</span>
+</li>
+<!--
+<li>
+<span class="function"><%#= link_to '削除設定' , "/gw/memo_settings" %></span>
+<span class="explanation">ToDoの自動削除設定を行います。</span>
+</li>
+-->
 </ul>
 <div class="btReturn">
-  <%= link_to 'ToDo一覧へ戻る', "/gw/todos" %>
+  <%=link_to 'ToDo一覧へ戻る', "/gw/todos" %>
 </div>
 </div>
-
 </div>

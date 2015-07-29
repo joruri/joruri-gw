@@ -1,12 +1,12 @@
 <%
 copy_path = "/gwsub/sb04/04/sb04assignedjobs/year_copy_run?#{@qs}"
-origin_fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+origin_fyears = Gwsub::Sb04EditableDate.find(:all, :order=>"published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 origin_fyear_id = nz(@fyed_id, 0).to_i
 origin_fyear_id = origin_fyears[0][1] if origin_fyear_id == 0
 origin_section_id = 0
 
 if @u_role == true
-  destination_fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  destination_fyears = Gwsub::Sb04EditableDate.find(:all, :order=>"published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 else
   destination_fyears = Gwsub::Sb04stafflistviewMaster.sb04_dev_fyear_select
 end
@@ -34,11 +34,11 @@ end
 
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
-<%= render 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04assignedjobs/display_name' %>
 </div>
 <div class="pieceBody">
 <%# unless @ret.blank? -%>
@@ -49,6 +49,7 @@ end
   <%# end %>
 <%# end %>
 <div style="margin-left:1em;">
+<%= div_notice %>
 </div>
 <h4 style="margin-left:2em;">過去データコピー</h4>
 <div style="margin-left:3em;">
@@ -91,7 +92,7 @@ end
   function update_origin_sb04assignedjobs() {
     fyear_id = $("item_origin_fyear_id").value
     end_cnt = 0;
-    url = "/gwsub/sb04/04/sb04stafflists/section_fields?fyed_id=" + fyear_id;
+    url = "/gwsub/sb04/04/sb04stafflists/section_fields.csv?fyed_id=" + fyear_id;
     new Ajax.Request(url, {method:'get', onComplete: function(x){
       $('item_origin_section_id').update(x.responseText);
       end_cnt = end_cnt + 1;
@@ -103,7 +104,7 @@ end
   function update_destination_sb04assignedjobs() {
     fyear_id = $("item_destination_fyear_id").value
     end_cnt = 0;
-    url = "/gwsub/sb04/01/sb04stafflistview_masters/section_fields_year_copy?fyed_id=" + fyear_id;
+    url = "/gwsub/sb04/01/sb04stafflistview_masters/section_fields_year_copy.csv?fyed_id=" + fyear_id;
     new Ajax.Request(url, {method:'get', onComplete: function(x){
       $('item_destination_section_id').update(x.responseText);
       end_cnt = end_cnt + 1;

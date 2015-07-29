@@ -1,13 +1,18 @@
+# -*- encoding: utf-8 -*-
 class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+
+  include Gwboard::Controller::Scaffold
+  include Gwbbs::Model::DbnameAlias
+  #include Gwfaq::Model::DbnameAlias
+
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/bbs.css"]
   end
 
   def index
-    @title = Gwbbs::Control.where(:create_section => Core.user_group.code).first
+    @title = Gwbbs::Control.find_by_create_section(Core.user_group.code)
   end
 
   def create
@@ -20,7 +25,7 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
   end
 
   def create_bbs_board
-    item = Gwboard::Group.where(:id => params[:board_group]).select('id, code, name').first
+    item = Gwboard::Group.find_by_id(params[:board_group],:select=>'id, code, name')
     return item if item.blank?
 
     @title = Gwbbs::Control.create({
@@ -60,12 +65,17 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
       :restrict_access => 0 ,
       :default_limit => '30',
       :form_name => 'form001' ,
+      :createdate => Time.now.strftime("%Y-%m-%d %H:%M"),
+      :creater_id => Core.user.code ,
+      :creater => Core.user.name ,
+      :createrdivision => Core.user_group.name ,
+      :createrdivision_id => Core.user_group.code ,
+      :editor_id => Core.user.code ,
+      :editordivision_id => Core.user_group.code,
       :admingrps_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
       :adms_json => "[]",
       :editors_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
-      :sueditors_json => "[]",
       :readers_json => %Q{[["#{item.code}", "#{item.id}", "#{item.name}"]]},
-      :sureaders_json => "[]",
       :limit_date => 'none',  #期限切れ削除機能は利用しない
       :docslast_updated_at =>  Time.now
     })
@@ -73,7 +83,7 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
   end
 
   def create_default_category
-    @cat_item = Gwbbs::Category
+    @cat_item = gwbbs_db_alias(Gwbbs::Category)
     create_category(1, 'お知らせ')
     create_category(2, params[:cat02]) unless params[:cat02].blank?
     create_category(3, params[:cat03]) unless params[:cat03].blank?
@@ -82,6 +92,7 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
     create_category(6, params[:cat06]) unless params[:cat06].blank?
     create_category(7, params[:cat07]) unless params[:cat07].blank?
     create_category(8, params[:cat08]) unless params[:cat08].blank?
+    Gwbbs::Category.remove_connection
   end
 
   def create_category(i, name)
@@ -99,13 +110,13 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
     params[:id] = 48
     params[:system] = 'gwbbs'
     @title = Gwbbs::Control.find(params[:id])
-    table = Gwbbs::File
+    table = gwbbs_db_alias(Gwbbs::File)
     table = table.new
     items = table.find(:all)
     for item in items
       item.content_id = 2
-      file = Gwbbs::DbFile
-      db_file = file.where(:id => item.db_file_id).first
+      file = gwbbs_db_alias(Gwbbs::DbFile)
+      db_file = file.find_by_id(item.db_file_id)
       unless db_file.blank?
         FileUtils.mkdir_p(item.f_path) unless FileTest.exist?(item.f_path)
         File.open(item.f_name, "wb") { |f|
@@ -119,8 +130,8 @@ class Gwbbs::Admin::BuildersController < Gw::Controller::Admin::Base
   end
 
   def update_doc_link(item)
-    doc_item = Gwbbs::Doc
-    doc_item = doc_item.where(:id => item.parent_id).first
+    doc_item = gwbbs_db_alias(Gwbbs::Doc)
+    doc_item = doc_item.find_by_id(item.parent_id)
     return if doc_item.blank?
 
     str = "<p>&nbsp;</p><p>&nbsp;</p>"

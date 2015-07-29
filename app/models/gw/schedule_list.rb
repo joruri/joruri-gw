@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Gw::ScheduleList < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
@@ -14,11 +15,12 @@ class Gw::ScheduleList < Gw::Database
     return ret
   end
 
-  def self.get_users(gid = Core.user_group.id)
+  def self.get_users(gid = Site.user_group.id)
     join = "inner join system_users_groups on system_users.id = system_users_groups.user_id"
     join.concat " inner join system_users_custom_groups on system_users.id = system_users_custom_groups.user_id"
     cond = "system_users.state='enabled' and system_users_groups.group_id = #{gid}"
-    users = System::User.joins(join).where(cond).order('sort_no, code').group('system_users.id')
+    users = System::User.find(:all, :conditions=>cond, :order=>'sort_no, code',
+        :joins=>join, :group => 'system_users.id')
 
     return users
   end
@@ -27,13 +29,13 @@ class Gw::ScheduleList < Gw::Database
 
     return false if uid.blank?
 
-    user = System::User.where("id = #{uid}").first
+    user = System::User.find(:first, :conditions => "id = #{uid}")
     return false if user.blank?
 
     return false if user.user_groups.empty? || user.user_groups[0].group.blank?
     group = user.user_groups[0].group
 
-    if Core.user_group.id.to_i == group.id.to_i
+    if Site.user_group.id.to_i == group.id.to_i
       return true
     else
       return false

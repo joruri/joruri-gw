@@ -1,6 +1,0 @@
-<p class="bgYellow"><%=hbr @item.title %></p>
-<% if @item.wiki_enabled? -%>
-  <%= convert_for_mobile_body(wiki_show(@item.body), params[:_jgw_session]) %>
-<% else -%>
-  <%= convert_for_mobile_body(@item.body, params[:_jgw_session]) %>
-<% end -%>

@@ -1,118 +1,119 @@
 <div class="piece AdminSetting AdminUsers">
-<%= render 'header' %>
-
-<div class="pieceBody">
-<%= render 'header_menu' %>
-
-<div class="editingBox">
-  <span class="btEdit">
-    <%= link_to "編集" , edit_system_user_path(@item.id) %>
-  </span>
-  <% if @role_admin %>
-  <span class="btDestroy">
-    <%= action_menu :destroy %>
-  </span>
-  <% end %>
-</div>
-
-<table class="show">
-  <tbody>
-    <tr>
-      <th>ID</th>
-      <td><%= @item.code -%></td>
-    </tr>
-    <tr>
-      <th>状態</th>
-      <td><%= System::UsersGroup.state_show(@item.state) -%></td>
-    </tr>
-    <tr>
-      <th>LDAP同期</th>
-      <td><%= System::UsersGroup.ldap_show(@item.ldap) -%></td>
-    </tr>
-    <tr>
-      <th>名前</th>
-      <td><%= @item.name -%></td>
-    </tr>
-    <tr>
-      <th>名前(英)</th>
-      <td><%= @item.name_en -%></td>
-    </tr>
-    <tr>
-      <th>メールアドレス</th>
-      <td><%= @item.email -%></td>
-    </tr>
-    <tr>
-      <th>役職</th>
-      <td><%= @item.official_position -%></td>
-    </tr>
-    <tr>
-      <th>担当</th>
-      <td><%= @item.assigned_job -%></td>
-    </tr>
-  </tbody>
-</table>
-
-<br/>
-<div>現在の所属状況</div>
-
-<table class="index">
-  <colgroup class="_groups"></colgroup>
-  <colgroup class="start_at"></colgroup>
-  <colgroup class="end_at"></colgroup>
-  <colgroup class="job_order"></colgroup>
-  <colgroup class="_g_start_at"></colgroup>
-  <colgroup class="_g_end_at"></colgroup>
-  <colgroup class="_level"></colgroup>
-  <colgroup class="_parent_name"></colgroup>
-  <tbody>
-    <tr>
-      <% if @role_admin %>
-      <th>詳細</th>
+  <%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= div_notice %>
+    <div class="editingBox">
+      <span class="btEdit">
+      <%= link_to "編集" , edit_system_user_path(@item.id) %>
+      </span>
+      <% if @role_admin == true %>
+      <span class="btDestroy">
+      <%= action_menu :destroy %>
+      </span>
       <% end %>
-      <th>グループ</th>
-      <th>配属開始日</th>
-      <th>配属終了日</th>
-      <th>本務・兼務</th>
-      <th>適用開始日</th>
-      <th>適用終了日</th>
-      <th>階層</th>
-      <th>上位所属</th>
-    </tr>
-    <% @item.user_groups.each do |user_group| %>
-      <%
-      group = user_group.group
-      if group.blank?
-        start_at = ""
-        end_at = ""
-        level_no = ""
-        parent_name = ""
-      else
-        start_at = group.start_at.blank? ? '' : Gw.date_str(group.start_at)
-        end_at = group.end_at.blank? ? '' : Gw.date_str(group.end_at)
-        level_no = group.level_no
-        parent_name = group.parent.blank? ? group.name : group.parent.name
-      end
-      %>
-      <tr>
-        <% if @role_admin %>
-        <td><%= link_to '詳細', "/system/#{group.id}/users_groups/#{user_group.rid}" if group %></td>
+    </div>
+    <table class="show">
+      <tbody>
+        <tr>
+          <th>ID</th>
+          <td><%= @item.code -%></td>
+        </tr>
+        <tr>
+          <th>状態</th>
+          <td><%= System::UsersGroup.state_show(@item.state) -%></td>
+        </tr>
+        <tr>
+          <th>LDAP同期</th>
+          <td><%= System::UsersGroup.ldap_show(@item.ldap) -%></td>
+        </tr>
+        <tr>
+          <th>名前</th>
+          <td><%= @item.name -%></td>
+        </tr>
+        <tr>
+          <th>名前(英)</th>
+          <td><%= @item.name_en -%></td>
+        </tr>
+        <tr>
+          <th>メールアドレス</th>
+          <td><%= @item.email -%></td>
+        </tr>
+        <tr>
+          <th>役職</th>
+          <td><%= @item.official_position -%></td>
+        </tr>
+        <tr>
+          <th>担当</th>
+          <td><%= @item.assigned_job -%></td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <br/>
+    <div>現在の所属状況</div>
+
+    <table class="index">
+      <colgroup class="_groups"></colgroup>
+      <colgroup class="start_at"></colgroup>
+      <colgroup class="end_at"></colgroup>
+      <colgroup class="job_order"></colgroup>
+      <colgroup class="_g_start_at"></colgroup>
+      <colgroup class="_g_end_at"></colgroup>
+      <colgroup class="_level"></colgroup>
+      <colgroup class="_parent_name"></colgroup>
+      <tbody>
+        <tr>
+          <% if @role_admin == true %>
+          <th>詳細</th>
+          <% end %>
+          <th>グループ</th>
+          <th>配属開始日</th>
+          <th>配属終了日</th>
+          <th>本務・兼務</th>
+          <th>適用開始日</th>
+          <th>適用終了日</th>
+          <th>階層</th>
+          <th>上位所属</th>
+        </tr>
+        <%
+        @user_groups = @item.user_groups
+        %>
+        <% for user_group in @user_groups %>
+        <%
+        group = user_group.group
+        if group.blank?
+          start_at = ""
+          end_at = ""
+          level_no = ""
+          parent_name = ""
+        else
+          start_at = group.start_at.blank? ? '' : Gw.date_str(group.start_at)
+          end_at = group.end_at.blank? ? '' : Gw.date_str(group.end_at)
+          level_no = group.level_no
+          parent_name = group.parent.blank? ? group.name : group.parent.name
+        end
+        %>
+        <tr>
+          <% if @role_admin == true %>
+          <td><%= link_to '詳細', "/system/#{group.id}/users_groups/#{user_group.rid}" if group.present? %></td>
+          <% end %>
+          <td><%= user_group.show_group_name -%></td>
+          <td><%= user_group.start_at.blank? ? '' : Gw.date_str(user_group.start_at) -%></td>
+          <td><%= user_group.end_at.blank? ? '' : Gw.date_str(user_group.end_at) -%></td>
+          <td><%= System::UsersGroup.job_order_show(user_group.job_order) -%></td>
+          <td><%= start_at -%></td>
+          <td><%= end_at -%></td>
+          <td><%= level_no -%></td>
+          <td><%= parent_name -%></td>
+        </tr>
         <% end %>
-        <td><%= user_group.show_group_name -%></td>
-        <td><%= user_group.start_at.blank? ? '' : Gw.date_str(user_group.start_at) -%></td>
-        <td><%= user_group.end_at.blank? ? '' : Gw.date_str(user_group.end_at) -%></td>
-        <td><%= System::UsersGroup.job_order_show(user_group.job_order) -%></td>
-        <td><%= start_at -%></td>
-        <td><%= end_at -%></td>
-        <td><%= level_no -%></td>
-        <td><%= parent_name -%></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+      </tbody>
+    </table>
+    <div class="btReturn">
+      <%=link_to '戻る', system_users_path %>
+    </div>
 
-<div class="btReturn">
-  <%= link_to '戻る', system_users_path %>
-</div>
-
-</div>
+  </div>
 </div>

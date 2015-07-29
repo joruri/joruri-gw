@@ -12,9 +12,9 @@ else
 end
 %>
 <hr class="borderDash"/>
-<p class="mobileMemo"><img src="/_common/themes/gw/files/mobile/ic-mobile-memo.gif"><%=@str%></p>
+<p class="mobileMemo"><%=@str%></p>
 <hr class="borderDash"/>
-
+<%= div_notice -%>
 <%= form_tag '', :method => :get, :class => 'search', :name => 'groupForm' do %>
   <%= select_tag( 'group_id',options_for_select( groups ,@group_id ) ,:style=>'width:200px;margin-top: 5px;') %>
   <%= hidden_field_tag :view, params[:view] %>
@@ -29,10 +29,11 @@ end
     <% @items.each do |u| %>
       <input type="checkbox" name="to[<%= u[1] %>]" value="1" />
 <%
-if Gw::Property::MemoMobileMail.where(uid: u[1]).first_or_new.is_email_mobile?
-  mobile_mark = "M "
-else
+is_mobile = Gw::UserProperty.find(:first, :conditions=>["uid = ? and class_id = 1 and name = 'mobile'", u[1]])
+if is_mobile.blank?
   mobile_mark = "　"
+else
+  mobile_mark = "M "
 end
 %>
       <%=mobile_mark%><%= u[0] %><br/>
@@ -47,12 +48,13 @@ end
     <% if !session[:mobile][t].blank? %>
       <% session[:mobile][t].each_with_index do |u,idx| %>
       <%= submit_tag '削除', :class => 'deleteItem', :name => "deleteMember[#{t}_#{idx}]" %>
-      <%to_user = System::User.where(:id =>u).first -%>
+      <%to_user = System::User.find_by_id(u)%>
 <%
-if Gw::Property::MemoMobileMail.where(uid: u).first_or_new.is_email_mobile?
-  mobile_mark = "M "
-else
+is_mobile = Gw::UserProperty.new.find(:first, :conditions=>["uid = ? and class_id = 1 and name = 'mobile'", u])
+if is_mobile.blank?
   mobile_mark = "　"
+else
+  mobile_mark = "M "
 end
 %>
       <%=mobile_mark%><%= to_user.display_name unless to_user.blank? %>

@@ -22,15 +22,8 @@ ja:
         title: タイトル
         chg_parent_id: ""
         seq_no: ""
-        recognizers: 承認者
       digitallibrary/folder:
         state: 状態
         title: 見出し
         chg_parent_id: ""
         seq_no: ""
-      digitallibrary/file:
-        file: ファイル
-        filename: ファイル名
-      digitallibrary/image:
-        file: ファイル
-        filename: ファイル名

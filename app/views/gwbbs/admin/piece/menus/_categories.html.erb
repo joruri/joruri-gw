@@ -1,13 +1,26 @@
-<% if @title.category == 1 -%>
-  <h3 class="iconSideCategory"><%= @title.display_category1_name -%>
-    <span class="<%= 'current' if params[:state] == 'CATEGORY'%>">
-      <%= link_to @title.display_category1_name, "#{@title.docs_path}&state=CATEGORY" -%>
-    </span>
-  </h3>
+<%
+  categ_name = '分類'
+  categ_name = @title.category1_name unless @title.category1_name.blank?
+%>
+<%if @title.category == 1 -%>
+  <h3 class="iconSideCategory"><%=categ_name -%><span class="<%= 'current' if params[:state] == 'CATEGORY'%>"><%=link_to(categ_name, "#{@title.docs_path}&state=CATEGORY") -%></span></h3>
+  <%lcnt = 0 -%>
   <ul>
-    <% @categories1.each do |cat| -%>
-      <% cat_count = "・#{cat.name}(#{@category_doc_counts[cat.id].to_i})" -%>
-      <li><%= link_to cat_count, @title.docs_path + "&state=CATEGORY&cat1=#{cat.id}" -%></li>
-    <% end -%>
+  <%# for cat in @cats -%>
+      <%#cat_name = "・#{gwbd_category_name( @categories1,cat[:category1_id])} (#{cat[:cnt]})" -%>
+    <%#*<li> -%>
+      <%#=link_to(cat_name, @title.docs_path + "&state=CATEGORY&cat1=#{cat[:category1_id]}") -%>
+    <%#*</li> -%>
+      <%#lcnt = lcnt + 1 -%>
+      <%#break if @title.categoey_view_line <= lcnt if 0 < @title.categoey_view_line -%>
+  <%# end -%>
+  <% for cat in @categories1 -%>
+      <%cat_count = "・#{cat.name}(#{gwbd_category_count( cat[:id])})" -%>
+    <li>
+      <%=link_to(cat_count, @title.docs_path + "&state=CATEGORY&cat1=#{cat[:id]}") -%>
+    </li>
+      <%lcnt = lcnt + 1 -%>
+      <%break if @title.categoey_view_line <= lcnt if 0 < @title.categoey_view_line -%>
+  <% end -%>
   </ul>
-<% end %>
+<%end%>

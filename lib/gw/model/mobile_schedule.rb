@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Gw::Model::MobileSchedule
   def self.show_schedule_move_core(ab, my_url, qs)
     ret = ""
@@ -13,10 +14,6 @@ module Gw::Model::MobileSchedule
         ret.concat %Q(<a href="#{href}" class="tomorrow">#{x[1]}</a>)
       elsif x[1] == '翌週'
         ret.concat %Q(<a href="#{href}" class="following_week">#{x[1]}</a>)
-      elsif x[1] == '前月'
-        ret.concat %Q(<a href="#{href}" class="last_month">#{x[1]}</a>)
-      elsif x[1] == '翌月'
-        ret.concat %Q(<a href="#{href}" class="following_month">#{x[1]}</a>)
       else
         ret.concat %Q(<a href="#{href}">#{x[1]}</a>)
       end

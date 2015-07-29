@@ -1,6 +1,6 @@
 <div class="menu">
-  <%= link_to 'FAQを作成する', "/_admin/gwbbs/makers/new" if Gwfaq::Control.is_sysadm? %>
-  <%= link_to '管理可能FAQ', '/gwfaq/makers' %>
-  <%= link_to '管理可能FAQ（非表示）', '/gwfaq/makers?state=HIDE' %>
-  <%= link_to 'FAQ一覧', '/gwfaq' %>
+  <%=link_to('FAQを作成する', gwboard_new_item) if @is_sysadm %>
+  <%=link_to '管理可能FAQ', '/gwfaq/makers' %>
+  <%=link_to '管理可能FAQ（非表示）', '/gwfaq/makers?state=HIDE' %>
+  <%=link_to 'FAQ一覧', '/gwfaq' %>
 </div>

@@ -1,80 +1,95 @@
-<%
-group_options = user_options = []
-if @item.parent_group
-  group_options = @item.parent_group.enabled_group_options
-  first_group = System::Group.find_by(id: group_options[0][1])
-  user_options = first_group ? first_group.enabled_user_options(ldap: 1) : []
-end
-%>
 <%= required_head %>
 <table class="show">
-  <tr>
-    <th>所属名</th>
-    <td><%= @item.parent_g_name %></td>
-  </tr>
-  <tr>
-    <th>関連づけるユーザー</th>
-    <td>
-      <table border="0">
-        <tr>
-          <td class="userChange">
-            <%= select_tag :director_group_id, options_for_select(group_options, group_options.first.try(:last)) %><br />
-            <%= select_tag :directors, options_for_select(user_options, Core.user.id), :size => 10, :style => 'width:300px;', :multiple => true %>
-          </td>
-          <td class="roleChange">
-            <%= button_tag "追加 ↓", type: :button, id: 'add', style: 'width:60px;' %>
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="3">
-            <%= render 'form_user', f: f %>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
+<tr>
+  <th>所属名</th>
+  <td><%= @item.parent_g_name %></td>
+</tr>
+<tr>
+  <th>関連づけるユーザー</th>
+  <td>
+    <%= render :partial => '/gw/admin/pref_director_admins/form_user', :locals => {:f => f} %>
+  </td>
+</tr>
 </table>
 
 <script type="text/javascript">
-(function($) {
-  $(function() {
-    $('#director_group_id').on('change', function() {
-      $.get('<%= url_for(action: :get_users) %>', {group_id: $(this).val()}, function(data) {
-        $('#directors').html(data);
-      });
-    });
-    $('#add').on('click', function() {
-      addSelectedUser('#directors', '#selected_directors');
-    });
-    $('#directors').on('dblclick', function() {
-      addSelectedUser('#directors', '#selected_directors');
-    });
-    function addSelectedUser(from, to) {
-      var from = $(from);
-      var to = $(to);
-      from.find('option:selected').each(function() {
-        if (to.find('tr[data-user-id=' + $(this).val() + ']').length == 0) {
-          var clone = $('#template').clone();
-          clone.removeAttr('id').removeAttr('style').attr('data-user-id', $(this).val());
-          clone.find('input[id$=uid]').val($(this).val());
-          clone.find('td.u_name').text($(this).text());
+  var add_users = function() {
+    add_list('item_schedule_users_uid', 'item_schedule_users_add_buf')
+  }
+  var del_users = function() {
+    del_list('item_schedule_users_add_buf')
+  }
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  var set_users_json = function() {
+    var fr = $('item_schedule_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_users_json');
+    to.value = Object.toJSON(ary);
+  }
+  var my_submit = function() {
+    var fr = $('item_schedule_users_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_schedule_users_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
 
-          var num = to.find('tr').length - 1;
-          var attrs = ['id', 'name', 'for'];
-          clone.find('input, label').each(function() {
-            for (var i=0; i<attrs.length; i++) {
-              var val = $(this).attr(attrs[i]);
-              if (val) { $(this).attr(attrs[i], val.replace(/0/, new String(num))); }
-            }
-          });
-          to.append(clone);
-        }
-      });
+    $('itemForm').submit();
+  }
+  var my_load_core = function(mode) {
+
+  if (mode == 'user') {{
+      var u = $('init_schedule_users_json');
+      var to = $('item_schedule_users_add_buf');
     }
-    $('form').on('submit', function() {
-      $('#template').remove();
+    if ( u != undefined && u.value != '') {
+      var roles = eval(u.value);
+      for (var i = 0; i < roles.length; i++) {
+      if (mode == 'user') {
+      select_options_push(to, roles[i][1], roles[i][2], roles[i][0], roles[i][3], roles[i][4], roles[i][5], roles[i][6]);
+    } else {
+      select_options_push(to, roles[i][1], roles[i][2], roles[i][0]);
+    }
+      }
+    }
+  }
+}
+
+  var update_user_cand = function () {
+    var fr = $('item_schedule_users_user_type_id');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/gw/schedule_users/getajax.json?s_genre=' + genre + '&amp;' + time_serial();
+    var to = $('item_schedule_users_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
     });
-  });
-})(jQuery);
+  }
+
+var my_load = function() {
+  my_load_core('user');
+}
+
+window.onload = my_load;
+
 </script>
+<%= raw(gw_js_include_full) %>

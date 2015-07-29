@@ -1,8 +1,9 @@
+# encoding: utf-8
 class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   protect_from_forgery :except => [:login]
-  layout false
 
   def login
+    skip_layout
     admin_uri = '/gw/portal'
 
     #return redirect_to(admin_uri) if logged_in?
@@ -13,13 +14,8 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     @uri = params[:uri] || cookies[:sys_login_referrer] || admin_uri
     @uri = @uri.gsub(/^http:\/\/[^\/]+/, '')
     @uri = NKF::nkf('-w', @uri)
-    unless request.post?
-      respond_to do |format|
-        format.html { render }
-        format.xml  { render(:xml => '<errors />') }
-      end
-      return
-    end
+    return unless request.post?
+
     if request.mobile?
       login_ok = new_login_mobile(params[:account], params[:password], params[:mobile_password])
     else
@@ -29,7 +25,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     unless login_ok
       flash.now[:notice] = "ユーザーID・パスワードを正しく入力してください"
       respond_to do |format|
-        format.html {  }
+        format.html { render }
         format.xml  { render(:xml => '<errors />') }
       end
       return true
@@ -45,6 +41,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
 
     cookies.delete :sys_login_referrer
+    System::Session.delete_past_sessions_at_random
 
     respond_to do |format|
       format.html { redirect_to @uri }
@@ -63,6 +60,8 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   end
 
   def info
+    skip_layout
+
     respond_to do |format|
       format.html { render }
       format.xml  { render :xml => Core.user.to_xml(:root => 'item', :include => :groups) }
@@ -70,6 +69,8 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   end
 
   def sso
+    skip_layout
+
     params[:to] ||= 'gw'
     raise 'SSOの設定がありません。' unless config = Joruri.config.sso_settings[params[:to].to_sym]
 

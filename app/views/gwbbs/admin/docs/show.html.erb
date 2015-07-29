@@ -1,4 +1,4 @@
-<%= render 'show_doc' %>
+<%= render :partial => 'show_doc' %>
 <!--戻るボタン-->
 <div class="btReturn">
   <%= link_to '記事一覧へ戻る', "#{@title.docs_path}#{gwbbs_params_set}" %>

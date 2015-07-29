@@ -1,3 +1,5 @@
+<%#*<h1>Gw::Public::PrefDirectors#index</h1>%>
+<%#*<p>Find me in app/views/gw/admin/pref_directors/index.html.erb</p>%>
 <%
   title_str = "所属幹部在庁表示"
   fyear = Gw::YearFiscalJp.get_record(Time.now)
@@ -16,7 +18,7 @@
 <div class="pieceBody">
 
 <div class="pieceBodyHeader">
-<%= render "gw/admin/schedules/schedule_bt_box",  d: d, mode: mode %>
+<%= render :partial => "gw/admin/schedules/schedule_bt_box"  ,:locals=>{:d=>d , :mode=>mode} %>
 <div class="scheduleTableTitle"><%= title_str %><span class="presentTime"><%= display_time %></span></div>
 <div class="pageLink">
 <% @item_links.each do |l| %>
@@ -48,7 +50,7 @@
 <%
 swith_enable = false
 swith_enable = true if @u_role == true
-swith_enable = true if Core.user_group.id == item.gid
+swith_enable = true if Site.user_group.id == item.gid
 %>
     <div class="scheduleUser <%= item.state if item.state=='off'%> ">
     <!--

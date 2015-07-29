@@ -12,7 +12,6 @@
   font-style: normal;
   line-height: 1.3;
   background-repeat: no-repeat;
-  font-family: ArialMT, "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "MS PGothic", "ＭＳ　Ｐゴシック", sans-serif;
 }
 input, textarea {
   font-size: 110%;
@@ -262,6 +261,9 @@ a img.menu_new {
 .btDestroy a {
   background-image: url("/_common/themes/gw/files/smartphone/btn/btn_act_delete.gif");
 }
+.btRDestroy a {
+  background-image: url("/_common/themes/gw/files/smartphone/btn/ic_act_redelete.gif");
+}
 .btFinish a {
   background-image: url("/_common/themes/gw/files/smartphone/btn/btn_act_complet.gif");
 }
@@ -371,12 +373,8 @@ p.leftPad2 {
   display: inline-block;
   margin: 0 15px;
 }
-.flashNotice {
-  margin: 5px 10px;
-  color: green;
-}
 .notice {
-  color: green;
+  margin-left: 10px;
 }
 form.search #group_id {
   margin-left: 10px;
@@ -398,7 +396,7 @@ form.search #group_id {
 .iconCsv {
   background-image: url(/_common/images/icons/icon24/csv.png);
 }
-.iconDoc,  .iconDocm,
+.iconDoc, .iconDocx, .iconDocm,
 .iconDotx, .iconDotm {
   background-image: url(/_common/images/icons/icon24/doc.png);
 }
@@ -426,7 +424,7 @@ form.search #group_id {
 .iconPng {
   background-image: url(/_common/images/icons/icon24/png.png);
 }
-.iconPpt,  .iconPptm,
+.iconPpt, .iconPptx, .iconPptm,
 .iconPotx, .iconPotm, .iconPpam,
 .iconPpsx, .iconPpsm {
   background-image: url(/_common/images/icons/icon24/ppt.png);
@@ -434,7 +432,7 @@ form.search #group_id {
 .iconTxt {
   background-image: url(/_common/images/icons/icon24/txt.png);
 }
-.iconXls, .iconXlsm,
+.iconXls, .iconXlsx, .iconXlsm,
 .iconXltx, .iconXltm, .iconXlam {
   background-image: url(/_common/images/icons/icon24/xls.png);
 }
@@ -468,16 +466,6 @@ form.search #group_id {
 .iconMap {
   background-image: url(/_common/images/icons/icon24/map.png);
 }
-.iconPptx, .pptx {
-  background-image: url(/_common/images/icons/icon24/pptx.png);
-}
-.iconXlsx, .xlsx {
-  background-image: url(/_common/images/icons/icon24/xlsx.png);
-}
-.iconDocx, .docx {
-  background-image: url(/_common/images/icons/icon24/docx.png);
-}
-
 /* portal
 ----------------------------------------------- */
 #navi2 {
@@ -686,21 +674,19 @@ ul#tab:after {
   line-height: 30px;
   text-align: center;
 }
-.scheduleMove a.last_month {
+.scheduleMove a.last_week {
   background-image: url("/_common/themes/gw/files/smartphone/other/ic-prev.gif");
-  background-position: 3% center;
+  background-position: 6% center;
 }
-.scheduleMove a.last_month,
 .scheduleMove a.last_week,
 .scheduleMove a.yesterday,
 .scheduleMove a.today,
-.scheduleMove a.tomorrow,
-.scheduleMove a.following_week {
-  width: 14%;
+.scheduleMove a.tomorrow {
+  width: 19.5%;
   border-right: solid 1px #BBB;
 }
-.scheduleMove a.following_month {
-  width: 14%;
+.scheduleMove a.following_week {
+  width: 20%;
   background-image: url("/_common/themes/gw/files/smartphone/other/ic-next.gif");
   background-position: 93% center;
 }
@@ -807,9 +793,6 @@ table.scheduleTable td.user {
 }
 
 /* category color */
-.scheduleCategory a {
-  border-left: solid 6px #FFF;
-}
 .category0 a {
   border-left: solid 6px #FFF;
 }
@@ -1063,8 +1046,8 @@ table.index td.state {
   text-align: center;
 }
 table.index td.title {
-/*  border-left: 1px dashed #BBB;
-  border-bottom: 1px dashed #BBB;*/
+  border-left: 1px dashed #BBB;
+  border-bottom: 1px dashed #BBB;
 }
 table.index tr.expirydate td {
   border-left: 1px dashed #BBB;
@@ -1153,4 +1136,7 @@ table.index td.edit a {
   margin-right: 5px;
   text-align: right;
 }
+
+
+
 

@@ -7,24 +7,27 @@ str_tab1_class += ' current' if params[:state].blank?
 str_tab1_class += ' current' if params[:state] == 'DATE'
 str_tab1_class += ' current' if params[:state] == 'GROUP'
 str_tab1_class += ' current' if params[:state] == 'CATEGORY'
+
 str_tab2_class += ' current' if params[:state] == 'TODAY'
+
 str_tab3_class += ' current' if params[:state] == 'DRAFT'
 %>
+<%#= render :partial => 'header_help' %>
 <!--掲示板タブ-->
 <div class="tabBox">
 <table class="tabtable">
-  <tbody>
-  <tr>
-    <td class="spaceLeft"></td>
-    <td class="<%= str_tab1_class %>"><%= link_to "公開記事一覧", gwqa_docs_path(title_id: @title.id) %></td>
-    <td class="spaceCenter"></td>
-    <td class="<%= str_tab2_class %>"><%= link_to "本日分", gwqa_docs_path(title_id: @title.id) + "&state=TODAY" %></td>
-    <% if @title.is_writable? %>
-     <td class="spaceCenter"></td>
-     <td class="<%= str_tab3_class %>"><%= link_to "下書一覧", gwqa_docs_path(title_id: @title.id) + "&state=DRAFT" %></td>
-    <% end %>
-    <td class="spaceRight"></td>
-  </tr>
-  </tbody>
+<tbody>
+<tr>
+<td class="spaceLeft">
+</td><td class="<%=str_tab1_class%>"><%=link_to "公開記事一覧", gwqa_docs_path({:title_id=>@title.id}) %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%=link_to "本日分", gwqa_docs_path({:title_id=>@title.id}) + "&state=TODAY" %></td>
+<%if @is_writable%>
+ <td class="spaceCenter"></td>
+ <td class="<%=str_tab3_class%>"><%=link_to "下書一覧", gwqa_docs_path({:title_id=>@title.id}) + "&state=DRAFT" %></td>
+<%end%>
+<td class="spaceRight">
+</td></tr>
+</tbody>
 </table>
 </div><!--tabBox-->

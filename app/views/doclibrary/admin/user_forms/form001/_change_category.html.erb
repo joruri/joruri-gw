@@ -3,7 +3,11 @@
   <%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
   <%= hidden_field_tag(:gcd, params[:gcd]) unless params[:gcd].blank? %>
   <span>分類選択</span>
-  <%= select_tag :cat, options_for_select([['全て', '']] + @title.readable_public_folder_options, params[:cat].to_i), :onchange => 'submit();' %>
+  <% if params[:cat].blank? %>
+    <%= select_tag :cat, "<option value=''>全て</option>#{options_from_collection_for_select(@select_categories, :first, :last, '')}".html_safe, :onchange => 'submit();' %>
+  <% else %>
+    <%= select_tag :cat, "<option value=''>全て</option>#{options_from_collection_for_select(@select_categories, :first, :last, params[:cat].to_i)}".html_safe, :onchange => 'submit();' %>
+  <% end %>
   <%= hidden_field_tag(:kwd, params[:kwd]) unless params[:kwd].blank? %>
   <%= hidden_field_tag(:limit, params[:limit]) unless params[:limit].blank? %>
 <!-- end .search --><% end %>

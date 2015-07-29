@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
@@ -96,8 +97,8 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
     
     # 表示行数　設定

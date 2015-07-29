@@ -7,6 +7,7 @@
 ----------------------------------------------- */
 #content .circular {
   background-image: url(/_common/themes/gw/files/title/title_circulation.gif);
+  margin-top: 10px;
 }
 
 /* タイトル・本文フォーム
@@ -235,9 +236,6 @@ a.btConfirmed:hover {
 #contentBody .circular th {
   background-color: #E3EFFF;
   border: 1px solid #C6D1E8;;
-}
-.preserve {
-  text-align: center;
 }
 
 /* gwcircular/settings

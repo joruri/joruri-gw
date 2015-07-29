@@ -3,7 +3,7 @@
   <%= hidden_field_tag(:state, params[:state]) unless params[:state].blank? %>
   <%= hidden_field_tag(:cat, params[:cat]) unless params[:cat].blank? %>
   <span>所属選択</span>
-  <%= select_tag :gcd, options_for_select([['全て','']] + @title.doc_section_code_options(params[:state] == 'DRAFT' ? 'draft' : 'public'), params[:gcd].to_s), :onchange => 'submit();' %>
+  <%= select_tag(:gcd, "<option value=''>全て</option>#{options_from_collection_for_select(@select_groups, :code, :name, params[:gcd].to_s)}".html_safe, :onchange => 'submit();') %>
   <%= hidden_field_tag(:kwd, params[:kwd]) unless params[:kwd].blank? %>
   <%= hidden_field_tag(:limit, params[:limit]) unless params[:limit].blank? %>
 <!-- end .search --><% end %>

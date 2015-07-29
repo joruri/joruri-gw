@@ -1,25 +1,29 @@
+<%
+@key = 'admin_deletes'
+-%>
 <div class="piece schedulePiece setting">
-<div class="pieceHeader">
-<%= render '/gw/admin/schedules/piece_header' %>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-<div class="titleLine">
-  <span class="title">スケジュール削除設定</span>
-</div>
-</div>
-<div class="pieceBodyBody">
-
-<%= form_for :item, :url => "/gw/schedule_settings/edit_admin_deletes", :html => {method: :put, multipart: true} do |f| %>
-  <table class="show">
-    <tr>
-      <th>削除対象</th>
-      <td><%= select_tag 'item[schedules][schedules_admin_delete]', options_for_select(@item.delete_options, @item.schedules_admin_delete) -%>　経過したスケジュールを削除</td>
-    </tr>
-  </table>
-  <%= f.submit '保存' -%>
-<% end %>
-
-</div>
-</div>
+  <div class="pieceHeader">
+    <%= render(:partial => '/gw/admin/schedules/piece_header') %>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= div_notice %>
+      <div class="titleLine">
+        <span class="title">スケジュール削除設定</span>
+      </div>
+    </div>
+    <div class="pieceBodyBody">
+      <%= form_for :item, :url => "/gw/schedule_settings/edit_#{@key}", :html => {:method=>:put, :multipart => true} do |f| %>
+      <table class="show">
+        <tr>
+          <th>削除対象</th>
+          <td><%= select_by_list(f, :schedules_admin_delete, Gw.yaml_to_array_for_select('gw_schedules_admin_delete_term', :for_select_by_list=>1),
+        {}, @item[:schedules_admin_delete].to_i) -%>　経過したスケジュールを削除
+          </td>
+        </tr>
+      </table>
+      <%= submit_for(f, {:caption => '保存', :id=>"item_submit_#{@key}"}) -%>
+      <% end %>
+    </div>
+  </div>
 </div>

@@ -4,26 +4,26 @@
   headline_at = '4月1日'
   unless @items.blank?
 #    fyear = @items[0].fy_rel
-    fyear = Gw::YearFiscalJp.where(:id => @items[0].fyear_id).first
+    fyear = Gw::YearFiscalJp.find_by_id(@items[0].fyear_id)
     if fyear.blank?
     else
       fyear_namejp = fyear.namejp
-      editable_date = Gwsub::Sb04EditableDate.where(:fyear_id=>fyear.id).first
+      editable_date = Gwsub::Sb04EditableDate.find_by_fyear_id(fyear.id)
       headline_at = "#{editable_date.headline_at.month}月#{editable_date.headline_at.day}日" if !editable_date.blank? && !editable_date.headline_at.blank?
     end
   end
 -%>
 
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 </div>
 
 <div class="pieceBody">
-<%= render 'gwsub/admin/sb04/sb04divideduties/search' %>
-<%= render 'gwsub/admin/sb04/sb04divideduties/select_with_fyear' %>
-
+<%= render(:partial => 'gwsub/admin/sb04/sb04divideduties/search') %>
+<%= render(:partial => 'gwsub/admin/sb04/sb04divideduties/select_with_fyear') %>
+<%= div_notice %>
 <% if @items.blank? %>
   <div class="notice">表示する項目はありません。</div>
 <% else %>
@@ -41,7 +41,7 @@
     <% unless section == d.section_code -%>
       <%
       if d.section_id.to_i==0
-          sect = Gwsub::Sb04section.where("fyear_id= #{d.fyear_id} and code = '#{d.section_code}'" ).order("fyear_markjp DESC ,code ASC").first
+          sect = Gwsub::Sb04section.find(:first, :conditions=>"fyear_id= #{d.fyear_id} and code = '#{d.section_code}'" , :order=>"fyear_markjp DESC ,code ASC")
           unless sect.blank?
             sect_bbs_url = sect.bbs_url
             d.section_id = sect.id
@@ -49,7 +49,7 @@
             sect_bbs_url = nil
           end
       else
-        sect = Gwsub::Sb04section.where("id = '#{d.section_id}'").first
+        sect = Gwsub::Sb04section.find(:first, :conditions=> "id = '#{d.section_id}'")
         unless sect.blank?
           sect_bbs_url = sect.bbs_url
         else
@@ -76,7 +76,7 @@
         if d.assignedjobs_id==0
           a_cond  = "fyear_markjp='#{d.fyear_markjp}' and section_code='#{d.section_code}' and code='#{d.assignedjobs_code}'"
           a_order = "fyear_markjp DESC , section_code ASC , code ASC "
-          assigned_job  = Gwsub::Sb04assignedjob.where(a_cond).order(a_order).first
+          assigned_job  = Gwsub::Sb04assignedjob.find(:first , :conditions=>a_cond , :order=>a_order )
           if assigned_job.blank?
             jobs_name     = d.assignedjobs_name
             jobs_address  = d.assignedjobs_address
@@ -88,7 +88,7 @@
             jobs_tel      = assigned_job.tel
           end
         else
-          assigned_job  = Gwsub::Sb04assignedjob.where(:id=>d.assignedjobs_id).first
+          assigned_job  = Gwsub::Sb04assignedjob.find_by_id(d.assignedjobs_id)
           unless assigned_job.blank?
             jobs_name     = assigned_job.name
             jobs_address  = assigned_job.address
@@ -111,17 +111,17 @@
       %>
       <tr>
       <td><%= link_to '詳細',"#{@csv_base_url}/#{d.id}?#{@qs}" %></td>
-      <th style="text-align:center;"><%= jobs_name %></th>
+      <th style="text-align:center;"><%= h jobs_name %></th>
       <th colspan="5" align="center" ><%= br job_addr_tel %></th>
       </tr>
     <% end %>
     <tr>
     <td></td>
     <td style="width:43%;"><%= hbr d.divide_duties %></td>
-    <td style="width:12%;"><%= d.official_title_name %></td>
+    <td style="width:12%;"><%= h d.official_title_name %></td>
     <td style="width:10%;"><%= d.name %></td>
-    <td style="width:05%;"><%= d.extension %></td>
-    <td style="width:20%;"><%= d.remarks %></td>
+    <td style="width:05%;"><%= h d.extension %></td>
+    <td style="width:20%;"><%= h d.remarks %></td>
     </tr>
   <% end %>
   </table>

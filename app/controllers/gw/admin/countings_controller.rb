@@ -1,7 +1,13 @@
+# encoding: utf-8
 class Gw::Admin::CountingsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   include Gwboard::Model::DbnameAlias
+  include Gwmonitor::Model::Database
   layout "admin/template/admin"
+
+  def initialize_scaffold
+
+  end
 
   def init_params
     Page.title = "設定"
@@ -12,18 +18,46 @@ class Gw::Admin::CountingsController < Gw::Controller::Admin::Base
 
     @editor_role  = Gw.is_editor?
 
-    @role_tabs  = Core.user.has_role?('edit_tab/editor')
+    @role_tabs  = System::Model::Role.get(1, Core.user.id ,'edit_tab', 'editor')
 
-    @role_users = Core.user.has_role?('system_users/editor')
+    @role_users = System::Model::Role.get(1, Core.user.id ,'system_users','editor')
 
-    @role_bbs  = Gwbbs::Control.is_admin?
-    @role_faq  = Gwfaq::Control.is_admin?
-    @role_qa   = Gwqa::Control.is_admin?
-    @role_doclibrary     = Doclibrary::Control.is_admin?
-    @role_digitallibrary = Digitallibrary::Control.is_admin?
 
-    @role_gwcircular = Gwcircular::Control.is_admin?
-    @role_gwmonitor  = Gwmonitor::Control.is_sysadm?
+    @is_readable = nil
+    params[:system]='gwbbs'
+    admin_flags
+    @role_bbs    =    @is_readable
+
+    @is_readable = nil
+    params[:system]='gwfaq'
+    admin_flags
+    @role_faq   = @is_readable
+
+    @is_readable = nil
+    params[:system]='gwqa'
+    admin_flags
+    @role_qa   = @is_readable
+
+    @is_readable = nil
+    params[:system]='doclibrary'
+    admin_flags
+    @role_doclibrary    = @is_readable
+
+    @is_readable = nil
+    params[:system]='digitallibrary'
+    admin_flags
+    @role_digitallibrary    = @is_readable
+
+    @is_sysadm = nil
+    @is_bbsadm = nil
+    role_gwcircular('_menu')
+    @role_gwcircular_sysadmin       = @is_sysadm
+    @role_gwcircular_bbsadmin       = @is_bbsadm
+    @role_gwcircular  = @role_gwcircular_sysadmin || @role_gwcircular_bbsadmin
+
+    @is_sysadm = nil
+    system_admin_flags
+    @role_gwmonitor       = @is_sysadm
 
     @is_gw_config_settings_roles  = Gw.is_admin_or_editor?
     @u_role = @is_gw_config_settings_roles
@@ -54,8 +88,8 @@ class Gw::Admin::CountingsController < Gw::Controller::Admin::Base
       end
     end
     @css = %w(/layout/admin/style.css)
-
-    return error_auth unless @admin_role
+    
+    return http_error(403) unless @admin_role
   end
 
   def index
@@ -64,10 +98,16 @@ class Gw::Admin::CountingsController < Gw::Controller::Admin::Base
 
   def memos
     init_params
+    
+    cond = "class_id=1 and name = 'mobile'"
+    @set_counts = Gw::UserProperty.count(:all ,:conditions=>cond )
 
-    @set_counts = Gw::Property::MemoMobileMail.count
-    @set1_counts = Gw::Property::MemoMobileMail.where("options like '%ktrans\":\"1%'").count
-    @set2_counts = Gw::Property::MemoMobileMail.where("options like '%ktrans\":\"2%'").count
+    cond1 = "class_id=1 and name='mobile' and options like '%ktrans\":\"1%' "
+    @set1_counts = Gw::UserProperty.count(:all ,:conditions=>cond1 )
+
+    cond2 = "class_id=1 and name='mobile' and options like '%ktrans\":\"2%' "
+    @set2_counts = Gw::UserProperty.count(:all ,:conditions=>cond2 )
+
   end
 
   def mobiles
@@ -76,17 +116,46 @@ class Gw::Admin::CountingsController < Gw::Controller::Admin::Base
     pass_enable = "mobile_password is not NULL"
     pass_disable = "mobile_password is NULL"
     access_enable = "mobile_access = 1"
-    access_disable = "(mobile_access = 0 or mobile_access is null)"
+    access_disable = "mobile_access = 0"
 
     # [0]パスワード設定数, [1]許可数, [2]不許可数
     @m_pass_enable_counts = []
-    @m_pass_enable_counts << System::User.where("#{user_enabled} and #{pass_enable}").count
-    @m_pass_enable_counts << System::User.where("#{user_enabled} and #{pass_enable} and #{access_enable}").count
-    @m_pass_enable_counts << System::User.where("#{user_enabled} and #{pass_enable} and #{access_disable}").count
+    @m_pass_enable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_enable}")
+    @m_pass_enable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_enable} and #{access_enable}")
+    @m_pass_enable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_enable} and #{access_disable}")
     # [0]パスワード未設定数, [1]許可数, [2]不許可数
     @m_pass_disable_counts = []
-    @m_pass_disable_counts << System::User.where("#{user_enabled} and #{pass_disable}").count
-    @m_pass_disable_counts << System::User.where("#{user_enabled} and #{pass_disable} and #{access_enable}").count
-    @m_pass_disable_counts << System::User.where("#{user_enabled} and #{pass_disable} and #{access_disable}").count
+    @m_pass_disable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_disable}")
+    @m_pass_disable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_disable} and #{access_enable}")
+    @m_pass_disable_counts << System::User.count(:conditions=>"#{user_enabled} and #{pass_disable} and #{access_disable}")
   end
+
+  def role_gwcircular(title_id = '_menu')
+
+    @is_sysadm = true if System::Model::Role.get(1, Core.user.id ,'gwcircular', 'admin')
+    @is_sysadm = true if System::Model::Role.get(2, Core.user_group.id ,'gwcircular', 'admin') unless @is_sysadm
+    @is_bbsadm = true if @is_sysadm
+
+    unless @is_bbsadm
+      item = Gwcircular::Adm.new
+      item.and :user_id, 0
+      item.and :group_code, Site.user_group.code
+      item.and :title_id, title_id unless title_id == '_menu'
+      items = item.find(:all)
+      @is_bbsadm = true unless items.blank?
+
+      unless @is_bbsadm
+        item = Gwcircular::Adm.new
+        item.and :user_code, Site.user.code
+        item.and :group_code, Site.user_group.code
+        item.and :title_id, title_id unless title_id == '_menu'
+        items = item.find(:all)
+        @is_bbsadm = true unless items.blank?
+      end
+    end
+
+    @is_admin = true if @is_sysadm
+    @is_admin = true if @is_bbsadm
+  end
+
 end

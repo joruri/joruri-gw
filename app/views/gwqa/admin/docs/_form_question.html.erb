@@ -21,7 +21,7 @@
 <table class="show docState">
 <tr>
 <th>解決状況<%= required('※') %></th>
-<td><%= f.radio_buttons :content_state, @item.resolved_status_select %></td>
+<td><%= f.radio_buttons :content_state, @item.resolved_status_select, :class => 'state' %></td>
 </tr>
 <% if @title.category == 1 %>
 <tr>
@@ -34,33 +34,14 @@
 <table class="show">
   <tr>
     <th>質問タイトル<%= required('※') %></th></tr><tr>
-    <td><%= f.text_area :title, :rows => "5", :cols => "140", :style => "width:100%" %></td>
+    <td><%= f.text_area :title, :rows => "5", :style => "width:100%" %></td>
   </tr>
 </table>
 
 <table class="show">
   <tr>
-    <th>記事入力方式</th></tr><tr>
-    <td>
-      <%= f.radio_buttons :wiki, Gwqa::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
-    </td>
-  </tr>
-</table>
-
-<table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
-  <tr>
     <th>質問本文</th></tr><tr>
     <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
-  </tr>
-</table>
-
-<table class="show" id="wiki_body_table" style="<%= 'display: none;' unless @item.wiki_enabled? -%>">
-  <tr>
-    <th>質問本文</th></tr><tr>
-    <td class="wikiEditor">
-      <%= f.text_area :wiki_body, {:rows => 20, :cols=>40, :class => 'wikiEditor', :style => 'width:100%'} %>
-    </td>
   </tr>
 </table>
 
@@ -78,10 +59,7 @@
 //]]>
 </script>
 
-<%= render '/gwboard/admin/docs/script_change_body_table' %>
-<%= render '/gwboard/admin/docs/script_wiki_attach_insert' %>
-
-<% if @title.use_old_upload_system? %>
+<% if attach_use_old %>
   <%= gwboard_image_form(f, @item, 'item_body') %>
   <%= gwboard_attach_form(f, @item) %>
 <% else %>

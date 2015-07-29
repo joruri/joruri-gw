@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Mail::Attachment
   attr_reader :seqno
   attr_reader :content_type

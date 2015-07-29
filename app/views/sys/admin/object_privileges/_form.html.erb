@@ -1,0 +1,14 @@
+<%
+
+cond   = {:site_id => Core.site.id, :level_no => 1, :state => 'public'}
+root   = Cms::Concept.find(:all, :conditions => cond, :order => :sort_no)
+
+%><table class="show">
+  <tr>
+    <th><%= @item.locale(:item_unid) %></th>
+    <td><%= f.select_with_tree :item_unid, root, :value => :unid, :include_blank => true, :class => 'id' %></td>
+  </tr><tr>
+    <th><%= @item.locale(:action) %></th>
+    <td><%= f.check_boxes :in_actions, @item.action_labels, :class => 'name' %></td>
+  </tr>
+</table>

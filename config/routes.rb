@@ -1,18 +1,22 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
 
-  root 'gw/admin/portal#index'
+  root :to => 'gw/admin/portal#index'
 
   ## Admin
-  match '_admin',           :to => 'gw/admin/portal#index', :via => [:get, :post]
-  match '_admin/login',     :to => 'sys/admin/account#login', :via => [:get, :post]
-  match '_admin/logout',    :to => 'sys/admin/account#logout', :via => [:get, :post]
-  match '_admin/account',   :to => 'sys/admin/account#info', :via => [:get, :post]
-  match "_admin/sso",       :to => "sys/admin/account#sso", :via => [:get, :post]
-  match '_admin/air_login', :to => 'sys/admin/air#old_login', :via => [:get, :post]
-  match '_admin/air_sso',   :to => 'sys/admin/air#login', :via => [:get, :post]
-  match '_admin/cms',       :to => 'gw/admin/portal#index', :via => [:get, :post]
-  match '_admin/sys',       :to => 'gw/admin/portal#index', :via => [:get, :post]
-  match '_admin/system',    :to => 'gw/admin/portal#index', :via => [:get, :post]
+  match '_admin'                 => 'sys/admin/users#index'
+  match '_admin.:format'         => 'sys/admin/users#index'
+  match '_admin/login.:format'   => 'sys/admin/account#login'
+  match '_admin/login'           => 'sys/admin/account#login'
+  match '_admin/logout.:format'  => 'sys/admin/account#logout'
+  match '_admin/logout'          => 'sys/admin/account#logout'
+  match '_admin/account.:format' => 'sys/admin/account#info'
+  match '_admin/account'         => 'sys/admin/account#info'
+  match "_admin/sso"             => "sys/admin/account#sso"
+  match '_admin/air_login'       => 'sys/admin/air#old_login'
+  match '_admin/air_sso'         => 'sys/admin/air#login'
+  match '_admin/cms'             => 'sys/admin/front#index'
+  match '_admin/sys'             => 'sys/admin/front#index'
+  match '_admin/system'          => 'sys/admin/front#index'
 
   ## Modules
   Dir::entries("#{Rails.root}/config/modules").each do |mod|
@@ -20,22 +24,37 @@ Rails.application.routes.draw do
     file = "#{Rails.root}/config/modules/#{mod}/routes.rb"
     load(file) if FileTest.exist?(file)
   end
+  
+  match '/tab_main/:id'  => 'gw/admin/tab_main#show'
+  match '/siteinfo'      => 'gwboard/admin/siteinfo#index'
+  match '/syntheses'     => 'gwboard/admin/syntheses#index'
+  
+  ## Attachments
+  def admin_attaches(sys)
+    match "_admin/_attaches/#{sys}/:title_id/:name/:u_code/:d_code", :to => "attaches/admin/#{sys}#download", :format => false
+    match "_admin/_attaches/#{sys}/:title_id/:name/:u_code/:d_code/*filename", :to => "attaches/admin/#{sys}#download", :format => false
 
-  ## Etc
-  match '/tab_main/:id', :to => 'gw/admin/tab_main#show', :via => :get
-  match '/siteinfo',     :to => 'gwboard/admin/siteinfo#index', :via => :get
-  match '/syntheses',    :to => 'gwboard/admin/syntheses#index', :via => :get
-
-  ## Attachments v2以降
-  match "_admin/_attaches/:system/:title_id/:name/:u_code/:d_code(/*filename)", :to => "gwboard/admin/attachments#download", :format => false, :via => :get
-  ## Attachments v1
-  match "_admin/attaches/:system/:title_id/:name/:u_code/:d_code(/*filename)", :to => "gwboard/admin/attachments#download", :format => false, :via => :get
-
+		#GW1.1.0移行対応(TinyMCE内のリンクがこのパターン）
+    match "_admin/attaches/#{sys}/:title_id/:name/:u_code/:d_code", :to => "attaches/admin/#{sys}#download", :format => false
+    match "_admin/attaches/#{sys}/:title_id/:name/:u_code/:d_code/*filename", :to => "attaches/admin/#{sys}#download", :format => false
+  end
+  
+  admin_attaches('gwqa')
+  admin_attaches('gwbbs')
+  admin_attaches('gwfaq')
+  admin_attaches('doclibrary')
+  admin_attaches('digitallibrary')
+  admin_attaches('gwcircular')
+  admin_attaches('gwworkflow')
+  admin_attaches('gwmonitor')
+  admin_attaches('gwmonitor_base')
+  admin_attaches('gwworkflow')
+  
   ## Exception
-  match '403.:format' => 'exception#index', :via => :all
-  match '404.:format' => 'exception#index', :via => :all
-  match '500.:format' => 'exception#index', :via => :all
-  match '*path'       => 'exception#index', :via => :all
+  match '403.:format' => 'exception#index'
+  match '404.:format' => 'exception#index'
+  match '500.:format' => 'exception#index'
+  match '*path'       => 'exception#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

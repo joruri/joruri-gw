@@ -1,6 +1,8 @@
-class Gwworkflow::Setting < Gw::Database
-  self.table_name = 'gw_workflow_mail_settings'
+# -*- encoding: utf-8 -*-
 
+class Gwworkflow::Setting < Gw::Database
+  set_table_name 'gw_workflow_mail_settings'
+  
   def creatable?
     return true
   end

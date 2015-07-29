@@ -1,6 +1,7 @@
+# encoding: utf-8
 class Gw::Admin::Piece::ReminderController < ApplicationController
   include System::Controller::Scaffold
-  layout false
+  layout 'base'
   
   def index
   end

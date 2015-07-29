@@ -1,6 +1,7 @@
 class Core
   ## Core attributes.
   cattr_reader   :now
+  cattr_reader   :config
   cattr_accessor :title
   cattr_reader   :map_key
   cattr_reader   :env
@@ -20,9 +21,9 @@ class Core
   cattr_accessor :messages
 
   ## Initializes.
-  def self.initialize(env = {})
+  def self.initialize(env = nil)
     @@now          = Time.now.to_s(:db)
-    @@config       = config
+    @@config       = Util::Config.load(:core)
     @@title        = @@config['title'] || 'Joruri'
     @@map_key      = @@config['map_key']
     @@env          = env
@@ -45,10 +46,6 @@ class Core
     Page.initialize
   end
 
-  def self.config
-    @@config ||= Util::Config.load(:core)
-  end
-
   ## Now.
   def self.now
     return @@now if @@now
@@ -57,21 +54,17 @@ class Core
 
   ## Absolute path.
   def self.uri
-    config['uri'].sub(/^[a-z]+:\/\/[^\/]+\//, '/')
+    @@config['uri'].sub(/^[a-z]+:\/\/[^\/]+\//, '/')
   end
 
   ## Full URI.
   def self.full_uri
-    config['uri']
+    @@config['uri']
   end
 
   ## Proxy.
   def self.proxy
-    config['proxy']
-  end
-
-  def self.proxy_uri
-    URI(config['proxy']) rescue nil
+    @@config['proxy']
   end
 
   ## Parses query string.

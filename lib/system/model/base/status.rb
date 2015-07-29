@@ -1,3 +1,4 @@
+# encoding: utf-8
 module System::Model::Base::Status
   def status_list
     [["有効","enabled"],["有効","enabled"],["表示","visible"],["非表示","hidden"],

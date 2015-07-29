@@ -51,10 +51,12 @@
   </table>
 <% end %>
 
-<%= render @title.gwbbs_form_name + 'show' %>
 
-<%= render 'gwbbs/admin/docs/upload_index', files: @item.files %>
 
-<% if @item.one_line_note == 1 %>
-<%= render 'gwbbs/admin/docs/comment_index' %>
-<% end %>
+<%= render :partial => @title.gwbbs_form_name + 'show' %>
+
+<%= render :partial => 'gwbbs/admin/docs/upload_index' %>
+
+<%if @item.one_line_note == 1 %>
+<%= render :partial => 'gwbbs/admin/docs/comment_index' %>
+<%end%>

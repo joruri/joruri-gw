@@ -1,0 +1,7 @@
+<div class="showMenu">
+<%=link_to '編集', @item.edit_path %>
+<%=link_to '削除', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete %>
+<%=link_to '戻る', url_for(:back) %>
+</div>
+
+<%= table_to_show2 @item %>

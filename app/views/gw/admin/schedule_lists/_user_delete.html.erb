@@ -1,21 +1,25 @@
-<%= form_for :item, url: "#{gw_schedule_lists_path}/user_delete#{@params_set}",
-  html: {id: "listForm", multipart: true, style: 'border:2px solid #FF0000;margin: 15px; padding: 15px;'} do |f| -%>
+<%= form_for :item, :url => "#{gw_schedule_lists_path}/user_delete#{@params_set}" ,:action=>:search ,:method=>:post ,
+  :html => {:id => "listForm", :style => 'border:2px solid #FF0000;margin: 15px; padding: 15px;', :multipart => true} do |f| -%>
 <table class="noBorderTable">
   <tr>
     <td>
-      <% @items.each do |item| %>
-      <%= hidden_field_tag 'ids[]', item.id %>
+      <% @ids.each do |id| %>
+      <%= hidden_field_tag('ids[]', id) %>
       <% end %>
-      <%= hidden_field_tag :uid, params[:uid] %>
-      <%= hidden_field_tag :s_year, params[:s_year] %>
-      <%= hidden_field_tag :s_month, params[:s_month] %>
+      <%= hidden_field_tag(:uid, params[:uid]) %>
+      <%= hidden_field_tag(:s_year, params[:s_year]) %>
+      <%= hidden_field_tag(:s_month, params[:s_month]) %>
     </td>
     <td>
       「<%= @target_user.display_name -%>」 を、以下の予定の参加者から削除します。
-      <%= hidden_field_tag :delete_user_id, @target_user.id %>
+      <%= hidden_field_tag(:delete_user_id, @target_user.id) %>
     </td>
-    <td><%= submit_tag '削除', {name: :delete_submit, onclick: "return confirm('ユーザーを削除します。よろしいですか？');"} %></td>
-    <td><%= submit_tag 'キャンセル', {name: :cancel} %></td>
+    <td>
+      <%= submit_tag '削除', {:onclick=>"return confirm('ユーザーを削除します。よろしいですか？');", :name =>:delete_submit} %>
+    </td>
+    <td>
+      <%= submit_tag 'キャンセル', {:name =>:cancel} %>
+    </td>
   </tr>
 </table>
 <% end -%>

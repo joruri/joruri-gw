@@ -1,18 +1,18 @@
 <%
 fyear_markjp = ""
-fyear = Gwsub::Sb04EditableDate.where(:fyear_id => @item.fyear_id_sb04).first
+fyear = Gwsub::Sb04EditableDate.find_by_fyear_id(@item.fyear_id_sb04)
 fyear_markjp = fyear.fyear_markjp if !fyear.blank?
 
 management_uid_sb04_name = ""
-staff = Gwsub::Sb04stafflist.where(:id => @item.management_uid_sb04).first
+staff = Gwsub::Sb04stafflist.find_by_id(@item.management_uid_sb04)
 management_uid_sb04_name = staff.name if !staff.blank?
 
 management_gid_sb04_name = ""
-section = Gwsub::Sb04section.where(:id => @item.management_gid_sb04).first
+section = Gwsub::Sb04section.find_by_id(@item.management_gid_sb04)
 management_gid_sb04_name = "#{section.name}" if !section.blank?
 
 division_gid_sb04_name = ""
-section = Gwsub::Sb04section.where(:id => @item.division_gid_sb04).first
+section = Gwsub::Sb04section.find_by_id(@item.division_gid_sb04)
 division_gid_sb04_name = "#{section.name}" if !section.blank?
 
 destroy_confirm_s = '削除してよろしいですか？'
@@ -20,11 +20,11 @@ destroy_confirm_s = '削除してよろしいですか？'
 %>
 
 <div class="gwsub sb04">
-  <%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+  <%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
   <div class="pieceBanner">
-    <%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-    <%= render 'menu' %>
-    <%= render 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+    <%= render :partial => 'menu' %>
+    <%= render :partial => 'gwsub/admin/sb04/sb04stafflistview_masters/display_name' %>
     <div class="editingBox">
       <div class="btEdit">
         <%= link_to('編集する', "#{@public_uri}/#{@item.id}/edit#{@params_set}") -%>
@@ -36,6 +36,7 @@ destroy_confirm_s = '削除してよろしいですか？'
   </div>
   <div class="pieceBody">
     <div class="pieceBodyBody">
+      <%= div_notice -%>
       <table class="show">
       <tr>
         <th>年度</th>

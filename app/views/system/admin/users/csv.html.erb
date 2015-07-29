@@ -1,0 +1,58 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => '/system/admin/users/csv_menu' %>
+
+    <% if @csvdata.blank? %>
+      <div class="notice">現在、CSVから登録されたデータはありません。</div>
+    <% else %>
+      <table class="index">
+      <tbody>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>階層</th>
+          <th>種別</th>
+          <th>LDAP同期</th>
+          <th>状態</th>
+          <th>名前</th>
+        </tr>
+        <% @csvdata.each do |group| %>
+        <tr class="<%= cycle '', 'cycle' %>">
+          <td><a href="/system/users/<%= group.id -%>/csvshow">詳細</a></td>
+          <td><%= group.code -%></td>
+          <td><%= System::Group.level_show(group.level_no) -%></td>
+          <td><%= System::UsersGroupsCsvdata.data_type_show(group.data_type) -%></td>
+          <td><%= System::UsersGroup.ldap_show(group.ldap) -%></td>
+          <td><%= System::UsersGroup.state_show(group.state) -%></td>
+          <td><%= group.name -%></td>
+        </tr>
+          <% group.groups.each do |c_group| %>
+          <tr class="<%= cycle '', 'cycle' %>">
+            <td><a href="/system/users/<%= c_group.id -%>/csvshow">詳細</a></td>
+            <td><%= c_group.code -%></td>
+            <td><%= System::Group.level_show(c_group.level_no) -%></td>
+            <td><%= System::UsersGroupsCsvdata.data_type_show(c_group.data_type) -%></td>
+            <td><%= System::UsersGroup.ldap_show(c_group.ldap) -%></td>
+            <td><%= System::UsersGroup.state_show(c_group.state) -%></td>
+            <td><span style="margin-left:2em;"><%= c_group.name -%></span></td>
+          </tr>
+            <% c_group.users.each do |user| %>
+            <tr class="<%= cycle '', 'cycle' %>">
+              <td><a href="/system/users/<%= user.id -%>/csvshow">詳細</a></td>
+              <td><%= user.code -%></td>
+              <td></td>
+              <td><%= System::UsersGroupsCsvdata.data_type_show(user.data_type) -%></td>
+              <td><%= System::UsersGroup.ldap_show(user.ldap) -%></td>
+              <td><%= System::UsersGroup.state_show(user.state) -%></td>
+              <td><span style="margin-left:4em;"><%= user.name -%></span></td>
+            </tr>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+    <% end %>
+  </div>
+</div>

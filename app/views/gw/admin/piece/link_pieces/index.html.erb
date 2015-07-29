@@ -1,13 +1,12 @@
 <div class="piece headLine">
 <div class="pieceBody">
-<%= cache_if Joruri.config.application['gw.cache_portal_link_piece'], @items + [@portal_mode, Core.user] do %>
 <% @items.each_with_index do |item, idx| %>
-  <% item.opened_children.preload_opened_children.each_with_index do |level3_item, idx3| %>
-    <% next if @portal_mode.normal_mode? && level3_item.mode == 3 %>
-    <% next if @portal_mode.disaster_mode? && level3_item.mode == 2 %>
+  <% item.opened_children.each_with_index do |level3_item, idx3| %>
+    <% next if @portal_mode.options == '2' && level3_item.mode == 3 %>
+    <% next if @portal_mode.options == '3' && level3_item.mode == 2 %>
     <% if level3_item.has_display_auth? %>
       <% if idx3 >= 1 %>
-      <div class="borderbox2 <%= 'emergency' if @portal_mode.disaster_mode? && level3_item.mode == 3 %>">
+      <div class="borderbox2 <%= 'emergency' if @portal_mode.options == '3' && level3_item.mode == 3 %>">
       <% end %>
       <% level3_options = level3_item.link_options %>
       <div class="<%= level3_options[:css_class] %>">
@@ -46,6 +45,5 @@
     <% end %>
   <% end %>
 <% end %>
-<% end # cache %>
 </div>
 </div>

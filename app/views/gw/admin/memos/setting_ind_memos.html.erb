@@ -1,0 +1,40 @@
+<%
+concat <<-EOL
+#{render(:partial => '/gw/public/memos/header')}
+EOL
+
+header = <<-EOL
+#{show_notice}
+#{render :partial => '/gw/public/memos/piece_header'}
+EOL
+
+
+@content_for_form = ''
+content_for :form do
+  form_for :item, :url => {:action => :edit_ind_memos}, :html => {:multipart => true, :id => 'itemForm'} do |f|
+    concat <<-EOL
+#{f.error_messages}
+<table class="show">
+
+<tr><th>強制削除</th><td>
+#{radio f, 'title', [10]}
+</td></tr>
+
+<tr><th>定期削除</th><td>
+#{radio f, 'title2', [10]}
+</td></tr>
+
+</table>
+#{submit_for_create f, :class=>''}
+EOL
+  end
+end
+
+body = { :body => <<-EOL
+<a name="#{@key}"></a><h4>連絡メモ設定</h4>
+#{@content_for_form}
+EOL
+}
+
+concat hhbff_struct(:memoPiece, :setting, :header=>header, :body=>body)
+%>

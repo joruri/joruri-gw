@@ -1,79 +1,110 @@
 <%
-selected_recognizer_options = @item.selected_recognizer_options
-selected_recognizer_options.reject! {|o| o[1] == Core.user.id } unless @title.is_admin?
+box_width = 'width:300px;'  #承認者設定枠の幅
+collection = @users_collection
+recognizers  = []
+str = []
+unless @select_recognizers.blank?
+  recognizers = @select_recognizers
+  for i in 1..5
+    str << recognizers[i.to_s]
+  end
+else
+  for i in 1..5
+    str << ""
+  end
+end
 
-recognizer_options = Core.user_group.enabled_user_options(ldap: 1)
-recognizer_options.reject! {|o| selected_recognizer_options.detect{|o2| o[1] == o2[1]} }
-recognizer_options.reject! {|o| o[1] == Core.user.id } unless @title.is_admin?
+recognizers_select_list = []
+recognize_list = []
+collection.each {|u| recognizers.index(u.id.to_s) ? recognizers_select_list << u : recognize_list << u }
+
+_recognize_list = Proc.new do
+  _name  = "recognize_list"
+  select_tag _name, options_from_collection_for_select(recognize_list, :id, :display_name), :multiple => true, :size => 5, :style => box_width, :ondblclick => "fnMoveSelect(this.form, 'recognize_list[]','recognize_select_list[]');"
+end
+
+_select_list = Proc.new do
+  _name  = "recognize_select_list"
+  select_tag _name, options_from_collection_for_select(recognizers_select_list, :id, :display_name), :multiple => true, :size => 5, :style => box_width, :ondblclick => "fnMoveSelect(this.form, 'recognize_select_list[]','recognize_list[]');"
+end
+
+user_groups = Gwboard::Group.level
 %>
-
-<table class="show">
+<table class="show" style="margin-top: 10px;">
+<tr>
+  <th>承認者</th>
+  <td>
+  <table>
   <tr>
-    <th>承認者</th>
-    <td>
-      <table>
-        <tr>
-          <td style="width: 100px; text-align: left;">
-            <%= select_tag :recognizers_group_id, options_for_select(System::Group.enabled_group_options, Core.user_group.id) %><br />
-            <%= select_tag :recognizers, options_for_select(recognizer_options), :multiple => true, :size => 10, :style => 'width:300px;' %>
-          </td>
-          <td style="width: 20px; text-align: left;">
-            <input type="button" id="mv1" name="mv1" value=" → " />
-            <br /><br />
-            <input type="button" id="mv2" name="mv2" value=" ← " />
-          </td>
-          <td style="width: 1000px; text-align: left;">
-            <br />
-            <%= select_tag :selected_recognizers, options_for_select(selected_recognizer_options), :multiple => true, :size => 10, :style => 'width:300px;' %>
-            <%= f.select :selected_recognizer_uids, options_for_select(selected_recognizer_options, selected_recognizer_options.map(&:last)), {}, {:multiple => true, :style => 'display: none;'} %>
-          </td>
-        </tr>
-      </table>
+    <td style="width: 100px; text-align: left;">
+      <%= select_tag('form[adms][gid]', options_for_select(user_groups, Core.user_group.id), :onchange => 'update_admin_cand();' ) %>
+      <br />
+      <%= raw(_recognize_list.call()) %>
+    </td>
+    <td style="width: 20px; text-align: left;">
+      <input type="button" name="mv1" value=" → " onclick="fnMoveSelect(this.form, 'recognize_list[]','recognize_select_list[]');" />
+      <br /><br />
+      <input type="button" name="mv2" value=" ← " onclick="fnMoveSelect(this.form, 'recognize_select_list[]','recognize_list[]');" />
+    </td>
+    <td style="width: 1000px; text-align: left;">
+      <div class="<%= 'fieldWithErrors' if @item.errors['承認者'] %>">
+      <br /><%= raw(_select_list.call()) %></div>
     </td>
   </tr>
+  </table>
+  </td>
+</tr>
 </table>
+<input type="hidden" id="_recognizers_1" name="<%= f.object_name.to_s + "[_recognizers][1]" %>" value="<%= str[0] %>" />
+<input type="hidden" id="_recognizers_2" name="<%= f.object_name.to_s + "[_recognizers][2]" %>" value="<%= str[1] %>" />
+<input type="hidden" id="_recognizers_3" name="<%= f.object_name.to_s + "[_recognizers][3]" %>" value="<%= str[2] %>" />
+<input type="hidden" id="_recognizers_4" name="<%= f.object_name.to_s + "[_recognizers][4]" %>" value="<%= str[3] %>" />
+<input type="hidden" id="_recognizers_5" name="<%= f.object_name.to_s + "[_recognizers][5]" %>" value="<%= str[4] %>" />
+<input type="hidden" id="<%= f.object_name.to_s + "__recognition_after_process" %>" name="<%= f.object_name.to_s + "[_recognition][after_process]" %>" value="" />
 
 <script type="text/javascript">
-(function($) {
-  $(function() {
-    $('#recognizers_group_id').on('change', function() {
-      $.get('/_admin/gwboard/ajaxusers/getajax_recognizer.json', {s_genre: $(this).val()}, function(data) {
-        $('#recognizers').empty();
-        for (var i=0; i<data.length; i++) {
-          if ($('#selected_recognizers').find('option[value=' + data[i][0] + ']').length == 0) {
-            $('#recognizers').append('<option value="' + data[i][0] + '">' + data[i][1] + '</option>');
-          }
-        }
-      });
-    });
-    $('#recognizers').on('dblclick', function() {
-      moveSelectedOptions('#recognizers', '#selected_recognizers');
-    });
-    $('#mv1').on('click', function() {
-      moveSelectedOptions('#recognizers', '#selected_recognizers');
-    });
-    $('#selected_recognizers').on('dblclick', function() {
-      moveSelectedOptions('#selected_recognizers', '#recognizers');
-    });
-    $('#mv2').on('click', function() {
-      moveSelectedOptions('#selected_recognizers', '#recognizers');
-    });
-
-    function moveSelectedOptions(from, to) {
-      var from = $(from);
-      var to = $(to);
-      if (to.attr('id') == 'selected_recognizers' && from.find('option:selected').length + to.find('option').length > 5) {
-        return alert('承認者は5人以下にしてください。');
-      }
-      from.find('option:selected').each(function() {
-        if (to.find('option[value=' + $(this).val() + ']').length == 0) {
-          to.append($(this).removeAttr('selected'));
-        }
-      });
-      var clone_options = $('#selected_recognizers').find('option').clone().attr('selected', 'selected')
-      $('#item_selected_recognizer_uids').empty().append(clone_options);
+//<![CDATA[
+  // セレクトボックスのリストを移動
+  // 引数（移動元セレクトボックス名, 移動先セレクトボックス名）
+  function fnMoveSelect(fm, sel1, sel2) {
+    selI = 0
+    selForm1 = document.getElementById(sel1);
+    selForm2 = document.getElementById(sel2);
+    for (i = 0; i < fm[sel1].length; i++)
+      if (fm[sel1].options[i].selected)
+        selI++;
+    if (sel2 == "recognize_select_list[]" && (fm[sel2].length + selI) > 5) {
+      alert("承認者の設定はは5人までです")
+      return false;
     }
-  });
-})(jQuery);
+    for (i = 0; i < fm[sel1].length; i++) {
+      if (fm[sel1].options[i].selected) {
+        fm[sel2].options[fm[sel2].length] = new Option(fm[sel1].options[i].text, fm[sel1].options[i].value);
+        fm[sel1].options[fm[sel1].selectedIndex] = null;
+        i--;
+      }
+    }
+    for (i = 0; i < 5; i++)
+      document.getElementById('_recognizers_' + (i+1)).value = "";
+
+    for (i = 0; i < fm["recognize_select_list[]"].options.length; i++) {
+      if (i > 4) return false;
+      document.getElementById('_recognizers_' + (i+1)).value = fm["recognize_select_list[]"].options[i].value;
+    }
+  }
+  //adms
+  var update_admin_cand = function () {
+    var fr = $('form_adms_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax_recognizer.json?s_genre=' + genre;
+    var to = $('recognize_list');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[1], xh[0]);
+      }
+    });
+  }
 //]]>
 </script>

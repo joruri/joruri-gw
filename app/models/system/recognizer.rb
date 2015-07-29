@@ -1,3 +1,4 @@
+# encoding: utf-8
 class System::Recognizer < ActiveRecord::Base
   include System::Model::Base
 

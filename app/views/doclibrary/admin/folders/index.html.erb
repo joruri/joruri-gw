@@ -1,4 +1,4 @@
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <table class="index">
   <tr>
     <th style="width: 60px; text-align: right;">ID</th>
@@ -8,10 +8,10 @@
     <th style="width: 60px; text-align: right;">並び順</th>
     <th style="width: 80px; text-align: center;">ステータス</th>
   </tr>
-  <% @items.each do |item| %>
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: right;"><%= item.id %></td>
-    <td><%= item.name %></td>
+    <td style="text-align: right;"><%=h item.id %></td>
+    <td><%=h item.name %></td>
     <td style="text-align: center;"><%= link_to_list_gwboard_category item %></td>
     <td style="text-align: center;"><%= link_to '詳細', item.show_path %></td>
     <td style="text-align: right;"><%= item.sort_no %></td>

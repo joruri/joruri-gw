@@ -1,21 +1,24 @@
 <div class="bbsDocList circular">
-<div class="pieceHeader">
-<h2 class="pieceTitle"><%= Page.title %></h2>
-<div class="btsHeaderLeft">
-  <%= render 'header_button' %>
-</div>
-</div>
+  <div class="pieceHeader">
+    <h2 class="pieceTitle"><%=@system_title%></h2>
+    <div class="btsHeaderLeft">
+      <%= render :partial => 'header_button' %>
+    </div>
+  </div>
 
-<div class="pieceBody">
-<%= render 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => 'header' %>
 
-<%= form_for :item, :url => {:action => :create}, :html => {:method => :post, :multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <div class="submitters"><div align="center">
-    <table><tr><td><%= submit_for(f, :js_submitter=>"my_submit('draft')", :caption=>'保存') %></td></tr></table>
-  </div></div>
-<% end %>
+    <%= form_for :item, :url => questionnaire_templates_path ,:html => {:method=>:post , :multipart => true, :id => 'itemForm'} do |f| %>
 
-</div>
+      <%= f.error_messages %>
+
+      <%= render :partial => 'form', :locals => {:f => f} %>
+
+      <div class="submitters"><div align="center">
+          <table><tr><td><%= submit_for(f, :js_submitter=>"my_submit('draft')",:caption=>'保存')%></td></tr></table>
+        </div></div>
+
+    <% end %>
+  </div>
 </div>

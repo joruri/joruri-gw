@@ -8,11 +8,12 @@
     <th style="             text-align: left;">タイトル名</th>
     <th style="width: 120px; text-align: center;">最終更新日</th>
   </tr>
-  <% @items.each do |item| %>
+
+  <% for item in @items %>
     <tr class="<%= cycle '', 'cycle' %>">
       <% item.creator %>
       <td style="width:  40px;  text-align: center;"><%= link_to '詳細', item.gwqa_show_path %></td>
-      <td style="width:  60px;  text-align: center;"> <%= item.id %></td>
+      <td style="width:  60px;  text-align: center;"> <%=h item.id %></td>
       <%if item.doc_type == 0%>
         <%str_qa = '質問'%>
       <%else%>
@@ -20,10 +21,10 @@
       <%end%>
       <td style="text-align: center;"><%= item.status_show %></td>
       <td style="text-align: center;"> <%=str_qa%></td>
-      <td style="text-align: left;"> <%= item.control.title unless item.control.blank? %></td>
-      <td style="text-align: center;"><%= item.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
+      <td style="text-align: left;"> <%=h item.control.title unless item.control.blank? %></td>
+      <td style="text-align: center;"><%=h item.updated_at.strftime("%Y-%m-%d %H:%M") %></td>
     </tr>
-  <% end %>
+<% end %>
 </table>
 
 <%= paginate @items %>

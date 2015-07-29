@@ -1,18 +1,19 @@
 <div class="piece AdminMessage">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
 
 <div class="pieceBody">
 
+<%= div_notice -%>
 <table class="show">
   <tr>
-    <td class="action" style="width:40px" align="center"><%= link_to '設定', action: :edit, id: 0 %></td>
+    <td class="action" style="width:40px" align="center"><%= mode_setting_link(@item, "mode") %></td>
     <th>表示モード</th>
-    <td><%= @item.mode_label %></td>
+    <td><%= @item ? @item.portal_mode_label : '通常時' %></td>
   </tr>
   <tr>
-    <td class="action" style="width:40px" align="center"><%= link_to '設定', action: :edit, id: 1 %></td>
+    <td class="action" style="width:40px" align="center"><%= mode_setting_link(@bbs_item, "bbs") %></td>
     <th>災害時に表示する掲示板</th>
-    <td><%= @bbs_item.bbs_label %></td>
+    <td><%= @bbs_item ? @bbs_item.portal_disaster_bbs_label : '' %></td>
   </tr>
 </table>
 

@@ -1,8 +1,9 @@
+# -*- encoding: utf-8 -*-
 module Questionnaire::Model::TemplateFieldOption
   def self.included(mod)
-    mod.has_many :options, ->{where("#{Questionnaire::TemplateFieldOption.table_name}.state = 'public'").order("#{Questionnaire::TemplateFieldOption.table_name}.sort_no")} ,
-                  :foreign_key => :field_id, :class_name => 'Questionnaire::TemplateFieldOption',:dependent => :destroy
-
+    mod.has_many :options,  :foreign_key => :field_id,  :order => "#{Questionnaire::TemplateFieldOption.table_name}.sort_no",
+                 :conditions => "#{Questionnaire::TemplateFieldOption.table_name}.state = 'public'", :class_name => 'Questionnaire::TemplateFieldOption',
+                 :dependent => :destroy
 
     mod.after_validation :validate_options
     mod.after_save :save_options
@@ -78,7 +79,7 @@ module Questionnaire::Model::TemplateFieldOption
 
     _options.to_a.sort.each do |i, opt|
       unless opt['id'].blank?
-        option = Questionnaire::TemplateFieldOption.where(:id => opt['id']).first
+        option = Questionnaire::TemplateFieldOption.find_by_id(opt['id'])
         option.attributes = opt
         option.state      = 'public'
         option.published_at = Core.now

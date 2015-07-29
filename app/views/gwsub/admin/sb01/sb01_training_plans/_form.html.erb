@@ -1,3 +1,4 @@
+<%# app/views/gwsub/admin/sb01/sb01_training_plans/_form %>
 <%
   mce_base_url = ''
 %>
@@ -13,34 +14,27 @@
 <%= hidden_field_tag 'pre_fyear', @fyed_id %>
 
 <%= f.error_messages %>
-<%= required_head %>
+<%= raw(required_head) %>
+<script src="/javascripts/prototype.js" type="text/javascript"></script>
 <%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
 <table class="show">
-  <tr>
-    <th>研修名<%= required %></th>
-  </tr>
-  <tr>
-    <td><%= f.text_field :title ,:size=>80 %></td>
-  </tr>
+<tr><th>研修名<%= raw(required) %></th></tr>
+<tr><td><%= f.text_field :title ,:size=>80 %></td></tr>
 </table>
-
 <table class="show bbsText">
-  <tr>
-    <th>研修案内<%= required %>
-  </tr>
-  <tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
-  </tr>
+<tr><th>研修案内<%= raw(required) %></tr>
+<tr>
+<td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+</tr>
 </table>
-
-<%= gwsub_attaches_sb01_training_form(f, @item) %>
+  <%= gwsub_attaches_sb01_training_form(f, @item) %>
 <table class="show">
-  <tr><th>企画所属</th></tr>
-  <tr><td><%= safe{@item.group_name}%></td></tr>
-  <tr><th>企画者</th></tr>
-  <tr><td><%= safe{@item.member_name}%></td></tr>
-  <tr><th>連絡先電話番号<%= required %></th></tr>
-  <tr><td><%= f.text_field :member_tel ,:size=>30 %></td></tr>
+<tr><th>企画所属</th></tr>
+<tr><td><%=h ass{@item.group_name}%></td></tr>
+<tr><th>企画者</th></tr>
+<tr><td><%=h ass{@item.member_name}%></td></tr>
+<tr><th>連絡先電話番号<%= raw(required) %></th></tr>
+<tr><td><%= f.text_field :member_tel ,:size=>30 %></td></tr>
 </table>
 <br />
 <div class="preserve">
@@ -48,6 +42,7 @@
 </div>
 <br />
 
+<%= raw(gw_js_include_full) %>
 <script type="text/javascript">
 //<![CDATA[
   function chageDisp(obj,changeObjId) {

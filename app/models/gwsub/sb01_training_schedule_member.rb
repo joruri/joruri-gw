@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01TrainingScheduleMember < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :training_rel   ,:foreign_key=>'training_schedule_id'  ,:class_name=>"Gwsub::Sb01TrainingSchedule"
   belongs_to :user_rel1      ,:foreign_key=>'training_user_id'      ,:class_name=>"System::User"
@@ -29,15 +30,15 @@ class Gwsub::Sb01TrainingScheduleMember < Gwsub::GwsubPref
     Gwsub.gwsub_set_editors(self)
   end
 
-  #研修を受けるユーザ名
-  def training_user_name
-    self.user_rel1.try(:name)
-  end
+	#研修を受けるユーザ名
+	def training_user_name
+		return self.user_rel1.name
+	end
 
-  #研修を受けるユーザの所属名
-  def training_user_group_name
-    self.group_rel1.try(:name)
-  end
+	#研修を受けるユーザの所属名
+	def training_user_group_name
+		return self.group_rel1.name
+	end
 
   def search(params)
     params.each do |n, v|

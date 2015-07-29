@@ -1,0 +1,9 @@
+<table class="show">
+  <tr>
+    <th><%= @item.locale(:item_unid) %></th>
+    <td><%=h safe{@item.concept.name} %></td>
+  </tr><tr>
+    <th><%= @item.locale(:action) %></th>
+    <td><%=h @item.action_names.join('，').force_encoding('utf-8') %></td>
+  </tr>
+</table>

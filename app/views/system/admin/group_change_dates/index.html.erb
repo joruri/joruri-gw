@@ -1,8 +1,7 @@
 <div class="piece AdminSetting AdminGroups">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'navi' %>
-
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => 'navi' %>
 <% if @items.blank? %>
 <div class="notice">表示対象がありません</div>
 <% else %>
@@ -11,7 +10,7 @@
     <th style="width: 30px;"></th>
     <th>開始日</th>
   </tr>
-  <% @items.each do |item| %>
+  <%for item in @items%>
   <tr>
     <td><%= link_to :show, url_for(:action => :show, :id => item) %></td>
     <td><%=safe{item.start_at.strftime("%Y-%m-%d")}%></td>
@@ -21,5 +20,4 @@
 <%= paginate @items %>
 <% end %>
 
-</div>
-</div>
+</div></div>

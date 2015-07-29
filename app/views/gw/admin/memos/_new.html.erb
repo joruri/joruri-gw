@@ -1,17 +1,31 @@
+<%# app/views/gw/admin/memos/index.html.erb %>
+
+<%=render(:partial => '/gw/admin/memos/header')%>
 <div class="piece memo form">
-<%= render '/gw/admin/memos/piece_header' %>
+<%=render(:partial => '/gw/admin/memos/piece_header')%>
 <div class="pieceBody">
 <div class="pieceBodyHeader">
-<%= render 'tabmenu' %>
-</div>
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
 
+</tr>
+</tbody>
+</table>
+</div><!--tabBox-->
 <div class="pieceBodyBody">
-<%= form_for :item, :url => {action: :create}, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= quote_attrs(params) %>
-  <div class="submitters"><%= f.submit "送信する" %></div>
-<% end %>
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
+<%=form_for :item, :url => gw_memos_path, :html => {:multipart => true, :id => 'itemForm'} do |f|%>
+<%=f.error_messages%>
+<%=render(:partial => 'form', :locals => {:f => f})%>
+<%=raw(submit_for_create(f,:caption=>"送信する", :js_submitter => 'my_submit()'))%>
+
+<%= quote_attrs(params) %>
+
+<%end%>
+</div>
 </div>
 </div>
 </div>

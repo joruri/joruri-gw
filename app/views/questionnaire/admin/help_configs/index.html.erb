@@ -1,6 +1,6 @@
 <div class="bbsDocList circular">
 <div class="pieceHeader">
-<h2 class="pieceTitle"><%= Page.title %></h2>
+<h2 class="pieceTitle"><%=@system_title%></h2>
 <div class="btsHeaderLeft">
 <span class="btNew"></span>
 </div>
@@ -11,29 +11,19 @@
 
 <div class="pieceBody">
 
-<div class="editingBox">
-  <div class="btEdit">
-    <%= link_to '編集', url_for(:action => :edit, :id => 0) %>
-  </div>
-</div>
+<%= form_for :item, :url => questionnaire_help_config_path(@item) ,:html => {:method=>:put , :multipart => true, :id => 'itemForm'} do |f| %>
 
-<table class="show">
-  <tr><th colspan="2">アンケート作成</th></tr>
-  <tr><th>形式選択</th><td><%=raw @item.options_value[0][0] %></td></tr>
-  <tr><th>記事管理設定</th><td><%=raw @item.options_value[1][0] %></td></tr>
-  <tr><th>一覧に表示</th><td><%=raw @item.options_value[2][0] %></td></tr>
-  <tr><th>注意事項　表示</th><td><%=raw @item.options_value[5][0] %></td></tr>
-  <tr><th>配信先設定</th><td><%=raw @item.options_value[6][0] %></td></tr>
-  <tr><th colspan="2">設問登録</th></tr>
-  <tr><th>設問形式</th><td><%=raw @item.options_value[3][0] %></td></tr>
-  <tr><th>投稿許可設定 </th><td><%=raw @item.options_value[4][0] %></td></tr>
-</table>
+<%= f.error_messages %>
 
+<%= render :partial => 'form', :locals => {:f => f} %>
+
+<div class="submitters"><%=f.submit("保存")%></div>
+
+<% end %>
 
 <!--戻るボタン-->
 <div class="btReturn">
-  <%= link_to "管理設定へ戻る", "/gw/config_settings" %>
+  <%=link_to "管理設定へ戻る", "/gw/config_settings" %>
 </div>
-
 </div><!--pieceBody-->
 </div><!--piece gwbbs-->

@@ -1,23 +1,32 @@
 <div class="piece todo setting">
-<%= render 'header_str' %>
-<div class="pieceBody">
-<div class="titleLine">
-  <span class="title">スケジュール表示設定</span>
-</div>
-<div class="pieceBodyBody">
 
-<%= form_tag "/gw/todo_settings/edit_schedule", {:method => :put, :multipart => true} do %>
-<table class="show">
-  <tr>
-    <th>スケジュール標示</th>
-    <td>ToDoの期限日を、スケジュール上に
-      <%= select_tag 'item[todos][todos_display_schedule]', options_for_select(@item.display_schedule_options, @item.todos_display_schedule) %>
-    </td>
-  </tr>
-</table>
-<div class="submitters"><%= submit_tag "保存" %></div>
-<% end %>
-
-</div>
-</div>
+  <%= render :partial => 'header_str' %>
+  <div class="pieceBody">
+    <div class="titleLine">
+      <span class="title">スケジュール表示設定</span>
+    </div>
+    <div class="pieceBodyBody">
+      <%=div_notice%>
+      <%@key = 'schedule'%>
+      <a name="<%=@key%>"></a>
+      <%=form_for :item, :url => "/gw/todo_settings/edit_#{@key}", :html => {:method=>:put, :multipart => true} do |f|%>
+      <table class="show">
+        <tr>
+          <th>完了</th>
+          <td>  
+            <%=select_by_list(f, :todos_display_schedule_done, Gw.yaml_to_array_for_select('gw_todos_display_schedule_done', :for_select_by_list=>1),
+                {}, @item[:todos_display_schedule_done].to_i)%>
+          </td>
+        </tr>
+        <tr>
+          <th>未完了</th>
+          <td>  
+            <%=select_by_list(f, :todos_display_schedule_doing, Gw.yaml_to_array_for_select('gw_todos_display_schedule_doing', :for_select_by_list=>1),
+                {}, @item[:todos_display_schedule_doing].to_i)%>
+          </td>
+      </table>
+      <%=submit_for_update(f, :id=>"item_submit_#{@key}", :caption => '保存')%>
+      <%end%>
+    </div>
+  </div>
 </div>

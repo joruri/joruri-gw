@@ -1,3 +1,4 @@
+# encoding: utf-8
 class System::Script::Task
   def self.publish
     puts "#{self}.publish"

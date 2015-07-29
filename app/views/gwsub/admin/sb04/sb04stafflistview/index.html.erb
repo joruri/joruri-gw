@@ -4,18 +4,18 @@
   fyear_namejp = @items[0].fy_rel.namejp unless @items.blank?
 -%>
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_submenu' %>
 </div>
 <div class="pieceBody">
-<%= render 'gwsub/admin/sb04/sb04stafflistview/search' %>
-<%= render 'gwsub/admin/sb04/sb04stafflistview/select_with_fyear' %>
-
+<%= render :partial => 'gwsub/admin/sb04/sb04stafflistview/search' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04stafflistview/select_with_fyear' %>
+<%= div_notice %>
 <% if @items.blank? %>
   <div class="notice">表示する項目はありません。</div>
 <% else %>
-  <h4><%= fyear_namejp %> 年度　電子職員録</h4>
+  <h4><%=h fyear_namejp %> 年度　電子職員録</h4>
   <table class="index">
   <tr>
   <th class="belong">所属</th>
@@ -31,14 +31,14 @@
     <% unless section == d.section_code -%>
       <%
       if d.section_id.to_i==0
-          sect = Gwsub::Sb04section.where("fyear_id= #{d.fyear_id} and code = '#{d.section_code}'").order("fyear_markjp DESC ,code ASC").first
+          sect = Gwsub::Sb04section.find(:first, :conditions=>"fyear_id= #{d.fyear_id} and code = '#{d.section_code}'" , :order=>"fyear_markjp DESC ,code ASC")
           if sect.blank?
             section_name  = nil
           else
             section_name  = sect.name
           end
       else
-        sect = Gwsub::Sb04section.where(:id=>d.section_id).first
+        sect = Gwsub::Sb04section.find_by_id(d.section_id)
         if sect.blank?
             section_name  = nil
         else
@@ -57,14 +57,14 @@
         if d.assignedjobs_id==0
           a_cond  = "fyear_markjp='#{d.fyear_markjp}' and section_code='#{d.section_code}' and code='#{d.assignedjobs_code}'"
           a_order = "fyear_markjp DESC , section_code ASC , code ASC "
-          assigned_job  = Gwsub::Sb04assignedjob.where(a_cond).order(a_order).first
+          assigned_job  = Gwsub::Sb04assignedjob.find(:first , :conditions=>a_cond , :order=>a_order )
           if assigned_job.blank?
             jobs_name     = nil
           else
             jobs_name     = assigned_job.name
           end
         else
-          assigned_job  = Gwsub::Sb04assignedjob.where(:id=>d.assignedjobs_id).first
+          assigned_job  = Gwsub::Sb04assignedjob.find_by_id(d.assignedjobs_id)
           if assigned_job.blank?
             jobs_name     = nil
           else

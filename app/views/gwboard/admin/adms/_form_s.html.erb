@@ -1,0 +1,382 @@
+<%
+  box_width = 'width:300px;'  #管理者設定枠の幅
+  concat hidden_field_tag('init[admingrps_json]', @item.admingrps_json)
+  concat hidden_field_tag('init[adms_json]', @item.adms_json)
+#  @item.editors_json = '[["", "", ""]]' if @item.editors_json.blank?
+#  @item.readers_json = '[["", "", ""]]' if @item.readers_json.blank?
+#  @item.editors_json = '[["", "", ""]]' if @item.editors_json == '[]'
+#  @item.readers_json = '[["", "", ""]]' if @item.readers_json == '[]'
+#  @item.sueditors_json = '[["", "", ""]]' if @item.editors_json == '[]'
+#  @item.sureaders_json = '[["", "", ""]]' if @item.readers_json == '[]'
+  concat hidden_field_tag('init[editors_json]', @item.editors_json)
+  concat hidden_field_tag('init[readers_json]', @item.readers_json)
+  concat hidden_field_tag('init[sueditors_json]', @item.sueditors_json)
+  concat hidden_field_tag('init[sureaders_json]', @item.sureaders_json)
+  admin_groups = Gwboard::Group.level2_top_blank
+  groups = Gwboard::Group.level2
+  user_groups = Gwboard::Group.level
+%>
+<table class="show">
+<tr><th class="blueIndex">管理部門設定<%= raw(required('<br />所属する全ての人が管理者になります')) %></th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[admingrps][gid]', options_for_select(admin_groups, Core.user_group.parent_id), :onchange=>'update_admingrp_cand();' ) %><br />
+<%= select_tag('item[admingrps][uid]', options_for_select(Gwboard::Group.level3(Core.user_group.parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_admingrp()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_admingrp()' %><br /><br />
+<%= button_to_function '← 削除', 'del_admingrp()' %>
+</td>
+<td>
+<%= select_tag 'item[admingrps_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_admingrp()', :multiple => true %>
+<%= hidden_field_tag 'item[admingrps_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+<tr><th class="blueIndex">管理者設定<%= raw(required('<br />指定された個人が管理者になります')) %></th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[adms][gid]', options_for_select(user_groups, Core.user_group.id ), :onchange=>'update_admin_cand();' ) %><br />
+<%= select_tag('item[adms][uid]', options_for_select(System::User.get_user_select(Core.user_group.id,:all, {})), :size=>5, :style => box_width, :ondblclick => 'add_adms()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_adms()' %><br /><br />
+<%= button_to_function '← 削除', 'del_adms()' %>
+</td>
+<td>
+<%= select_tag 'item[adms_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_adms()', :multiple => true %>
+<%= hidden_field_tag 'item[adms_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+</table>
+
+<table class="show">
+<tr><th class="blueIndex">編集部門設定<%= raw(required('<br />自動的に閲覧権限も付与されます')) %></th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[editors][gid]', options_for_select(groups, Core.user_group.parent_id), :onchange=>'update_editor_cand();' ) %><br />
+<%= select_tag('item[editors][uid]', options_for_select(Gwboard::Group.level3(Core.user_group.parent_id)), :size=>5, :style => box_width, :ondblclick => 'add_editor()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_editor()' %><br /><br />
+<%= button_to_function '← 削除', 'del_editor()' %>
+</td>
+<td>
+<%= select_tag 'item[editors_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_editor()', :multiple => true %>
+<%= hidden_field_tag 'item[editors_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+<tr><th class="blueIndex">編集者設定<%= raw(required('<br />指定された個人に編集権限が付与されます。<br /><br />自動的に閲覧権限も付与されます')) %></th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[sueditors][gid]', options_for_select(user_groups, Core.user_group.id ), :onchange=>'update_sueditor_cand();' ) %><br />
+<%= select_tag('item[sueditors][uid]', options_for_select(System::User.get_user_select(Core.user_group.id,:all, {})), :size=>5, :style => box_width, :ondblclick => 'add_sueditor()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_sueditor()' %><br /><br />
+<%= button_to_function '← 削除', 'del_sueditor()' %>
+</td>
+<td>
+<%= select_tag 'item[sueditors_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_sueditor()', :multiple => true %>
+<%= hidden_field_tag 'item[sueditors_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+</table>
+
+<table class="show">
+<tr><th class="blueIndex">閲覧部門設定</th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[readers][gid]', options_for_select(groups, 0), :onchange=>'update_reader_cand();' ) %><br />
+<%= select_tag('item[readers][uid]', options_for_select(Gwboard::Group.level3(0)), :size=>5, :style => box_width, :ondblclick => 'add_reader()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_reader()' %><br /><br />
+<%= button_to_function '← 削除', 'del_reader()' %>
+</td>
+<td>
+<%= select_tag 'item[readers_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_reader()', :multiple => true %>
+<%= hidden_field_tag 'item[readers_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+<tr><th class="blueIndex">閲覧者設定<%= raw(required('<br />指定された個人に閲覧権限が付与されます。')) %></th><td>
+<table border="0"><tr>
+<td class="userChange">
+<%= select_tag('item[sureaders][gid]', options_for_select(user_groups, Core.user_group.id ), :onchange=>'update_sureader_cand();' ) %><br />
+<%= select_tag('item[sureaders][uid]', options_for_select(System::User.get_user_select(Core.user_group.id,:all, {})), :size=>5, :style => box_width, :ondblclick => 'add_sureader()', :multiple => true) %>
+</td>
+<td>
+<%= button_to_function '追加 →', 'add_sureader()' %><br /><br />
+<%= button_to_function '← 削除', 'del_sureader()' %>
+</td>
+<td>
+<%= select_tag 'item[sureaders_add_buf]', '', :size=>6, :style => box_width, :ondblclick => 'del_sureader()', :multiple => true %>
+<%= hidden_field_tag 'item[sureaders_json]', '' %>
+</td>
+</tr></table>
+</td></tr>
+</table>
+
+<script type="text/javascript">
+//<![CDATA[
+  //--add-del---------------------------------------------------
+  var add_list = function(fr_id, to_id) {
+    var fr = $(fr_id);
+    var idxs = select_options_selected_indexes(fr);
+    var to = $(to_id);
+    for (var i = 0; i < idxs.length; i++)
+      select_options_push(to, fr[idxs[i]].value, fr[idxs[i]].innerHTML, fr[idxs[i]].title);
+  };
+  var del_list = function(fr_id) {
+    var fr = $(fr_id);
+    var vals = select_options_selected_values(fr);
+    for (var i = 0; i < vals.length; i++)
+      select_options_delete(fr, vals[i]);
+  };
+  //admingrp
+  var add_admingrp = function() {
+    add_list('item_admingrps_uid', 'item_admingrps_add_buf')
+  }
+  var del_admingrp = function() {
+    del_list('item_admingrps_add_buf')
+  }
+  //adm
+  var add_adms = function() {
+    add_list('item_adms_uid', 'item_adms_add_buf')
+  }
+  var del_adms = function() {
+    del_list('item_adms_add_buf')
+  }
+  //editor
+  var add_editor = function() {
+    add_list('item_editors_uid', 'item_editors_add_buf')
+  }
+  var del_editor = function() {
+    del_list('item_editors_add_buf')
+  }
+  //reader
+  var add_reader = function() {
+    add_list('item_readers_uid', 'item_readers_add_buf')
+  }
+  var del_reader = function() {
+    del_list('item_readers_add_buf')
+  }
+  //sueditor
+  var add_sueditor = function() {
+    add_list('item_sueditors_uid', 'item_sueditors_add_buf')
+  }
+  var del_sueditor = function() {
+    del_list('item_sueditors_add_buf')
+  }
+  //sureader
+  var add_sureader = function() {
+    add_list('item_sureaders_uid', 'item_sureaders_add_buf')
+  }
+  var del_sureader = function() {
+    del_list('item_sureaders_add_buf')
+  }
+  //---------------------------------------------------add-del--
+
+  var my_submit = function() {
+    //admingrps
+    var fr = $('item_admingrps_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_admingrps_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //adms
+    var fr = $('item_adms_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_adms_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //editors
+    var fr = $('item_editors_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_editors_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //readers
+    var fr = $('item_readers_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_readers_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //sueditors
+    var fr = $('item_sueditors_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_sueditors_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+    //sureaders
+    var fr = $('item_sureaders_add_buf');
+    var ary = [];
+    for (var i = 0; i < fr.options.length; i++)
+      ary.push([fr[i].title, fr[i].value, fr[i].innerHTML]);
+    var to = $('item_sureaders_json');
+    to.value = Object.toJSON(ary);
+    fr.selectedIndex = -1; // fr の送信を抑止
+
+    $('itemForm').submit();
+  }
+  var load_cand = function () {
+    var u = $('init_admingrps_json');
+    var to = $('item_admingrps_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_adms_json');
+    var to = $('item_adms_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_editors_json');
+    var to = $('item_editors_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_readers_json');
+    var to = $('item_readers_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_sueditors_json');
+    var to = $('item_sueditors_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+    var u = $('init_sureaders_json');
+    var to = $('item_sureaders_add_buf');
+    if ( u != undefined && u.value != '') {
+      var users = eval(u.value);
+      for (var i = 0; i < users.length; i++) {
+        select_options_push(to, users[i][1], users[i][2], users[i][0]);
+      }
+    }
+  }
+
+  //--update-----------------------------------------------------------
+  //admingrps
+  var update_admingrp_cand = function () {
+    var fr = $('item_admingrps_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_admingrps_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //adms
+  var update_admin_cand = function () {
+    var fr = $('item_adms_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_adms_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //editors
+  var update_editor_cand = function () {
+    var fr = $('item_editors_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_editors_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //readers
+  var update_reader_cand = function () {
+    var fr = $('item_readers_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxgroups/getajax.json?s_genre=' + genre;
+    var to = $('item_readers_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //sueditors
+  var update_sueditor_cand = function () {
+    var fr = $('item_sueditors_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_sueditors_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //sureaders
+  var update_sureader_cand = function () {
+    var fr = $('item_sureaders_gid');
+    var genre = fr.options[fr.selectedIndex].value;
+    url = '/_admin/gwboard/ajaxusers/getajax.json?s_genre=' + genre;
+    var to = $('item_sureaders_uid');
+    ajax_request(url, function(r){
+      to.options.length = 0;
+      for (var i=0; i<xha.length; i++) {
+        xh = xha[i];
+        to.options[i] = new Option(xh[2], xh[1]);
+        to.options[i].title = xh[0];
+      }
+    });
+  }
+  //-----------------------------------------------------------update--
+
+  window.onload = load_cand;
+//]]>
+</script>

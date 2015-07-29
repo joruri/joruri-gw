@@ -9,7 +9,7 @@
 </table>
 
 <p>この記事にファイルを添付します。※ファイル添付後【公開】で保存すると記事は公開されます。</p>
-<%= form_for(:item, :url => "#{Site.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
+<% form_for(:item, :url => "#{Site.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
   <p>
     <label for="item">ファイル指定:</label>
     <%= file_field :upload, 'file' %><%= submit_tag 'ファイルを追加する' %>
@@ -19,6 +19,7 @@
     <%= f.text_field :memo, :size=>'60'%>
   </p>
 <% end -%>
+
 
 <%unless @items.blank?%>
   <hr />
@@ -30,7 +31,7 @@
       <th style="width: 70px; text-align: center;">サイズ</th>
       <th style="width: 40px; text-align: center;">削除</th>
     </tr>
-    <% @items.each do |item| %>
+    <% for item in @items %>
       <tr>
         <td><%= link_to('',"/_admin/gwbbs/receipts/#{item.id}/download_object?title_id=#{item.title_id}",:class => item.icon_type ) %></td>
         <td><%= link_to(item.filename,"/_admin/gwbbs/receipts/#{item.id}/download_object?title_id=#{item.title_id}") %></td>
@@ -49,10 +50,11 @@
 <br />
 <hr />
 <p>この記事を保存します</p>
-<%= form_for :doc, :url => "#{Site.current_node.public_uri}update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
+<% form_for :doc, :url => "#{Site.current_node.public_uri}update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
   <div class="submitters">
     <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='public';" type="submit" value="公開" />
     <input id="<%= f.object_name %>_submit" name="commit" onclick="document.getElementById('<%= f.object_name %>_state').value='draft';" type="submit" value="下書き保存" />
     <input id="<%= f.object_name %>_state" name="<%= f.object_name %>[state]" type="hidden" value="" />
   </div>
 <% end %>
+

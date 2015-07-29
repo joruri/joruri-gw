@@ -1,15 +1,24 @@
-<% nfiles = files.select {|f| !f.is_image} %>
-<% if nfiles.present? %>
+<%
+show_all_attachment_files = true
+#旧設定では表示させないように注意が必要
+unless show_all_attachment_files
+  #画像以外のファイルがある時は表示する
+  dsp_flag = @files.find{|file| !file.is_image} ? true : false
+end
+%>
+<% if @files.size > 0 && (show_all_attachment_files || dsp_flag) %>
 <div class="docsInnerBox2">
 <table class="gwboardAttachlist">
-  <tr><th colspan="2">添付ファイル名</th></tr>
-  <% nfiles.each do |file| %>
-    <% download_url = "#{file.file_uri(file.system_name)}" %>
-    <tr>
-      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
-      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
-    </tr>
+<tr><th colspan="2">添付ファイル名</th></tr>
+<% for item in @files %>
+  <% download_url = "#{item.file_uri(item.system_name)}" %>
+  <% if show_all_attachment_files || !item.is_image %>
+   <tr>
+   <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, :class => item.icon_type %></td>
+   <td><%= link_to "#{item.filename} (#{item.eng_unit})", download_url %></td>
+   </tr>
   <% end %>
+<% end %>
 </table>
 </div>
 <% end %>

@@ -1,6 +1,7 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_conditions/show.html.erb</p>%>
 <%
 week_day = Gwsub::Sb01TrainingScheduleCondition.weekday_show(@item.repeat_weekday)
-editor_role = Gwsub::Sb01Training.is_editor?(@item1.group_code,Core.user_group.code)
+editor_role = Gwsub::Sb01Training.is_editor?(@item1.group_code,Site.user_group.code)
 docs_editor = editor_role || @u_role
 docs_editor=false if @item1.state.to_i > 2
 delete_path = "#{@public_uri}/#{@item.id}"
@@ -11,11 +12,11 @@ delete_path = "#{@public_uri}/#{@item.id}"
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_plans/menu' %>
 </div>
 <div class="pieceBody"><br/>
 <div class="titleLine"><p class="date_title">研修内容</p></div>
-<%= render 'gwsub/admin/sb01/sb01_training_schedule_conditions/training_show' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_schedule_conditions/training_show' %>
 <div class="titleLine"><p class="date_title">研修枠作成条件</p></div>
 <div class="editingBox leftSide">
 <%if docs_editor==true%>
@@ -23,7 +24,7 @@ delete_path = "#{@public_uri}/#{@item.id}"
 <span class="btDestroy"><%= link_to '削除' , url_for(delete_path),:confirm=>"削除します。この条件で作成した研修枠も削除されますが、よろしいですか？",:method=>:delete %></span>
 <%end%>
 </div>
-
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <table class="show leftSide">
 <tr>
 <%if @item.repeat_flg.to_i == 1 %>
@@ -31,46 +32,46 @@ delete_path = "#{@public_uri}/#{@item.id}"
 <%else%>
   <th>期間開始日 </th>
 <%end%>
-  <td><%= @item.from_at.strftime('%Y-%m-%d') unless @item.from_at.blank?%><%=" (#{Gw.weekday(@item.from_at.wday)})" unless @item.from_at.blank?%></td>
+  <td><%=h @item.from_at.strftime('%Y-%m-%d') unless @item.from_at.blank?%><%=" (#{Gw.weekday(@item.from_at.wday)})" unless @item.from_at.blank?%></td>
 </tr>
 <tr>
   <th>開始時刻</th>
-  <td><%= @item.from_start %>：<%= @item.from_start_min %></td>
+  <td><%=h @item.from_start %>：<%=h @item.from_start_min %></td>
 </tr>
 <tr>
   <th>終了時刻</th>
-  <td><%= @item.from_end %>：<%= @item.from_end_min %></td>
+  <td><%=h @item.from_end %>：<%=h @item.from_end_min %></td>
 </tr>
 <tr>
   <th>場所</th>
-  <td><%= @item.prop_name%></td>
+  <td><%=h @item.prop_name%></td>
 </tr>
 <tr>
   <th>定員</th>
-  <td><%= @item.members_max%></td>
+  <td><%=h @item.members_max%></td>
 </tr>
 <tr>
   <th>登録所属</th>
-  <td><%= @item.training_rel.group_name%></td>
+  <td><%=h @item.training_rel.group_name%></td>
 </tr>
 <tr>
   <th>登録者</th>
-  <td><%= @item.training_rel.member_name%></td>
+  <td><%=h @item.training_rel.member_name%></td>
 </tr>
 <tr>
   <th>繰返し</th>
-  <td><%= safe{@item.repeat_label} %><%if @item.repeat_flg.to_i == 2 %>／<%= safe{@item.repeat_class_label} %><%end%></td>
+  <td><%=h ass{@item.repeat_label} %><%if @item.repeat_flg.to_i == 2 %>／<%=h ass{@item.repeat_class_label} %><%end%></td>
 </tr>
 <%if @item.repeat_class_id.to_i == 3%>
 <tr>
   <th>曜日指定</th>
-  <td><%= week_day %></td>
+  <td><%=h week_day %></td>
 </tr>
 <%end%>
 <%if @item.repeat_flg.to_i == 2 %>
 <tr>
   <th>繰返し期間終了日</th>
-  <td><%= @item.to_at.strftime('%Y-%m-%d') unless @item.to_at.blank?%><%=" (#{Gw.weekday(@item.to_at.wday)})"%></td>
+  <td><%=h @item.to_at.strftime('%Y-%m-%d') unless @item.to_at.blank?%><%=" (#{Gw.weekday(@item.to_at.wday)})"%></td>
 </tr>
 <%end%>
 </table>

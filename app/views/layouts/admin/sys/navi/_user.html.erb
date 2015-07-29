@@ -1,0 +1,4 @@
+<%= link_to "グループ", sys_groups_path(0), :class => (current == :group ? 'current' : '') %>
+<%= link_to "ユーザー", sys_users_path, :class => (current == :user ? 'current' : '') %>
+<%= link_to "LDAP", sys_ldap_groups_path(0), :class => (current == :ldap ? 'current' : '')  %>
+<%= link_to "LDAP同期", sys_ldap_temporaries_path, :class => (current == :ldap_temporary ? 'current' : '') %>

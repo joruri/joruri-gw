@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Gw::Script::Tool
   require 'csv'
   require 'pp'

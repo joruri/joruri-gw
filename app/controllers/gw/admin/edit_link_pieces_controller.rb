@@ -1,108 +1,195 @@
+# encoding: utf-8
 class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    @is_gw_admin = Gw.is_admin_admin?
-    @role_developer = Gw::EditLinkPiece.is_dev?
-    @edit_link_piece_admin = Gw::EditLinkPiece.is_admin?
-    @edit_link_piece_editor = Gw::EditLinkPiece.is_editor?
-    @u_role = @is_gw_admin || @role_developer || @edit_link_piece_admin || @edit_link_piece_editor
-    return error_auth unless @u_role
-
-    @parent = params[:pid].present? ? Gw::EditLinkPiece.find_by(id: params[:pid]) : Gw::EditLinkPiece.root
-    return http_error(404) unless @parent
-
+  def initialize_scaffold
     Page.title = "ポータルリンクピース編集"
   end
 
-  def url_options
-    super.merge(params.slice(:pid).symbolize_keys) 
+  def init_params
+    @is_gw_admin = Gw.is_admin_admin?
+    @role_developer = Gw::EditLinkPiece.is_dev?(Site.user.id)
+    @edit_link_piece_admin     = Gw::EditLinkPiece.is_admin?(Site.user.id)
+    @edit_link_piece_editor  = Gw::EditLinkPiece.is_editor?(Site.user.id)
+    @u_role = @role_developer || @edit_link_piece_admin || @edit_link_piece_editor || @is_gw_admin
+
+    pid      = params[:pid] == '0' ? 1 : params[:pid]
+    @parent = Gw::EditLinkPiece.find_by_id(pid)
+
+    if @parent.blank?
+      @pid = params[:pid]
+      @p_level_no = 1
+    else
+      @pid = @parent.id
+      @p_level_no = @parent.level_no
+    end
+
+    params[:limit] = nz(params[:limit],30)
   end
 
   def index
-    @items = Gw::EditLinkPiece.where(parent_id: @parent.id, uid: nil).order(sort_no: :asc)
-      .paginate(page: params[:page], per_page: params[:limit])
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
 
+    item = Gw::EditLinkPiece.new
+    item.page  params[:page], params[:limit]
+    cond  = "state != 'deleted' and parent_id = #{@pid} and uid is null"
+    order = "sort_no"
+    @items = item.find(:all,:order=>order,:conditions=>cond)
     _index @items
   end
 
   def show
-    @item = Gw::EditLinkPiece.find(params[:id])
+    init_params
+    return authentication_error(403) unless @u_role==true
+
+    @item = Gw::EditLinkPiece.find_by_id(params[:id])
+    return http_error(404) if @item.uid != nil
   end
 
   def new
-    @item = Gw::EditLinkPiece.new(
-      parent_id: @parent.id,
-      level_no: @parent.level_no + 1,
-      mode: 1,
-      state: 'enabled',
-      published: 'opened',
-      tab_keys: 0,
-      sort_no: Gw::EditLinkPiece.where(parent_id: @parent.id).maximum(:sort_no).to_i + 10,
-      class_created: 1,
-      class_external: 1,
-      class_sso: '1'
-    )
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
+
+    cond  = "state!='deleted' and parent_id=#{@pid}"
+    order = "sort_no DESC"
+    max_sort = Gw::EditLinkPiece.find(:first , :order=>order , :conditions=>cond)
+    if max_sort.blank?
+      max_sort_no = 0
+    else
+      max_sort_no = max_sort.sort_no
+    end
+    @item = Gw::EditLinkPiece.new
+    @item.parent_id       = @pid
+    @item.level_no        = @parent.blank? ? 1 : @parent.level_no + 1
+    @item.state           = 'enabled'
+    @item.published       = 'opened'
+    @item.tab_keys        = 0
+    @item.sort_no         = max_sort_no.to_i + 10
+    @item.class_created   = 1
+    @item.class_external  = 1
+    @item.class_sso       = 1
   end
 
   def create
+    init_params
+    return authentication_error(403) unless @u_role==true
     @item = Gw::EditLinkPiece.new(params[:item])
-    _create @item
+    return http_error(404) if @item.uid != nil
+
+    _create @item, :success_redirect_uri => url_for(:action => :index, :pid => @pid)
   end
 
   def edit
-    @item = Gw::EditLinkPiece.find(params[:id])
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
+
+    @item = Gw::EditLinkPiece.find_by_id(params[:id])
+    return http_error(404) if @item.uid != nil
   end
 
   def update
-    @item = Gw::EditLinkPiece.find(params[:id])
+    init_params
+    @item = Gw::EditLinkPiece.find_by_id(params[:id])
+    return http_error(404) if @item.uid != nil
     @item.attributes = params[:item]
-    _update @item
+
+    _update @item, :success_redirect_uri => url_for(:action => :show, :id => @item.id, :pid => @pid)
   end
 
   def destroy
-    @item = Gw::EditLinkPiece.find(params[:id])
-    @item.published      = 'closed'
-    @item.state          = 'deleted'
-    @item.tab_keys       = nil
-    @item.sort_no        = nil
-    @item.deleted_at     = Time.now
-    @item.deleted_user   = Core.user.name
-    @item.deleted_group  = Core.user_group.name
-    @item.save(:validate => false)
+    init_params
+    return authentication_error(403) unless @u_role==true
 
-    redirect_to url_for(action: :index), notice: '削除処理が完了しました。'
+    item = Gw::EditLinkPiece.find_by_id(params[:id])
+    return http_error(404) if item.uid != nil
+    item.published      = 'closed'
+    item.state          = 'deleted'
+    item.tab_keys       = nil
+    item.sort_no        = nil
+    item.deleted_at     = Time.now
+    item.deleted_user   = Site.user.name
+    item.deleted_group  = Site.user_group.name
+    item.save(:validate => false)
+
+    redirect_to url_for(:action => :index, :pid => @pid)
   end
 
   def updown
-    item = Gw::EditLinkPiece.find(params[:id])
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
 
-    item_rep = case params[:order]
-      when 'up'
-        Gw::EditLinkPiece.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first
-      when 'down'
-        Gw::EditLinkPiece.where(parent_id: @parent.id).where("sort_no > #{item.sort_no}").order(sort_no: :asc).first
+    item = Gw::EditLinkPiece.find_by_id(params[:id])
+    return http_error(404) if item.uid != nil
+    if item.blank?
+      redirect_to url_for(:action => :index, :pid => @pid)
+      return
+    end
+
+    updown = params[:order]
+
+    case updown
+    when 'up'
+      cond  = "state!='deleted' and parent_id=#{@pid} and sort_no < #{item.sort_no} "
+      order = " sort_no DESC "
+      item_rep = Gw::EditLinkPiece.find(:first,:conditions=>cond,:order=>order)
+      return http_error(404) if item_rep.uid != nil
+      if item_rep.blank?
+      else
+        sort_work = item_rep.sort_no
+        item_rep.sort_no = item.sort_no
+        item.sort_no = sort_work
+        item.save(:validate => false)
+        item_rep.save(:validate => false)
       end
-    return http_error(404) unless item_rep
+    when 'down'
+      cond  = "state!='deleted' and parent_id=#{@pid} and sort_no > #{item.sort_no} "
+      order = " sort_no ASC "
+      item_rep = Gw::EditLinkPiece.find(:first,:conditions=>cond,:order=>order)
+      return http_error(404) if item_rep.uid != nil
+      if item_rep.blank?
+      else
+        sort_work = item_rep.sort_no
+        item_rep.sort_no = item.sort_no
+        item.sort_no = sort_work
+        item.save(:validate => false)
+        item_rep.save(:validate => false)
+      end
+    else
+    end
 
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-    redirect_to url_for(action: :index)
+    redirect_to url_for(:action => :index, :pid => @pid)
   end
 
   def swap
-    item1 = Gw::EditLinkPiece.find(params[:id])
-    item2 = Gw::EditLinkPiece.find(params[:sid])
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
 
-    item1.sort_no, item2.sort_no = item2.sort_no, item1.sort_no
-    item1.save(validate: false)
-    item2.save(validate: false)
-    redirect_to url_for(action: :index)
+    item1 = Gw::EditLinkPiece.find(params[:id]) rescue nil
+    item2 = Gw::EditLinkPiece.find(params[:sid]) rescue nil
+    return http_error(404) if item1.blank? || item1.deleted? || item1.uid != nil
+    return http_error(404) if item2.blank? || item2.deleted? || item2.uid != nil
+
+    Gw::EditLinkPiece.swap(item1, item2)
+
+    redirect_to url_for(:action => :index, :pid => @pid)
   end
 
   def list
-    @items = Gw::EditLinkPiece.where(level_no: 2, uid: nil).order(state: :desc, sort_no: :asc)
+    init_params
+    return authentication_error(403) unless @u_role==true
+    return http_error(404) if !@parent.blank? && @parent.uid != nil
+
+    item = Gw::EditLinkPiece.new
+    cond  = "state!='deleted' and level_no=2 and uid is null"
+    order = "state DESC,sort_no"
+    @items = item.find(:all,:order=>order,:conditions=>cond)
   end
+
 end

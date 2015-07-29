@@ -1,18 +1,18 @@
+# -*- encoding: utf-8 -*-
 class Gwworkflow::Control < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::Control::Base
+  include Gwboard::Model::ControlCommon
+  include Gwboard::Model::AttachFile
   include Gwworkflow::Model::Systemname
-  self.table_name = 'gw_workflow_controls'
+  set_table_name 'gw_workflow_controls'
 
-  has_many :files, :foreign_key => :title_id
-
+#  belongs_to :status, :foreign_key => :state, :class_name => 'Sys::Base::Status'
+  validates_presence_of :state, :recognize, :title, :sort_no, :commission_limit
+  validates_presence_of :upload_graphic_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max
+  after_validation :validate_params
   before_save :set_icon_and_wallpaper_path
   after_save :save_admingrps, :save_editors, :save_readers, :save_readers_add, :save_sueditors, :save_sureaders , :board_css_create
-
-  validates :state, :recognize, :title, :sort_no, presence: true
-  validates :default_published, :commission_limit, :doc_body_size_capacity, :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
-    numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   attr_accessor :_makers
   attr_accessor :_design_publish
@@ -21,7 +21,7 @@ class Gwworkflow::Control < Gw::Database
 
     unless self.admingrps_json.blank?
       Gwworkflow::Adm.destroy_all("title_id=#{self.id}")
-      groups = JSON.parse(self.admingrps_json)
+      groups = JsonParser.new.parse(self.admingrps_json)
       @dsp_admin_name = ''
       groups.each do |group|
         item_grp = Gwworkflow::Adm.new()
@@ -37,13 +37,15 @@ class Gwworkflow::Control < Gw::Database
     end
     save_adms
     unless self.dsp_admin_name == @dsp_admin_name
-      Gwworkflow::Control.where(:id => self.id).update_all(:dsp_admin_name => @dsp_admin_name)
+      args = ["UPDATE gw_workflow_controls SET dsp_admin_name = ? WHERE id =?", @dsp_admin_name, self.id]
+      strsql = ActiveRecord::Base.send(:sanitize_sql_array, args)
+      connection.execute(strsql)
     end
   end
 
   def save_adms
     unless self.adms_json.blank?
-      users = JSON.parse(self.adms_json)
+      users = JsonParser.new.parse(self.adms_json)
       users.each do |user|
         item_adm = Gwworkflow::Adm.new()
         item_adm.title_id = self.id
@@ -66,7 +68,7 @@ class Gwworkflow::Control < Gw::Database
   def save_editors
     unless self.editors_json.blank?
       Gwworkflow::Role.destroy_all("title_id=#{self.id} and role_code = 'w'")
-      groups = JSON.parse(self.editors_json)
+      groups = JsonParser.new.parse(self.editors_json)
       groups.each do |group|
         unless group[1].blank?
           item_grp = Gwworkflow::Role.new()
@@ -85,7 +87,7 @@ class Gwworkflow::Control < Gw::Database
   def save_readers
     unless self.readers_json.blank?
       Gwworkflow::Role.destroy_all("title_id=#{self.id} and role_code = 'r'")
-      groups = JSON.parse(self.readers_json)
+      groups = JsonParser.new.parse(self.readers_json)
       groups.each do |group|
         unless group[1].blank?
           item_grp = Gwworkflow::Role.new()
@@ -104,15 +106,15 @@ class Gwworkflow::Control < Gw::Database
   def save_readers_add
     unless self.editors_json.blank?
 
-      item = Gwworkflow::Role.where("title_id=#{self.id} and role_code = 'r' and group_code = '0'")
+      item = Gwworkflow::Role.find(:all, :conditions => "title_id=#{self.id} and role_code = 'r' and group_code = '0'")
       if item.length == 0
 
-        groups = JSON.parse(self.editors_json)
+        groups = JsonParser.new.parse(self.editors_json)
 
         groups.each do |group|
           unless group[1].blank?
 
-            item_grp = Gwworkflow::Role.where("title_id=#{self.id} and role_code = 'r' and group_id = #{group[1]}")
+            item_grp = Gwworkflow::Role.find(:all, :conditions => "title_id=#{self.id} and role_code = 'r' and group_id = #{group[1]}")
             if item_grp.length == 0
 
               item_grp = Gwworkflow::Role.new()
@@ -132,7 +134,7 @@ class Gwworkflow::Control < Gw::Database
 
   def save_sueditors
     unless self.sueditors_json.blank?
-      suedts = JSON.parse(self.sueditors_json)
+      suedts = JsonParser.new.parse(self.sueditors_json)
       suedts.each do |suedt|
         unless suedt[1].blank?
 
@@ -166,7 +168,7 @@ class Gwworkflow::Control < Gw::Database
 
   def save_sureaders
     unless self.sueditors_json.blank?
-      surds = JSON.parse(self.sureaders_json)
+      surds = JsonParser.new.parse(self.sureaders_json)
       surds.each do |surd|
         unless surd[1].blank?
           item_sur = Gwworkflow::Role.new()
@@ -186,10 +188,25 @@ class Gwworkflow::Control < Gw::Database
   end
 
   def group_code(id)
-    item = System::Group.where(:id => id).first
+    item = System::Group.find_by_id(id)
     ret = ''
     ret = item.code if item
     return ret
+  end
+
+  def validate_params
+    errors.add :default_published, "は数値で1以上を入力してください。" if self.default_published.blank?
+    errors.add :default_published, "は数値で1以上を入力してください。" if self.default_published == 0
+    errors.add :upload_graphic_file_size_capacity, "は数値で1以上を入力してください。" if self.upload_graphic_file_size_capacity.blank?
+    errors.add :upload_graphic_file_size_capacity, "は数値で1以上を入力してください。" if self.upload_graphic_file_size_capacity == 0
+    errors.add :upload_document_file_size_capacity, "は数値で1以上を入力してください。" if self.upload_document_file_size_capacity.blank?
+    errors.add :upload_document_file_size_capacity, "は数値で1以上を入力してください。" if self.upload_document_file_size_capacity == 0
+    errors.add :upload_graphic_file_size_max, "は数値で1以上を入力してください。" if self.upload_graphic_file_size_max.blank?
+    errors.add :upload_graphic_file_size_max, "は数値で1以上を入力してください。" if self.upload_graphic_file_size_max == 0
+    errors.add :upload_document_file_size_max, "は数値で1以上を入力してください。" if self.upload_document_file_size_max.blank?
+    errors.add :upload_document_file_size_max, "は数値で1以上を入力してください。" if self.upload_document_file_size_max == 0
+    errors.add :doc_body_size_capacity, "は数値で1以上を入力してください。" if self.doc_body_size_capacity.blank?
+    errors.add :doc_body_size_capacity, "は数値で1以上を入力してください。" if self.doc_body_size_capacity == 0
   end
 
   def item_home_path
@@ -256,7 +273,4 @@ class Gwworkflow::Control < Gw::Database
     ]
   end
 
-  def is_readable?
-    true
-  end
 end

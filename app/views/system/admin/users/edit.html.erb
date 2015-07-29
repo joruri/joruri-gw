@@ -1,14 +1,13 @@
 <div class="piece AdminSetting AdminMessage">
-<%= render 'header' %>
+  <%= render :partial => 'header' %>
 
-<div class="pieceBody">
-<%= render 'header_menu' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= form_for :item, :url => "#{system_user_path(@item.id)}", :html => {:method => :put, :multipart => true} do |f| %>
+      <%= f.error_messages %>
+      <%= render :partial => 'form', :locals => {:f => f} %>
+      <%= submit_for(f, {:caption => '保存'}) %>
+    <% end %>
 
-<%= form_for :item, :url => "#{system_user_path(@item.id)}", :html => {:method => :put, :multipart => true} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
-  <%= submit_for(f, {:caption => '保存'}) %>
-<% end %>
-
-</div>
+  </div>
 </div>

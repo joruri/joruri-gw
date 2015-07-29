@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04SeatingList < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to :fyear    ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
 
@@ -87,11 +88,13 @@ class Gwsub::Sb04SeatingList < Gwsub::GwsubPref
     doc_id.flatten!
     title_id = title_id[0]
     doc_id = doc_id[0]
-    bbs_board = Gwbbs::Control.where(:id =>title_id).first
+    bbs_board = Gwbbs::Control.find_by_id(title_id)
     # 掲示板がみつからなければurl不正
     return false if bbs_board.blank?
 
-
+    cnn = Gwbbs::Doc.establish_connection
+    cnn.spec.config[:database] = bbs_board.dbname.to_s
+    bbs_doc1 = Gwboard::CommonDb.establish_connection(cnn.spec.config)
     bbs_doc1 = Gwbbs::Doc.new
     bbs_doc = bbs_doc1.find(:all,:conditions=>"id=#{doc_id} and state='public'")
     bbs_doc_exist = bbs_doc.count
@@ -110,7 +113,7 @@ class Gwsub::Sb04SeatingList < Gwsub::GwsubPref
     end
     return true
   end
-
+  
   def self.db_alias(item)
     cnn = item.establish_connection
 

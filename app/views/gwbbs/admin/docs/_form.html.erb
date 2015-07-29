@@ -6,6 +6,7 @@
   end
 %>
 <%= raw(tool_tiny_mce(mce_base_url, {:leftbar_mode=>true})) %>
+<%= raw(gw_js_include_full) %>
 
 <% unless @title.one_line_use == 0 %>
 <table class="bbsComment">
@@ -22,18 +23,18 @@
       <%
         dd = Gw.date8_to_date(params[:able_date], :default=>'')
         d_load_org = params[:able_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
-        @item.able_date = Gw.datetime_str(d_load_org.blank? ? @item.able_date : d_load_org)
+        d_load = Gw.datetime_str(d_load_org.blank? ? @item.able_date : d_load_org)
       %>
-      <%= f.datetimepicker :able_date, style: 'width:140px;' %>
+      <%= f.calendar_date_select :able_date, :value => d_load, :popup => "force", :time => true, :style => 'width:140px;' %>
     </td>
     <th>公開終了日時<%= required('※') %></th>
     <td>
       <%
         dd = Gw.date8_to_date(params[:expiry_date], :default=>'')
         d_load_org = params[:expiry_date].nil? ? nil : dd == '' ? nil : Gw.datetime_str(dd)
-        @item.expiry_date = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
+        d_load = Gw.datetime_str(d_load_org.nil? ? @item.expiry_date : d_load_org)
       %>
-      <%= f.datetimepicker :expiry_date, style: 'width:140px;' %>
+      <%= f.calendar_date_select :expiry_date, :value => d_load, :popup => "force", :time => true, :style => 'width:140px;' %>
     </td>
   </tr>
   <tr>
@@ -43,36 +44,26 @@
         [i.name, i.code]}, :include_blank => '記事の管理課を選択してください') %>
     </td>
   </tr>
-  <% if @title.category == 1 %>
-    <tr>
-      <th>
-        <%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %>
-      </th>
-      <td colspan="3">
-        <%= f.select(:category1_id, @categories1.collect{|i|
-          [i.name, i.id]}, :include_blank => '分類を選択してください') %>
-      </td>
-    </tr>
-  <% end %>
-  <% if @title.importance == 1 %>
-    <tr>
-      <th>ステータス</th>
-      <td colspan="3"><%= f.radio_buttons :importance, @item.importance_states_select %></td>
-    </tr>
-  <% end %>
-</table>
 
-<% if @title.is_admin? && @item.state != 'preparation' && @item.state_was != 'preparation' -%>
-<table class="show">
+<% if @title.category == 1 %>
   <tr>
-    <th>記事の更新日時</th>
-    <td>
-      <%= f.check_box :skip_updating_updated_at, {checked: !@item.skip_updating_updated_at}, 0, 1 %>
-      <%= f.label :skip_updating_updated_at, '更新する' %>
+    <th>
+      <%= @title.category1_name unless @title.category1_name.blank? %><%= required('※') %>
+    </th>
+    <td colspan="3">
+      <%= f.select(:category1_id, @categories1.collect{|i|
+        [i.name, i.id]}, :include_blank => '分類を選択してください') %>
     </td>
   </tr>
+<% end %>
+<% if @title.importance == 1 %>
+  <tr>
+    <th>ステータス</th>
+    <td colspan="3"><%= f.radio_buttons :importance, @item.importance_states_select, :class => 'state'  %></td>
+  </tr>
+<% end %>
 </table>
-<% end -%>
+
 
 <script type="text/javascript">
 //<![CDATA[
@@ -88,74 +79,16 @@
 //]]>
 </script>
 
-<%= render '/gwboard/admin/docs/script_change_body_table' %>
-<%= render '/gwboard/admin/docs/script_wiki_attach_insert' %>
-
-<% if @title.recognize == 2 %>
-<table class="show" style="margin-top: 10px;">
-  <tr>
-    <th>記事の承認</th>
-    <td><%= f.radio_buttons :category4_id, [["承認なし",0],["承認あり",1]] %></td>
-  </tr>
-</table>
-<% end %>
-
-<% if @title.use_recognize? %>
-<div id="recognizers_form" style="<%= 'display:none;' if @title.recognize == 2 && @item.category4_id == 0 %>" >
-  <%= render 'gwboard/admin/recognizers/form', f: f, item: @item %>
-</div>
-<% end %>
-
-<%= f.hidden_field :state %>
-<div class="submitters">
-  <% case @title.recognize %>
-  <% when 1 %>
-    <%= f.submit '承認待ち', id: 'commit_recognize' %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% when 2 %>
-    <%= f.submit '公開', id: 'commit_public', style: "#{@item.category4_id == 0 ? '' : 'display:none;'}" %>
-    <%= f.submit '承認待ち', id: 'commit_recognize', style: "#{@item.category4_id == 1 ? '' : 'display:none;'}" %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% else %>
-    <%= f.submit '公開', id: 'commit_public' %>
-    <%= f.submit '下書き保存', id: 'commit_draft' unless @title.draft_forbidden %>
-  <% end %>
-</div>
-
 <script type="text/javascript">
-(function($) {
-  $(function() {
-    var supressBeforeUnload = false;
-    window.onbeforeunload = function(event) {
-      if (!supressBeforeUnload) {
-        var e = event || window.event;
-        e.returnValue = "保存していない場合、編集中の内容は失われます";
-        return e.returnValue;
-      }
+//<![CDATA[
+  var supressBeforeUnload = false;
+
+  window.onbeforeunload = function( event ) {
+    if (!supressBeforeUnload) {
+      event = event || window.event;
+      event.returnValue = "保存していない場合、編集中の内容は失われます";
+      return "保存していない場合、編集中の内容は失われます";
     }
-    $('#commit_public').on('click', function() { $('#item_state').val('public'); supressBeforeUnload = true; });
-    $('#commit_recognize').on('click', function() { $('#item_state').val('recognize'); supressBeforeUnload = true; });
-    $('#commit_draft').on('click', function() { $('#item_state').val('draft'); supressBeforeUnload = true; });
-  });
-})(jQuery);
+  }
+//]]>
 </script>
-
-<% if @title.recognize == 2 %>
-<script type="text/javascript">
-(function($) {
-  $(function() {
-    $('input[name="item[category4_id]"]').on('click', function() {
-      if ($(this).val() == 0) {
-        $('#commit_public').show();
-        $('#commit_recognize, #recognizers_form').hide();
-      } else {
-        $('#commit_public').hide();
-        $('#commit_recognize, #recognizers_form').show();
-      }
-    });
-  });
-})(jQuery);
-</script>
-<% end %>
-
-<%= render 'hidden_form' %>

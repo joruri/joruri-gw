@@ -1,11 +1,23 @@
+# -*- encoding: utf-8 -*-
 class Gwfaq::File < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::File::Base
   include Gwfaq::Model::Systemname
+  include Gwboard::Model::AttachFile
+  include Gwboard::Model::AttachesFile
 
-  belongs_to :doc, :foreign_key => :parent_id
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :db_file, :foreign_key => :db_file_id, :dependent => :destroy
+  validates_presence_of :filename, :message => "ファイルが指定されていません。"
+  before_create :before_create
+  after_create :after_create
+  after_destroy :after_destroy
+
+
+  def item_path
+    return "#{Site.current_node.public_uri.chop}?title_id=#{self.title_id}&p_id=#{self.parent_id}"
+  end
+
+  def delete_path
+    return "#{Site.current_node.public_uri}#{self.id}/delete?title_id=#{self.title_id}&p_id=#{self.parent_id}"
+  end
+
 end

@@ -1,8 +1,9 @@
+# encoding: utf-8
 module TableHelper
 # usage: 1) 標準
 #   table_to_index2 @items
 # usage: 2) ソートリンク
-#   path_index = request.path
+#   path_index = Site.request_path
 #   table_to_index2 @items, 'sort_link_options' => {
 #     'disable_cols' => ['id','name'],
 #     'sort_keys' => @sort_keys,
@@ -130,7 +131,7 @@ module TableHelper
   def table_to_index2(items, _options = {})
     options = HashWithIndifferentAccess.new(_options)
     cr = "\n"
-    return %Q(<div class="notice">表示する項目はありません。</div>).html_safe if items.blank?
+    return %Q(<div class="notice">表示する項目はありません。</div>) if items.length == 0
     require 'yaml'
     trans_hash_raw = Gw.load_yaml_files_cache
     action = nz(options[:action], 'index')
@@ -139,8 +140,6 @@ module TableHelper
     else
       if items.is_a?(ActiveRecord::Base)
         hash_name = items.class.table_name
-      elsif items.is_a?(ActiveRecord::Relation)
-        hash_name = items.last.class.table_name
       elsif items.is_a?(WillPaginate::Collection)
         hash_name = items.last.class.table_name
       elsif items.is_a?(Array)
@@ -358,7 +357,7 @@ module TableHelper
         end
       end
       html += '</table>' if options[:disable_table_tag].nil?
-      return html.html_safe
+      return html
     else
       raise TypeError, "unknown input type(#{items.class.to_s})"
     end
@@ -379,7 +378,7 @@ module TableHelper
       html += '  </tr>' + "\n"
     end
     html += '</table>'
-    return html.html_safe
+    return html
   end
 
   def table_to_show2(item, _options = {})
@@ -413,7 +412,7 @@ module TableHelper
       html += show_field_tr(field_str, value_str, show_options) unless field_str.nil?
     end
     html += '</table>' if options[:disable_table_tag].nil?
-    return html.html_safe
+    return html
   end
 
   # 一覧表示用テーブル
@@ -535,8 +534,7 @@ module TableHelper
           end
         end
       end
-      ret = caption + theader + trs.join
-      return ret.html_safe
+      caption + theader + trs.join
     end
   end
 

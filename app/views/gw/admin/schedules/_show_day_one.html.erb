@@ -1,81 +1,90 @@
-<% schedule_data[:schedules].each_with_index do |schedule, ische| %>
-  <% if schedule.allday.to_i > 0 %>
 
-    <% if ische == 0 %>
-    <td colspan="<%= @col -%>">
-    <% end %>
-    <% if schedule.is_public_auth?(@is_gw_admin) %>
-      <div title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) -%>" class="ind tooltip">
-        <a class="<%= schedule.display_category_class(display_prop) -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
-          <%= schedule.display_time(display_prop, @st_date) -%><%= schedule.display_title(display_prop, action: params[:action]) -%>
-        </a>
-      </div>
-    <% else %>
-      <div title="<%= schedule.display_time(display_prop, @st_date) -%> [非公開予定]" class="ind">
-        <%= schedule.display_time(display_prop, @st_date) -%>[非公開予定]
-      </div>
-    <% end %>
-    <% if ische == schedule_data[:allday_cnt] %>
-    </td>
-    <% end %>
-
+<% if nz(schedule.allday, 0).to_i > 0 %>
+<% if participant_schedule_cnt == 0 %>
+<td colspan="<%= @col -%>">
+<% end %><%# participant_schedule_cnt == 0 End %>
+  <% if public %>
+  <div title="<%= create_schedule_tooltip(schedule, @ie) -%>" class="ind" id="<%= schedule_id -%>">
+    <a class="<%= schedule.get_category_class -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
+      <%= schedule.show_time(@st_date) -%><%= schedule.title -%>
+    </a>
+  </div>
   <% else %>
-
-    <% if ische > 0 %>
-    <tr class="scheduleTableBody categoryBorder participant_schedule_cnt_<%= ische -%>">
-    <% end %>
-    <% st_at, ed_at = schedule.show_day_date_range(@st_date) %>
-    <% (st_at - @calendar_space_time.first).floor.times do %>
-      <td colspan="2" class="scheduleData"></td>
-    <% end %>
-    <% if st_at != st_at.floor %>
-      <td colspan="1" class="scheduleData"></td>
-    <% end %>
-    <%
-    len = ed_at - st_at + 0.5
-    if len == 0 && schedule.ed_at == schedule.st_at
-      len = 0.5
-      ed_at += 0.5
-    end
-    %>
-    <td colspan="<%= (len * 2).to_i -%>" class="scheduleData">
-      <% if schedule.is_public_auth?(@is_gw_admin) %>
-        <div title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) -%>" class="ind tooltip">
-          <a class="<%= schedule.display_category_class(display_prop) -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
-            <%= schedule.display_time(display_prop, @st_date) -%><%= schedule.display_title(display_prop, action: params[:action]) -%>
-          </a>
-        </div>
-      <% else %>
-        <div title="<%= "#{schedule.display_time(display_prop, @st_date)} [非公開予定]" -%>" class="ind tooltip">
-          <%= schedule.display_time(display_prop, @st_date) -%>[非公開予定]
-        </div>
-      <% end %>
-    </td>
-    <% if ed_at == ed_at.ceil %>
-      <td colspan="1" class="scheduleData"></td>
-    <% end %>
-    <% (@calendar_space_time.last - ed_at).ceil.times do %>
-      <td colspan="2" class="scheduleData"></td>
-    <% end %>
-    </tr>
-
-    <tr class="scheduleTableBody explanation <%= "end" if schedule_data[:schedule_len] == ische + 1 -%>">
-      <% (st_at - @calendar_space_time.first).floor.times do %>
-        <td colspan="2" class="scheduleData"></td>
-      <% end %>
-      <% if st_at != st_at.floor %>
-        <td colspan="1" class="scheduleData"></td>
-      <% end %>
-      <td colspan="<%= ((@calendar_space_time.last - st_at) * 2).to_i + 2 -%>">
-        <% if schedule.is_public_auth?(@is_gw_admin) %>
-          <%= schedule.display_time(display_prop, @st_date) -%> <%= schedule.display_title(display_prop, action: params[:action]) -%>
-          <%= "（#{schedule.place}）" if @schedule_settings[:view_place_display] == '1' && schedule.place.present? %>
-        <% else %>
-          <%= schedule.display_time(display_prop, @st_date) -%> [非公開予定]
-        <% end %>
-      </td>
-    <% if ische == schedule_data[:schedules].size - 1 %>
-    </tr>
-    <% end %>
+  <div title="<%= schedule.show_time(@st_date) -%> [非公開予定]" class="ind" id="<%= schedule_id -%>">
+    <%= schedule.show_time(@st_date) -%>[非公開予定]
+  </div>
   <% end %>
+
+<% if participant_schedule_cnt ==  schedule_data[:allday_cnt] %>
+</td>
+<% end %><%# participant_schedule_cnt == 0 End %>
+
+<% else %><%# if nz(schedule.allday, 0).to_i > 0 %>
+
+<% if participant_schedule_cnt > 0 %>
+<tr class="scheduleTableBody categoryBorder participant_schedule_cnt_<%= participant_schedule_cnt -%>">
 <% end %>
+
+<%
+st_at, ed_at = schedule.show_day_date_range(@st_date)
+%>
+
+<% ((st_at - (@calendar_space_time.first)).floor).times { %>
+<td colspan="2" class="scheduleData"></td>
+<% } %>
+<% if st_at != st_at.floor %>
+<td colspan="1" class="scheduleData"></td>
+<% end %>
+
+<%
+len = ed_at - st_at + 0.5
+if len == 0 && schedule.ed_at ==  schedule.st_at
+  len = 0.5
+  ed_at += 0.5
+end
+%>
+
+<td colspan="<%= (len * 2).to_i -%>" class="scheduleData">
+  <% if public %>
+  <div title="<%= create_schedule_tooltip(schedule, @ie) -%>" class="ind" id="<%= schedule_id -%>">
+    <a class="<%= schedule.get_category_class -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
+      <%= schedule.show_time(@st_date) -%><%= schedule.title -%>
+    </a>
+  </div>
+  <% else %>
+  <div title="<%= @ie ? "#{schedule.show_time(@st_date)} [非公開予定]" : "<span>#{schedule.show_time(@st_date)} [非公開予定]</span>" -%>" class="ind" id="<%= schedule_id -%>">
+    <%= schedule.show_time(@st_date) -%>[非公開予定]
+  </div>
+  <% end %>
+
+</td>
+<% if ed_at == ed_at.ceil %>
+<td colspan="1" class="scheduleData"></td>
+<% end %>
+<% (((@calendar_space_time.last) - ed_at).ceil).times { %>
+<td colspan="2" class="scheduleData">
+</td>
+<% } %>
+</tr>
+<tr class="scheduleTableBody explanation<%= " end" if schedule_data[:schedule_len] == participant_schedule_cnt + 1 -%>">
+
+  <% ((st_at - (@calendar_space_time.first)).floor).times { %>
+  <td colspan="2" class="scheduleData"></td>
+  <% } %>
+  <% if st_at != st_at.floor %>
+  <td colspan="1" class="scheduleData"></td>
+  <% end %>
+
+  <td colspan="<%= ((@calendar_space_time.last - st_at) * 2).to_i + 2 -%>">
+    <% if public %>
+    <%= schedule.show_time(@st_date) -%> <%= schedule.title -%>
+    <% if @schedule_settings[:view_place_display] == '1' && schedule.place.present? %>
+    （<%= schedule.place -%>）
+    <% end %>
+    <% else %><%# if public %>
+    <%= schedule.show_time(@st_date) -%> [非公開予定]
+    <% end %><%# if public %>
+  </td>
+
+</tr>
+<% end %><%# if nz(schedule.allday, 0).to_i > 0 end%>

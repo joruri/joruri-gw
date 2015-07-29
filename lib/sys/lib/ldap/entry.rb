@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Ldap::Entry
   def initialize(connection, attributes = {})
     attributes.each do |key, val|

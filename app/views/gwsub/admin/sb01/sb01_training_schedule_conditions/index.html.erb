@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_conditions/index.html.erb</p>%>
 <%
 options1 ={
   'table_name' => 'gwsub_sb01_trainings' , :action=>'bbs_show' ,
@@ -23,13 +24,13 @@ options2 =  {
 <h2>研修申込・受付</h2>
 </div>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb01/sb01_training_plans/menu' %>
+<%= render :partial => 'gwsub/admin/sb01/sb01_training_plans/menu' %>
 </div>
 <div class="pieceBody">
 <br />
 <div>研修名</div>
 <%= raw(table_to_show2(@item1,options1)) %>
-
+<%= raw(%Q(<div class="notice">#{flash[:notice]}</div>)) unless flash[:notice].blank? %>
 <div>研修枠作成条件</div>
 <%= raw(table_to_index2(@items,options2)) %>
 <br/>

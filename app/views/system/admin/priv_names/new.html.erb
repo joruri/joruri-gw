@@ -1,11 +1,14 @@
-<div class="piece AdminMessage">
-<%= render 'header' %>
-<div class="pieceBody">
-<%= render 'system/admin/roles/header_menu' %>
+<%
+  @create_path = "/system/priv_names"
+%>
 
-<%= form_for :item, :url => "/system/priv_names" do |f| %>
+<div class="piece AdminMessage">
+<%= render :partial => 'header' %>
+<div class="pieceBody">
+
+<%= form_for :item, :url => @create_path do |f| %>
   <%= f.error_messages %>
-  <%= render 'form', f: f %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
   <%= submit_for(f, {:caption => '保存'}) %>
 <% end %>
 

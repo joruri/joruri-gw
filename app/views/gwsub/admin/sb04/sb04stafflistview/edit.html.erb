@@ -10,20 +10,20 @@ end
 @edit_path = "#{Site.current_node.public_uri}#{@item.id}"
 %>
 <div class="gwsub sb04">
-<%= render 'gwsub/public/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/public/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/public/sb04/sb04_submenu' %>
+<%= render :partial => 'gwsub/public/sb04/sb04_submenu' %>
 </div>
 <div class="pieceBody">
-
+<%= div_notice %>
 <div class="showMenu">
 <%= link_to_show @item.id %>
 </div>
 <% @action = "edit" %>
-<%= form_for :item, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
-  <%= render 'gwsub/public/sb04/sb04divideduties/form', f: f %>
+<% form_for :item, :url => @edit_path ,:action=>:update, :html => {:method => :put, :multipart => true} do |f| %>
+  <%= render :partial => 'gwsub/public/sb04/sb04divideduties/form', :locals => {:f => f} %>
 <% end %>
-<div><h4><%= header_str %></h4></div>
-<%= render 'gwsub/public/sb04/sb04divideduties/show' %>
+<div><h4><%= h header_str %></h4></div>
+<%= render :partial => 'gwsub/public/sb04/sb04divideduties/show' %>
 </div>
 </div>

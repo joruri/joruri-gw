@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Sys::Lib::Ldap::Group < Sys::Lib::Ldap::Entry
   ## Initializer.
   def initialize(connection, attributes = {})
@@ -35,11 +36,6 @@ class Sys::Lib::Ldap::Group < Sys::Lib::Ldap::Entry
     group_user ? group_user.get(:mail) : nil
   end
   
-  ## Attribute: group_s_name
-  def group_s_name
-    group_user ? group_user.get(:roomNumber) : nil
-  end
-
   ## Returns the parent group.
   def parent
     tree = get(:dn).split(',')

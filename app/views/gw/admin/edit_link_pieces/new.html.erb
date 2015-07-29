@@ -1,14 +1,17 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
-<div class="pieceBody">
-<%= render 'menu' %>
-<%= render 'header_new_botton' %>
-<%= render 'header_navi' %>
+<%= render :partial => 'header_str' %>
 
-<%= form_for :item, :url => {action: :create}, :html => {method: :post, id: "itemForm", multipart: true} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form', f: f %>
+<div class="pieceBody">
+<%= render :partial => 'menu', :locals => {:d => @st_date, :mode => 'month'} %>
+<%= render :partial => 'header_new_botton' %>
+<% if !@parent.blank? %>
+  <%= render :partial => 'header_navi' %>
 <% end %>
+
+<%= div_notice %>
+<%= form_for :item, :url => "/gw/edit_link_pieces?pid=#{@pid}", :action => :create, :method => :post, :html => {:id => "itemForm", :multipart => true} do |f| %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end  %>
 
 </div>
 </div>

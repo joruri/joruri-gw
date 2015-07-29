@@ -1,8 +1,13 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
+
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "事務分掌表・座席表掲示板"
   end
@@ -18,7 +23,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
   end
   def show
     init_params
-    @item = Gwsub::Sb04SeatingList.where(:id => params[:id]).first
+    @item = Gwsub::Sb04SeatingList.find_by_id(params[:id])
     return redirect_to http_error(404) if @item.blank?
 
     if params[:docs]=='create'
@@ -30,8 +35,6 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
         flash[:notice] = '所属名の取得に失敗しました。'
       when '3'
         flash[:notice] = '記事一括登録に失敗しました。'
-      when '4'
-        flash[:notice] = '掲示板が存在しません。'
       else
         flash[:notice] = '記事一括登録が完了しました。'
       end
@@ -45,8 +48,6 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
         flash[:notice] = '記事一覧取得に失敗しました。'
       when '3'
         flash[:notice] = '記事一括取得に失敗しました。'
-      when '4'
-        flash[:notice] = '掲示板が存在しません。'
       else
         flash[:notice] = '記事一括取得が完了しました。'
       end
@@ -73,12 +74,12 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
 
   def edit
     init_params
-    @item = Gwsub::Sb04SeatingList.where(:id => params[:id]).first
+    @item = Gwsub::Sb04SeatingList.find_by_id(params[:id])
     return redirect_to http_error(404) if @item.blank?
   end
   def update
     init_params
-    @item = Gwsub::Sb04SeatingList.where(:id => params[:id]).first
+    @item = Gwsub::Sb04SeatingList.find_by_id(params[:id])
     return redirect_to http_error(404) if @item.blank?
 
     new_item = Gwsub::Sb04SeatingList.set_f(params[:item])
@@ -99,8 +100,8 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Core.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Core.user.id)
     @u_role = @role_developer || @role_admin
 
     # 電子職員録 主管課権限設定
@@ -167,29 +168,37 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     group           = Gwsub::Sb04section.new
     group.fyear_id  = @item.fyear_id
     groups          = group.find(:all)
-
-    fyear  = Gw::YearFiscalJp.where(:id => @item.fyear_id).first
-    return '4' if fyear.blank?
     # 記事枠登録
     params['title_id'] = title_id
-    @title = Gwbbs::Control.where(:id =>title_id).first
-    return '4' if @title.blank?
+    @title = Gwbbs::Control.find_by_id(title_id)
 
-    Gwbbs::Category.delete_all(:title_id => @title.id)
-    Gwbbs::Comment.delete_all(:title_id => @title.id)
-    Gwbbs::DbFile.delete_all(:title_id => @title.id)
-    Gwbbs::Doc.delete_all(:title_id => @title.id)
-    Gwbbs::File.delete_all(:title_id => @title.id)
-    Gwbbs::Recognizer.delete_all(:title_id => @title.id)
+    if @title.dbname.blank?
+    else
+      item = gwbbs_db_alias(Gwbbs::Doc)
+      item = item.new
+      connect = item.connection()
 
+      truncate_query1 = "TRUNCATE TABLE gwbbs_categories ;"
+      connect.execute(truncate_query1)
+      truncate_query2 = "TRUNCATE TABLE gwbbs_comments ;"
+      connect.execute(truncate_query2)
+      truncate_query3 = "TRUNCATE TABLE gwbbs_db_files ;"
+      connect.execute(truncate_query3)
+      truncate_query4 = "TRUNCATE TABLE gwbbs_docs ;"
+      connect.execute(truncate_query4)
+      truncate_query5 = "TRUNCATE TABLE gwbbs_files ;"
+      connect.execute(truncate_query5)
+      truncate_query6 = "TRUNCATE TABLE gwbbs_recognizers ;"
+      connect.execute(truncate_query6)
+    end
     default_published = 240 unless default_published  # 公開停止は240ヶ月先
     groups.each do |g|
       next if g.ldap_code=='00000'
       next if g.ldap_code.blank?
 
       # 年度開始日取得
+      fyear_start_at  = Gw::YearFiscalJp.find(@item.fyear_id).start_at
 
-      fyear_start_at = fyear.start_at
       case g.ldap_code.size
       when 5
         ldap_group_code = g.ldap_code.to_s+'0'
@@ -200,7 +209,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
       group_condition <<  " and start_at <= '#{fyear_start_at}'"
       group_condition <<  " and ( (end_at is null) or (end_at >= '#{fyear_start_at}') ) "
       group_order     = "code , start_at DESC , end_at is null , end_at DESC"
-      group           = System::Group.where(group_condition).order(group_order).first
+      group           = System::Group.find(:first,:order=>group_order,:conditions=>group_condition)
       if group.blank?
         pp ['create_bbs_docs','group unmatch',g.fyear_markjp,g.code,g.name,g.ldap_code,fyear_start_at]
       else
@@ -215,7 +224,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
           g.ldap_name = ldap_name
           g.save(:validate => false)
         else
-          item                    = Gwbbs::Doc
+          item                    = gwbbs_db_alias(Gwbbs::Doc)
           item                    = item.new
           item.state              = 'public'
           item.title_id           = title_id
@@ -238,14 +247,13 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
           item.editordivision     = g.ldap_code+ldap_name
           item.editor_id          = g.ldap_code
           item.editordivision_id  = g.ldap_code
-          item.skip_setting_creater_editor = true
           item.save(:validate => false)
           # 所属名から職員名簿用所属IDを取得し、座席表ページのURLを設定
           g.bbs_url   = "/gwbbs/docs/#{item.id}?title_id=#{title_id}&limit=20&state=GROUP"
           g.ldap_name = ldap_name
           g.save(:validate => false)
-          save_ldap_codes << [g.ldap_code, item.id]
         end
+        save_ldap_codes << [g.ldap_code, item.id]
       end
     end
     return '0'
@@ -263,9 +271,8 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
 
     # 記事一覧取得 （公開で期限内の記事のみを対象とする）
     params[:title_id] = title_id
-    @title  = Gwbbs::Control.where(:id =>title_id).first
-    return '4' if @title.blank?
-    item    = Gwbbs::Doc
+    @title  = Gwbbs::Control.find_by_id(title_id)
+    item    = gwbbs_db_alias(Gwbbs::Doc)
     item    = item.new
     doc_cond = "title_id=#{params[:title_id]} and state='public' and "+" '" + Time.now.strftime("%Y/%m/%d %H:%M:%S") + "' between able_date and expiry_date"
     doc_order = "section_code ASC , latest_updated_at ASC"
@@ -273,7 +280,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     return '2' if items.blank?
 
     # 指定年度の所属から、URLをクリア
-    Gwsub::Sb04section.where("fyear_id=#{@item.fyear_id}").update_all( "bbs_url=''")
+    Gwsub::Sb04section.update_all( "bbs_url=''" , "fyear_id=#{@item.fyear_id}" )
 
     # 座席表記時のURLを設定
     items.each do |bbs|
@@ -281,7 +288,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
       section               = Gwsub::Sb04section.new
       item_section_title    = bbs.title.split(' ')
       item_section          = item_section_title[0]
-
+      
       ldap_code             = item_section.slice(0, 6)
       if ldap_code !~  /^[0-9A-Za-z]+$/ # 半角英数字以外の文字列が含まれていた場合
         ldap_name               = item_section.slice(5, item_section.size - 5)
@@ -289,7 +296,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
       else
         ldap_name               = item_section.slice(6, item_section.size - 6)
       end
-
+      
       section_order = "fyear_id DESC , code ASC , id DESC "
       section_cond = "fyear_id = #{@item.fyear_id} and ldap_code='#{ldap_code}'"
       @sections = section.find(:all,:conditions=>section_cond,:order=>section_order)

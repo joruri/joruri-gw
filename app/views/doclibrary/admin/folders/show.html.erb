@@ -1,33 +1,43 @@
-<% if @title.is_admin? %>
+<%if @is_admin%>
 <div class="showMenu">
-  <% if @item.editable? %>
-    <span class="btEdit"><%= link_to '編集する', @item.edit_path %></span>
-  <% end %>
-  <% if @item.deletable? %>
-    <span class="btDestroy"><%= link_to '削除する', @item.delete_path, confirm: '削除をすると元に戻せません。また、このフォルダ以下のフォルダ及びファイルが削除されます。削除しますか？', method: :delete %></span>
-  <% end %>
+<span class="btEdit"><%=link_to('編集する', @item.edit_path) %></span>
+<% if @item.child_count == 0%>
+ <span class="btDestroy"><%=link_to('削除する', @item.delete_path, :confirm => '削除をすると元に戻せません。削除しますか', :method => :delete) %></span>
+<%else%>
+ <%= required("直下にフォルダ又は記事が#{@item.child_count}件存在するため削除できません") %>
+<%end%>
 </div>
-<% end %>
+<%end%>
 
 <table class="show">
-  <tr>
-    <th>公開</th>
-    <td><%= @item.status_name[@item.state] %></td>
-  </tr>
-  <tr>
-    <th>並び順</th>
-    <td><%= @item.sort_no %></td>
-  </tr>
-  <tr>
-    <th>フォルダ名称</th>
-    <td><%= @item.name %></td>
-  </tr>
-  <tr>
-    <th>グループ閲覧権限</th>
-    <td><%=raw @item.group_folder_acls.map(&:acl_section_name).join('</ br>') %></td>
-  </tr>
-  <tr>
-    <th>個人閲覧権限</th>
-    <td><%=raw @item.user_folder_acls.map(&:acl_user_name).join('<br />') %></td>
-  </tr>
+<tr>
+<th>公開</th>
+<td><%=@item.status_name[@item.state]%></td>
+</tr>
+<tr>
+<th>並び順</th>
+<td><%= @item.sort_no %></td>
+</tr>
+<tr>
+<th>フォルダ名称</th>
+<td><%= @item.name %></td>
+</tr>
+<tr>
+<th>グループ閲覧権限</th>
+<td>
+<% for reader in @reader_groups %>
+<%=%Q[#{reader[2]}]%>
+<br />
+<%end%>
+</td>
+</tr>
+<tr>
+<th>個人閲覧権限</th>
+<td>
+<% for reader in @readers %>
+<%=%Q[#{reader[2]}]%>
+<br />
+<%end%>
+</td>
+</tr>
 </table>

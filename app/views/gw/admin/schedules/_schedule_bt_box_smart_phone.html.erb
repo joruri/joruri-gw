@@ -10,13 +10,13 @@ else
 g_link = %Q(&dis=group&cgid=#{c_group.id})
 end
 if params[:uid].blank?
-  link_uid = Core.user.id
+  link_uid = Site.user.id
 else
   link_uid = params[:uid].to_i
 end
 hrefs =   {:group => {
     :day => "/gw/schedules/#{td_s}?" + (params[:gid].blank? ? "cgid=#{@cgid}" : "gid=#{@gid}" ),
-    #:week => "/gw/schedules/?s_date=#{td_s}&" + (params[:gid].blank? ? "gid=#{Core.user_group.id}" : "gid=#{@gid}" )
+    #:week => "/gw/schedules/?s_date=#{td_s}&" + (params[:gid].blank? ? "gid=#{Site.user_group.id}" : "gid=#{@gid}" )
     :week => "/gw/schedules/?s_date=#{td_s}#{g_link}"
   }, :user => {
     :day => "/gw/schedules/#{td_s}?uid=#{link_uid}",

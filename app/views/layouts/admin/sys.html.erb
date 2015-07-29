@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
-<meta charset="UTF-8" />
-<link rel="icon" href="/favicon.ico" />
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<link rel="shortcut icon" href="/images/favicon.ico" />
 <title><%= Core.title %> - <%= Site.title -%></title>
 <link href="/_common/themes/admin/style.css" media="all" rel="stylesheet" type="text/css" />
+<script src="/javascripts/prototype.js" type="text/javascript"></script>
+<script src="/_common/js/rails.js" type="text/javascript"></script>
+<script src="/javascripts/calendar_date_select/calendar_date_select.js" type="text/javascript"></script>
+<script src="/javascripts/calendar_date_select/format_db.js" type="text/javascript"></script>
+<script src="/javascripts/calendar_date_select/locale/ja.js" type="text/javascript"></script>
+
+<link href="/_common/js/popup_calendar/popup_calendar.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/calendar_date_select/default.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/popup_calendar/popup_calendar.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/yui/build/calendar/assets/calendar.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/yui/build/menu/assets/menu.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/yui/build/container/assets/skins/sam/container.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/yui/build/calendar/assets/skins/sam/calendar.css" media="all" rel="stylesheet" type="text/css" />
+<link href="/_common/js/yui/build/button/assets/skins/sam/button.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -16,11 +33,11 @@
   <h1><a href="/_admin">Joruri</a></h1>
   <div class="menu">
     <span class="previousLogin">
-    前回ログイン日時　<%= Core.user.previous_login_date ?
-        Core.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
+    前回ログイン日時　<%= Site.user.previous_login_date ?
+        Site.user.previous_login_date.strftime('%Y-%m-%d %H:%M') :
         '---' %>
     </span>
-    <span class="user"><%= safe{Core.user_group.name} %>　<%= safe{Core.user.name_with_account} %></span>
+    <span class="user"><%= safe{Core.user_group.name} %>　<%=h safe{Core.user.name_with_account} %></span>
     <a href="/">公開画面</a>
     <a class="logout" href="/_admin/logout">ログアウト</a>
   </div>
@@ -38,7 +55,7 @@
 <div id="naviContainer">
 
   <table><tr><td class="menu">
-    <%= render controller.controller_path + '/header' %></td>
+    <%= render :partial => controller.controller_path + '/header' %></td>
   </tr></table>
 
 <!-- /#navigationContainer --></div>
@@ -51,7 +68,7 @@
 
 <div id="contentHeader"><% dir = "#{Rails.root}/app/views/#{controller.controller_path}" %>
   <% if FileTest.exist?("#{dir}/_menu.html.erb") %>
-  <%= render controller.controller_path + '/menu' %>
+  <%= render :partial => controller.controller_path + '/menu' %>
   <% end %>
 </div>
 

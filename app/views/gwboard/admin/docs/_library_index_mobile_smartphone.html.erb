@@ -1,0 +1,27 @@
+<%
+#旧設定では表示させないように注意が必要
+dsp_flag = false
+for item in @files
+  dsp_flag = true unless item.is_image  #画像以外のファイルがある時は表示する
+end unless @files.blank?
+%>
+<%if dsp_flag %>
+<div class="docsInnerBox2">
+<table class="gwboardAttachlist">
+<tr><th colspan="2">添付ファイル名</th></tr>
+<%
+for item in @files
+  download_url = "#{item.file_uri(item.system_name)}"
+%>
+<%unless item.is_image %>
+ <tr>
+ <td style="width:30px;" class="attachIcon"><%= link_to('',download_url,:class => item.icon_type) %></td>
+ <td><%= link_to(%Q[#{item.filename} (#{item.eng_unit})],download_url) %></td>
+ </tr>
+<%end%>
+<%
+end %>
+</table>
+</div>
+<span style="color: #ff0000;">※パケット定額サービスに入っていない場合、高額の通信料が発生する場合があります。</span>
+<%end%>

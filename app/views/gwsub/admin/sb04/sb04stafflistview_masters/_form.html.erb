@@ -1,10 +1,10 @@
 <%
-fyears = Gwsub::Sb04EditableDate.all.order("published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+fyears = Gwsub::Sb04EditableDate.find(:all, :order=>"published_at DESC").collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 
 fyear_id_sb04 = nz(@item.fyear_id_sb04, @fyed_id).to_i
 groups = Gwsub::Sb04section.sb04_group_select(fyear_id_sb04, 1)
 
-section_item = Gwsub::Sb04section.where("id = ?", nz(@item.management_gid_sb04, @section_id).to_i).first
+section_item = Gwsub::Sb04section.new.find(:first, :conditions=>["id = ?", nz(@item.management_gid_sb04, @section_id).to_i])
 staffs = []
 staffs =  section_item.staffs.collect{|x| ['('+x.staff_no+')'+x.name, x.id]} unless section_item.blank?
 -%>
@@ -50,7 +50,7 @@ staffs =  section_item.staffs.collect{|x| ['('+x.staff_no+')'+x.name, x.id]} unl
   function update_fyed_id_sb04() {
     fyear_id = $("item_fyear_id_sb04").value
     end_cnt = 0;
-    url = "/gwsub/sb04/04/sb04stafflists/section_fields?fyed_id=" + fyear_id;
+    url = "/gwsub/sb04/04/sb04stafflists/section_fields.csv?fyed_id=" + fyear_id;
     new Ajax.Request(url, {method:'get', onComplete: function(x){
       $('item_management_gid_sb04').update(x.responseText);
       $('item_division_gid_sb04').update(x.responseText);
@@ -63,7 +63,7 @@ staffs =  section_item.staffs.collect{|x| ['('+x.staff_no+')'+x.name, x.id]} unl
   }
   function update_management_gid_sb04() {
     section_id = $("item_management_gid_sb04").value
-    url = "/gwsub/sb04/04/sb04stafflists/master_sections_fields?section_id=" + section_id;
+    url = "/gwsub/sb04/04/sb04stafflists/master_sections_fields.csv?section_id=" + section_id;
     new Ajax.Request(url, {method:'get', onComplete: function(x){
       $('item_management_uid_sb04').update(x.responseText);
       ed_str = ed_str + 'management_uid_sb04';

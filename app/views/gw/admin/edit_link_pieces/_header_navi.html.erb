@@ -1,10 +1,10 @@
 <div class="navi">
 <span style="margin-right:3em;" class="Menu">
-  <%= link_to '全一覧', {action: :list} %>
+  <%= link_to '全一覧' , "/gw/edit_link_pieces/list?pid=0" %>
 </span>
-<% ancestors = @parent.self_and_ancestors.reverse %>
-<% ancestors.each_with_index do |c, k| %>
-  <%= link_to c.name.html_safe, {action: :index, pid: c.id} %>
-  <% if ancestors.size != k + 1 %>&gt;<% end %>
+<% tree = @parent.parent_tree %>
+<% tree.each_with_index do |c, k| %>
+  <%= link_to c.name.html_safe, "/gw/edit_link_pieces?pid=#{c.id}" %>
+  <% if tree.size != k + 1 %>&gt;<% end %>
 <% end %>
 </div>

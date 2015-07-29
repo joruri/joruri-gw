@@ -1,95 +1,93 @@
 <%= required_head %>
 <table class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= f.radio_buttons :state, @item.state_list %></td>
-  </tr>
-  <tr>
-    <th>所属管理者用画面</th>
-    <td><%= f.select :create_section, @item.use_section_admin , :class => 'select default_limit'%></td>
-  </tr>
+ <tr>
+<th>状態</th>
+<td><%=f.radio_buttons :state, @item.state_list, :class => 'state' %></td>
+ </tr>
+<tr>
+<th>所属管理者用画面</th>
+<td><%= f.select :create_section, @item.use_section_admin , :class => 'select default_limit'%></td>
+</tr>
+</table>
+<table class="show">
+ <tr>
+<th>承認機能</th>
+<td><%=f.radio_buttons :recognize, @item.recognize_states_list, :class => 'radio recognize' %></td>
+ </tr>
+ <tr>
+<th>図書名<%= required('※') %></th>
+<td><%= f.text_field :title, :class => 'string title' %></td>
+</tr>
+<tr>
+<th>一覧表示行数</th>
+<td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
+</tr>
+ <tr>
+<th>日付順一覧表示機能</th>
+<td><%=f.radio_buttons :importance, @item.display_states_list, :class => 'radio importance' %></td>
+ </tr>
+ <tr>
+<th>見出しルート名<%= required('※') %></th>
+<td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
+ </tr>
+ <tr>
+<th>索引ツリーに番号<br />を表示する</th>
+<td><%=f.radio_buttons :category, @item.display_states_list, :class => 'radio category' %></td>
+ </tr>
+ <tr>
+<th>見出し区切り文字<%= required('※') %></th>
+<td><%= f.text_field :separator_str1, :size=>3%></td>
+ </tr>
+ <tr>
+<th>見出しと記事の区切り文字<%= required('※') %></th>
+<td><%= f.text_field :separator_str2, :size=>3%></td>
+ </tr>
+<tr>
+<th>記事更新時連絡機能</th>
+<td><%=f.radio_buttons :notification, @item.use_states_list, :class => 'radio notification' %></td>
+</tr>
+</table>
+<table class="show">
+ <tr>
+<th>画像 総容量制限<%= required('※') %></th>
+<td>
+<%= f.text_field :upload_graphic_file_size_capacity, :size=>3 %>
+<%= f.select :upload_graphic_file_size_capacity_unit, @item.size_unit_name %>
+<%= @image_message%>
+</td>
+ </tr>
+ <tr>
+<th>添付 総容量制限<%= required('※') %></th>
+<td>
+<%= f.text_field :upload_document_file_size_capacity, :size=>3 %>
+<%= f.select :upload_document_file_size_capacity_unit, @item.size_unit_name %>
+<%= @document_message%>
+</td>
+ </tr>
+ <tr>
+<th>画像サイズ制限<%= required('※') %></th>
+<td><%= f.text_field :upload_graphic_file_size_max, :size=>3 %> MB</td>
+ </tr>
+ <tr>
+<th>添付サイズ制限<%= required('※') %></th>
+<td><%= f.text_field :upload_document_file_size_max, :size=>3 %> MB</td>
+ </tr>
 </table>
 
 <table class="show">
-  <tr>
-    <th>承認機能</th>
-    <td><%= f.radio_buttons :recognize, @item.recognize_states_list %></td>
-  </tr>
-  <tr>
-    <th>図書名<%= required('※') %></th>
-    <td><%= f.text_field :title, :class => 'string title' %></td>
-  </tr>
-  <tr>
-    <th>一覧表示行数</th>
-    <td><%= f.select :default_limit, @item.default_limit_line , :class => 'select default_limit'%></td>
-  </tr>
-  <tr>
-    <th>日付順一覧表示機能</th>
-    <td><%= f.radio_buttons :importance, @item.display_states_list %></td>
-  </tr>
-  <tr>
-    <th>見出しルート名<%= required('※') %></th>
-    <td><%= f.text_field :category1_name, :class => 'string category1_name' %></td>
-  </tr>
-  <tr>
-    <th>索引ツリーに番号<br />を表示する</th>
-    <td><%= f.radio_buttons :category, @item.display_states_list %></td>
-  </tr>
-  <tr>
-    <th>見出し区切り文字<%= required('※') %></th>
-    <td><%= f.text_field :separator_str1, :size=>3%></td>
-  </tr>
-  <tr>
-    <th>見出しと記事の区切り文字<%= required('※') %></th>
-    <td><%= f.text_field :separator_str2, :size=>3%></td>
-  </tr>
-  <tr>
-    <th>記事更新時連絡機能</th>
-    <td><%= f.radio_buttons :notification, @item.use_states_list %></td>
-  </tr>
+ <tr>
+<th>並び順指定</th>
+<td><%= f.text_field :sort_no, :size=>6 %></td>
+ </tr>
+ <tr>
+<th>電子図書一覧に表示</th>
+<td><%= f.select :view_hide, @item.list_view_name %></td>
+ </tr>
+ <tr>
+<th>利用説明<br />(HTML形式可)</th>
+<td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption'%></td>
+ </tr>
 </table>
 
-<table class="show">
-  <tr>
-    <th>画像 総容量制限<%= required('※') %></th>
-    <td>
-      <%= f.text_field :upload_graphic_file_size_capacity, :size=>3 %>
-      <%= f.select :upload_graphic_file_size_capacity_unit, @item.size_unit_name %>
-      <%= @item.upload_graphic_file_size_currently_message if @item.persisted? %>
-    </td>
-  </tr>
-  <tr>
-    <th>添付 総容量制限<%= required('※') %></th>
-    <td>
-      <%= f.text_field :upload_document_file_size_capacity, :size=>3 %>
-      <%= f.select :upload_document_file_size_capacity_unit, @item.size_unit_name %>
-      <%= @item.upload_document_file_size_currently_message if @item.persisted? %>
-    </td>
-  </tr>
-  <tr>
-    <th>画像サイズ制限<%= required('※') %></th>
-    <td><%= f.text_field :upload_graphic_file_size_max, :size=>3 %> MB</td>
-  </tr>
-  <tr>
-    <th>添付サイズ制限<%= required('※') %></th>
-    <td><%= f.text_field :upload_document_file_size_max, :size=>3 %> MB</td>
-  </tr>
-</table>
-
-<table class="show">
-  <tr>
-    <th>並び順指定</th>
-    <td><%= f.text_field :sort_no, :size=>6 %></td>
-  </tr>
-  <tr>
-    <th>電子図書一覧に表示</th>
-    <td><%= f.select :view_hide, @item.list_view_name %></td>
-  </tr>
-  <tr>
-    <th>利用説明<br />(HTML形式可)</th>
-    <td><%= f.text_area :caption , :cols => 84, :rows => 2 , :class => 'string caption' %></td>
-  </tr>
-</table>
-
-<%= render '/gwboard/admin/adms/form' %>
-<%= render 'notes', f: f %>
+<%= render :partial => '/gwboard/admin/adms/form_s' %>
+<%= render(:partial => 'notes', :locals => {:f => f}) %>

@@ -1,24 +1,34 @@
-<% if files.present? %>
+<%
+show_all_attachment_files = true
+#旧設定では表示させないように注意が必要
+unless show_all_attachment_files
+  #画像以外のファイルがある時は表示する
+  dsp_flag = @files.find{|file| !file.is_image} ? true : false
+end
+%>
+<% if @files.size > 0 && (show_all_attachment_files || dsp_flag) %>
 <div class="docsInnerBox2">
 <table class="gwboardAttachlist">
+<tr>
+  <th colspan="2">添付ファイル名</th>
+  <th class="remark">備考</th>
+</tr>
+<% for item in @files %>
+  <% download_url = "#{item.file_uri(item.system_name)}" %>
+  <% if show_all_attachment_files || !item.is_image %>
   <tr>
-    <th colspan="2">添付ファイル名</th>
-    <th class="remark">備考</th>
+    <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, :class => item.icon_type %></td>
+    <td><%= link_to "#{item.filename} (#{item.eng_unit})", download_url %></td>
+    <td class="remark">
+    <%# 電子図書で編集権があれば、添付ファイルの備考欄編集を表示 %>
+    <% if @is_editable %>
+      <%= link_to '編集', "#{item.edit_memo_path(@title,@item)}#{doclib_params_set}" if @item.doc_alias == 0 && item.system_name == 'digitallibrary' %>
+    <% end %>
+    <%= item.memo %>
+    </td>
   </tr>
-  <% files.each do |file| %>
-    <% download_url = "#{file.file_uri(file.system_name)}" %>
-    <tr>
-      <td style="width:30px;" class="attachIcon"><%= link_to '', download_url, class: file.icon_type %></td>
-      <td><%= link_to "#{file.filename} (#{file.eng_unit})", download_url %></td>
-      <td class="remark">
-        <%# 電子図書で編集権があれば、添付ファイルの備考欄編集を表示 %>
-        <% if file.system_name == 'digitallibrary' && file.doc.is_editable? %>
-          <%= link_to '編集', "#{file.edit_memo_path(@title, file)}#{doclib_params_set}" if file.doc.doc_alias == 0 %>
-        <% end %>
-        <%= file.memo %>
-      </td>
-    </tr>
   <% end %>
+<% end %>
 </table>
 </div>
 <% end %>

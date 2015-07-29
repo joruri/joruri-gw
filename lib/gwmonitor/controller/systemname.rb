@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module Gwmonitor::Controller::Systemname
 
   def disp_system_name

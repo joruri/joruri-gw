@@ -4,39 +4,40 @@ str_params = ''
 str_params += "&limit=#{params[:limit]}" unless params[:limit].blank?
 str_params += "&kwd=#{URI.encode(params[:kwd])}" unless params[:kwd].blank?
 %>
-<%= render 'header' %>
+<%=render :partial => 'header' %>
 <div class="inner">
-<% if @items.present? %>
-<table class="docformTitle">
-  <tr>
-    <% if @title.category == 0 %>
-      <th style="width: 40px; text-align: center;">索引</th>
-    <% end %>
-    <th style="text-align: left;">見出し・タイトル</th>
-    <th style="width: 150px;"></th>
-    <% if @title.is_writable? %>
-      <th style="width: 40px;"></th>
-    <% end %>
+<%unless @items.blank?%>
+ <table class="docformTitle">
+ <tr>
+ <%if @title.category == 0%>
+ <th style="width: 30px; text-align: center;">索引</th>
+ <%end%>
+ <%if @is_writable%>
+  <th style="text-align: left;" colspan="3">見出し・タイトル</th>
+ <%else%>
+  <th style="text-align: left;" colspan="2">見出し・タイトル</th>
+ <%end%>
+
+ </tr>
+ <%for item in @items%>
+  <tr class="<%= cycle '', 'cycle' %>">
+  <%if @title.category == 0%>
+   <td style="text-align: center;"><%= item.seq_name %></td>
+  <%end%>
+  <%if item.doc_type == 0%>
+   <td><%=h item.title %></td>
+   <td style="width: 120px; text-align: center;"><%=  link_to_list_gwboard_category item %>　　　<%= link_to '詳細', item.show_folder_path %></td>
+  <%else%>
+   <td><%= link_to(item.title, "#{digitallibrary_doc_path(item,{:title_id=>@title.id})}#{str_params}#{cat_params(item)}")%></td>
+   <td style="width: 120px;text-align: center;"><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M')  unless item.latest_updated_at.blank?  %></td>
+  <%end%>
+  <%if @is_writable%>
+  <td style="width: 30px; text-align: right;"><%=item.display_order%></td>
+  <%end%>
   </tr>
-  <% @items.each do |item| %>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <% if @title.category == 0 %>
-        <td style="text-align: center;"><%= item.seq_name %></td>
-      <% end %>
-      <% if item.doc_type == 0 %>
-        <td><%= item.title %></td>
-        <td style="text-align: center;"><%= link_to_list_gwboard_category item %>　　　<%= link_to '詳細', item.show_folder_path %></td>
-      <% else %>
-        <td><%= link_to item.title, "#{digitallibrary_doc_path(item, title_id: @title.id, state: params[:state])}#{str_params}#{cat_params(item)}" %></td>
-        <td style="text-align: center;"><%= item.latest_updated_at.strftime('%Y-%m-%d %H:%M') unless item.latest_updated_at.blank? %></td>
-      <% end %>
-      <% if @title.is_writable? %>
-        <td style="text-align: right;"><%= item.display_order %></td>
-      <% end %>
-    </tr>
-  <% end %>
+ <%end%>
 </table>
-<%= render 'limit_change' %>
-<%= paginate @items %>
-<% end %>
+<%=render :partial => 'limit_change'%>
+<%=paginate @items %>
+<%end unless params[:state] == 'DRAFT' %>
 </div><!--inner-->

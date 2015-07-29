@@ -1,12 +1,13 @@
 <div class="gwsub sb04">
-<%= render 'gwsub/admin/sb04/sb04_piece_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_piece_header' %>
 <div class="pieceBanner">
-<%= render 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
-<%= render 'gwsub/admin/sb04/sb04_level3menu_header' %>
-<%= render 'gwsub/admin/sb04/sb04_editable_dates/display_name' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_subfunction_select_menu' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_level3menu_header' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_editable_dates/display_name' %>
 </div>
 <div class="pieceBody">
-<%= render 'gwsub/admin/sb04/sb04_editable_dates/search_with_fyear' %>
+<%= render :partial => 'gwsub/admin/sb04/sb04_editable_dates/search_with_fyear' %>
+<%= div_notice %>
   <table class="index">
     <tr>
       <th></th>

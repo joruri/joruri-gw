@@ -1,6 +1,4 @@
 <table class="show bbsText">
-  <tr>
-    <th>表示期間設定</th>
-    <td><%= select_tag 'item[0][]', options_for_select(@item.limit_options, @item.limit_value) %></td>
-  </tr>
+<tr><th>表示期間設定</th><td><%= select_tag :config_0, options_for_select(@limit_select, @array_config[0]) %></td></tr>
 </table>
+

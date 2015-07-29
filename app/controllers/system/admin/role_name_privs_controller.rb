@@ -1,22 +1,16 @@
+# encoding: utf-8
 class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
   layout "admin/template/admin"
 
-  def pre_dispatch
-    return redirect_to system_role_name_privs_path if params[:reset]
-
-    @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
-
-    @role_id = nz(params[:role_id], '0')
-    @priv_id = nz(params[:priv_id], '0')
-    @params_set = System::RoleNamePriv.params_set(params)
-
-    Page.title = "機能権限設定"
+  def initialize_scaffold
+    @css = %w(/layout/admin/style.css)
+    return redirect_to(system_role_name_privs_path) if params[:reset]
   end
 
   def index
+    init_params
+    return authentication_error(403) unless @is_dev
     item = System::RoleNamePriv.new
     item.page  params[:page], params[:limit]
     order = "system_role_names.sort_no, system_priv_names.sort_no"
@@ -29,36 +23,72 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
   end
 
   def show
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::RoleNamePriv.find(params[:id])
   end
 
   def new
-    @item = System::RoleNamePriv.new
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleNamePriv.new({
+      #:class_id => '1',
+      #:priv => '1'
+      })
   end
 
   def create
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::RoleNamePriv.new(params[:item])
-
-    _create @item, :success_redirect_uri => "/system/role_name_privs#{@params_set}", :notice => '機能権限設定の登録に成功しました。'
+    location  = "/system/role_name_privs#{@params_set}"
+    options = {
+      :success_redirect_uri=>location,
+      :notice => '機能権限設定の登録に成功しました。'
+      }
+    _create(@item, options)
   end
 
   def edit
-    @item = System::RoleNamePriv.where(:id => params[:id]).first
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleNamePriv.find_by_id(params[:id])
   end
 
   def update
-    @item = System::RoleNamePriv.find(params[:id])
+    init_params
+    return authentication_error(403) unless @is_dev
+    @item = System::RoleNamePriv.new.find(params[:id])
     @item.attributes = params[:item]
-
-    _update @item, :success_redirect_uri => "/system/role_name_privs/#{@item.id}#{@params_set}", 
+    location  = "/system/role_name_privs/#{@item.id}#{@params_set}"
+    options = {
+      :success_redirect_uri =>  location,
       :notice => "機能権限設定の更新に成功しました。"
+      }
+    _update(@item, options)
   end
 
   def destroy
+    init_params
+    return authentication_error(403) unless @is_dev
     @item = System::RoleNamePriv.new.find(params[:id])
-
-    _destroy @item, :success_redirect_uri => "/system/role_name_privs#{@params_set}", 
+    location  = "/system/role_name_privs#{@params_set}"
+    options = {
+      :success_redirect_uri=>location,
       :notice => "機能権限設定の削除に成功しました。"
+      }
+    _destroy(@item, options)
+  end
+
+  def init_params
+    @is_dev = System::Role.is_dev?
+    @is_admin = System::Role.is_admin?
+    @role_id = nz(params[:role_id],'0')
+    @priv_id = nz(params[:priv_id],'0')
+
+    Page.title = "機能権限設定"
+
+    @params_set = System::RoleNamePriv.params_set(params)
   end
 
   def getajax

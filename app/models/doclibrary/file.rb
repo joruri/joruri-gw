@@ -1,32 +1,31 @@
+# -*- encoding: utf-8 -*-
 class Doclibrary::File < Gwboard::CommonDb
   include System::Model::Base
   include System::Model::Base::Content
-  include Gwboard::Model::SerialNo
-  include Gwboard::Model::File::Base
+  include Cms::Model::Base::Content
   include Doclibrary::Model::Systemname
+  include Gwboard::Model::AttachFile
+  include Gwboard::Model::AttachesFile
 
-  belongs_to :doc, :foreign_key => :parent_id
   belongs_to :parent, :foreign_key => :parent_id, :class_name => 'Doclibrary::Doc'
-  belongs_to :control, :foreign_key => :title_id
-  belongs_to :db_file, :foreign_key => :db_file_id, :dependent => :destroy
 
-  scope :search_with_params, ->(control, params) {
-    rel = all
-    rel = rel.search_with_text(:filename, params[:kwd]) if params[:kwd].present?
-    rel
-  }
-  scope :index_order_with_params, ->(control, params) {
-    case params[:state]
-    when 'DATE'
-      order(updated_at: :desc, created_at: :desc, filename: :asc)
-    when 'GROUP'
-      files = arel_table
-      docs = Doclibrary::Doc.arel_table
-      order(docs[:section_code].asc, docs[:category1_id].asc, files[:updated_at].desc, files[:created_at].desc, files[:filename].asc).joins(:doc)
-    else
-      order(filename: :asc, updated_at: :desc, created_at: :desc)
-    end
-  }
+  validates_presence_of :filename, :message => "ファイルが指定されていません。"
+
+  before_create :before_create
+  after_create :after_create
+  after_destroy :after_destroy
+
+  def search(params)
+    params.each do |n, v|
+      next if v.to_s == ''
+      case n
+      when 'kwd'
+        and_keywords v, :filename
+      end
+    end if params.size != 0
+
+    return self
+  end
 
   def item_path
     return "/doclibrary/docs?title_id=#{self.title_id}&p_id=#{self.parent_id}"

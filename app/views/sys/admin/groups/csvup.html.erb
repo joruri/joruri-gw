@@ -1,0 +1,28 @@
+<% location = csvup_sys_groups_path %>
+<h4>CSV登録（system_groups）</h4>
+<div>
+  <span style="color:red">登録済データを、すべて削除し、新規登録となります。</span><br />
+  <span style="color:red">登録に失敗するとログインできなくなることがあるので、登録データの確認は十分に行ってください。</span>
+</div>
+<%= form_tag location, {:method => :post, :multipart => true} do %>
+<%= hidden_field_tag('item[csv]','up') %>
+<table class="show">
+  <tr>
+    <th></th>
+    <td>登録対象CSVファイルと文字コードを選択して実行してください</td>
+  </tr>
+  <tr>
+    <th>文字コード</th>
+    <td>
+      <%= radio_button_tag('item[nkf]', 'utf8',true) %><label for="item_nkf_utf8">UTF8</label>
+      <%= radio_button_tag('item[nkf]', 'sjis',false ) %><label for="item_nkf_sjis" >SJIS</label>
+    </td>
+  </tr>
+  <tr>
+    <th>ファイル</th>
+    <td><%= file_field_tag( 'item[file]' ,:size=>80 )%></td>
+  </tr>
+</table>
+<br />
+<%= submit_tag 'CSV登録' %>
+<% end %>

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 ################################################################################
 #
 ################################################################################
@@ -7,27 +8,28 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
   include Questionnaire::Model::Systemname
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     @css = ["/_common/themes/gw/css/circular.css"]
-    Page.title = 'アンケート集計システム'
+    @system_title = 'アンケート集計システム'
+    Page.title = @system_title
     params[:limit] = 100
 
-    @title = Questionnaire::Base.where(:id => params[:parent_id]).first
+    @title = Questionnaire::Base.find_by_id(params[:parent_id])
     return http_error(404) unless @title
     return http_error(404) if @title.form_body.blank?
-    @field_lists = JSON.parse(@title.form_body)
+    @field_lists = JsonParser.new.parse(@title.form_body_json)
     return http_error(404) if @field_lists.size == 0
   end
 
   def is_creator
     system_admin_flags
-    params[:cond] = '' if @title.creater_id == Core.user.code if @is_sysadm
-    params[:cond] = 'admin' unless @title.creater_id == Core.user.code if @is_sysadm
+    params[:cond] = '' if @title.creater_id == Site.user.code if @is_sysadm
+    params[:cond] = 'admin' unless @title.creater_id == Site.user.code if @is_sysadm
 
     ret = false
     ret = true if @is_sysadm
-    ret = true if @title.creater_id == Core.user.code  if @title.admin_setting == 0
-    ret = true if @title.section_code == Core.user_group.code  if @title.admin_setting == 1
+    ret = true if @title.creater_id == Site.user.code  if @title.admin_setting == 0
+    ret = true if @title.section_code == Site.user_group.code  if @title.admin_setting == 1
     @is_creator = ret
     return ret
   end
@@ -36,7 +38,7 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
     is_not_open_public = true
     is_not_open_public = false if @title.result_open_state == true if @title.state == 'closed'
     is_creator
-    return error_auth unless @is_creator if is_not_open_public
+    return authentication_error(403) unless @is_creator if is_not_open_public
     #非公開
     if @title.include_index == false
       return http_error(404) if params[:k].blank?
@@ -51,7 +53,7 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
 
 
   def answer_to_details
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
     params_key_code = ''
     params_key_code = "?k=#{@title.keycode}" if @title.include_index == false
 
@@ -68,7 +70,7 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
       d.and :question_type, 'group'
       d.and :parent_id, @title.id
     }
-		field_count = Questionnaire::FormField.where(sql.where).count
+    field_count = Questionnaire::FormField.count(:conditions=>sql.where)
     Questionnaire::Result.destroy_all("title_id=#{@title.id}")
     Questionnaire::Temporary.destroy_all("title_id=#{@title.id}")
     field_to_result_records(field_count)
@@ -103,8 +105,8 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
 
       options = ''
       if fld['question_type'].index('text').blank?
-        item = Questionnaire::FormField.where(:id =>fld['field_id']).first
-        options = JSON.parse(item.option_body) unless item.option_body.blank? unless item.blank?
+        item = Questionnaire::FormField.find_by_id(fld['field_id'])
+        options = JsonParser.new.parse(item.option_body_json) unless item.option_body.blank? unless item.blank?
       end
 
       item = Questionnaire::Result.new
@@ -187,7 +189,7 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
         })
       else
         values = []
-        values = JSON.parse(answer) unless answer.blank?
+        values = JsonParser.new.parse(answer) unless answer.blank?
         for value in values
           Questionnaire::Temporary.create({
             :title_id => @title.id ,
@@ -264,15 +266,15 @@ class Questionnaire::Admin::Menus::ResultsController < Gw::Controller::Admin::Ba
     open_close_update(false)
   end
   def open_close_update(state=nil)
-    return error_auth unless is_creator
+    return authentication_error(403) unless is_creator
     return unless @title.state == 'closed'
 
     @title.	result_open_state = state
     unless @is_sysadm
-      @title.creater_id = Core.user.code
-      @title.creater = Core.user.name
-      @title.createrdivision = Core.user_group.name
-      @title.createrdivision_id = Core.user_group.code
+      @title.creater_id = Site.user.code
+      @title.creater = Site.user.name
+      @title.createrdivision = Site.user_group.name
+      @title.createrdivision_id = Site.user_group.code
     end
     @title.save
     params_key_code = ''

@@ -1,3 +1,4 @@
+# encoding: utf-8
 class System::Controller::Mail::Smtp < ActionMailer::Base
   def default_mail(mail_fr, mail_to, subject, message)
     mail({

@@ -1,1 +1,18 @@
-<%= render 'gwbbs/admin/piece/menus/categories' %>
+<%
+  categ_name = '分類'
+  categ_name = @title.category1_name unless @title.category1_name.blank?
+%>
+<%if @title.category == 1 -%>
+  <h3 class="iconSideCategory"><span class="<%= 'current' if params[:state] == 'CATEGORY'%>"><%=link_to(categ_name, "#{@title.docs_path}&state=CATEGORY") -%></span></h3>
+  <%lcnt = 0 -%>
+  <ul>
+  <% for cat in @categories1 -%>
+      <%cat_count = "・#{cat.name}(#{gwbd_category_count( cat[:id])})" -%>
+    <li>
+      <%=link_to(cat_count, @title.docs_path + "&state=CATEGORY&cat1=#{cat[:id]}") -%>
+    </li>
+      <%lcnt = lcnt + 1 -%>
+      <%break if @title.categoey_view_line <= lcnt if 0 < @title.categoey_view_line -%>
+  <% end -%>
+  </ul>
+<%end%>

@@ -2,7 +2,6 @@
 <%
 str_tab1_class = 'tab'
 str_tab3_class = 'tab'
-str_tab4_class = 'tab'
 str_tab5_class = 'tab'
 str_tab6_class = 'tab'
 str_tab7_class = 'tab'
@@ -12,8 +11,6 @@ when '1'
   str_tab1_class = 'tab current'
 when '3'
   str_tab3_class = 'tab current'
-when '4'
-  str_tab4_class = 'tab current'
 when '5'
   str_tab5_class = 'tab current'
 when '6'
@@ -33,27 +30,24 @@ end
   <tr>
   <td class="spaceLeft"></td>
   <td class="<%=str_tab1_class%>"><%=link_to "ポータル", gw_config_settings_path(:c1=>1,:c2=>1) %></td>
-
+  
   <td class="spaceCenter"></td>
   <td class="<%=str_tab3_class%>"><%=link_to "スケジューラー", gw_config_settings_path(:c1=>1,:c2=>3) %></td>
-
-<td class="spaceCenter"></td>
-<td class="<%=str_tab4_class%>"><%=link_to "会議等案内", "/gw/config_settings?c1=1&c2=4" %></td>
-
+  
   <% if @role_board == true %>
   <td class="spaceCenter"></td>
   <td class="<%=str_tab6_class%>"><%=link_to "掲示板等設定", gw_config_settings_path(:c1=>1,:c2=>6) %></td>
   <% end %>
-
+  
   <td class="spaceCenter"></td>
   <td class="<%=str_tab5_class%>"><%=link_to "基本設定", gw_config_settings_path(:c1=>1,:c2=>5) %></td>
-
+  
   <td class="spaceCenter"></td>
   <td class="<%=str_tab7_class%>"><%=link_to "削除設定", gw_config_settings_path(:c1=>1,:c2=>7) %></td>
-
+  
   <td class="spaceCenter"></td>
   <td class="<%=str_tab8_class%>"><%=link_to "各種カウント", gw_config_settings_path(:c1=>1,:c2=>8) %></td>
-
+  
   <td class="spaceRight"></td>
   </tr>
   </tbody>

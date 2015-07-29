@@ -1,12 +1,14 @@
 <table class="index">
+  
   <tr>
-    <th style="width: 60px; text-align: center;"></th>
-    <th style="width: 150px; text-align: center;">バージョン</th>
-    <th style="width: 150px; text-align: center;">作成日時</th>
+    <th style="width: 60px; text-align: center;">Show</th>
+    <th style="width: 150px; text-align: center;">Version</th>
+    <th style="width: 150px; text-align: center;">Created</th>
     <th style=""></th>
     <th style="width: 60px;"></th>
   </tr>
-  <% @items.each do |item| %>
+  
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: center;"><%= link_to '詳細', url_for(:action => :show, :id => item.version) %></td>
     <td style="text-align: center;"><%= item.version %></td>
@@ -15,6 +17,7 @@
     <td style="text-align: center;"><%= link_to '削除', url_for(:action => :destroy, :id => item.version), :confirm => '削除してよろしいですか？', :method => :delete %></td>
   </tr>
   <% end %>
+
 </table>
 
 <%= paginate @items %>

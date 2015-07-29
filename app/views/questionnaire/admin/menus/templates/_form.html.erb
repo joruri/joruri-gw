@@ -1,24 +1,24 @@
+<%= raw(gw_js_include_full) %>
 <%= required_head %>
 
 <table class="show">
-  <tr>
-    <th>タイトル<%= required('※') %></th>
-    <td><%= f.text_field :manage_title, :class => 'string title' %></td>
-  </tr>
-  <tr>
-    <th>概要説明<%= required('※') %></th>
-    <td><%= f.text_field :title, :class => 'string title' %></td>
-  </tr>
-  <% if false %><% if @is_sysadm %>
-    <tr>
-      <th>種別<%= required('※') %></th>
-      <td><%= f.radio_buttons :admin_setting, @item.admin_setting_name %></td>
-    </tr>
-  </table>
-  <% end %><% end %>
+<tr><th>タイトル<%= required('※') %></th>
+<td><%= f.text_field :title, :class => 'string title' %></td></tr>
+<%if @is_sysadm == true%>
+<tr><th>種別<%= required('※') %></th>
+<td>
+<%= raw(radio f, :admin_setting , @item.admin_setting_name , :class => 'state') %>
+</td></tr>
 </table>
-<%= f.hidden_field :admin_setting %>
-<%= f.hidden_field :state %>
+<%else%>
+</table>
+<%= hidden_field_tag("item[admin_setting]", @item.admin_setting, :id=>"item_admin_setting") %>
+<%end%>
+
+
+
+<%= hidden_field_tag("item[state]", @item.state, :id=>"item_state") %>
+
 
 <script type="text/javascript">
 //<![CDATA[

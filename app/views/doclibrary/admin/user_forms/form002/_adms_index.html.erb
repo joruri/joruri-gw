@@ -1,0 +1,13 @@
+<%= render :partial => 'header' %>
+<%if params[:state] == 'GROUP'%>
+  <%= render :partial => 'folder_name' %>
+  <%=render :partial => 'doclib_index' %>
+<%end%>
+<%if params[:state] == 'CATEGORY'%>
+  <%= render :partial => 'folder_name' %>
+  <%=render :partial => 'doclib_index' %>
+<%end%>
+<%unless params[:state] == 'CATEGORY'%>
+  <%=doclib_admin_form_indices_date%>
+  <%=paginate @items%>
+<%end unless params[:state] == 'GROUP'%>

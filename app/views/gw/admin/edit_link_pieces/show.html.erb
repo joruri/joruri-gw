@@ -1,27 +1,29 @@
 <div class="piece AdminSetting">
-<%= render 'header_str' %>
+<%= render :partial => 'header_str' %>
+
 <div class="pieceBody">
-<%= render 'menu' %>
-<%= render 'header_new_botton' %>
-<%= render 'header_navi' %>
+<%= render :partial => 'menu', :locals => {:d => @st_date, :mode => 'month'} %>
+<%= render :partial => 'header_new_botton' %>
+<%= render :partial => 'header_navi' %>
 
 <div class="editingBox">
   <span class="btEdit">
-    <%= link_to '編集', {action: :edit} %>
+  <%= link_to '編集', "/gw/edit_link_pieces/#{@item.id}/edit?pid=#{@parent.id}" %>
   </span>
   <span class="btDestroy">
-    <%= link_to '削除', {action: :destroy}, method: :delete, confirm: '削除してよろしいですか？' %>
+  <%= link_to_destroy @item.id, nil, :qs=>"pid=#{@parent.id}" %>
   </span>
 </div>
 
+<%= div_notice %>
 <table class="show">
   <tr>
     <th>公開</th>
-    <td><%= @item.published_label %></td>
+    <td><%= Gw::EditLinkPiece.published_show(@item.published) %></td>
   </tr>
   <tr>
     <th>状態</th>
-    <td><%= @item.state_label %></td>
+    <td><%= Gw::EditLinkPiece.state_show(@item.state) %></td>
   </tr>
   <tr>
     <th>表示名</th>
@@ -47,22 +49,15 @@
   </tr>
   <tr>
     <th>CSS（アイコン）</th>
-    <td><%= @item.icon.css_name if @item.icon %></td>
+    <td><%= @item.icon.css_name if !@item.icon.blank? %></td>
   </tr>
   <tr>
     <th>CSS</th>
-    <td><%= @item.css.css_name if @item.css %></td>
+    <td><%= @item.css.css_name if !@item.css.blank? %></td>
   </tr>
   <tr>
     <th>権限判定関数</th>
     <td><%= @item.display_auth %></td>
-  </tr>
-</table>
-
-<table class="show">
-  <tr>
-    <th>リンク種別</th>
-    <td><%= @item.class_sso_label %></td>
   </tr>
   <tr>
     <th>リンク先URL</th>
@@ -70,7 +65,11 @@
   </tr>
   <tr>
     <th>接続先区分</th>
-    <td><%= @item.class_external_label %></td>
+    <td><%= Gw::EditLinkPiece.external_show(@item.class_external) %></td>
+  </tr>
+  <tr>
+    <th>SSO利用</th>
+    <td><%= Gw::EditLinkPiece.sso_show(@item.class_sso) %></td>
   </tr>
   <tr>
     <th>アカウント項目名</th>

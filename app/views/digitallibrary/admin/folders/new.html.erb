@@ -1,6 +1,6 @@
-<%= render 'folder_name' %>
+<%= render :partial => 'folder_name' %>
 <%= form_for :item, :url => "#{digitallibrary_folders_path}?title_id=#{params[:title_id]}&state=#{params[:state]}&cat=#{params[:cat]}&grp=#{params[:grp]}&gcd=#{params[:gcd]}", :method=>:post, :html => {:multipart => true, :id => 'itemForm'} do |f| %>
  <%= f.error_messages %>
- <%= render 'form', f: f %>
+ <%= render :partial => 'form', :locals => {:f => f} %>
  <%= submit_for(f, :caption=>"編集する") %>
 <% end %>

@@ -1,0 +1,43 @@
+<%= render :partial => 'search' %>
+
+<% if @items.blank? %>
+  <div class="notice">表示する項目はありません。</div>
+<% else %>
+<table class="index">
+
+  <tr>
+    <th style="text-align: center;">詳細</th>
+    <th style="">ユーザーID</th>
+    <th style="">氏名</th>
+    <th style="">名前(英)</th>
+    <th style="">役職</th>
+    <th style="">メールアドレス</th>
+    <th style="">グループ</th>
+    <th style="">LDAP</th>
+    <th style="">状態</th>
+  </tr>
+
+  <% for item in @items %>
+  <%
+    if item.groups.blank?
+      group_name = %Q(<span style="color: red;">** 所属未登録 **</span>).html_safe
+    else
+      group_name = item.groups[0].ou_name
+    end
+  %>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, url_for(:action => :show, :id => item) %></td>
+    <td><%= item.code %></td>
+    <td><%= item.name %></td>
+    <td><%= item.name_en %></td>
+    <td><%= item.official_position %></td>
+    <td><%= item.email %></td>
+    <td><%= group_name %></td>
+    <td><%= System::UsersGroup.ldap_show(item.ldap) %></td>
+    <td style="text-align: center;"><%= System::UsersGroup.state_show(item.state) %></td>
+  </tr>
+  <% end %>
+
+</table>
+<%= paginate @items %>
+<% end %>

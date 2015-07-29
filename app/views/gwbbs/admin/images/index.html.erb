@@ -1,8 +1,8 @@
-<%= render 'form' %>
+<%= render :partial => 'form' %>
 
 <% _path = '/gwbbs/docs/'%>
 <% _form_id = 'item_body'%>
-<%= form_for(:image, :url => "#{Core.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
+<% form_for(:image, :url => "#{Core.current_node.public_uri}create?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}",:html => { :multipart => true }) do |f| -%>
   <p>
     <label>アップロードする画像ファイル</label>
     <%= f.file_field :uploaded_data %><%= submit_tag 'アップロード' %>

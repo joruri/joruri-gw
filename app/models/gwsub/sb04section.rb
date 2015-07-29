@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb04section < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   belongs_to  :fy_rel     ,:foreign_key=>:fyear_id      ,:class_name=>'Gw::YearFiscalJp'
-  has_many    :staffs  , ->{order('kana')}   ,:foreign_key=>:section_id    ,:class_name=>'Gwsub::Sb04stafflist'
+  has_many    :staffs     ,:foreign_key=>:section_id    ,:class_name=>'Gwsub::Sb04stafflist' , :order=>'kana'
 
   validates_presence_of :code
   validates_presence_of :name
@@ -19,7 +20,7 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
       else
         order = "start_at DESC"
         conditions = "markjp = '#{self.fyear_markjp}'"
-        fyear = Gw::YearFiscalJp.where(conditions).order(order).first
+        fyear = Gw::YearFiscalJp.find(:first,:conditions=>conditions,:order=>order)
         self.fyear_id = fyear.id
       end
     else
@@ -30,7 +31,7 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
     end
     g_cond  = "state='enabled' and code='#{self.ldap_code}' and end_at is null"
     g_order = "start_at DESC"
-    group = System::GroupHistory.where(g_cond).order(g_order).first
+    group = System::GroupHistory.find(:first,:conditions=>g_cond,:order=>g_order)
     if group.blank?
       self.ldap_name  = nil
     else
@@ -77,8 +78,8 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
   end
 
   def self.sb04_group_select(fyear_id = nil,all = nil,options={})
-    role_developer  = Gwsub::Sb04stafflist.is_dev?
-    role_admin      = Gwsub::Sb04stafflist.is_admin?
+    role_developer  = Gwsub::Sb04stafflist.is_dev?(Site.user.id)
+    role_admin      = Gwsub::Sb04stafflist.is_admin?(Site.user.id)
     u_role = role_developer || role_admin
 
     selects = []
@@ -88,10 +89,10 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
 
     g_order = "fyear_markjp DESC , code ASC"
     if fyear_id.to_i==0
-      items = Gwsub::Sb04section.all.order(g_order)
+      items = Gwsub::Sb04section.find(:all,:order=>g_order)
     else
       g_cond  = "fyear_id=#{fyear_id}"
-      items = Gwsub::Sb04section.where(g_cond).order(g_order)
+      items = Gwsub::Sb04section.find(:all,:order=>g_order,:conditions=>g_cond)
     end
 
     return selects << ['所属未設定','0'] if items.blank?
@@ -100,7 +101,7 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
     else
       fyear_conditions = "published_at <= '#{Gw.date_common(Time.now)}'"
       fyear_order = "published_at DESC"
-      fyears = Gwsub::Sb04EditableDate.where(fyear_conditions).order(fyear_order)
+      fyears = Gwsub::Sb04EditableDate.find(:all , :conditions=>fyear_conditions , :order=>fyear_order)
       markjp = fyears[0].fyear_markjp
     end
 
@@ -121,7 +122,7 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
     # 電子事務分掌の編集期間で、一般ユーザーは自分の所属のみ表示させる
     selects = []
     return selects << ['所属未設定','0'] if fyear_id.blank?
-    sections = Gwsub::Sb04section.where("fyear_id = #{fyear_id} and ldap_code = '#{Core.user_group.code}'")
+    sections = Gwsub::Sb04section.find(:all, :conditions=>"fyear_id = #{fyear_id} and ldap_code = '#{Site.user_group.code}'")
     return selects << ['所属未設定','0'] if sections.empty?
 
     sections.each do |section|
@@ -146,5 +147,11 @@ class Gwsub::Sb04section < Gwsub::GwsubPref
     end if params.size != 0
 
     return self
+  end
+
+  def self.truncate_table
+    connect = self.connection()
+    truncate_query = "TRUNCATE TABLE `gwsub_sb04sections` ;"
+    connect.execute(truncate_query)
   end
 end

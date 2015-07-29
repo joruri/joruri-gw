@@ -1,3 +1,6 @@
+2.3.1
+ 変更なし
+
 2.3.0
 USE `xxxxxxx_jgw_gw`;
 ALTER TABLE gw_edit_link_pieces ADD mode integer AFTER state;

@@ -1,4 +1,4 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
 
   scope '_admin' do
     resources 'gwcircular' do
@@ -36,14 +36,11 @@ Rails.application.routes.draw do
     end
   end
 
-  match 'gwcircular/:id/csv_exports' => 'gwcircular/admin/menus/csv_exports#index', :via =>  [:post, :get]
-  match 'gwcircular/:id/csv_exports/export_csv' => 'gwcircular/admin/menus/csv_exports#export_csv', :via =>  [:put, :get]
-  match 'gwcircular/:id/file_exports' => 'gwcircular/admin/menus/file_exports#index', :via =>  [:post, :get]
-  match 'gwcircular/:id/file_exports/export_file' => 'gwcircular/admin/menus/file_exports#export_file', :via =>  [:post, :get]
-  match 'gwcircular/menus/:id/circular_publish' => 'gwcircular/admin/menus#circular_publish', :via =>  [:post, :get]
-  match 'gwcircular/docs/:id/already_update' => 'gwcircular/admin/docs#already_update', :via =>  [:post, :get]
-  match 'gwcircular/docs/:id/unread_update' => 'gwcircular/admin/docs#unread_update', :via =>  [:post, :get]
-  match 'gwcircular/new'       => 'gwcircular/admin/menus#new', :via =>  [:post, :get]
-  match 'gwcircular'          => 'gwcircular/admin/menus#index', :via =>  [:post, :get]
-
+  match 'gwcircular/:id/csv_exports' => 'gwcircular/admin/menus/csv_exports#index'
+  match 'gwcircular/:id/csv_exports/export_csv' => 'gwcircular/admin/menus/csv_exports#export_csv'
+  match 'gwcircular/menus/:id/circular_publish' => 'gwcircular/admin/menus#circular_publish'
+  match 'gwcircular/docs/:id/already_update' => 'gwcircular/admin/docs#already_update'
+  match 'gwcircular/new'       => 'gwcircular/admin/menus#new'
+  match 'gwcircular'          => 'gwcircular/admin/menus#index'
+  
 end

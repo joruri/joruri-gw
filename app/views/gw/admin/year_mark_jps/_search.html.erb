@@ -1,14 +1,28 @@
-<%= form_tag '', :method => :get, :class => 'search', :name => 'frmSearch' do %>
+<%#*<p>Find me in app/views/gw/admin/year_mark_jp/search.html.erb</p>%>
+<%
+# 表示行数選択
+  def limit_select
+    lines = [
+      ['10行' ,10 ],
+      ['20行' ,20 ],
+      ['30行' ,30 ],
+      ['50行' ,50 ],
+    ]
+    return lines
+  end
+limits = limit_select
+%>
+<%= form_tag('', :method => :get, :class => 'search', :name=>'frmSearch') do %>
 <table>
-  <tr>
-    <td>表示行数</td>
-    <td><%= select_tag :limit, options_for_select([['10行',10 ],['20行',20 ],['30行',30 ],['50行',50 ]], params[:limit].to_i) %></td>
-    <td>文字列検索</td>
-    <td><%= text_field_tag :s_keyword, params[:s_keyword], :size => 50 %></td>
-    <td class="submitters">
-      <%= submit_tag '検索', :name => :search %>
-      <%= submit_tag 'リセット', :name => :reset %>
-    </td>
-  </tr>
+<tr>
+<td>表示行数</td>
+<td><%= select_tag( 'limit',options_for_select( limits , @limit.to_i ) ) %></td>
+<td>文字列検索</td><td><%= text_field_tag 's_keyword',params[:s_keyword] ,:size=>50 %></td>
+<td class="submitters">
+  <%= submit_tag '検索', :name => :search %>
+  <%= submit_tag 'リセット', :name => :reset %>
+</td>
+</tr>
 </table>
+<!-- end form -->
 <% end %>

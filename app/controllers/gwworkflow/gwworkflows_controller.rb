@@ -1,16 +1,23 @@
+# encoding:utf-8
 class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
-  include System::Controller::Scaffold
+  include Gwboard::Controller::Scaffold
   include Gwboard::Controller::Common
+  include Gwworkflow::Model::DbnameAlias
+  include Gwworkflow::Controller::Authorize
+
+  rescue_from ActionController::InvalidAuthenticityToken, :with => :invalidtoken
+
   layout "admin/template/gwworkflow"
 
   def pre_dispatch
     params[:title_id] = 1
-    @title = Gwworkflow::Control.where(:id => params[:title_id]).first
+    @title = Gwworkflow::Control.find_by_id(params[:title_id])
     return http_error(404) unless @title
     Page.title = "ワークフロー"
     @css = ["/_common/themes/gw/css/workflow.css"]
+    @js = %w(/_common/js/yui/build/animation/animation-min.js /_common/js/popup_calendar/popup_calendar.js /_common/js/yui/build/calendar/calendar.js /_common/js/dateformat.js)
   end
-
+  
   def jgw_workflow_path
     return gwworkflow_menus_path
   end
@@ -50,9 +57,9 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
   end
 
   def _new options={}
-    default_published = Integer(@title.default_published) rescue false
+    default_published = is_integer(@title.default_published)
     default_published = 14 unless default_published
-
+    
     @item = Gwworkflow::Doc.new
     @item.state = :quantum # 状態が安定していないという意味です
     prototype = options[:prototype] || nil
@@ -71,9 +78,9 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
         }
       }
     end
-    @item.creater_id = Core.user.id
-    @item.creater_name = Core.user.name
-    @item.creater_gname = Core.user.group_name
+    @item.creater_id = Site.user.id
+    @item.creater_name = Site.user.name
+    @item.creater_gname = Site.user.group_name
     @item.expired_at = default_published.days.since.strftime("%Y-%m-%d %H:00") # さしあたって
     options[:after_prepare].call(@item) if options[:after_prepare]
     @quat_id = options[:quat_id] || nil
@@ -84,31 +91,31 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
   def new
     @undeletable = true
     @remanded = false
-    _new
+    _new 
   end
 
   def reapply
     item = Gwworkflow::Doc.find(params[:id].to_i)
     return http_error(404) unless item
-    return error_auth unless item.real_state== :remanded
-    return error_auth unless item.creater_id.to_i == Core.user.id
-
+    return authentication_error(403) unless item.real_state== :remanded
+    return authentication_error(403) unless item.creater_id.to_i == Site.user.id
+    
     _new :prototype => item, :title => "再申請：#{item.title}", :quat_id => item.id
     @undeletable = true
     @remanded = true
     render :new
   end
-
+  
   def elaborate
     @item = Gwworkflow::Doc.find(params[:id].to_i)
     return http_error(404) unless @item
-    return error_auth unless @item.state.to_sym == :draft
-    return error_auth unless @item.creater_id.to_i == Core.user.id
+    return authentication_error(403) unless @item.state.to_sym == :draft
+    return authentication_error(403) unless @item.creater_id.to_i == Site.user.id
     @undeletable = false
     @remanded = false
     render :new
   end
-
+  
   def send_mail(item)
     x = Gwworkflow::Model::Mail.new
     if item.state.to_sym == :applying
@@ -126,15 +133,15 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
   def create
     @item = Gwworkflow::Doc.find(params[:item][:id])
     return http_error(404) unless @item
-    return error_auth unless @item.state.to_sym == :quantum || @item.state.to_sym == :draft
-    return error_auth unless @item.creater_id.to_i == Core.user.id
+    return authentication_error(403) unless @item.state.to_sym == :quantum || @item.state.to_sym == :draft
+    return authentication_error(403) unless @item.creater_id.to_i == Site.user.id
     @item.state = (params[:submit_type] == 'draft' ? :draft : :applying )
     @item.title = params[:item][:title]
     @item.body = params[:item][:body]
     @item.expired_at = params[:item][:expired_at]
     @item.updated_at = DateTime.now
     @item.applied_at = @item.state == :draft ? nil : DateTime.now
-
+    
     unless params[:item][:quat_id].blank?
       quot_item = Gwworkflow::Doc.find(params[:item][:quat_id])
       quot_item.destroy if quot_item
@@ -147,33 +154,31 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
       step = @item.steps.build :number => idx
       step.committees.build :state => :undecided, :comment => '', :user_id => id, :user_name => name, :user_gname => gname
     }
-    @item.creater_id = Core.user.id
-    @item.creater_name = Core.user.name
-    @item.creater_gname = Core.user.group_name
-
-    _create(@item, :success_redirect_uri => {:action => :index}) do
-      send_mail(@item) unless @item.state == :draft
-    end
+    @item.creater_id = Site.user.id
+    @item.creater_name = Site.user.name
+    @item.creater_gname = Site.user.group_name
+    
+    _create(@item, :success_redirect_uri => {:action => :index}, :ignore_validate => false, :after_process_with_item => ->(item){ send_mail(item) unless @item.state == :draft })
   end
 
   def showable? item
-    item.creater_id.to_i == Core.user.id || item.steps.any?{|step| step.committee.user_id == Core.user.id }
+    item.creater_id.to_i == Site.user.id || item.steps.any?{|step| step.committee.user_id == Site.user.id }
   end
 
   def show
     @item = Gwworkflow::Doc.find(params[:id].to_i)
     return http_error(404) unless @item
-    return error_auth if @item.state.to_sym == :draft
-    return error_auth unless showable? @item
+    return authentication_error(403) if @item.state.to_sym == :draft
+    return authentication_error(403) unless showable? @item
     @files = Gwworkflow::File.where(:parent_id => @item.id)
   end
 
   def approve
     @item = Gwworkflow::Doc.find(params[:id].to_i)
     return http_error(404) unless @item
-    return error_auth if @item.state.to_sym == :draft
-    return error_auth unless @item.current_step && @item.current_step.committee.user_id == Core.user.id
-    @committee = Gwworkflow::Committee.find_by_conditions :user_id => Core.user.id, :step_id => @item.current_step.id
+    return authentication_error(403) if @item.state.to_sym == :draft
+    return authentication_error(403) unless @item.current_step && @item.current_step.committee.user_id == Site.user.id
+    @committee = Gwworkflow::Committee.find_by_conditions :user_id => Site.user.id, :step_id => @item.current_step.id
     return http_error(404) unless @committee
     @files = Gwworkflow::File.where(:parent_id => @item.id)
   end
@@ -182,12 +187,12 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
   def commit
     @item = Gwworkflow::Doc.find(params[:id].to_i)
     return http_error(404) unless @item
-    return error_auth if @item.state.to_sym == :draft
-    return error_auth unless @item.current_step
-    return error_auth unless @item.current_step.committee.user_id == Core.user.id
-    @committee = Gwworkflow::Committee.find_by_conditions :user_id => Core.user.id, :step_id => @item.current_step.id
+    return authentication_error(403) if @item.state.to_sym == :draft
+    return authentication_error(403) unless @item.current_step
+    return authentication_error(403) unless @item.current_step.committee.user_id == Site.user.id
+    @committee = Gwworkflow::Committee.find_by_conditions :user_id => Site.user.id, :step_id => @item.current_step.id
     return http_error(404) unless @committee
-
+    
     @committee.decided_at = DateTime.now
     @committee.comment = params[:committee][:comment]
     @committee.state = case params[:submit_type]
@@ -206,24 +211,22 @@ class Gwworkflow::GwworkflowsController < Gw::Controller::Admin::Base
       step.committees.build :state => :undecided, :comment => '', :user_id => id, :user_name => name, :user_gname => gname
     }
     @committee.save
-    _create(@item, :success_redirect_uri => {:action => :index}) do
-      send_mail(@item)
-    end
+    _create(@item, :success_redirect_uri => {:action => :index}, :after_process_with_item => ->(item){ send_mail(item) })
   end
 
   def destroy
     @item = Gwworkflow::Doc.find(params[:id])
     return http_error(404) unless @item
-    return error_auth unless @item.real_state.to_sym == :quantum || @item.real_state.to_sym == :draft || @item.real_state.to_sym == :accepted || @item.real_state.to_sym == :rejected || @item.real_state.to_sym == :remanded
-    return error_auth unless @item.creater_id.to_i == Core.user.id
+    return authentication_error(403) unless @item.real_state.to_sym == :quantum || @item.real_state.to_sym == :draft || @item.real_state.to_sym == :accepted || @item.real_state.to_sym == :rejected || @item.real_state.to_sym == :remanded
+    return authentication_error(403) unless @item.creater_id.to_i == Site.user.id
     Gwworkflow::File.where(:parent_id => @item.id).each{|f| f.destroy }
     @item.destroy
     redirect_to :action => :index
   end
-
+  
   def ajax_custom_route
     cr = Gwworkflow::CustomRoute.find(params[:custom_route_id])
-    cr = cr.owner_uid == Core.user.id ? cr.sorted_steps.map{|s|s.committee} : []
+    cr = cr.owner_uid == Site.user.id ? cr.sorted_steps.map{|s|s.committee} : []
     _show(cr.map{|s| [s.user_id, s.user_name_and_code]})
   end
 

@@ -31,7 +31,24 @@ module Gwboard::Model::DbnameAlias
       sys = Digitallibrary::Doc
     else
     end
-    return sys
+    return gwboard_db_alias(sys)
+  end
+
+  def gwboard_doc_close
+    case params[:system]
+    when 'gwbbs'
+      sys = Gwbbs::Doc
+    when 'gwfaq'
+      sys = Gwfaq::Doc
+    when 'gwqa'
+      sys = Gwqa::Doc
+    when 'doclibrary'
+      sys = Doclibrary::Doc
+    when 'digitallibrary'
+      sys = Digitallibrary::Doc
+    else
+    end
+    sys.remove_connection
   end
 
   def gwboard_image
@@ -48,9 +65,25 @@ module Gwboard::Model::DbnameAlias
       sys = Digitallibrary::Image
     else
     end
-    return sys
+    return gwboard_db_alias(sys)
   end
 
+  def gwboard_image_close
+    case params[:system]
+    when 'gwbbs'
+      sys = Gwbbs::Image
+    when 'gwfaq'
+      sys = Gwfaq::Image
+    when 'gwqa'
+      sys = Gwqa::Image
+    when 'doclibrary'
+      sys = Doclibrary::Image
+    when 'digitallibrary'
+      sys = Digitallibrary::Image
+    else
+    end
+    sys.remove_connection
+  end
 
   def gwboard_file
     case params[:system]
@@ -66,9 +99,25 @@ module Gwboard::Model::DbnameAlias
       sys = Digitallibrary::File
     else
     end
-    return sys
+    return gwboard_db_alias(sys)
   end
 
+   def gwboard_file_close
+    case params[:system]
+    when 'gwbbs'
+      sys = Gwbbs::File
+    when 'gwfaq'
+      sys = Gwfaq::File
+    when 'gwqa'
+      sys = Gwqa::File
+    when 'doclibrary'
+      sys = Doclibrary::File
+    when 'digitallibrary'
+      sys = Digitallibrary::File
+    else
+    end
+    sys.remove_connection
+  end
 
   def gwboard_db_file
     case params[:system]
@@ -84,10 +133,25 @@ module Gwboard::Model::DbnameAlias
       sys = Digitallibrary::DbFile
     else
     end
-    return sys
+    return gwboard_db_alias(sys)
   end
 
-
+  def gwboard_db_file_close
+    case params[:system]
+    when 'gwbbs'
+      sys = Gwbbs::DbFile
+    when 'gwfaq'
+      sys = Gwfaq::DbFile
+    when 'gwqa'
+      sys = Gwqa::DbFile
+    when 'doclibrary'
+      sys = Doclibrary::DbFile
+    when 'digitallibrary'
+      sys = Digitallibrary::DbFile
+    else
+    end
+    sys.remove_connection
+  end
   #
   def gwboard_db_alias(item)
     title_id = params[:title_id]
@@ -137,7 +201,10 @@ module Gwboard::Model::DbnameAlias
       return false
     end
 
-    @is_readable = true if Core.user.has_role?("#{system_name}/admin")
+    @is_readable = true if System::Model::Role.get(1, Core.user.id , system_name, 'admin')
+    return @is_readable if @is_readable
+
+    @is_readable = true if System::Model::Role.get(2, Core.user_group.id , system_name, 'admin') unless @is_readable
     return @is_readable if @is_readable
 
     unless @is_readable

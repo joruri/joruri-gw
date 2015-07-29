@@ -6,7 +6,7 @@
 <h2><%= @cabinet_title %></h2>
 </div>
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 <table class="index cabinets">
   <tr>
     <th class="blueIndex" style="width: 60px; text-align: right;">管理番号</th>
@@ -17,7 +17,7 @@
     <th class="blueIndex" style="width: 80px; text-align: center;">ステータス</th>
     <th class="blueIndex" style="width: 80px; text-align: center;">　</th>
   </tr>
-  <% @items.each do |item| %>
+  <% for item in @items %>
   <tr class="<%= cycle '', 'cycle' %>">
     <td style="text-align: right;"><%= item.id %></td>
     <td style="text-align: left;"><%= item.title %></td>

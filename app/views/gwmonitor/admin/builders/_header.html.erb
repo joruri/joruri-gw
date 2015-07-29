@@ -1,0 +1,27 @@
+<%
+str_tab1_class = 'tab'
+str_tab2_class = 'tab'
+str_tab3_class = 'tab'
+str_tab1_class += ' current' if params[:cond] == 'unread'
+str_tab2_class += ' current' if params[:cond] == 'already'
+str_tab3_class += ' current'
+lable_tab3 = '作成した設問'
+lable_tab3 = '管理者' if @is_sysadm
+%>
+<%#= render :partial => 'header_help' %>
+<!--掲示板タブ-->
+<div class="tabBox">
+<table class="tabtable">
+<tbody>
+<tr>
+<td class="spaceLeft"></td>
+<td class="<%=str_tab1_class%>"><%=link_to "未回答一覧", "/gwmonitor/" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab2_class%>"><%=link_to "回答済一覧", "/gwmonitor/?cond=already" %></td>
+<td class="spaceCenter"></td>
+<td class="<%=str_tab3_class%>"><%=link_to lable_tab3, "/gwmonitor/builders" %></td>
+<td class="spaceRight">
+</td></tr>
+</tbody>
+</table>
+</div><!--tabBox-->

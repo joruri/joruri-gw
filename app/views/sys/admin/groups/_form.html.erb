@@ -1,0 +1,49 @@
+<%= hidden_field_tag :parent, @parent.id %>
+<%= f.hidden_field  :parent_id    ,:value=>@parent.id %>
+<%= f.hidden_field  :level_no     ,:value=>@parent.level_no.to_i + 1 %>
+<%= f.hidden_field  :ldap_version ,:value=>@item.ldap_version %>
+<%= f.hidden_field  :ldap         ,:value=>@item.ldap %>
+<%= f.hidden_field  :version_id   ,:value=>@item.version_id %>
+<%= Gw.required_head %>
+<table class="show">
+  <tr>
+    <th>状態<%= Gw.required %></th>
+    <td><%= f.radio_buttons :state, Gw.yaml_to_array_for_select('system_states'), :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th>グループID<%= Gw.required %></th>
+    <td><%= f.text_field :code, :class => 'num name' %></td>
+  </tr>
+  <tr>
+    <th>グループ名<%= Gw.required %></th>
+    <td><%= f.text_field :name, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th>グループ名（英）</th>
+    <td><%= f.text_field :name_en, :class => 'name' %></td>
+  </tr>
+  <tr>
+    <th>メールアドレス</th>
+    <td><%= f.text_field :email, :class => 'string email', :style => 'width: 400px;' %></td>
+  </tr>
+  <tr>
+    <th>表示順</th>
+    <td><%= f.text_field :sort_no, :class => 'num' %></td>
+  </tr>
+  <tr>
+    <th>適用開始日<%= Gw.required %></th>
+    <td><%= f.calendar_date_select :start_at, :time => false %></td>
+  </tr>
+  <tr>
+    <th>適用終了日</th>
+    <td><%= f.calendar_date_select :end_at, :time => false %></td>
+  </tr>
+  <tr>
+    <th>階層レベル</th><td><%= @item.level_no %></td>
+  </tr>
+  <tr>
+    <th>親グループ</th>
+    <td><%= @item.parent.ou_name %></td>
+  </tr>
+</table>
+<%= raw(gw_js_include_full) %>

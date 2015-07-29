@@ -4,20 +4,22 @@
 </div>
 <div class="pieceBody">
 <div class="editingBox">
-<span class="docLink"><%= link_to 'ポータルに戻る >>', '/' %></span>
+<span class="docLink"><%=link_to('ポータルに戻る >>', '/') %></span>
 </div>
 <div class="titleLine">
  <p class="title">表示対象</p>
 </div>
 
-<%= form_for :item, :url => {action: :create}, :html => {method: :post} do |f| %>
-  <%= f.error_messages %>
-  <%= render 'form_new', f: f %>
+<%#= form_for :item, :url => "/gwbbs/synthesetup/create", :html => {:method => :post} do |f| %>
+<%= form_for :item, :url => "/gwbbs/synthesetup", :html => {:method => :post} do |f| %>
+<%= f.error_messages %>
+<%= render :partial => 'form_new', :locals => {:f => f} %>
 <% end %>
 
 <div class="btReturn">
-  <%= link_to '処理選択へ戻る', {action: :index} %>
+  <%=link_to('処理選択へ戻る', '/gwbbs/synthesetup') %>
 </div>
 
 </div>
+
 </div><!--piece gwbbs-->

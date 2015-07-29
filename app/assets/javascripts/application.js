@@ -11,14 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require prototype
-//= require dateformat
 //= require jquery
-//= require jquery_ujs
 //= require jquery-ui
-//= require jquery-ui/datepicker-ja
-//= require jquery-ui-timepicker-addon
-//= require jquery-ui/jquery-ui-sliderAccess
-//= require jquery-ui/datepicker-custom
+//= require jquery_ujs
 //= require_tree .
-
-jQuery.noConflict();

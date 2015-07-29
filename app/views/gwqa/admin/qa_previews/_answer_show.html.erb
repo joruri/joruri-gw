@@ -20,8 +20,8 @@
     <div class="answerhead">
       <div>
         <span class="answerTitle">回答</span>
-        <span class="answerPerson"><a Href="#">回答者 : <%= @item.creater %>  <%= @item.createrdivision %></a></span>
-        <span class="answerDay"><%= @item.updated_at.strftime('%Y-%m-%d %H:%M') %></span>
+        <span class="answerPerson"><a Href="#">回答者 : <%=h @item.creater %>  <%=h @item.createrdivision %></a></span>
+        <span class="answerDay"><%=h @item.updated_at.strftime('%Y-%m-%d %H:%M') %></span>
       </div>
     </div>
     <div class="answerContent">

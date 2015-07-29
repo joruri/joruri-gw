@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Enquete::ViewQuestion < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content

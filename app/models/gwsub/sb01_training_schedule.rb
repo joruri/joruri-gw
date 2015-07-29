@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Sb01TrainingSchedule < Gwsub::GwsubPref
   include System::Model::Base
-  include System::Model::Base::Content
+  include Cms::Model::Base::Content
 
   has_many :members      ,:foreign_key=>'training_schedule_id' ,:class_name => 'Gwsub::Sb01TrainingScheduleMember'
 
@@ -9,7 +10,7 @@ class Gwsub::Sb01TrainingSchedule < Gwsub::GwsubPref
   belongs_to :schedule   ,:foreign_key=>'schedule_id'     ,:class_name=>"Gw::Schedule"
   #belongs_to :tc_rel         ,:foreign_key=>'condition_id'    ,:class_name=>"Gwsub::Sb01TrainingScheduleCondition"
   #belongs_to :user_rel       ,:foreign_key=>'member_id'       ,:class_name=>"System::User"
-  belongs_to :group_rel      ,:foreign_key=>'group_id'        ,:class_name=>"System::Group"
+  #belongs_to :group_rel      ,:foreign_key=>'group_id'        ,:class_name=>"System::GroupHistory"
   #belongs_to :prop_rel       ,:foreign_key=>'prop_id'         ,:class_name=>"Gw::PropMeetingroom"
 
   validates_presence_of :training_id
@@ -49,7 +50,7 @@ class Gwsub::Sb01TrainingSchedule < Gwsub::GwsubPref
       st_at  = Gw.date_common(st_at1)
       return false if st_at.blank?
     end
-    holidays  =Gw::Holiday.all.order("st_at").map{|x| x.st_at.strftime("%Y-%m-%d %H:%M:%S")}
+    holidays  =Gw::Holiday.find(:all,:order=>"st_at").map{|x| x.st_at.strftime("%Y-%m-%d %H:%M:%S")}
     st_day  = st_at.split(' ')
     st_date = st_day[0].split('-')
     st_time = st_day[1].split(':')
@@ -117,19 +118,10 @@ class Gwsub::Sb01TrainingSchedule < Gwsub::GwsubPref
     return false if s_id.blank?
 
     cond = "id=#{s_id}"
-    count = Gw::Schedule.where(cond).count
+    count = Gw::Schedule.count(:all,:conditions=>cond)
 
     return false if count==0
     return true
-  end
-
-  def states_no
-    [['準備中',1], ['受付中',2], ['締切 ',3], ['終了',4], ['その他 ',5]]
-  end
-
-  def state_label
-    states_no.each {|a| return a[0] if a[1] == state.to_i }
-    return nil
   end
 
   def self.state_show(state)

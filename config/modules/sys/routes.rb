@@ -1,4 +1,4 @@
-Rails.application.routes.draw do
+JoruriGw::Application.routes.draw do
   scp = "admin"
   mod = "sys"
 
@@ -20,5 +20,5 @@ Rails.application.routes.draw do
       end
     end
   end
-  match ':controller(/:action(/:id))(.:format)', :via =>  [:post, :get]
+  match ':controller(/:action(/:id))(.:format)'
 end

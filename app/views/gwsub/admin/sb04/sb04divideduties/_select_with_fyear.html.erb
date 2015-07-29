@@ -2,11 +2,11 @@
 limits = Gw.limit_select
 if @u_role==true || @role_sb04_dev==true
   fyear_order = "published_at DESC"
-  fyear = Gwsub::Sb04EditableDate.all.order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyear = Gwsub::Sb04EditableDate.find(:all,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 else
   fyear_conditions = "published_at <= '#{Gw.date_common(Time.now)}'"
   fyear_order = "published_at DESC"
-  fyear = Gwsub::Sb04EditableDate.where(fyear_conditions).order(fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
+  fyear = Gwsub::Sb04EditableDate.find(:all,:conditions=>fyear_conditions,:order=>fyear_order).collect{|x| [x.fy_rel.markjp,x.fyear_id]}
 end
 
 fyears = fyear

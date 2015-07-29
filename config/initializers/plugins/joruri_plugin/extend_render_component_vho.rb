@@ -1,3 +1,4 @@
+# encoding: utf-8
 module RenderComponent
   module Components
     module InstanceMethods
@@ -33,18 +34,6 @@ module RenderComponent
           else
             request
           end
-        end
-
-        def flash_with_render_component(refresh = false) #:nodoc:
-          if @component_flash.nil? || refresh
-            @component_flash =
-              if defined?(@parent_controller)
-                @parent_controller.flash
-              else
-                (session['flash'] ||= ActionDispatch::Flash::FlashHash.new).tap(&:sweep)
-              end
-          end
-          @component_flash
         end
 
     end

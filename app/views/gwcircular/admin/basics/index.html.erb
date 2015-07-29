@@ -1,8 +1,8 @@
 <div class="bbsDocList circular">
-<%= render 'piece_header' %>
+<%= render :partial => 'piece_header' %>
 
 <div class="pieceBody">
-<%= render 'header' %>
+<%= render :partial => 'header' %>
 
 <table class="index">
   <tr>
@@ -14,7 +14,7 @@
     <th style="width: 80px; text-align: center;">ステータス</th>
     <th style="width: 80px; text-align: center;">　</th>
   </tr>
-  <% @items.each do |item| %>
+  <% for item in @items %>
   <%
     body_size_capacity = 0
     body_size_currently = 0
@@ -27,7 +27,7 @@
     s_color = 'color:red;' if 90 < usage
   %>
   <tr class="<%= cycle '', 'cycle' %>">
-    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: right;"><%=h item.id %></td>
     <td style="text-align: left;<%=s_color%>">
     <% if item.preview_mode %>
       <%= link_to "#{item.title} 公開デザイン確認 >>", "/gwcircular/docs/&preview=true", :target => "_blank" %>

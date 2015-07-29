@@ -1,9 +1,10 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
   layout "admin/template/portal_1column"
 
-  def pre_dispatch
+  def initialize_scaffold
     return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @page_title = "電子職員録 職員一覧"
   end
@@ -30,7 +31,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
   def show
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
     _show @item
   end
@@ -45,9 +46,9 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
       })
     if @fyed_id.to_i == 0
       @fyed_id = Gw::YearFiscalJp.get_record(Time.now).id
-      editable_date = Gwsub::Sb04EditableDate.where("fyear_id = #{@fyed_id}").first
+      editable_date = Gwsub::Sb04EditableDate.find(:first, :conditions=>"fyear_id = #{@fyed_id}")
       if editable_date.blank?
-        editable_date = Gwsub::Sb04EditableDate.order("published_at desc").first
+        editable_date = Gwsub::Sb04EditableDate.find(:first, :order=>"published_at desc")
         @fyed_id = editable_date.fyear_id if editable_date.present?
       end
     end
@@ -83,7 +84,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
   def edit
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     @fyed_id = @item.fyear_id
@@ -93,7 +94,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   end
   def update
     init_params
-    @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
+    @item = Gwsub::Sb04stafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
 
     @item.attributes = params[:item]
@@ -121,8 +122,8 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb04stafflist.is_dev?
-    @role_admin      = Gwsub::Sb04stafflist.is_admin?
+    @role_developer  = Gwsub::Sb04stafflist.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb04stafflist.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
 
     # 電子職員録 主管課権限設定
@@ -197,61 +198,176 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   end
 
   def section_fields
-    sections = Gwsub::Sb04section.sb04_group_select(params[:fyed_id].to_i, 'notall')
-    sections = [['所属未設定', 0]] if sections.blank?
-    render text: view_context.options_for_select(sections), layout: false
+    @fyed_id = nz(params[:fyed_id],@fyed_id)
+
+    sections = Gwsub::Sb04section.sb04_group_select(@fyed_id.to_i , 'notall' )
+    _html_select = ''
+    if sections.blank?
+        _html_select << "<option value='0'>所属未設定</option>"
+    else
+      sections.each do |value , key|
+        _html_select << "<option value='#{key}'>#{value}</option>"
+      end
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def sb04_dev_section_fields
-    sections = Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(params[:fyed_id].to_i)
-    sections = [['所属未設定', 0]] if sections.blank?
-    render text: view_context.options_for_select(sections), layout: false
+    @fyed_id = nz(params[:fyed_id],@fyed_id)
+
+    sections = Gwsub::Sb04stafflistviewMaster.sb04_dev_group_select(@fyed_id.to_i)
+    _html_select = ''
+    if sections.blank?
+        _html_select << "<option value='0'>所属未設定</option>"
+    else
+      sections.each do |value , key|
+        _html_select << "<option value='#{key}'>#{value}</option>"
+      end
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def assignedjobs_fields
-    sections = Gwsub::Sb04section.sb04_group_select(params[:fyed_id].to_i, 'notall')
-    grped_id = params[:grped_id].to_i == 0 ? sections[0][1] : params[:grped_id].to_i
+    params[:fyed_id] = nz(params[:fyed_id],@fyed_id)
+    @fyed_id = params[:fyed_id]
 
-    assignedjobs = Gwsub::Sb04assignedjob.sb04_assignedjobs_id_select(params[:fyed_id].to_i, grped_id.to_i)
-    assignedjobs = [['担当未設定',0]] if assignedjobs.blank?
-    render text: view_context.options_for_select(assignedjobs), layout: false
+    sections = Gwsub::Sb04section.sb04_group_select(@fyed_id.to_i , 'notall' )
+    if params[:grped_id].to_i == 0
+      @grped_id = sections[0][1]
+    else
+      @grped_id = params[:grped_id].to_i
+    end
+    assignedjobs = Gwsub::Sb04assignedjob.sb04_assignedjobs_id_select(@fyed_id.to_i,@grped_id.to_i)
+
+    _html_select = ''
+    if assignedjobs.blank?
+        _html_select << "<option value='0'>担当未設定</option>"
+    else
+      assignedjobs.each do |value,key|
+        _html_select << "<option value='#{key}'>#{value}</option>"
+      end
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def officialtitles_fields
-    officialtitles = Gwsub::Sb04officialtitle.sb04_official_titles_select(params[:fyed_id].to_i)
-    officialtitles = [['職名未設定',0]] if officialtitles.blank?
-    render text: view_context.options_for_select(officialtitles), layout: false
+    params[:fyed_id] = nz(params[:fyed_id],@fyed_id)
+    @fyed_id = params[:fyed_id]
+
+    officialtitles = Gwsub::Sb04officialtitle.sb04_official_titles_select(@fyed_id.to_i)
+    _html_select = ''
+    if officialtitles.blank?
+        _html_select << "<option value='0'>職名未設定</option>"
+    else
+      _html_select << "<option value=''></option>"
+      officialtitles.each do |value,key|
+        _html_select << "<option value='#{key}'>#{value}</option>"
+      end
+    end
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def master_sections_fields
-    section = Gwsub::Sb04section.find_by(id: params[:section_id].to_i)
-    staffs = section ? section.staffs.map {|s| ["(#{s.staff_no})#{s.name}", s.id] } : []
-    render text: view_context.options_for_select(staffs), layout: false
+    params[:section_id] = nz(params[:section_id], 0)
+    @section_id = params[:section_id].to_i
+
+    section_item = Gwsub::Sb04section.new.find(:first, :conditions=>["id = ?", @section_id])
+    staffs =  section_item.staffs
+    _html_select = ''
+    staffs.each do |value|
+      _html_select << "<option value='#{value.id}'>(#{value.staff_no})#{value.name}</option>"
+    end
+
+    respond_to do |format|
+      format.csv { render :text => _html_select ,:layout=>false ,:locals=>{:f=>@item} }
+    end
   end
 
   def csvput
     init_params
     @l3_current = '04'
+    if params[:item].nil?
+      return
+    end
 
-    @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    par_item = params[:item]
+    nkf_options = case par_item[:nkf]
+        when 'utf8'
+          '-w'
+        when 'sjis'
+          '-s'
+        end
+    case par_item[:csv]
+    when 'put'
+      filename = "sb04_stafflists_backup_#{par_item[:nkf]}.csv"
+      staff_order = "fyear_id DESC , section_code ASC , assignedjobs_code ASC , divide_duties_order ASC"
+        items = Gwsub::Sb04stafflist.find(:all,:order=>staff_order)
+      if items.blank?
+      else
+        file = Gw::Script::Tool.ar_to_csv(items)
+        send_data(NKF::nkf(nkf_options,file) , :filename=>"#{filename}" )
+      end
+    else
+    end
+    return
+  end
 
-    @item.attributes = params[:item]
+  def csvup
+    init_params
+    @l3_current = '05'
+    if params[:item].nil?
+#      return
+    end
 
-    csv = Gwsub::Sb04stafflist.order(fyear_id: :desc, section_code: :asc, assignedjobs_code: :asc, divide_duties_order: :asc).to_csv
-    send_data @item.encode(csv), filename: "sb04_stafflists_backup_#{@item.encoding}.csv"
+    flash[:notice]="現在、CSV出力メニューから出力したデータの再登録機能は提供しておりません。"
+    return redirect_to "#{@csv_base_url}"
+
+    par_item = params[:item]
+    case par_item[:csv]
+    when 'up'
+      if par_item.nil? || par_item[:nkf].nil? || par_item[:file].nil?
+        flash[:notice] = 'ファイル名を指定してください。'
+      else
+        upload_data = par_item[:file]
+        f = upload_data.read
+        nkf_options = case par_item[:nkf]
+        when 'utf8'
+          '-w -W'
+        when 'sjis'
+          '-w -S'
+        end
+        file =  NKF::nkf(nkf_options,f)
+        if file.blank?
+        else
+          Gwsub::Sb04stafflist.truncate_table
+          s_to = Gwsub::Script::Tool.import_csv_sb04_staff(file, "gwsub_sb04stafflists")
+        end
+#        location = Gw.chop_with("#{Site.current_node.public_uri}",'/')
+#        redirect_to location
+      end
+    else
+    end
+    return
   end
 
   def csvadd_check
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l3_current = '06'
     return
   end
 
   def csvadd_check_run
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     location = "#{@csv_base_url}/csvadd_check?#{@qs}"
 
     @l3_current = '06'
@@ -282,7 +398,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
             when 'sjis'
               '-s -W'
             end
-            fyear = Gw::YearFiscalJp.where(id: par_item[:fyed_id]).order("start_at DESC").first
+            fyear = Gw::YearFiscalJp.find(:first, :conditions=>["id = ? ", par_item[:fyed_id]],:order=>"start_at DESC")
             filename = "#{fyear.markjp}_40職員_エラー箇所追記.csv"
             filename = NKF::nkf('-s -W', filename) if @ie
             send_data( NKF::nkf(nkf_options, file) , :filename => filename )
@@ -300,21 +416,21 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
   def stafflists_create
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l3_current = '07'
 #    return if params[:item].nil?
   end
   def stafflists_create_run
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     @l3_current = '07'
     return redirect_to "#{@csv_base_url}/sb04stafflists_create?#{@qs}" if params[:item].nil?
 
     par_item = params[:item]
-
     case par_item[:csv]
     when 'import'
       fyear_id = params[:item][:fyear_id]
+
       if fyear_id.blank?
         flash.now[:notice] = '年度が異常です。管理者に確認して下さい。'
           location = "#{@csv_base_url}/stafflists_create?#{@qs}"
@@ -355,7 +471,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   def index_csv
     @prm_pattern = :csv
     init_params
-    return error_auth unless @u_role == true
+    return authentication_error(403) unless @u_role == true
     item = Gwsub::Sb04CheckStafflist.new #.readable
     item.search params
 
@@ -368,15 +484,15 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   def show_csv
     @prm_pattern = :csv
     init_params
-    return error_auth unless @u_role == true
-    @item = Gwsub::Sb04CheckStafflist.where(:id => params[:id]).first
+    return authentication_error(403) unless @u_role == true
+    @item = Gwsub::Sb04CheckStafflist.find_by_id(params[:id])
     return http_error(404) if @item.blank?
     @l3_current = '08'
   end
 
   def year_copy
     init_params
-    return error_auth if @u_role != true && @role_sb04_dev != true
+    return authentication_error(403) if @u_role != true && @role_sb04_dev != true
     @l3_current = '09'
     @ret = nil
     return
@@ -384,7 +500,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 
   def year_copy_run
     init_params
-    return error_auth if @u_role != true && @role_sb04_dev != true
+    return authentication_error(403) if @u_role != true && @role_sb04_dev != true
     @l3_current = '09'
     @ret = nil
     if params[:item].nil?

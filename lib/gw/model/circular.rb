@@ -1,29 +1,19 @@
+# encoding: utf-8
 module Gw::Model::Circular
 
-  def self.remind(uid = Core.user.id,options={})
+  def self.remind(uid = Site.user.id)
     item = Gw::Circular.new
     remind_cond = "state=1 AND uid = #{uid} AND ed_at > '#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}'"
     items = item.find(:all, :conditions=>remind_cond ,  :order => 'ed_at', :select=>'gw_circulars.*')
-    if options[:mobile]
-      excludes = []
-      mobile_rems = []
-      for m_rem in items
-        doc = Gwcircular::Doc.find_by_id(m_rem.gid)
-        excludes << m_rem if doc.state=="mobile" if doc
-        mobile_rems << m_rem if doc.state=="unread" if doc
-      end
-      items = mobile_rems
-    end
     return items.collect{|x|
       if x.title =~ /\[/
          w_title = x.title
        else
          w_title = x.title.gsub('</a>','')
-         docs = Gwcircular::Doc.where(:id =>x.class_id).first
+         docs = Gwcircular::Doc.find_by_id(x.class_id)
          if docs.blank?
            author_str  = nil
          else
-           next if docs.state == "mobile" && options[:mobile]
            author_str  = docs.creater.to_s + '('+ docs.creater_id.to_s + ')'
          end
          w_title = w_title.to_s + " [#{author_str}]</a>"
@@ -50,7 +40,7 @@ module Gw::Model::Circular
     items.each do |circular|
       author = circular.title.scan(/(\S+)\[(\S+)\](\S+)/)
       if author.size==0
-        docs = Gwcircular::Doc.where(:id =>circular.class_id).first
+        docs = Gwcircular::Doc.find_by_id(circular.class_id)
         if docs.blank?
           author_str  = nil
         else

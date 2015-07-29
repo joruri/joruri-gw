@@ -1,11 +1,11 @@
-<%= render 'form_participant', f: f %>
+<%# app/views/gw/admin/memos/_form.html.erb %>
+<%=render :partial => '/gw/admin/memos/form_participant_mobile', :locals => {:f => f}%>
 時刻<span class="textRed">※</span><br />
-<%= f.datetime_select_for_mobile :ed_at %><br /><br />
+<%= f.datetime_select :ed_at, :use_month_numbers => true, :datetime_separator => "<br />", :class => 'datetime' %><br /><br />
 所属/担当/社名<br />
-<%= f.text_field :fr_group, :size => 30 %><br />
-担当者<br />
-<%= f.text_field :fr_user, :size => 30 %><br />
+<%= f.text_field :fr_user ,:size=>30%><br />
 伝言<span class="textRed">※</span><br />
-<%= f.text_area :title, :cols => 25, :rows => 3 %><br />
+<%= f.text_area  :title, :cols=>25 ,:rows=>3  %><br />
 備考<br />
-<%= f.text_area :body, :cols => 25, :rows => 4 %><br />
+<%= f.text_area  :body, :cols=>25 ,:rows=>4  %><br />
+

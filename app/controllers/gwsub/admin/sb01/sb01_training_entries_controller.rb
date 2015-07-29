@@ -1,5 +1,9 @@
+# -*- encoding: utf-8 -*-
 class Gwsub::Admin::Sb01::Sb01TrainingEntriesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
+  include Gwboard::Controller::SortKey
+  include Gwbbs::Model::DbnameAlias
+  include Gwboard::Controller::Authorize
   layout "admin/template/sb01_training"
 
   def pre_dispatch
@@ -15,11 +19,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingEntriesController < Gw::Controller::Admin:
     item = Gwsub::Sb01TrainingSchedule.new
     item.page   params[:page], params[:limit]
     @items = item.find(:all,
-      :select => 'gwsub_sb01_training_schedules.*',
+      :select => 'gwsub_sb01_training_schedules.*, min(gwsub_sb01_training_schedules.from_start)',
       :include => [:training],
       :conditions => "gwsub_sb01_training_schedules.state != 1 and from_start >= '#{today}'",
       :group => "training_id",
-      :order => 'gwsub_sb01_training_schedules.from_start, gwsub_sb01_trainings.title'
+      :order => 'min(gwsub_sb01_training_schedules.from_start), gwsub_sb01_trainings.title'
     )
     _index @items
   end
@@ -32,7 +36,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingEntriesController < Gw::Controller::Admin:
     item.page   params[:page], params[:limit]
 
     @items = item.find(:all,
-      :include => [:training],
+			:include => [:training],
       :conditions => "gwsub_sb01_training_schedules.state != 1 and from_start >= '#{today}'",
       :order => @sort_keys
     )
@@ -42,13 +46,13 @@ class Gwsub::Admin::Sb01::Sb01TrainingEntriesController < Gw::Controller::Admin:
   def show
     init_params
     @item = Gwsub::Sb01Training.find(params[:id])
-    @ts  = Gwsub::Sb01TrainingSchedule.where("training_id = ? and state != 1",params[:id]).order(:from_start)
+    @ts  = Gwsub::Sb01TrainingSchedule.find(:all, :conditions => ["training_id = ? and state != 1",@item.id ],:order => :from_start)
   end
 
   def init_params
     # ユーザー権限設定
-    @role_developer  = Gwsub::Sb01Training.is_dev?
-    @role_admin      = Gwsub::Sb01Training.is_admin?
+    @role_developer  = Gwsub::Sb01Training.is_dev?(Site.user.id)
+    @role_admin      = Gwsub::Sb01Training.is_admin?(Site.user.id)
     @u_role = @role_developer || @role_admin
     # 表示行数　設定
     @limits = nz(params[:limit],30)
@@ -88,7 +92,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingEntriesController < Gw::Controller::Admin:
     @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
   end
   def sortkeys_setting
-    params[:sort_keys] = 'from_start, gwsub_sb01_trainings.title' if params[:sort_keys].blank?
+		params[:sort_keys] = 'from_start, gwsub_sb01_trainings.title' if params[:sort_keys].blank?
     @sort_keys = nz(params[:sort_keys], 'from_start, gwsub_sb01_trainings.title' )
   end
 end

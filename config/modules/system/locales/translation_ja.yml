@@ -1,9 +1,5 @@
 ja:
   activerecord:
-    models:
-      system/product: プロダクト
-      system/product_synchro: プロダクト同期
-      system/product_synchro_plan: プロダクト同期予定
     attributes:
       system/group:
         state: "状態"
@@ -86,28 +82,3 @@ ja:
         updated_at: 更新日
         updated_user: 更新者
         updated_group: 更新者所属
-      system/product:
-        state: 状態
-        product_type: プロダクト種別
-        name: プロダクト名
-        sort_no: 並び順
-        product_synchro: プロダクト同期利用
-        sso: SSO利用
-        sso_url: SSOトークン取得URL
-        sso_url_mobile: SSOトークン取得URL(携帯)
-      system/product_synchro:
-        state: 状態
-        version: バージョン
-        remark_temp: 中間結果
-        remark_back: 保管結果
-        remark_sync: 同期結果
-      system/product_synchro_plan:
-        state: 状態
-        start_at: 同期予定日時
-        product_ids: 同期対象プロダクト
-
-  activemodel:
-    attributes:
-      system/model/file_conf:
-        encode: 文字コード
-        file: ファイル

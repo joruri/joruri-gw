@@ -1,18 +1,19 @@
 <tr class="scheduleTableHead dayHead">
-  <th class="scheduleUser">
+  <th nowrap="nowrap" class="scheduleUser">
     <span class="nobr"><%= @title -%></span>
   </th>
   <% 7.times do |i| %>
-    <%
-    week_add_day = @calendar_first_day + i
-    if @sp_mode == :schedule
-      day_link = %Q(/gw/schedules/#{week_add_day.strftime('%Y%m%d')}#{@link_params})
-    else
-      day_link = %Q(/gw/schedule_props/#{week_add_day.strftime('%Y%m%d')}?s_genre=#{@genre}&cls=#{@cls}&prop_id=#{params[:prop_id]}&type_id=#{params[:type_id]}&s_other_admin_gid=#{params[:s_other_admin_gid]})
-    end
-    %>
-    <th class="<%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
-      <span class="nobr"><%= link_to date_format(@format, week_add_day), day_link -%></span>
-    </th>
+  <%
+  week_add_day = @calendar_first_day + i
+  class_str = create_month_class(week_add_day, @st_date, @holidays, params)
+  if @sp_mode == :schedule
+    day_link = %Q(/gw/schedules/#{(week_add_day).strftime('%Y%m%d')}#{@link_params})
+  else
+    day_link = %Q(/gw/schedule_props/#{(week_add_day).strftime('%Y%m%d')}?s_genre=#{@genre}&cls=#{@cls}&prop_id=#{params[:prop_id]}&type_id=#{params[:type_id]}&s_other_admin_gid=#{params[:s_other_admin_gid]})
+  end
+  %>
+  <th class="<%= class_str -%>"><span class="nobr">
+    <%= link_to(date_format(@format, week_add_day), day_link) -%>
+  </span></th>
   <% end %>
 </tr>

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class Gwmonitor::CustomUserGroup < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
@@ -9,7 +10,7 @@ class Gwmonitor::CustomUserGroup < Gw::Database
     if self.readers_json.blank?
       errors.add :readers_json, "配信先を設定してください。"
     else
-      objects = JSON.parse(self.readers_json)
+      objects = JsonParser.new.parse(self.readers_json)
       if objects.count == 0
         errors.add :readers_json, "配信先を設定してください。"
       end
@@ -22,7 +23,7 @@ class Gwmonitor::CustomUserGroup < Gw::Database
 
   def self.custom_select
     list = []
-    Gwmonitor::CustomUserGroup.where(:state => 'enabled', :owner_uid => Core.user.id).order('sort_no,id').each do |dep|
+    Gwmonitor::CustomUserGroup.new.find(:all, :conditions => {:state => 'enabled', :owner_uid => Site.user.id}, :order => 'sort_no,id').each do |dep|
       list << [dep.name, dep.id]
     end
     list = [["カスタム配信先を事前に登録してください",""]] if list == []
@@ -30,19 +31,19 @@ class Gwmonitor::CustomUserGroup < Gw::Database
   end
 
   def self.first_group_id
-    item = Gwmonitor::CustomUserGroup.where(:state => 'enabled', :owner_uid => Core.user.id).order('sort_no,id').first
+    item = Gwmonitor::CustomUserGroup.new.find(:first, :conditions => {:state => 'enabled', :owner_uid => Site.user.id}, :order => 'sort_no,id')
     ret = 0
     ret = item.id unless item.blank?
     return ret
   end
 
   def self.get_user_select(gid)
-    item = Gwmonitor::CustomUserGroup.where(:id => gid).first
+    item = Gwmonitor::CustomUserGroup.find_by_id(gid)
     selects = []
     return selects if item.blank?
     return selects if item.readers_json.blank?
 
-    users = JSON.parse(item.readers_json)
+    users = JsonParser.new.parse(item.readers_json)
     users.each do |user|
       selects << [user[2].to_s,user[1].to_s]
     end
@@ -50,12 +51,12 @@ class Gwmonitor::CustomUserGroup < Gw::Database
   end
 
   def self.get_user_select_ajax(gid)
-    item = Gwmonitor::CustomUserGroup.where(:id => gid).first
+    item = Gwmonitor::CustomUserGroup.find_by_id(gid)
     selects = []
     return selects if item.blank?
     return selects if item.readers_json.blank?
 
-    users = JSON.parse(item.readers_json)
+    users = JsonParser.new.parse(item.readers_json)
     users.each do |user|
       selects << [user[0].to_s,user[1].to_s,user[2].to_s]
     end

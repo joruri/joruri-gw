@@ -1,3 +1,4 @@
+<%#*<p>Find me in app/views/gwsub/admin/sb01/sb01_training_schedule_members/_menu.html.erb</p>%>
 <%
 if @top_menu == 'plans'
 render_str = 'gwsub/admin/sb01/sb01_training_plans/menu'
@@ -5,5 +6,5 @@ else
 render_str = 'gwsub/admin/sb01/sb01_training_entries/menu'
 end
 %>
-<%#= render 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
-<%= render render_str %>
+<%#= render :partial => 'gwsub/admin/sb01/sb01_subfunction_select_menu' %>
+<%= render :partial => render_str %>

@@ -1,0 +1,39 @@
+<%
+if @item.group.blank?
+  group_name = %Q(<span style="color: red;">** 所属未登録 **</span>).html_safe
+else
+  group_name = "#{@item.group.name}(#{@item.group.code})"
+end
+%>
+<table class="show">
+  <tbody>
+    <tr>
+      <th>ユーザー</th>
+      <td><%= safe{@item.user.name} %></td>
+    </tr>
+    <tr>
+      <th>所属グループ</th>
+      <td><%= group_name %></td>
+    </tr>
+    <tr>
+      <th>役職</th>
+      <td><%= safe{@item.user.official_position} %></td>
+    </tr>
+    <tr>
+      <th>本務・兼務</th>
+      <td><%= System::UsersGroup.job_order_show(@item.job_order) %></td>
+    </tr>
+    <tr>
+      <th>配属開始日</th>
+      <td><%= safe{Gw.date_str(@item.start_at)} %></td>
+    </tr>
+    <tr>
+      <th>配属終了日</th>
+      <td><%= safe{Gw.date_str(@item.end_at)} %></td>
+    </tr>
+    <tr>
+      <th>状態</th>
+      <td><%= safe{System::UsersGroup.state_show(@item.user.state)} %></td>
+    </tr>
+  </tbody>
+</table>

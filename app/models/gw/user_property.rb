@@ -1,57 +1,40 @@
+# -*- encoding: utf-8 -*-
 class Gw::UserProperty < Gw::Database
+  #establish_connection :dev_jgw_gw rescue nil
   include System::Model::Base
   include System::Model::Base::Content
 
-  def options_value
-    decoded
-  end
+  scope :gwmonitor_help_links, :conditions => {:class_id => 3, :name => 'gwmonitor', :type_name => 'help_link'}
 
-  def options_value=(value)
-    encode!(value)
-  end
+  def is_email_mobile?
+    return false if self.options.blank? || self.name != 'mobile'
 
-  def default_attributes
-    {}
-  end
-
-  def default_options
-    {}
-  end
-
-  def defaults
-    self.attributes = default_attributes
-    self.options_value = default_options
-  end
-
-  def self.first_or_new
-    self.first || self.new.tap(&:defaults)
-  end
-
-  private
-
-  def encode(value)
-    if default_options.is_a?(Hash)
-      JSON.generate(default_options.deep_stringify_keys.deep_merge(value))
-    else
-      JSON.generate(value)
+    options = JsonParser.new.parse(self.options)
+    if !options['mobiles'].blank? && !options['mobiles']['kmail'].blank? && !options['mobiles']['ktrans'].blank?
+      if options['mobiles']['ktrans'] == '1' && Gw::MemoMobile.is_email_mobile?(options['mobiles']['kmail'])
+        return true
+      end
     end
+    return false
+
   end
 
-  def encode!(value = decoded)
-    self.options = encode(value)
-    remove_instance_variable(:@decoded) if instance_variable_defined?(:@decoded)
-  end
+  def self.is_todos_display?
 
-  def decode
-    if default_options.is_a?(Hash)
-      default_options.deep_stringify_keys.deep_merge(JSON.parse(options)).with_indifferent_access rescue nil
-    else
-      JSON.parse(options) rescue nil
+    raise "Do not call the method!!"
+
+    todos_display = false
+    todo_settings = Gw::Model::Schedule.get_settings 'todos', {}
+    if todo_settings.key?(:todos_display_schedule)
+      todos_display = true if todo_settings[:todos_display_schedule].to_s == '1'
     end
+    return todos_display
   end
 
-  def decoded
-    return @decoded if defined? @decoded
-    @decoded = decode
+  def self.load_gwmonitor_help_links
+    help = self.gwmonitor_help_links.find(:first)
+
+    helps = JsonParser.new.parse(help.options) rescue Array.new(3, [''])
+    helps.map{|item| item[0].to_s}
   end
 end

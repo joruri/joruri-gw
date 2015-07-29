@@ -1,10 +1,11 @@
+<%# app/views/gw/public/todos/index.html.erb %>
 <%
-#render '/gw/public/todos/header'
-#render 'search'
+#render :partial => '/gw/public/todos/header'
+#render :partial => 'search'
 now = Time.now
 %>
 <hr class="borderDash"/>
-<p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif"><%= link_to "新規作成", "/gw/todos/new"%></p>
+<p class="mobileTodo"><%= link_to "新規作成", "/gw/todos/new"%></p>
 <hr  class="borderDash"/>
 <p class="leftPad2">
 <%if @s_finished == '1'%>
@@ -23,7 +24,7 @@ now = Time.now
 </p>
 <hr  class="borderDash"/>
 <% if @items.length== 0 %>
-  <%= show_notice -%>
+  <%= Gw.div_notice('表示する項目はありません。') -%>
 <% else %>
 
   <% @items.each do |item| %>
@@ -60,7 +61,7 @@ now = Time.now
     show_link = "/gw/todos/#{item.id}?s_finished=#{@s_finished}"
     finish_link = "/gw/todos/#{item.id}/finish#{@params_set}"
     %>
-    <p class="mobileTodo"><img src="/_common/themes/gw/files/mobile/ic-mobile-todo.gif">
+    <p class="mobileTodo">
     <%= raw(state_link) -%>　<%= link_to(h(item.title), show_link) -%>
     </p>
     <p class="leftPad2">

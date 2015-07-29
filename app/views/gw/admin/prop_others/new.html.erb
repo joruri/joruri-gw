@@ -1,20 +1,25 @@
+<%
+@prop_master = @genre
+
+@hedder2lnk = 2
+@hedder3lnk = 1
+%>
 <div class="piece prop form">
-<div class="pieceHeader">
-<%= render 'piece_header' -%>
-</div>
-<div class="pieceBody">
-<div class="pieceBodyHeader">
-  <%= render 'prop_master_menu' %>
-  <%= render 'titleline' %>
-</div>
-<div class="pieceBodyBody">
-
-<%= form_for :item, :url => {action: :create}, :html => {multipart: true, id: 'itemForm'} do |f| -%>
-  <%= f.error_messages -%>
-  <%= render 'form', f: f -%>
-  <%= raw(submit_for_create f, :js_submitter => 'return my_submit()') -%>
-<% end -%>
-
-</div>
-</div>
+  <div class="pieceHeader">
+    <%= render :partial => '/gw/admin/prop_others/piece_header' -%>
+  </div>
+  <div class="pieceBody">
+    <div class="pieceBodyHeader">
+      <%= render(:partial => '/gw/admin/prop_others/prop_master_menu') %>
+      <%= render(:partial => '/gw/admin/prop_others/titleline') %>
+    </div>
+    <div class="pieceBodyBody">
+      <%= div_notice -%>
+      <%= form_for :item, :url => "#{@uri_base}?cls=#{@cls}", :html => {:multipart => true, :id => 'itemForm'} do |f| -%>
+        <%= f.error_messages -%>
+        <%= render :partial => '/gw/admin/prop_others/form', :locals => {:f => f} -%>
+        <%= raw(submit_for_create f, :js_submitter => 'my_submit()') -%>
+      <% end -%>
+    </div>
+  </div>
 </div>

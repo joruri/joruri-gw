@@ -1,0 +1,31 @@
+<div class="piece AdminSetting AdminUsers">
+<%= render :partial => 'header' %>
+  <div class="pieceBody">
+    <%= render :partial => '/system/admin/users/header_menu' %>
+    <%= render :partial => '/system/admin/users/csv_menu' %>
+    <h3>CSV出力</h3>
+    <div class="user_explanation">
+      出力対象を、指定の文字コードで出力します。<br />
+      保存先は、ダウンロード時に指定できます。
+    </div>
+    <%= form_tag csvget_system_users_path, {:method => :get, :multipart => true} do %>
+    <%= hidden_field_tag('item[csv]','put') %>
+    <table class="show">
+      <tr>
+        <th></th>
+        <td>文字コードを選択して実行してください</td>
+      </tr>
+      <tr>
+        <th>文字コード</th>
+        <td>
+          <%= radio_button_tag('item[nkf]', 'utf8', false) %><label for="item_nkf_utf8">UTF8</label>
+          <%= radio_button_tag('item[nkf]', 'sjis', true) %><label for="item_nkf_sjis">SJIS</label>
+        </td>
+      </tr>
+    </table>
+    <div class="submitters">
+      <%= submit_tag 'CSV出力' %>
+    </div>
+    <% end %>
+  </div>
+</div>

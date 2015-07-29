@@ -1,0 +1,9 @@
+<%= render :partial => 'header' %>
+
+<%= form_for :item, :url => {:action => :create}, :html => {:multipart => true} do |f| %>
+
+<%= f.error_messages %>
+
+<%= render :partial => 'form', :locals => {:f => f, :submit_label => "アップロード"} %>
+
+<% end %>

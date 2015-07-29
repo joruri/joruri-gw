@@ -1,3 +1,4 @@
+# coding: utf-8
 module Gw::Controller::Mobile::Participant
 
   def mobile_manage
@@ -19,7 +20,7 @@ module Gw::Controller::Mobile::Participant
       mobile_delete_member
     end
     uid = params[:uid]
-    uid = Core.user.id if uid.blank?
+    uid = Site.user.id if uid.blank?
     if params[:dis].blank?
       location = "/gw/mobile_participants?group_id=#{params[:group_id]}&view=#{params[:view]}&memo_id=#{params[:memo_id]}"
     else

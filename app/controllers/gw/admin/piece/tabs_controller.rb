@@ -1,10 +1,13 @@
+# encoding: utf-8
 class Gw::Admin::Piece::TabsController < ApplicationController
   include System::Controller::Scaffold
-  layout false
-
+  layout 'base'
+  
   def index
     @piece_param = params['piece_param']
-
-    @items = Gw::EditTab.where(level_no: 2, published: 'opened').order(sort_no: :asc)
+    
+    cond  = " level_no=2 and published='opened' "
+    order = " sort_no "
+    @items = Gw::EditTab.find(:all, :conditions => cond, :order => order)
   end
 end
