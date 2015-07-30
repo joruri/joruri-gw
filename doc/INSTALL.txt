@@ -249,21 +249,11 @@ SMTP接続情報
 
 テーブルを作成します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_core_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_pref_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_bbs_000001_schema.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_dig_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_doc_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_faq_000001.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_qa_000001.sql
+  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/jorurigw_schema.sql
 
 初期データを登録します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_core_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_gw_pref_init.sql
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/development_jgw_bbs_000001_init.sql
+  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/jorurigw_init.sql
 
 ======================================================================
  8.3 assetのコンパイル
