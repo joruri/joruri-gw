@@ -1,7 +1,7 @@
 <%
 group_options = user_options = []
+group_options = System::Group.enabled_group_options
 if @item.parent_group
-  group_options = System::Group.enabled_group_options
   first_group = System::Group.find_by(id: group_options[0][1])
   user_options = first_group ? first_group.enabled_user_options(ldap: 1) : []
 end

@@ -87,9 +87,6 @@ private
       self.g_order = group.sort_no
       if parent_group = group.parent
         self.parent_gid = parent_group.id
-        self.parent_g_code = parent_group.code
-        self.parent_g_name = parent_group.name
-        self.parent_g_order = parent_group.sort_no
       end
     end
   end
