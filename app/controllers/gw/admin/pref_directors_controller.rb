@@ -16,8 +16,10 @@ class Gw::Admin::PrefDirectorsController < Gw::Controller::Admin::Base
   end
 
   def state_change
-    @item = Gw::PrefDirector.where(uid: params[:id]).first
-    @item.toggle_state
+    @items = Gw::PrefDirector.where(uid: params[:id])
+    @items.each do |item|
+      item.toggle_state
+    end
 
     location  = @public_uri
     location += "##{params[:locate]}" unless params[:locate].blank?
