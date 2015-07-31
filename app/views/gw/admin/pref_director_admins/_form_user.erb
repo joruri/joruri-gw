@@ -9,7 +9,13 @@
   <% ([Gw::PrefDirector.new] + @item.group_directors).each_with_index do |director, i| %>
     <%= f.fields_for :group_directors, director do |f2| %>
       <tr data-user-id="<%= director.uid if i != 0 %>" <%=raw %(id="template" style="display:none;") if i == 0 %>">
-        <td><%= f2.text_field :u_order, size: 2, maxlength: 10 %><%= f2.hidden_field :uid %></td>
+        <td><%= f2.text_field :u_order, size: 2, maxlength: 10 %>
+          <%= f2.hidden_field :uid %>
+          <%=f2.hidden_field :parent_gid, :value=>@item.parent_gid %>
+          <%=f2.hidden_field :parent_g_code, :value=>@item.parent_g_code %>
+          <%=f2.hidden_field :parent_g_name, :value=>@item.parent_g_name %>
+          <%=f2.hidden_field :parent_g_order, :value=>@item.parent_g_order %>
+        </td>
         <td><%= f2.check_box :is_governor_view %><%= f2.label :is_governor_view, '表示' %></td>
         <td><%= f2.text_field :title, size: 25, maxlength: 20 %></td>
         <td class="u_name"><%= "#{director.u_name} (#{director.u_code})" %></td>
