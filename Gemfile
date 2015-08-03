@@ -6,7 +6,7 @@ gem 'rails', '4.1.9'
 
 gem 'activerecord-session_store'
 gem 'activerecord-deprecated_finders'
-gem 'protected_attributes', '1.0.9'
+gem 'protected_attributes', '1.0.8'
 
 gem 'mysql2','0.3.16'
 gem 'execjs','1.4.0'
