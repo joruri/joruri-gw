@@ -67,7 +67,7 @@ class Gw::Script::PrefTool
   def self.update_executives(users)
     ret_no_user = ""
     old_executives = Gw::PrefExecutive.where("deleted_at IS NULL")
-    old_executives.each_with_index{|old_user, y|
+    old_executives.each_with_index{|old_user, x|
       use = 0
       users.each_with_index{|user, y|
         if old_user.u_code == user["u_code"] and old_user.title == user["title"]
@@ -107,6 +107,7 @@ class Gw::Script::PrefTool
             users.delete_at(y)
             use = 1
           end
+          break
         end
       }
       if use == 0
@@ -140,7 +141,7 @@ class Gw::Script::PrefTool
           new_user.g_order          = new_user_group.sort_no
         end
         new_user.u_code           = new_user_data.code
-        old_title_user = Gw::PrefExecutive..where("uid = ?",new_user_data.id).order("updated_at").first
+        old_title_user = Gw::PrefExecutive.where("uid = ?",new_user_data.id).order("updated_at").first
         if old_title_user.blank?
           old_state = "off"
         else
@@ -196,16 +197,10 @@ class Gw::Script::PrefTool
               old_user_group = System::Group.where(:id =>old_user_group_rel.group_id).first
             end
             unless old_user_group.blank?
-              if old_user_group.parent.id == temp.id
-                is_group_user = true
-              else
-                is_group_user = false
-              end
-
-            old_user.parent_gid       = temp.id
-            old_user.parent_g_code    = old_user_group.parent.code
-            old_user.parent_g_name    = old_user_group.parent.name
-            old_user.parent_g_order   = old_user_group.parent.sort_no
+              old_user.parent_gid       = temp.id
+              old_user.parent_g_code    = temp.code
+              old_user.parent_g_name    = temp.name
+              old_user.parent_g_order   = temp.sort_no
               old_user.gid              = old_user_group.id
               old_user.g_code           = old_user_group.code
               old_user.g_name           = old_user_group.name
@@ -229,6 +224,7 @@ class Gw::Script::PrefTool
               ret_no_group_user += "#{user["u_code"]}#{user["u_name"]}<br />"
             end
           end
+          break
         end
       }
       if use == 0
@@ -255,11 +251,6 @@ class Gw::Script::PrefTool
         end
 
         unless new_user_group.blank?
-          if new_user_group.parent.id == temp.id
-            is_group_user = true
-          else
-            is_group_user = false
-          end
           new_user.parent_gid       = temp.id
           new_user.parent_g_code    = temp.code
           new_user.parent_g_name    = temp.name
@@ -325,11 +316,24 @@ class Gw::Script::PrefTool
             else
               old_user_group = System::Group.where(:id =>old_user_group_rel.group_id).first
             end
-            unless old_user_group.blank?
-              old_user.parent_gid       = old_user_group.parent.id
-              old_user.parent_g_code    = old_user_group.parent.code
-              old_user.parent_g_name    = old_user_group.parent.name
-              old_user.parent_g_order   = old_user_group.parent.sort_no
+            if !old_user_group.blank?
+              parent_old_user_group = old_user_group.parent
+              if parent_old_user_group.blank?
+                next
+              else
+                if user["parent_group"].to_s == parent_old_user_group.name.to_s
+                  display_group = System::Group.where(:id => parent_old_user_group).first
+                else
+                  display_group = System::Group.where("name = ?", user["parent_group"]).order("code , start_at desc").first
+                  if display_group.blank?
+                    next
+                  end
+                end
+              end
+              old_user.parent_gid       = display_group.id
+              old_user.parent_g_code    = display_group.code
+              old_user.parent_g_name    = display_group.name
+              old_user.parent_g_order   = display_group.sort_no
               old_user.gid              = old_user_group.id
               old_user.g_code           = old_user_group.code
               old_user.g_name           = old_user_group.name
@@ -353,6 +357,7 @@ class Gw::Script::PrefTool
               ret_no_group_user += "#{user["u_code"]}#{user["u_name"]}<br />"
             end
           end
+          break
         end
       }
       if use == 0
@@ -373,14 +378,28 @@ class Gw::Script::PrefTool
         new_user_group_rel = System::UsersGroup.where("user_id = ? AND end_at IS NULL AND job_order = 0",new_user_data.id).order("start_at DESC").first
         if new_user_group_rel.blank?
           new_user_group = nil
+          new_user_parent_group = nil
         else
           new_user_group = System::Group.where(:id =>new_user_group_rel.group_id).first
         end
-        unless new_user_group.blank?
-           new_user.parent_gid       = new_user_group.parent.id
-           new_user.parent_g_code    = new_user_group.parent.code
-           new_user.parent_g_name    = new_user_group.parent.name
-           new_user.parent_g_order   = new_user_group.parent.sort_no
+        if !new_user_group.blank?
+           new_user_parent_group = new_user_group.parent
+           if new_user_parent_group.blank?
+             next
+           else
+             if user["parent_group"].to_s == new_user_parent_group.name.to_s
+               display_group = System::Group.where(:id => new_user_parent_group.id).first
+             else
+               display_group = System::Group.where("name = ?", user["parent_group"]).order("code , start_at desc").first
+               if display_group.blank?
+                 next
+               end
+             end
+           end
+           new_user.parent_gid       = display_group.id
+           new_user.parent_g_code    = display_group.code
+           new_user.parent_g_name    = display_group.name
+           new_user.parent_g_order   = display_group.sort_no
            new_user.gid              = new_user_group.id
            new_user.g_code           = new_user_group.code
            new_user.g_name           = new_user_group.name
@@ -388,7 +407,7 @@ class Gw::Script::PrefTool
         end
         new_user.u_code           = new_user_data.code
         new_user.u_name           = new_user_data.name
-        old_title_user = Gw::PrefDirector.where("uid = ?",new_user_data.id).order("updated_at")
+        old_title_user = Gw::PrefDirector.where("uid = ?",new_user_data.id).order("updated_at").first
         if old_title_user.blank?
           old_state = "off"
         else
