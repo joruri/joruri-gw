@@ -1,4 +1,4 @@
-## Joruri Gw 3.0.0 インストールマニュアル           作成中：201x.xx.xx
+## Joruri Gw 3.0.0 インストールマニュアル                   2015.08.03
 
 **********************************************************************
  1 想定環境
@@ -52,7 +52,7 @@ MySQL5.6をインストールします。
 必要なパッケージをダウンロードします。
 
   # cd /usr/local/src/
-  # wget http://joruri.org/download/jorurigw/jorurigw-3.0.0.tar.gz
+  # wget https://github.com/joruri/joruri-gw/archive/v3.0.0.tar.gz
   # wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
   # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
 
@@ -65,7 +65,8 @@ Joruriユーザを作成します。
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf jorurigw-3.0.0.tar.gz -C /var/share
+  # tar xvzf v3.0.0.tar.gz -C /var/share
+  # mv /var/share/joruri-gw-3.0.0 /var/share/jorurigw
   # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
   # chown -R joruri:joruri /var/share/jorurigw
 
@@ -289,7 +290,8 @@ cronによる定期実行処理を設定します。
 delayed_jobを自動起動に設定します。
 
   $ su -
-  # cp /var/share/jorurigw/config/sample/delayed_job /etc/init.d/
+  # cp /var/share/jorurigw/config/samples/delayed_job /etc/init.d/
+  # chmod +x /etc/init.d/delayed_job
   # /sbin/chkconfig --add delayed_job
   # /sbin/chkconfig delayed_job on
 
