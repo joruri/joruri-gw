@@ -58,9 +58,7 @@ MySQL5.6をインストールします。
 
 Joruriユーザを作成します。
 
-  # useradd joruri
-  # passwd joruri
-  # 新しいパスワード： <= 任意のパスワードを入力してください
+  # useradd -m joruri
 
 Joruri Gwソースコードを設置します。
 
