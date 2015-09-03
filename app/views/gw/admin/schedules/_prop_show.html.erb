@@ -7,7 +7,7 @@ schedule_props =
   else
     item.readable_schedule_props
   end
-
+special_meeting_room_flg = false
 schedule_props.each do |sp|
   prop_stat = sp.prop_stat
   case sp.prop_type
@@ -18,6 +18,7 @@ schedule_props.each do |sp|
     @meelinkflg = true
     editlending_flg = true if prop_stat > 0 && !@is_pm_admin  # 管理者以外の時は、承認後の全編集は不可
     editlending_flg = true if prop_stat > 1   # 管理者の時は、貸出後の全編集は不可
+    special_meeting_room_flg  = true if sp.prop.type_id == 4
   when 'Gw::PropOther'
     @othlinkflg = true
   end
@@ -134,5 +135,5 @@ end
 <% end %>
 
 <% if (@renlinkflg || @meelinkflg) && @is_pm_admin && params[:sh] != "sh" %>
-  <%= render 'prop_table', item: item %>
+  <%= render 'prop_table', item: item , special_meeting_room: special_meeting_room_flg%>
 <% end %>

@@ -1,0 +1,12 @@
+<% @item.target_attributes.each do |k,v| %>
+  <%= f.hidden_field k %>
+<% end %>
+<% @item.option_attributes.each do |k| %>
+  <%= f.hidden_field k , :value=>params[:item][k]%>
+<% end %>
+<% @item.init_parameters.each do |k| %>
+  <%= hidden_field_tag "init[#{k}]", params[:init][k] %>
+<% end %>
+<% @item.meetingroom_options.each do |k|%>
+  <%= hidden_field_tag "options[]", k %>
+<%end%>

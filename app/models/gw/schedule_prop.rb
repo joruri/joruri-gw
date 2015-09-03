@@ -72,6 +72,12 @@ class Gw::ScheduleProp < Gw::Database
     date == self.st_at.to_date || date == self.ed_at.to_date || (self.st_at.to_date < date && date < self.ed_at.to_date)
   end
 
+
+  def is_special_meeting_room?
+    self.prop_type.in?(["Gw::PropMeetingroom"]) && self.prop.type_id == 4
+  end
+
+
   def self.is_pm_admin?
     # 管財管理人権限の有無
     return true if Gw.is_admin_admin?

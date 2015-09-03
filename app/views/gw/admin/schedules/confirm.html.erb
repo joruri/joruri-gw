@@ -1,0 +1,166 @@
+<%
+destroy_confirm_s = '削除してよろしいですか？'
+if @item.schedule_users.collect{|x|[x.class_id, x.uid]}.reject{|x| x[0] == 1 && x[1] == Core.user.id }.length > 0
+  destroy_confirm_s = "この予定は、複数の参加者が登録されています。この予定は、参加者全員のスケジューラーからも削除されます。#{destroy_confirm_s}"
+end
+if @item.repeated?
+  destroy_confirm_repeated_s = "\nなお、繰り返し期間に属している場合、その繰り返しに属する全ての予定が削除されますので、ご注意ください。"
+else
+  destroy_confirm_repeated_s = ""
+end
+%>
+<div class="piece schedulePiece showOne">
+<div class="pieceHeader">
+<%= render 'piece_header' %>
+</div>
+<div class="pieceBody">
+<div class="pieceBodyHeader">
+</div>
+<%= render '/gw/admin/schedules/schedule_bt_box', d: Gw.datetime_to_date(@item.st_at), mode: 'form' %>
+<div class="pieceBodyBody">
+
+
+<% if @item.tmp_repeat %>
+  <table class="show">
+    <tr>
+      <td colspan="2">繰り返し予定です。<%= @item.repeat_st_date_at.strftime('%Y年%m月%d日') %>～<%= @item.repeat_ed_date_at.strftime('%Y年%m月%d日') %>まで繰り返されてます。</td>
+    </tr>
+  </table>
+<% end %>
+
+<% limit = Joruri.config.application['gw.prop_meetingroom_participant_limit'] %>
+<% if @item.schedule_props.any?(&:meetingroom_related?) && @item.exeed_participant_num?(limit) %>
+  <table class="show">
+    <tr>
+      <td colspan="2">管財会議室の利用時、庁外の参加者が<%= limit %>人を超える時は、通知文書の提出が必要です</td>
+    </tr>
+  </table>
+<% end %>
+
+
+<table class="show">
+  <% unless @item.todo_flg %>
+  <tr>
+    <th>開始日時</th><td><%= @item.time_show_str[:st_at_s] %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <th>終了日時</th>
+    <td><%= @item.time_show_str[:ed_at_s] %></td>
+  </tr>
+  <tr>
+    <th>件名（用務名等）</th>
+    <td><%= @item.title_with_category %></td></tr>
+  <tr>
+    <th>場所</th>
+    <td><%= @item.place %></td>
+  </tr>
+  <tr>
+    <th>メモ</th>
+    <td><%= @item.memo %></td>
+  </tr>
+  <% if @schedule_props.present? %>
+    <tr>
+      <th>連絡先電話番号</th>
+      <td><%= @item.inquire_to %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <th>公開</th>
+    <td><%= @item.is_public_label %></td>
+  </tr>
+  <% if @item.is_public == 2 %>
+    <tr>
+      <th>公開所属</th>
+      <td><%=raw Gw.join([@public_groups_display], '<br />') %></td>
+    </tr>
+  <% end %>
+</table>
+
+<table class="show">
+  <tr><th colspan="2"><%= @item.participant_title %></th></tr>
+  <% @schedule_users.each do |su| %>
+  <tr>
+    <th>ユーザー</th>
+    <td><%= su.try(:display_name) %></td>
+  </tr>
+  <% end %>
+</table>
+
+
+<% if @schedule_props.length > 0 %>
+    <table class="show">
+      <tr><th colspan="4">施設予約</th></tr>
+      <% @schedule_props.each do |sp| %>
+        <tr>
+          <th>名称</th><td><%= sp.prop.name if sp.prop %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <% other_schedule_props = @schedule_props.select(&:other_related?) %>
+    <% if other_schedule_props.present? %>
+      <table class="show">
+        <tr><th colspan="4">施設予約</th></tr>
+        <% other_schedule_props.each do |sp| %>
+        <tr>
+          <th>名称</th><td><%= sp.prop.name if sp.prop %></td>
+          <th>管理所属</th><td><%= sp.owner_s %></td>
+        </tr>
+        <% end %>
+      </table>
+  <% end %>
+<% end %>
+
+<table class="show">
+  <tr>
+    <th>連絡先電話番号（内線）</th>
+    <td><%= @item.inquire_to %></td>
+  </tr>
+  <tr>
+    <th>利用責任者</th>
+    <td><%= @item.owner_uname %></td>
+  </tr>
+  <tr>
+    <th>利用責任者所属</th>
+    <td><%= @item.owner_gname %></td>
+  </tr>
+  <tr>
+    <th>行き先（最遠地）</th>
+    <td><%= safe{schedule_to_go(@item.to_go)} %></td>
+  </tr>
+  <tr>
+    <th>予約人数(庁内)</th>
+    <td><%= @item.participant_nums_inner %></td>
+  </tr>
+  <tr>
+    <th>予約人数(庁外)</th>
+    <td><%= @item.participant_nums_outer %></td>
+  </tr>
+  <%if @schedule_props.any?(&:is_special_meeting_room?)%>
+  <tr>
+    <th>参加者</th>
+    <td><%=@item.tmp_member_check%></td>
+  </tr>
+
+  <%end%>
+  <tr>
+    <th>通知文書</th>
+    <td><%= "登録者了解済み" if @item.check_30_over.to_i == 1 %></td>
+  </tr>
+  <% if @is_pm_admin %>
+  <tr>
+    <th>管理者メモ</th>
+    <td><%= @item.admin_memo || "" %></td>
+  </tr>
+  <% end %>
+</table>
+<%= form_for @item, :as => :item, :url => {:action => @item.new_record? ? :create : :update}, :html => {:class => "confirm-form"} do |f| -%>
+  <%= render(:partial => 'fields', :locals => {:f => f}) -%>
+  <%= hidden_field_tag :purpose, "save" %>
+  <div class="submitters"><%= f.submit '登録する' %></div>
+<% end -%>
+
+</div>
+</div>
+</div>

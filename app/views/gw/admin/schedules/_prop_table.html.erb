@@ -23,6 +23,12 @@
     <th>予約人数(庁外)</th>
     <td><%= item.participant_nums_outer %></td>
   </tr>
+  <%if special_meeting_room%>
+  <tr>
+    <th>参加者</th>
+    <td><%=item.schedule_option.check_show if item.schedule_option%></td>
+  </tr>
+  <%end%>
   <tr>
     <th>通知文書</th>
     <td><%= "登録者了解済み" if item.check_30_over.to_i == 1 %></td>

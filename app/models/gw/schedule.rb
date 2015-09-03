@@ -2,6 +2,7 @@ class Gw::Schedule < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::Schedule::MeetingGuide
+  include Concerns::Gw::Schedule::Rentcar
 
   validates_presence_of :title, :is_public
   validates_each :st_at do |record, attr, value|
@@ -108,6 +109,7 @@ class Gw::Schedule < Gw::Database
       :schedule
     end
   end
+
 
   def self.joined_self(options={})
     op = options.dup
