@@ -20,8 +20,9 @@ module Concerns::Gw::Schedule::Rentcar
       self.owner_gname = tmp_owner.groups[0].try(:name)
     end
     duplication = false
-    cond_str = "tmp_id != ? and st_at <= ? and ed_at >= ? and prop_type = ? and prop_id = ? and created_at > ?"
-    check_date = Time.now - 5.minutes
+    tmp_cond_str = "tmp_id != ? and st_at <= ? and ed_at >= ? and prop_type = ? and prop_id = ? and created_at > ? and created_at <= ?"
+    current_time = Time.now
+    tmp_time = Time.now - 5.minutes
     cnt = 0
     tmp_dates = []
     self.meetingroom_options = params[:options]
@@ -36,7 +37,7 @@ module Concerns::Gw::Schedule::Rentcar
         self.ed_at = ed_at
         tmp_dates << {:st_at => st_at, :ed_at => ed_at, :prop_id => prop[1],:genre_name => prop[0]}
         next if prop[0] != "rentcar"
-        rent_item_flg = false if Gw::SchedulePropTemporary.where(cond_str,self.tmp_id, ed_at,st_at,check_date, "Gw::PropRentcar", prop[1]).exists?
+        rent_item_flg = false if Gw::SchedulePropTemporary.where(tmp_cond_str,self.tmp_id, ed_at,st_at, "Gw::PropRentcar", prop[1],tmp_time,current_time).exists?
       when "2"
         self.tmp_repeat = true
         par_item_base, par_item_repeat = Gw::Schedule.separate_repeat_params params
@@ -53,7 +54,7 @@ module Concerns::Gw::Schedule::Rentcar
           st_at = Gw.datetime_merge_to_day(d, d_st_time)
           ed_at = Gw.datetime_merge_to_day(d, d_ed_time)
           tmp_dates << {:st_at => st_at, :ed_at => ed_at, :prop_id => prop[1],:genre_name => prop[0]}
-          rent_item_flg = false if Gw::SchedulePropTemporary.where(cond_str,self.tmp_id, ed_at,st_at,check_date, "Gw::PropRentcar", prop[1]).exists? if prop[0] == "rentcar"
+          rent_item_flg = false if Gw::SchedulePropTemporary.where(tmp_cond_str,self.tmp_id, ed_at,st_at, "Gw::PropRentcar", prop[1],tmp_time,current_time).exists? if prop[0] == "rentcar"
         end
       else
         next
