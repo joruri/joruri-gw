@@ -426,7 +426,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       _params = reject_no_necessary_params params
     end
     if params[:purpose] == "confirm"
-      if @item.check_rentcar_duplication(_params, :create) #予約重複確認ロジック
+      if @item.check_rentcar_duplication(_params, :create)
         @tmp_repeat = @item.tmp_repeat
         @schedule_props = @item.tmp_props
         @schedule_users = @item.tmp_schedule_users(_params)
