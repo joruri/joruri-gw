@@ -1,14 +1,3 @@
-<%
-destroy_confirm_s = '削除してよろしいですか？'
-if @item.schedule_users.collect{|x|[x.class_id, x.uid]}.reject{|x| x[0] == 1 && x[1] == Core.user.id }.length > 0
-  destroy_confirm_s = "この予定は、複数の参加者が登録されています。この予定は、参加者全員のスケジューラーからも削除されます。#{destroy_confirm_s}"
-end
-if @item.repeated?
-  destroy_confirm_repeated_s = "\nなお、繰り返し期間に属している場合、その繰り返しに属する全ての予定が削除されますので、ご注意ください。"
-else
-  destroy_confirm_repeated_s = ""
-end
-%>
 <div class="piece schedulePiece showOne">
 <div class="pieceHeader">
 <%= render 'piece_header' %>

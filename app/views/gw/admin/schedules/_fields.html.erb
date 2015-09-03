@@ -9,4 +9,4 @@
 <% end %>
 <% @item.meetingroom_options.each do |k|%>
   <%= hidden_field_tag "options[]", k %>
-<%end%>
+<%end if @item.meetingroom_options%>
