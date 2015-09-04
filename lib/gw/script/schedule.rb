@@ -5,9 +5,9 @@ class Gw::Script::Schedule < System::Script::Base
       settings = Gw::Property::ScheduleAdminDelete.first_or_new.schedules
       months = 6 * settings['schedules_admin_delete'].to_i
       return if months <= 0
-  
+
       d1 = Date.today << months
-  
+
       log "繰り返しスケジュール削除処理: #{I18n.l(d1)} 以前を削除" do
         del = 0
         Gw::ScheduleRepeat.where(["ed_date_at < ?", d1]).find_each do |repeat|
@@ -36,6 +36,16 @@ class Gw::Script::Schedule < System::Script::Base
         Gw::ScheduleRepeat.optimize_and_analyze_table
         Gw::ScheduleProp.optimize_and_analyze_table
         Gw::ScheduleEvent.optimize_and_analyze_table
+      end
+    end
+  end
+
+  def self.schedule_prop_temporary_delete
+    run do
+      date_str = Time.now.yesterday
+      log "過去の仮予約データ削除処理: #{I18n.l(date_str)} 以前を削除" do
+        dels = Gw::SchedulePropTemporary.where(["created_at <= ?", date_str]).destroy_all
+        log "#{dels.size} deleted"
       end
     end
   end
