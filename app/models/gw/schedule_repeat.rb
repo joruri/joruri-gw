@@ -11,9 +11,8 @@ class Gw::ScheduleRepeat < Gw::Database
       params[:item][:inquire_to] = ""
       params[:item][:schedule_props_json] = "[]"
     end
-    tmp_cond_str = "tmp_id != ? and st_at <= ? and ed_at >= ? and prop_type = ? and prop_id = ? and created_at > ? and created_at <= ?"
+    item.tmp_id = params[:item][:tmp_id]
     current_time = Time.now
-    tmp_time = Time.now - 5.minutes
     option_items = params[:options].blank? ? "" : params[:options].join(",")
     _props = JSON.parse(params[:item][:schedule_props_json])
     prop_cancelled_cond = "gw_schedule_props.extra_data is null or gw_schedule_props.extra_data not like '%\"cancelled\":1%'" # キャンセルを条件に加えるSQL文
@@ -290,7 +289,7 @@ class Gw::ScheduleRepeat < Gw::Database
         if rent_item.length > 0
           rent_item_flg = false
         end
-        rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.where(tmp_cond_str,item.tmp_id, ed_at,st_at, "Gw::PropRentcar", r_props_id,tmp_time,current_time).exists?
+        rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
       }
 
       mee_item_flg = true
@@ -513,7 +512,7 @@ class Gw::ScheduleRepeat < Gw::Database
                 if rent_item.length > 0
                   rent_item_flg = false
                 end
-                rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.where(tmp_cond_str,item.tmp_id, ed_at,st_at, "Gw::PropRentcar", r_props_id,tmp_time,current_time).exists?
+                rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
                 if !item.schedule_repeat_id.blank?
                   rent_item = Gw::Schedule.joins(prop_join).where("prop_type='#{Gw::PropRentcar}'" + cond_actual_shar)
                   rent_item.each { |ritem|

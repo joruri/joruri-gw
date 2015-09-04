@@ -20,9 +20,7 @@ module Concerns::Gw::Schedule::Rentcar
       self.owner_gname = tmp_owner.groups[0].try(:name)
     end
     duplication = false
-    tmp_cond_str = "tmp_id != ? and st_at <= ? and ed_at >= ? and prop_type = ? and prop_id = ? and created_at > ? and created_at <= ?"
     current_time = Time.now
-    tmp_time = Time.now - 5.minutes
     cnt = 0
     tmp_dates = []
     self.meetingroom_options = params[:options]
@@ -37,7 +35,7 @@ module Concerns::Gw::Schedule::Rentcar
         self.ed_at = ed_at
         tmp_dates << {:st_at => st_at, :ed_at => ed_at, :prop_id => prop[1],:genre_name => prop[0]}
         next if prop[0] != "rentcar"
-        rent_item_flg = false if Gw::SchedulePropTemporary.where(tmp_cond_str,self.tmp_id, ed_at,st_at, "Gw::PropRentcar", prop[1],tmp_time,current_time).exists?
+        rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(self.tmp_id, st_at, ed_at, prop[1],current_time).exists?
       when "2"
         self.tmp_repeat = true
         par_item_base, par_item_repeat = Gw::Schedule.separate_repeat_params params
@@ -54,7 +52,7 @@ module Concerns::Gw::Schedule::Rentcar
           st_at = Gw.datetime_merge_to_day(d, d_st_time)
           ed_at = Gw.datetime_merge_to_day(d, d_ed_time)
           tmp_dates << {:st_at => st_at, :ed_at => ed_at, :prop_id => prop[1],:genre_name => prop[0]}
-          rent_item_flg = false if Gw::SchedulePropTemporary.where(tmp_cond_str,self.tmp_id, ed_at,st_at, "Gw::PropRentcar", prop[1],tmp_time,current_time).exists? if prop[0] == "rentcar"
+          rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(self.tmp_id, st_at, ed_at, prop[1],current_time).exists? if prop[0] == "rentcar"
         end
       else
         next
@@ -63,14 +61,12 @@ module Concerns::Gw::Schedule::Rentcar
     if rent_item_flg
       destroy_rentcar_temporaries
       tmp_dates.each do |d|
-        prop_type = "Gw::Prop#{d[:genre_name].capitalize}"
-        Gw::SchedulePropTemporary.create({
-         :tmp_id => self.tmp_id,
+        self.schedule_prop_temporaries.build(
          :st_at => d[:st_at],
          :ed_at => d[:ed_at],
-         :prop_type => prop_type,
+         :prop_type => "Gw::Prop#{d[:genre_name].capitalize}",
          :prop_id => d[:prop_id]
-        })
+        ).save
       end
       return true
     else
