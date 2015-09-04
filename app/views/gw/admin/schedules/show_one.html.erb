@@ -208,7 +208,7 @@ end
   <% end %>
 <% end %>
 <%= render '/gw/admin/schedules/prop_show', item: @item if !@is_pm_admin && @item.is_creator? %>
-<%= render 'prop_table', item: @item if !@is_pm_admin && schedule_props.any?(&:pm_related?) %>
+<%= render 'prop_table', item: @item , special_meeting_room: schedule_props.any?(&:is_special_meeting_room?) if !@is_pm_admin && schedule_props.any?(&:pm_related?) %>
 <%= render 'show_mail_link', item: @item %>
 
 </div>
