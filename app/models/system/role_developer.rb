@@ -64,7 +64,7 @@ private
    if errors.invalid?(:role_name_id)
       unless self.role_name_id.blank?
         errors.clear
-        errors.add_to_base('すでに登録済です。')
+        errors.add(:base, 'すでに登録済です。')
         errors.add_on_blank(:idx)
         errors.add(:idx, 'は数値で入力してください。') unless idxisnum
       end
