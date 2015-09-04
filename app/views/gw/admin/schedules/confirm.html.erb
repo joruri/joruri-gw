@@ -7,7 +7,8 @@
 </div>
 <%= render '/gw/admin/schedules/schedule_bt_box', d: Gw.datetime_to_date(@item.st_at), mode: 'form' %>
 <div class="pieceBodyBody">
-
+<span class="required">レンタカーの予約はまだ完了していません。</span>
+<span class="required">入力内容に問題がなければ、「登録する」ボタンを押して予約を完了してください。</span>
 
 <% if @item.tmp_repeat %>
   <table class="show">
@@ -144,12 +145,19 @@
   </tr>
   <% end %>
 </table>
+<div class="confirm-submitter">
+<%= form_for @item, :as => :item, :url => {:action => @item.new_record? ? :create : :update}, :html => {:class => "confirm-form"} do |f| -%>
+  <%= render(:partial => 'fields', :locals => {:f => f}) -%>
+  <%= hidden_field_tag :purpose, "re-entering" %>
+  <%= f.submit '戻る' %>
+<% end -%>
+
 <%= form_for @item, :as => :item, :url => {:action => @item.new_record? ? :create : :update}, :html => {:class => "confirm-form"} do |f| -%>
   <%= render(:partial => 'fields', :locals => {:f => f}) -%>
   <%= hidden_field_tag :purpose, "save" %>
-  <div class="submitters"><%= f.submit '登録する' %></div>
+  <%= f.submit '登録する' %>
 <% end -%>
-
+</div>
 </div>
 </div>
 </div>

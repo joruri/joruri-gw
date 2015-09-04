@@ -436,6 +436,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         render :action => 'new'
       end
     elsif params[:purpose] == "re-entering"
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :create , {:validate => true})
       render :action => 'new'
     else
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
@@ -466,17 +467,18 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     end
 
     if params[:purpose] == "confirm"
-      if @item.check_rentcar_duplication(_params, :create) #予約重複確認ロジック
+      if @item.check_rentcar_duplication(_params, :update) #予約重複確認ロジック
         @tmp_repeat = @item.tmp_repeat
         @schedule_props = @item.tmp_props
         @schedule_users = @item.tmp_schedule_users(_params)
         @public_groups_display = @item.tmp_public_groups(_params)
         render :action => 'confirm'
       else
-        render :action => 'new'
+        render :action => 'edit'
       end
     elsif params[:purpose] == "re-entering"
-      render :action => 'new'
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :update , {:validate => true})
+      render :action => 'edit'
     else
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
         flash[:notice] = '予定の編集に成功しました。'

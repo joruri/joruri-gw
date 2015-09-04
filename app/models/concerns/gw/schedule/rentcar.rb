@@ -70,7 +70,7 @@ module Concerns::Gw::Schedule::Rentcar
       end
       return true
     else
-      self.errors.add :base, "すでに予約済みのデータが存在します。"
+      self.errors.add :base, "指定された期間は、他のユーザが予約しています。予約状況を確認してください。"
       return false
     end
     return false
