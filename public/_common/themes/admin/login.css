@@ -55,7 +55,7 @@ form input.login {
   color: #000;
 }
 
-#account {
+#accountField {
   width: 170px;
   margin-left:1px;
   ime-mode:disabled;
@@ -96,7 +96,7 @@ div#login {
   margin: 0px auto 0px auto;
   top: 0px;
   text-align:center;
-  margin: 0px auto;  
+  margin: 0px auto;
 }
 
 .box {
@@ -108,7 +108,7 @@ div#login {
   background-repeat: no-repeat;
   background-position: left top;
   text-align:center;
-  margin: 0px auto 0px auto;  
+  margin: 0px auto 0px auto;
 }
 
 .box p {
