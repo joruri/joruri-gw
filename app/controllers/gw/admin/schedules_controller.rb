@@ -448,6 +448,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         end
         redirect_to redirect_url
       else
+        @item.destroy_rentcar_temporaries
         respond_to do |format|
           format.html { render :action => "new" }
           format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
@@ -493,6 +494,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         end
         redirect_to redirect_url
       else
+        @item.destroy_rentcar_temporaries
         respond_to do |format|
           format.html { render :action => "edit" }
           format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
