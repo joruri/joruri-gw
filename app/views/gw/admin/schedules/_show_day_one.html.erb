@@ -44,6 +44,7 @@
         <div title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) -%>" class="ind tooltip">
           <a class="<%= schedule.display_category_class(display_prop) -%>" href="/gw/schedules/<%= schedule.id -%>/show_one">
             <%= schedule.display_time(display_prop, @st_date) -%><%= schedule.display_title(display_prop, action: params[:action]) -%>
+            <%= "（#{schedule.place}）" if @schedule_settings[:view_place_display] == '1' && schedule.place.present? %>
           </a>
         </div>
       <% else %>
