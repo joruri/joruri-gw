@@ -437,6 +437,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       end
     elsif params[:purpose] == "re-entering"
       Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :create , {:validate => true})
+      @item.destroy_rentcar_temporaries
       render :action => 'new'
     else
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
@@ -479,6 +480,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       end
     elsif params[:purpose] == "re-entering"
       Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :update , {:validate => true})
+      @item.destroy_rentcar_temporaries
       render :action => 'edit'
     else
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
