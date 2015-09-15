@@ -31,6 +31,7 @@ defaults: &defaults
       pm: 管財課
     rentcar:
       pm: 管財課
+  use_confirmation_rentcar: off
   memo_mobile_settings:
     admin_email_from: admin@localhost.localdomain
     subject: "[連絡メモ]送信者："
