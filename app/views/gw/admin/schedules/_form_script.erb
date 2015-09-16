@@ -601,7 +601,7 @@ var prop_status_item_table_show_hide = function() {
   }else{
     hideItem($('specialShow'));
   }
-  <% if AppConfig.gw.use_confirmation_rentcar%>
+  <% if AppConfig.gw.confirmation_rentcar['check_duplication']%>
   if(props_rentcar_selected()){
     if($("purpose")){$("purpose").value = "confirm";}
     $("item_submit").value="確認する";
