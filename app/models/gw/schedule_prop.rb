@@ -1,6 +1,7 @@
 class Gw::ScheduleProp < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Concerns::Gw::Schedule::Prop
 
   attr_accessor :_skip_destroy_actual
 
@@ -38,17 +39,6 @@ class Gw::ScheduleProp < Gw::Database
     self.prop_type.to_s.sub('Gw::Prop', '').downcase
   end
 
-  def meetingroom_related?
-    self.prop_type == 'Gw::PropMeetingroom'
-  end
-
-  def rentcar_related?
-    self.prop_type == 'Gw::PropRentcar'
-  end
-
-  def other_related?
-    self.prop_type == 'Gw::PropOther'
-  end
 
   def pm_related?
     meetingroom_related? || rentcar_related?
@@ -71,6 +61,7 @@ class Gw::ScheduleProp < Gw::Database
   def date_between?(date)
     date == self.st_at.to_date || date == self.ed_at.to_date || (self.st_at.to_date < date && date < self.ed_at.to_date)
   end
+
 
   def self.is_pm_admin?
     # 管財管理人権限の有無

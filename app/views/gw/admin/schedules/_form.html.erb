@@ -300,7 +300,8 @@ end
     <td><%= radio f, 'is_public', Gw::Schedule.is_public_select, :onclick=>'is_public_click();' %></td>
   </tr>
 </table>
-
+<%= hidden_field_tag :purpose, "save" %>
+<%= f.hidden_field :tmp_id %>
 <%= render 'form_public', f: f %>
 <%= render 'form_script' %>
 

@@ -5,6 +5,7 @@ namespace :joruri do
       Rake::Task['joruri:core:initialize'].invoke
       # delete expired data
       Rake::Task['joruri:gw:schedule:delete_expired'].invoke
+      Rake::Task['joruri:gw:schedule_prop_temporaries:delete_expired'].invoke
       Rake::Task['joruri:gw:schedule_todo:delete_expired'].invoke
       Rake::Task['joruri:gw:memo:delete_expired'].invoke
       Rake::Task['joruri:gw:reminder_external:delete_expired'].invoke
@@ -34,7 +35,13 @@ namespace :joruri do
         Gw::Script::Schedule.delete
       end
     end
-
+    namespace :schedule_prop_temporaries do
+      desc '不要になった施設予約仮データを削除します'
+      task :delete_expired => :environment do
+        Rake::Task['joruri:core:initialize'].invoke
+        Gw::Script::Schedule.schedule_prop_temporary_delete
+      end
+    end
     namespace :schedule_todo do
       desc '完了済みで削除期間が過ぎたToDoを削除します'
       task :delete_expired => :environment do
@@ -103,5 +110,6 @@ namespace :joruri do
         Gw::Script::PlusUpdate.destroy_reminders
       end
     end
+
   end
 end

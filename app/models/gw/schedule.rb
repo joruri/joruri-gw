@@ -2,6 +2,7 @@ class Gw::Schedule < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::Schedule::MeetingGuide
+  include Concerns::Gw::Schedule::Rentcar
 
   validates_presence_of :title, :is_public
   validates_each :st_at do |record, attr, value|
@@ -22,6 +23,8 @@ class Gw::Schedule < Gw::Database
   belongs_to :repeat, :foreign_key => :schedule_repeat_id, :class_name => 'Gw::ScheduleRepeat'
   belongs_to :parent, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
   has_many :child, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
+
+  has_many  :schedule_prop_temporaries, :foreign_key => :tmp_id, :primary_key => :tmp_id, :class_name => 'Gw::SchedulePropTemporary'
 
   belongs_to :creator_user, :foreign_key => :creator_uid, :class_name => 'System::User'
   belongs_to :creator_group, :foreign_key => :creator_gid, :class_name => 'System::Group'
@@ -108,6 +111,7 @@ class Gw::Schedule < Gw::Database
       :schedule
     end
   end
+
 
   def self.joined_self(options={})
     op = options.dup

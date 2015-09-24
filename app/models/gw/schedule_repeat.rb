@@ -4,13 +4,15 @@ class Gw::ScheduleRepeat < Gw::Database
 
   has_many :schedules, :foreign_key => :schedule_repeat_id, :class_name => 'Gw::Schedule', :dependent=>:destroy
 
-  def self.save_with_rels_concerning_repeat(item, params, mode)
+  def self.save_with_rels_concerning_repeat(item, params, mode,options = {})
    raise "update/create 以外は未実装です" if %w(update create).index(mode.to_s).nil?
     form_kind_id = params[:item][:form_kind_id]
     if form_kind_id == "0" || form_kind_id == "2"
       params[:item][:inquire_to] = ""
       params[:item][:schedule_props_json] = "[]"
     end
+    item.tmp_id = params[:item][:tmp_id]
+    current_time = Time.now
     option_items = params[:options].blank? ? "" : params[:options].join(",")
     _props = JSON.parse(params[:item][:schedule_props_json])
     prop_cancelled_cond = "gw_schedule_props.extra_data is null or gw_schedule_props.extra_data not like '%\"cancelled\":1%'" # キャンセルを条件に加えるSQL文
@@ -275,6 +277,7 @@ class Gw::ScheduleRepeat < Gw::Database
       }
 
       rent_item_flg = true
+      temp_item_flg = true
       cond_shar = " and (extra_data is null or extra_data not like '%\"cancelled\":1%')" +
         " and schedule_id <> '#{item.id}'" +
         " and ( (gw_schedule_props.st_at <= '#{st_at}' and gw_schedule_props.ed_at > '#{st_at}' )" +
@@ -286,6 +289,10 @@ class Gw::ScheduleRepeat < Gw::Database
         rent_item = rent_item.where("prop_type='#{Gw::PropRentcar}' and prop_id='#{r_props_id}'" + cond_shar).to_a
         if rent_item.length > 0
           rent_item_flg = false
+        end
+        if options[:check_temporaries]
+          rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+          temp_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_enable(item.tmp_id, r_props_id,current_time).exists?
         end
       }
 
@@ -337,6 +344,7 @@ class Gw::ScheduleRepeat < Gw::Database
         unless is_pm_admin
           item.errors.add :st_at, 'は、現在の時間以降としてください。' if d_st_at < Time.now && kanzai_flg
         end
+          item.errors.add :base, "レンタカー予約仮押さえの有効期限が経過しました。再度登録し直してください。" unless temp_item_flg
           competition_str = "終了日時は他の予定と競合しています。別の予定時間を入力してください。"
 
           item.errors.add :st_at, "、#{competition_str}（レンタカー）" unless rent_item_flg
@@ -476,6 +484,8 @@ class Gw::ScheduleRepeat < Gw::Database
           mee_item_flg = true
           mr_items_flg = true
 
+          temp_item_flg = true
+
           mee_today_flg = false
           mee_spe_flg = false
           mee_p_flg = false
@@ -508,6 +518,10 @@ class Gw::ScheduleRepeat < Gw::Database
                 rent_item = Gw::Schedule.joins(prop_join).where("prop_type='#{Gw::PropRentcar}' and prop_id='#{r_props_id}'" + cond_results_shar)
                 if rent_item.length > 0
                   rent_item_flg = false
+                end
+                if options[:check_temporaries]
+                  rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+                  temp_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_enable(item.tmp_id, r_props_id,current_time).exists?
                 end
 
                 if !item.schedule_repeat_id.blank?
@@ -599,6 +613,7 @@ class Gw::ScheduleRepeat < Gw::Database
           else
             item.errors.add :st_at,": 管財課レンタカー、管財課会議室をご利用の場合、２ヶ月以内しか予約登録／編集できません。" if in_two_months <= d_ed_date.to_date && !is_pm_admin && kanzai_flg
           end
+          item.errors.add :base, "レンタカー予約仮押さえの有効期限が経過しました。再度登録し直してください。" unless temp_item_flg
           competition_str = "終了日は他の予定と競合しています。また、繰り返し編集の場合、同じ予定でもすでに貸出・返却されている日時を入力することはできません。別の予定時間を入力してください。"
           item.errors.add :repeat_st_date_at, "、#{competition_str}（レンタカー）" unless rent_item_flg
           item.errors.add :repeat_st_date_at, "、#{competition_str}（会議室）" unless mee_item_flg
@@ -695,7 +710,9 @@ class Gw::ScheduleRepeat < Gw::Database
 
         _props.each do |prop|
           cnt == 0 ? _item = item : _item = Gw::Schedule.new
-          Gw::Schedule.save_with_rels _item, params[:item], mode, prop, delete_props, {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin, :option_items => option_items}
+          Gw::Schedule.save_with_rels _item, params[:item], mode, prop, delete_props,
+            {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode],
+              :is_pm_admin => is_pm_admin, :option_items => option_items} unless options[:validate]
           _item.errors.each{|x| item.errors.add x[0], x[1]} if item != _item
           params[:item]['schedule_parent_id'] = _item.id if params[:item]['schedule_parent_id'].blank?  # 管財が存在する場合、schedule_parent_idを記入。
           cnt = cnt + 1
@@ -734,7 +751,9 @@ class Gw::ScheduleRepeat < Gw::Database
                   })
 
                   _item = Gw::Schedule.new
-                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, prop, delete_props, {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin, :option_items => option_items}
+                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, prop, delete_props,
+                    {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode],
+                      :is_pm_admin => is_pm_admin, :option_items => option_items} unless options[:validate]
                   _item.errors.each{|x| item.errors.add x[0], x[1]} if item != _item
                   item_next = _item if item_next.nil?
 
@@ -763,7 +782,9 @@ class Gw::ScheduleRepeat < Gw::Database
 
 
                   _item = item.id.nil? ? item : Gw::Schedule.new
-                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, prop, [], {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin, :option_items => option_items}
+                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, prop, [],
+                    {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode],
+                      :is_pm_admin => is_pm_admin, :option_items => option_items} unless options[:validate]
                   _item.errors.each{|x| item.errors.add x[0], x[1]} if item != _item
                   repeat_schedule_parent_id[date_cnt] = _item.id if repeat_schedule_parent_id[date_cnt].blank?
                   raise Gw::ARTransError if !ret_swr
@@ -793,7 +814,7 @@ class Gw::ScheduleRepeat < Gw::Database
     elsif _props.length == 0
       case params[:init][:repeat_mode]
       when "1"
-        Gw::Schedule.save_with_rels item, params[:item], mode, nil, [], :option_items => option_items
+        Gw::Schedule.save_with_rels item, params[:item], mode, nil, [], :option_items => option_items unless options[:validate]
       when "2"
         date_for_time = Time.local(2010,4,1)
         par_item_repeat[:st_time_at] = Gw.datetime_merge_to_day(date_for_time, d_st_time)
@@ -827,7 +848,8 @@ class Gw::ScheduleRepeat < Gw::Database
                 })
                 _item = Gw::Schedule.new
                 if schedule_todo_item.blank?
-                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, nil, [], {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin}
+                  ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, nil, [],
+                    {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin} unless options[:validate]
                 else
                   ret_swr = true
                 end
@@ -848,7 +870,8 @@ class Gw::ScheduleRepeat < Gw::Database
                   :schedule_repeat_id => item_repeat.id,
                 })
                 _item = item.id.nil? ? item : Gw::Schedule.new
-                ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, nil, [], {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin}
+                ret_swr = Gw::Schedule.save_with_rels _item, item_dup, mode, nil, [],
+                  {:restrict_trans=>1, :repeat_mode => params[:init][:repeat_mode], :is_pm_admin => is_pm_admin} unless options[:validate]
                 _item.errors.each{|x| item.errors.add x[0], x[1]} if item != _item
 
                 raise Gw::ARTransError if !ret_swr
