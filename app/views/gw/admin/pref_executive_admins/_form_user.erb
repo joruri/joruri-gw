@@ -10,7 +10,7 @@
   <% ([Gw::PrefExecutive.new] + @items).each_with_index do |item, i| %>
     <%= fields_for 'items[]', item, index: i do |f| %>
       <tr data-user-id="<%= item.uid if i != 0 %>" <%=raw %(id="template" style="display:none;") if i == 0 %>>
-        <td><%= f.text_field :u_order, size: 2, maxlength: 1 %><%= f.hidden_field :id %><%= f.hidden_field :uid %></td>
+        <td><%= f.text_field :u_order, size: 2, maxlength: 4 %><%= f.hidden_field :id %><%= f.hidden_field :uid %></td>
         <td><%= f.check_box :is_other_view %><%= f.label :is_other_view, '表示' %></td>
         <td><%= f.check_box :is_governor_view %><%= f.label :is_governor_view, '表示' %></td>
         <td><%= f.text_field :title, size: 25, maxlength: 20 %></td>
