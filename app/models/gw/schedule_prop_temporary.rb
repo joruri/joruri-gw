@@ -17,4 +17,12 @@ class Gw::SchedulePropTemporary < Gw::Database
     rel
   }
 
+  scope :check_enable, ->(tmp_id, prop_id,current_time){
+    interval = AppConfig.gw.confirmation_rentcar['interval'].presence || 1
+    rel = all.where(:tmp_id => tmp_id)
+             .where(arel_table[:created_at].lt(current_time - interval.minutes))
+             .where(:prop_id=>prop_id)
+    rel
+  }
+
 end

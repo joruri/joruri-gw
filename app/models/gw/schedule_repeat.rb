@@ -277,6 +277,7 @@ class Gw::ScheduleRepeat < Gw::Database
       }
 
       rent_item_flg = true
+      temp_item_flg = true
       cond_shar = " and (extra_data is null or extra_data not like '%\"cancelled\":1%')" +
         " and schedule_id <> '#{item.id}'" +
         " and ( (gw_schedule_props.st_at <= '#{st_at}' and gw_schedule_props.ed_at > '#{st_at}' )" +
@@ -289,7 +290,10 @@ class Gw::ScheduleRepeat < Gw::Database
         if rent_item.length > 0
           rent_item_flg = false
         end
-        rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+        if options[:check_temporaries]
+          rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+          temp_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_enable(item.tmp_id, r_props_id,current_time).exists?
+        end
       }
 
       mee_item_flg = true
@@ -340,6 +344,7 @@ class Gw::ScheduleRepeat < Gw::Database
         unless is_pm_admin
           item.errors.add :st_at, 'は、現在の時間以降としてください。' if d_st_at < Time.now && kanzai_flg
         end
+          item.errors.add :base, "レンタカー予約仮押さえの有効期限が経過しました。再度登録し直してください。" unless temp_item_flg
           competition_str = "終了日時は他の予定と競合しています。別の予定時間を入力してください。"
 
           item.errors.add :st_at, "、#{competition_str}（レンタカー）" unless rent_item_flg
@@ -479,6 +484,8 @@ class Gw::ScheduleRepeat < Gw::Database
           mee_item_flg = true
           mr_items_flg = true
 
+          temp_item_flg = true
+
           mee_today_flg = false
           mee_spe_flg = false
           mee_p_flg = false
@@ -512,7 +519,11 @@ class Gw::ScheduleRepeat < Gw::Database
                 if rent_item.length > 0
                   rent_item_flg = false
                 end
-                rent_item_flg = false if options[:check_temporaries] && Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+                if options[:check_temporaries]
+                  rent_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_duplication(item.tmp_id, st_at, ed_at, r_props_id,current_time).exists?
+                  temp_item_flg = false if Gw::SchedulePropTemporary.rentcars.check_enable(item.tmp_id, r_props_id,current_time).exists?
+                end
+
                 if !item.schedule_repeat_id.blank?
                   rent_item = Gw::Schedule.joins(prop_join).where("prop_type='#{Gw::PropRentcar}'" + cond_actual_shar)
                   rent_item.each { |ritem|
@@ -602,6 +613,7 @@ class Gw::ScheduleRepeat < Gw::Database
           else
             item.errors.add :st_at,": 管財課レンタカー、管財課会議室をご利用の場合、２ヶ月以内しか予約登録／編集できません。" if in_two_months <= d_ed_date.to_date && !is_pm_admin && kanzai_flg
           end
+          item.errors.add :base, "レンタカー予約仮押さえの有効期限が経過しました。再度登録し直してください。" unless temp_item_flg
           competition_str = "終了日は他の予定と競合しています。また、繰り返し編集の場合、同じ予定でもすでに貸出・返却されている日時を入力することはできません。別の予定時間を入力してください。"
           item.errors.add :repeat_st_date_at, "、#{competition_str}（レンタカー）" unless rent_item_flg
           item.errors.add :repeat_st_date_at, "、#{competition_str}（会議室）" unless mee_item_flg

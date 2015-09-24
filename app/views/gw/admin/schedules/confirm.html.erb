@@ -7,8 +7,9 @@
 </div>
 <%= render '/gw/admin/schedules/schedule_bt_box', d: Gw.datetime_to_date(@item.st_at), mode: 'form' %>
 <div class="pieceBodyBody">
-<span class="required">レンタカーの予約はまだ完了していません。</span>
-<span class="required">入力内容に問題がなければ、「登録する」ボタンを押して予約を完了してください。</span>
+<span class="required">現在、レンタカー予約の仮押さえをしています。<%=AppConfig.gw.confirmation_rentcar['interval'].presence || 1%>分以内に予約を完了しなければ、仮押さえが無効となります。</span><br />
+<span class="required">レンタカーの予約はまだ完了していません。</span><br />
+<span class="required">入力内容に問題がなければ、「登録する」ボタンを押して予約を完了してください。</span><br />
 
 <% if @item.tmp_repeat %>
   <table class="show">
