@@ -19,7 +19,7 @@ class Gw::Todo < Gw::Database
   end
 
   def validate_count
-    errors.add_to_base 'ToDoは２００件以上登録することができません。' if self.class.get_count >= 200 && self.new_record?
+    errors.add :base, 'ToDoは２００件以上登録することができません。' if self.class.get_count >= 200 && self.new_record?
   end
 
   def validate_ed_at

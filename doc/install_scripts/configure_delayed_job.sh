@@ -13,11 +13,13 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
+  service mysqld start
   cp /var/share/jorurigw/config/samples/delayed_job /etc/init.d/
   chmod +x /etc/init.d/delayed_job
   /sbin/chkconfig --add delayed_job
   /sbin/chkconfig delayed_job on
   /etc/init.d/delayed_job start
+  service mysqld stop
 
 }
 
