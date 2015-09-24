@@ -152,3 +152,11 @@ br {
   overflow: hidden;
   /**/
 }
+/*confirm form
+--------------------------------------------------------- */
+form.confirm-form {
+  display: inline;
+}
+div.confirm-submitter{
+  text-align: center;
+}

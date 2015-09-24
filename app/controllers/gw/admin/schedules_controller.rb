@@ -236,7 +236,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def new
     @item = Gw::Schedule.new(is_public: 1)
-
+    @item.set_tmp_id
     if params[:item].present?
       @item.title = params[:item][:title] if params[:item][:title].present?
       @item.memo = params[:item][:memo] if params[:item][:memo].present?
@@ -259,6 +259,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def edit_1
     @item = Gw::Schedule.find(params[:id])
+    @item.set_tmp_id
     @auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if @auth_level[:edit_level] != 3
 
@@ -305,6 +306,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def edit_2
     @item = Gw::Schedule.find(params[:id])
+    @item.set_tmp_id
     @auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if @auth_level[:edit_level] != 4
 
@@ -335,6 +337,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def editlending
     @item = Gw::Schedule.find(params[:id])
+    @item.set_tmp_id
     @auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if @auth_level[:edit_level] != 2
 
@@ -365,6 +368,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def edit
     @item = Gw::Schedule.find(params[:id])
+    @item.set_tmp_id
     auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
     return error_auth if auth_level[:edit_level] != 1 && !@quote
 
@@ -415,25 +419,41 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
 
   def create
     @item = Gw::Schedule.new
-
     if request.mobile?
       _params = set_mobile_params params
       _params = reject_no_necessary_params _params
     else
       _params = reject_no_necessary_params params
     end
-
-    if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create)
-      flash_notice '予定の登録', true
-      redirect_url = "/gw/schedules/#{@item.id}/show_one?m=new"
-      if request.mobile?
-        redirect_url += "&gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
+    if params[:purpose] == "confirm"
+      if @item.check_rentcar_duplication(_params, :create)
+        @tmp_repeat = @item.tmp_repeat
+        @schedule_props = @item.tmp_props
+        @schedule_users = @item.tmp_schedule_users(_params)
+        @public_groups_display = @item.tmp_public_groups(_params)
+        render :action => 'confirm'
+      else
+        render :action => 'new'
       end
-      redirect_to redirect_url
+    elsif params[:purpose] == "re-entering"
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :create , {:validate => true})
+      @item.destroy_rentcar_temporaries
+      render :action => 'new'
     else
-      respond_to do |format|
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
+      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
+        flash_notice '予定の登録', true
+        redirect_url = "/gw/schedules/#{@item.id}/show_one?m=new"
+        @item.destroy_rentcar_temporaries
+        if request.mobile?
+          redirect_url += "&gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
+        end
+        redirect_to redirect_url
+      else
+        @item.destroy_rentcar_temporaries
+        respond_to do |format|
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
+        end
       end
     end
   end
@@ -448,21 +468,39 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       _params = reject_no_necessary_params params
     end
 
-    if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update)
-      flash[:notice] = '予定の編集に成功しました。'
-      redirect_url = "/gw/schedules/#{@item.id}/show_one?m=edit"
-      if request.mobile?
-        if @item.schedule_parent_id.blank?
-          redirect_url += "?gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
-        else
-          redirect_url += "&gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
-        end
+    if params[:purpose] == "confirm"
+      if @item.check_rentcar_duplication(_params, :update) #予約重複確認ロジック
+        @tmp_repeat = @item.tmp_repeat
+        @schedule_props = @item.tmp_props
+        @schedule_users = @item.tmp_schedule_users(_params)
+        @public_groups_display = @item.tmp_public_groups(_params)
+        render :action => 'confirm'
+      else
+        render :action => 'edit'
       end
-      redirect_to redirect_url
+    elsif params[:purpose] == "re-entering"
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :update , {:validate => true})
+      @item.destroy_rentcar_temporaries
+      render :action => 'edit'
     else
-      respond_to do |format|
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
+      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
+        flash[:notice] = '予定の編集に成功しました。'
+        redirect_url = "/gw/schedules/#{@item.id}/show_one?m=edit"
+        @item.destroy_rentcar_temporaries
+        if request.mobile?
+          if @item.schedule_parent_id.blank?
+            redirect_url += "?gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
+          else
+            redirect_url += "&gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"
+          end
+        end
+        redirect_to redirect_url
+      else
+        @item.destroy_rentcar_temporaries
+        respond_to do |format|
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
+        end
       end
     end
   end
