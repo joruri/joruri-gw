@@ -11,5 +11,5 @@ sys:
   force_site: ''
   # ファイル名変換UserAgent
   file_encode_prefix: 'MSIE,Trident'
-  # 初期パスワードでのログイン
+  # 初期パスワードでのログイン禁止
   refuse_initial_password: off
