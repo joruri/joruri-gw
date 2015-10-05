@@ -20,6 +20,16 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
       end
       return
     end
+
+    if Joruri.config.application['sys.refuse_initial_password'] && params[:password].to_s == 'p'+params[:account].to_s
+      flash.now[:notice] = "初期パスワードではログインできません。パスワードを変更してください。"
+      respond_to do |format|
+        format.html {  }
+        format.xml  { render(:xml => '<errors />') }
+      end
+      return true
+    end
+
     if request.mobile?
       login_ok = new_login_mobile(params[:account], params[:password], params[:mobile_password])
     else
