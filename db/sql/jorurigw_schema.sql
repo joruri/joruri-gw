@@ -2904,7 +2904,6 @@ DROP TABLE IF EXISTS `gw_schedule_prop_temporaries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 
-DROP TABLE IF EXISTS `gw_schedule_prop_temporaries`;
 CREATE TABLE `gw_schedule_prop_temporaries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tmp_id` varchar(255) DEFAULT NULL,
