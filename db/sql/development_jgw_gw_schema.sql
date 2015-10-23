@@ -2627,6 +2627,7 @@ CREATE TABLE IF NOT EXISTS `gw_schedules` (
   `guide_ed_at` int(11) DEFAULT NULL,
   `event_week` int(11) DEFAULT NULL,
   `event_month` int(11) DEFAULT NULL,
+  `tmp_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `st_at` (`st_at`,`ed_at`),
   KEY `schedule_repeat_id` (`schedule_repeat_id`),
@@ -2666,7 +2667,31 @@ CREATE TABLE IF NOT EXISTS `gw_schedule_props` (
   KEY `schedule_id` (`schedule_id`,`prop_type`,`prop_id`),
   KEY `prop_id` (`prop_id`)
 )   DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
 
+--
+-- テーブルの構造 `gw_schedule_prop_temporaries`
+--
+
+DROP TABLE IF EXISTS `gw_schedule_prop_temporaries`;
+CREATE TABLE `gw_schedule_prop_temporaries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tmp_id` varchar(255) DEFAULT NULL,
+  `prop_type` varchar(255) DEFAULT NULL,
+  `prop_id` int(11) DEFAULT NULL,
+  `st_at` datetime DEFAULT NULL,
+  `ed_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `created_user` text,
+  `created_group` text,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_user` text,
+  `updated_group` text,
+  `deleted_at` datetime DEFAULT NULL,
+  `deleted_user` text,
+  `deleted_group` text,
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
 --
