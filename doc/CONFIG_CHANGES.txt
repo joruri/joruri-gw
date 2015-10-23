@@ -1,3 +1,6 @@
+3.0.1
+  * レンタカーの同時予約を制限する機能に関する設定値を config/modules/gw/settings/base.yml に追加しました。
+  設定内容はCHANGES.txtを参照してください。
 3.0.0
   * 新規リリース
     #cron設定はINSTALL.txt内の「8.4 定期実行処理の設定」を参照してください。

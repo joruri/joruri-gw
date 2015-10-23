@@ -1,6 +1,6 @@
 module Joruri
   def self.version
-    "3.0.0"
+    "3.0.1"
   end
 
   def self.default_config
@@ -48,5 +48,6 @@ module Joruri
     def self.sso_settings=(config)
       $joruri_config[:sso_settings] = config
     end
+
   end
 end
