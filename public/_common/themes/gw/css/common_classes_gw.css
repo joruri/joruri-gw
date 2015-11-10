@@ -37,7 +37,7 @@
 }
 #headerBody .personal {
   float: left;
-  width: 42%;
+  max-width: 42%;
   line-height: 55px;
   overflow: hidden;
   text-overflow: ellipsis;
