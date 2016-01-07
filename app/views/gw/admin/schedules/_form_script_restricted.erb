@@ -551,7 +551,7 @@ var update_user_cand = function () {
     break;
   }
   genre_str   = '<%= @genre.blank? ? "s_genre=other" : "s_genre=#{@genre}" %>' ;
-  type_id_str = '<%= @prop_type.blank? ? '' : "type_id=#{@prop_type.id}'" %>' ;
+  type_id_str = '<%= @prop_type.blank? ? '' : "type_id=#{@prop_type.id}" %>' ;
   params_a = [genre_str , type_id_str , 'st_at=' + st_at , 'ed_at=' + ed_at, 'time_serial=' + time_serial()];
   url = '/gw/schedule_users/getajax_restricted.json?' + params_a.join('&');
   if (st_at >= ed_at_to) {
