@@ -4,7 +4,7 @@ class Gwboard::Admin::AjaxgroupsController < ApplicationController
 
   def getajax
     gid = params[:s_genre].to_i
-    if gid == '0'
+    if gid == 0
       @item = [["0", "0", "制限なし"]] if params[:msg].blank?
       @item = [["0", "0", "全ての所属"]] unless params[:msg].blank?
     else
