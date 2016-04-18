@@ -17,6 +17,7 @@ module Digitallibrary::Admin::DocsHelper
 
   def cat_params(item)
      return "" if item.blank?
+     return "&cat=#{item.id}" if item.doc_type == 1
      return "&cat=#{item.parent_id.to_s}" unless item.parent_id.blank?
      return "&cat=#{item.id}"
   end
