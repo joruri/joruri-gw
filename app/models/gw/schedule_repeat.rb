@@ -404,7 +404,7 @@ class Gw::ScheduleRepeat < Gw::Database
           item.errors.add :st_at, '、終了日時が不正です。会議室の予約時、連続して５日以上予約することはできません。' if weekdays.length > 4
         end
         if has_mr_pm > 0 && !is_pm_admin
-          hours = ((d_ed_at - d_st_at) / 3600) * has_mr_pm
+          hours = ((d_ed_at.to_time - d_st_at.to_time) / 3600) * has_mr_pm
           if hours > 9.5
             item.errors.add :"同一所属", "の予約制限に係る不正です。管財課管理の全会議室合計で１日９時間３０分までしか予約できません。" if !is_pm_admin
           else
@@ -418,7 +418,7 @@ class Gw::ScheduleRepeat < Gw::Database
                 end
               }
             }
-            pm_sche_has_og_secs += (d_ed_at - d_st_at) * has_mr_pm
+            pm_sche_has_og_secs += (d_ed_at.to_time - d_st_at.to_time) * has_mr_pm
             item.errors.add :"同一所属", "の予約制限に係る不正です。管財課管理の全会議室合計で１日９時間３０分までしか予約できません。" if pm_sche_has_og_secs / 3600 > 9.5 && !is_pm_admin
           end
         end
@@ -576,7 +576,7 @@ class Gw::ScheduleRepeat < Gw::Database
             rent_time_ed_s = rent_time_ed.strftime("%Y-%m-%d 00:00:00")
 
             if has_mr_pm > 0 && !is_pm_admin
-              hours = ((rent_time_ed - rent_time_st) / 3600) * has_mr_pm
+              hours = ((rent_time_ed.to_time - rent_time_st.to_time) / 3600) * has_mr_pm
               if hours > 9.5
                 item.errors.add :"同一所属", "の予約制限に係る不正です。管財課管理の全会議室合計で１日９時間３０分までしか予約できません。" if !is_pm_admin
               else
@@ -592,7 +592,7 @@ class Gw::ScheduleRepeat < Gw::Database
                     end
                   }
                 }
-                pm_sche_has_og_secs += ((rent_time_ed - rent_time_st) * has_mr_pm)
+                pm_sche_has_og_secs += ((rent_time_ed.to_time - rent_time_st.to_time) * has_mr_pm)
                 item.errors.add :"同一所属", "の予約制限に係る不正です。管財課管理の全会議室合計で１日９時間３０分までしか予約できません。" if pm_sche_has_og_secs / 3600 > 9.5 && !is_pm_admin
               end
             end
