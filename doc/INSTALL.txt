@@ -1,4 +1,4 @@
-## Joruri Gw 2.3.1 インストールマニュアル                   2015.7.10
+## Joruri Gw 2.3.2 インストールマニュアル                   2016.4.19
 
 **********************************************************************
  1 想定環境
@@ -48,7 +48,7 @@ Joruri Gw の実行に必要なパッケージをインストールします。
 必要なパッケージをダウンロードします。
 
   # cd /usr/local/src/
-  # wget http://joruri.org/download/jorurigw/jorurigw-2.3.0.tar.gz
+  # wget https://github.com/joruri/joruri-gw/archive/v2.3.2.tar.gz
   # wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p547.tar.gz
   # wget http://memcached.googlecode.com/files/memcached-1.4.13.tar.gz
   # wget http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
@@ -63,7 +63,8 @@ Joruriユーザを作成します。
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf jorurigw-2.3.0.tar.gz -C /var/share
+  # tar xvzf v2.3.2.tar.gz -C /var/share
+  # mv /var/share/joruri-gw-2.3.2 /var/share/jorurigw
   # chown -R joruri:joruri /var/share/jorurigw
 
 **********************************************************************
