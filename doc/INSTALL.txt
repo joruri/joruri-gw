@@ -1,4 +1,4 @@
-## Joruri Gw 3.1.0 インストールマニュアル                   2015.08.03
+## Joruri Gw 3.2.0 インストールマニュアル                   2015.08.03
 
 **********************************************************************
  1 想定環境
@@ -8,8 +8,8 @@
 OS         : CentOS 6.6 (64bit)
 Webサーバ  : Apache 2.2
 DBシステム : MySQL 5.6
-Ruby       : Ruby 2.1.5
-Rails      : Rails 4.1.9
+Ruby       : Ruby 2.3.1
+Rails      : Rails 4.2.6
 キャッシュ : memcached 1.4.20
 
 [設定]
@@ -40,21 +40,15 @@ rootユーザに変更します。
 
 Joruri Gw の実行に必要なパッケージをインストールします。
 
-  # yum -y install wget make gcc-c++ httpd httpd-devel memcached \
+  # yum -y install wget make gcc-c++ git httpd httpd-devel memcached \
     libjpeg-devel libpng-devel \
-    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel
+    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel \
+    readline-devel
 
 MySQL5.6をインストールします。
 
   # yum install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
   # yum install mysql mysql-devel mysql-server mysql-utilities
-
-必要なパッケージをダウンロードします。
-
-  # cd /usr/local/src/
-  # wget https://github.com/joruri/joruri-gw/archive/v3.1.0.tar.gz
-  # wget http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
-  # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
 
 Joruriユーザを作成します。
 
@@ -106,23 +100,32 @@ MySQLの設定を行います。
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ## [mysqld]に設定を追加、[client]と設定を追加。
 
-MySQLを起動します。
 
-  # /usr/bin/mysql_install_db --user=mysql
-  # /sbin/service mysqld start
+初期設定をします。
 
-自動起動に設定します。
+  # mysql_install_db --user=mysql
 
-  # /sbin/chkconfig mysqld on
+  # service mysqld start             <- CentOS6の場合
+  # systemctl start mysqld.service   <- CentOS7の場合
 
-rootユーザのパスワードを設定します。
+  # mysql_secure_installation
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Enter current password for root (enter for none): # そのままEnter
+  Set root password? [Y/n]                          # そのままEnter
+  New password:                                     # rootのパスワードを*決めて*入力
+  Re-enter new password:                            # 同じパスワードを再度入力
+  Remove anonymous users? [Y/n]                     # そのままEnter
+  Disallow root login remotely? [Y/n]               # そのままEnter
+  Remove test database and access to it? [Y/n]      # そのままEnter
+  Reload privilege tables now? [Y/n]                # そのままEnter
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # mysql -u root -p -e "GRANT ALL ON production_jorurigw.* TO joruri@localhost IDENTIFIED BY 'pass'"
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Enter password:                                   # rootのパスワードを入力
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  # /usr/bin/mysqladmin -u root password "pass"
-
-joruriユーザを作成します。
-
-  # /usr/bin/mysql -u root -p \
-  #     -e "grant all on *.* to joruri@localhost IDENTIFIED BY 'pass'"
+  # service mysqld stop             <- CentOS6
+  # systemctl stop mysqld.service   <- CentOS7
 
 **********************************************************************
  6 memcached の設定
@@ -144,28 +147,23 @@ memcachedを起動します。
  7.1 Ruby のインストール
 ======================================================================
 
-yamlライブラリをインストールします。
-
-  # cd /usr/local/src
-  # tar -zxvf yaml-0.1.6.tar.gz
-  # cd yaml-0.1.6
-  # ./configure
-  # make
-  # make install
-
 Rubyをインストールします。
 
-  # cd /usr/local/src
-  # tar xvzf ruby-2.1.5.tar.gz
-  # cd ruby-2.1.5
-  # ./configure -prefix=/usr/local
-  # make
-  # make install
+  # git clone git://github.com/sstephenson/rbenv.git /usr/local/rbenv
+  # git clone git://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
 
-インストール結果を確認します。
+  # echo 'export RBENV_ROOT="/usr/local/rbenv"' >> /etc/profile.d/rbenv.sh
+  # echo 'export PATH="${RBENV_ROOT}/bin:${PATH}"' >> /etc/profile.d/rbenv.sh
+  # echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
+  # source /etc/profile.d/rbenv.sh
 
-  # /usr/local/bin/ruby -v
-   => ruby 2.1.5p273 (2014-11-13 revision 48405) [x86_64-linux]
+  # rbenv install 2.3.1
+  # rbenv global 2.3.1
+  # rbenv rehash
+  # ruby -v
+
+  # gem update --system
+  # gem install bundler
 
 ======================================================================
  7.2 Phusion Passenger のインストール
@@ -173,22 +171,9 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 4.0.58
-  # passenger-install-apache2-module
-
-  ( 画面の内容を確認して Enterキーを押してください。 )
-
-Phusion Passengerの動作環境を設定します。
-
-  # vi /etc/httpd/conf.d/passenger.conf
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #下記を追加
-   LoadModule passenger_module /usr/local/lib/ruby/gems/2.1.0/gems/passenger-4.0.58/buildout/apache2/mod_passenger.so
-   <IfModule mod_passenger.c>
-     PassengerRoot /usr/local/lib/ruby/gems/2.1.0/gems/passenger-4.0.58
-     PassengerDefaultRuby /usr/local/bin/ruby
-   </IfModule>
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # gem install passenger -v 5.0.23
+  # passenger-install-apache2-module -a
+  # cp /var/share/jorurigw/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
 
 ======================================================================
  7.3 gemライブラリ のインストール
@@ -196,7 +181,6 @@ Phusion Passengerの動作環境を設定します。
 
 Joruri Gw に必要なライブラリをインストールします。
 
-  # gem install bundler -v 1.6.3
   # cd /var/share/jorurigw
   # bundle install
 
@@ -241,6 +225,11 @@ SMTP接続情報
 ======================================================================
 
 ※作業の途中でmysqlに設定したパスワードを聞かれますのでご用意ください。
+
+必要なデータベースを作成します。
+
+  # service mysqld start && chkconfig mysqld on
+
 
 データベースを作成します。
 
