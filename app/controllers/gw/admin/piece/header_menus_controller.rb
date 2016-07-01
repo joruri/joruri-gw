@@ -5,8 +5,8 @@ class Gw::Admin::Piece::HeaderMenusController < ApplicationController
   def index
     @piece_param = params['piece_param']
     @portal_mode = Gw::Property::PortalMode.first_or_new
-    
-    @items = Gw::EditLinkPiece.where(id: @piece_param, published: 'opened', state: 'enabled')
+
+    @items = Gw::EditLinkPiece.where(sort_no: 30, level_no: 2, published: 'opened', state: 'enabled')
       .order(sort_no: :asc, id: :asc)
   end
 end
