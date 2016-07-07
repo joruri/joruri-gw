@@ -5,8 +5,8 @@
 **********************************************************************
 
 [システム]
-OS         : CentOS 6.6 (64bit)
-Webサーバ  : Apache 2.2
+OS         : CentOS 7.2 (64bit)
+Webサーバ  : Apache 2.4
 DBシステム : MySQL 5.6
 Ruby       : Ruby 2.3.1
 Rails      : Rails 4.2.6
@@ -182,7 +182,7 @@ Phusion Passengerをインストールします。
 Joruri Gw に必要なライブラリをインストールします。
 
   # cd /var/share/jorurigw
-  # bundle install
+  # bundle install --path vendor/bundle --without development test
 
   ネットワーク経由でファイルのダウンロードとインストールが行われます。
   正しく完了すれば次のようなメッセージが表示されます。
@@ -237,8 +237,8 @@ SMTP接続情報
 
 テーブルを作成します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/jorurigw_schema.sql
-
+  $ su - joruri
+  $ cd /var/share/jorurigw && bundle exec rake db:setup RAILS_ENV=production
 初期データを登録します。
 
   $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/jorurigw_init.sql
