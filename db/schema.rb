@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420091308) do
+ActiveRecord::Schema.define(version: 20160707080333) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,     default: 0, null: false
@@ -5531,47 +5531,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
-  create_table "system_admin_logs", force: :cascade do |t|
-    t.datetime "created_at"
-    t.integer  "user_id",    limit: 4
-    t.integer  "item_unid",  limit: 4
-    t.text     "controller", limit: 65535
-    t.text     "action",     limit: 65535
-  end
-
-  create_table "system_authorizations", id: false, force: :cascade do |t|
-    t.integer "user_id",                   limit: 4, default: 0, null: false
-    t.integer "user_code",                 limit: 4, default: 0, null: false
-    t.integer "user_name",                 limit: 4, default: 0, null: false
-    t.integer "user_name_en",              limit: 4, default: 0, null: false
-    t.integer "user_password",             limit: 4, default: 0, null: false
-    t.integer "user_email",                limit: 4, default: 0, null: false
-    t.integer "remember_token",            limit: 4, default: 0, null: false
-    t.integer "remember_token_expires_at", limit: 4, default: 0, null: false
-    t.integer "group_id",                  limit: 4, default: 0, null: false
-    t.integer "group_code",                limit: 4, default: 0, null: false
-    t.integer "group_name",                limit: 4, default: 0, null: false
-    t.integer "group_name_en",             limit: 4, default: 0, null: false
-    t.integer "group_email",               limit: 4, default: 0, null: false
-  end
-
-  create_table "system_commitments", force: :cascade do |t|
-    t.integer  "unid",       limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "version",    limit: 65535
-    t.text     "name",       limit: 65535
-    t.text     "value",      limit: 4294967295
-  end
-
-  create_table "system_creators", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "unid",       limit: 4
-    t.integer  "user_id",    limit: 4, null: false
-    t.integer  "group_id",   limit: 4, null: false
-  end
-
   create_table "system_custom_group_roles", primary_key: "rid", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -5615,19 +5574,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
     t.text     "deleted_user",  limit: 65535
     t.text     "deleted_group", limit: 65535
     t.datetime "start_at"
-  end
-
-  create_table "system_group_change_pickups", force: :cascade do |t|
-    t.datetime "target_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "system_group_changes", force: :cascade do |t|
-    t.text     "state",      limit: 65535
-    t.datetime "target_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "system_group_histories", force: :cascade do |t|
@@ -5712,13 +5658,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
     t.integer  "parent_id",   limit: 4
   end
 
-  create_table "system_group_versions", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "version",    limit: 4
-    t.datetime "start_at"
-  end
-
   create_table "system_groups", force: :cascade do |t|
     t.integer  "parent_id",    limit: 4
     t.string   "state",        limit: 255
@@ -5741,36 +5680,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
   add_index "system_groups", ["code"], name: "index_system_groups_on_code", using: :btree
   add_index "system_groups", ["ldap"], name: "index_system_groups_on_ldap", using: :btree
   add_index "system_groups", ["state"], name: "index_system_groups_on_state", using: :btree
-
-  create_table "system_idconversions", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "tablename",    limit: 65535
-    t.string   "modelname",    limit: 255
-    t.datetime "converted_at"
-  end
-
-  create_table "system_inquiries", force: :cascade do |t|
-    t.integer  "unid",       limit: 4
-    t.text     "state",      limit: 65535, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id",    limit: 4
-    t.integer  "group_id",   limit: 4
-    t.text     "charge",     limit: 65535
-    t.text     "tel",        limit: 65535
-    t.text     "fax",        limit: 65535
-    t.text     "email",      limit: 65535
-  end
-
-  create_table "system_languages", force: :cascade do |t|
-    t.text     "state",      limit: 65535
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "sort_no",    limit: 4
-    t.text     "name",       limit: 65535
-    t.text     "title",      limit: 65535
-  end
 
   create_table "system_ldap_temporaries", force: :cascade do |t|
     t.integer  "parent_id",         limit: 4
@@ -5800,32 +5709,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
   end
 
   add_index "system_login_logs", ["user_id"], name: "user_id", using: :btree
-
-  create_table "system_maps", force: :cascade do |t|
-    t.integer  "unid",        limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "name",        limit: 65535
-    t.text     "title",       limit: 65535
-    t.text     "map_lat",     limit: 65535
-    t.text     "map_lng",     limit: 65535
-    t.text     "map_zoom",    limit: 65535
-    t.text     "point1_name", limit: 65535
-    t.text     "point1_lat",  limit: 65535
-    t.text     "point1_lng",  limit: 65535
-    t.text     "point2_name", limit: 65535
-    t.text     "point2_lat",  limit: 65535
-    t.text     "point2_lng",  limit: 65535
-    t.text     "point3_name", limit: 65535
-    t.text     "point3_lat",  limit: 65535
-    t.text     "point3_lng",  limit: 65535
-    t.text     "point4_name", limit: 65535
-    t.text     "point4_lat",  limit: 65535
-    t.text     "point4_lng",  limit: 65535
-    t.text     "point5_name", limit: 65535
-    t.text     "point5_lat",  limit: 65535
-    t.text     "point5_lng",  limit: 65535
-  end
 
   create_table "system_priv_names", force: :cascade do |t|
     t.integer  "unid",         limit: 4
@@ -5877,25 +5760,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
   end
 
   add_index "system_products", ["product_type"], name: "index_system_products_on_product_type", using: :btree
-
-  create_table "system_public_logs", force: :cascade do |t|
-    t.datetime "created_at"
-    t.integer  "user_id",    limit: 4
-    t.integer  "item_unid",  limit: 4
-    t.text     "controller", limit: 65535
-    t.text     "action",     limit: 65535
-  end
-
-  create_table "system_publishers", force: :cascade do |t|
-    t.integer  "unid",           limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "published_at"
-    t.text     "name",           limit: 65535
-    t.text     "published_path", limit: 65535
-    t.text     "content_type",   limit: 65535
-    t.integer  "content_length", limit: 4
-  end
 
   create_table "system_recognitions", force: :cascade do |t|
     t.integer  "unid",          limit: 4
@@ -5969,30 +5833,6 @@ ActiveRecord::Schema.define(version: 20150420091308) do
     t.text     "name",       limit: 65535
     t.integer  "version",    limit: 4
     t.integer  "value",      limit: 4
-  end
-
-  create_table "system_tags", force: :cascade do |t|
-    t.integer  "unid",       limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "name",       limit: 65535
-    t.text     "word",       limit: 65535
-  end
-
-  create_table "system_tasks", force: :cascade do |t|
-    t.integer  "unid",       limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "process_at"
-    t.text     "name",       limit: 65535
-  end
-
-  create_table "system_unids", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "module",     limit: 65535
-    t.text     "item_type",  limit: 65535
-    t.integer  "item_id",    limit: 4
   end
 
   create_table "system_user_temporaries", force: :cascade do |t|
