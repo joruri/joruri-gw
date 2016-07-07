@@ -16,7 +16,7 @@ end
 concat raw link_to('', uri, :class => 'end')
 %>
 </div>
-<% dump controller.parent_controller.inspect %>
+
 <% if controller.parent_controller && controller.parent_controller.controller_name == "portal" %>
 <%
 if Gw::Property::ScheduleSetting.where(uid: Core.user.id).first_or_new.display_portal_schedule?

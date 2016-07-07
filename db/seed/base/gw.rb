@@ -82,50 +82,50 @@ Gwworkflow::Control.create({
 })
 
 bbs = Gwbbs::Control.create({
-      :state => 'public',
-      :title => "全庁掲示板" ,
-      :published_at => Time.now,
-      :recognize => 0,
-      :importance => '1',
-      :category => '1',
-      :left_index_use => '1',
-      :left_index_pattern => 0,
-      :category1_name => '分類',
-      :default_published => 3,
-      :doc_body_size_capacity => 30,
-      :doc_body_size_currently => 0,
-      :upload_graphic_file_size_capacity => 10,
-      :upload_graphic_file_size_capacity_unit => 'MB',
-      :upload_document_file_size_capacity => 30,
-      :upload_document_file_size_capacity_unit => 'MB',
-      :upload_graphic_file_size_max => 3,
-      :upload_document_file_size_max => 10,
-      :upload_graphic_file_size_currently => 0,
-      :upload_document_file_size_currently => 0,
-      :create_section => Core.user_group.code ,
-      :sort_no => 0 ,
-      :caption => "" ,
-      :help_display => 1,
-      :upload_system => 3,
-      :view_hide => 1 ,
-      :categoey_view  => 1 ,
-      :categoey_view_line => 0 ,
-      :monthly_view => 1 ,
-      :monthly_view_line => 6 ,
-      :group_view  => false ,
-      :one_line_use => 1 ,
-      :notification => 1 ,
-      :restrict_access => 0 ,
-      :default_limit => '30',
-      :form_name => 'form001' ,
-      :admingrps_json =>%Q{[["000001", "3", "システム管理課"]]},
-      :adms_json => "[]",
-      :editors_json => %Q{[["", "0", "制限なし"]]},
-      :sueditors_json => "[]",
-      :readers_json => %Q{[["", "0", "制限なし"]]},
-      :sureaders_json => "[]",
-      :limit_date => 'none',
-      :docslast_updated_at =>  Time.now
+     state: 'public',
+     title: "全庁掲示板" ,
+     published_at: Time.now,
+     recognize: 0,
+     importance: '1',
+     category: '1',
+     left_index_use: '1',
+     left_index_pattern: 0,
+     category1_name: '分類',
+     default_published: 3,
+     doc_body_size_capacity: 30,
+     doc_body_size_currently: 0,
+     upload_graphic_file_size_capacity: 10,
+     upload_graphic_file_size_capacity_unit: 'MB',
+     upload_document_file_size_capacity: 30,
+     upload_document_file_size_capacity_unit: 'MB',
+     upload_graphic_file_size_max: 3,
+     upload_document_file_size_max: 10,
+     upload_graphic_file_size_currently: 0,
+     upload_document_file_size_currently: 0,
+     create_section: Core.user_group.code ,
+     sort_no: 0 ,
+     caption: "" ,
+     help_display: 1,
+     upload_system: 3,
+     view_hide: 1 ,
+     categoey_view: 1 ,
+     categoey_view_line: 0 ,
+     monthly_view: 1 ,
+     monthly_view_line: 6 ,
+     group_view: false ,
+     one_line_use: 1 ,
+     notification: 1 ,
+     restrict_access: 0 ,
+     default_limit: '30',
+     form_name: 'form001' ,
+     admingrps_json:%Q{[["000001", "3", "システム管理課"]]},
+     adms_json: "[]",
+     editors_json: %Q{[["", "0", "制限なし"]]},
+     sueditors_json: "[]",
+     readers_json: %Q{[["", "0", "制限なし"]]},
+     sureaders_json: "[]",
+     limit_date: 'none',
+     docslast_updated_at:  Time.now
     })
 
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 1, level_no: 1, name: 'お知らせ'})
@@ -135,9 +135,10 @@ Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 4, level_no:
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 5, level_no: 1, name: ' 調査・照会'})
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 7, level_no: 1, name: ' その他'})
 
+board_group = System::Group.where('000001').first
 
-Gwbbs::Role.create({ title_id: bbs.id, role_code: 'w', group_id: 3, group_code: '000001', group_name: '管理課'})
-Gwbbs::Role.create({ title_id: bbs.id, role_code: 'a', group_id: 3, group_code: '000001', group_name: '管理課'})
+Gwbbs::Role.create({ title_id: bbs.id, role_code: 'w', group_id: board_group.id, group_code: '000001', group_name: '管理課'})
+Gwbbs::Role.create({ title_id: bbs.id, role_code: 'a', group_id: board_group.id, group_code: '000001', group_name: '管理課'})
 Gwbbs::Role.create({ title_id: bbs.id, role_code: 'r', group_id: 0, group_code: '0', group_name: '制限なし'})
 
 

@@ -7,32 +7,32 @@ load "#{Rails.root}/db/seed/base.rb"
 
 def create_group(parent, level_no, sort_no, code, name, name_en)
   create_group_history(parent, level_no, sort_no, code, name, name_en)
-  System::Group.create :parent_id => (parent == 0 ? 0 : parent.id),
-    :level_no  => level_no,
-    :sort_no   => sort_no,
-    :state     => 'enabled',
-    :ldap      => 0,
-    :code      => code,
-    :name      => name,
-    :name_en   => name_en,
-    :start_at  => "#{Time.now.year}-04-01 00:00:00"
+  System::Group.create({parent_id: (parent == 0 ? 0 : parent.id),
+    level_no: level_no,
+    sort_no:  sort_no,
+    state:    'enabled',
+    ldap:      0,
+    code:      code,
+    name:      name,
+    name_en:   name_en,
+    start_at:  "#{Time.now.year}-04-01 00:00:00"})
 end
 
 def create_group_history(parent, level_no, sort_no, code, name, name_en)
-  System::GroupHistory.create :parent_id => (parent == 0 ? 0 : parent.id),
-    :level_no  => level_no,
-    :sort_no   => sort_no,
-    :state     => 'enabled',
-    :ldap      => 0,
-    :code      => code,
-    :name      => name,
-    :name_en   => name_en,
-    :start_at  => "#{Time.now.year}-04-01 00:00:00"
+  System::GroupHistory.create({parent_id: (parent == 0 ? 0 : parent.id),
+    level_no:  level_no,
+    sort_no:   sort_no,
+    state:     'enabled',
+    ldap:      0,
+    code:      code,
+    name:      name,
+    name_en:   name_en,
+    start_at:  "#{Time.now.year}-04-01 00:00:00"})
 end
 
 def create_user(auth_no, name, account, password)
-  System::User.create :state => 'enabled', :ldap => 0, :auth_no => auth_no,
-    :name => name, :code => account, :password => password
+  System::User.create({state: 'enabled', ldap: 0, auth_no: auth_no,
+    name: name, code: account, password: password})
 end
 
 def create_user_group(options={})
@@ -84,13 +84,13 @@ u7 = create_user 3, '全庁予定'      , '1_0', '1_0'
 
 g = System::Group.where(code: '001001').first
 
-System::UsersGroup.where(:user_id => 2).update_all(:group_id => g.id)
+System::UsersGroup.where(user_id: 2).update_all(group_id: g.id)
 
-create_user_group({:user_id => u3.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u4.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u5.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u6.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u7.id, :group_id => g.id, :start_at  => Time.now})
+create_user_group({user_id: u3.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u4.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u5.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u6.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u7.id, group_id: g.id, start_at: Time.now})
 
 
 u8  = create_user 3, '佐藤　直一'   , 'user4', 'user4'
@@ -99,10 +99,10 @@ u10 = create_user 3, '高橋　和寿'   , 'user6', 'user6'
 u11 = create_user 3, '人事課予定'  , '001003_0', '001003_0'
 
 g = System::Group.where(code: '001002').first
-create_user_group({:user_id => u8.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u9.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u10.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u11.id, :group_id => g.id, :start_at  => Time.now})
+create_user_group({user_id: u8.id,  group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u9.id,  group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u10.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u11.id, group_id: g.id, start_at: Time.now})
 
 u12 = create_user 3, '田中　彩子'      , 'user7', 'user7'
 u13 = create_user 3, '渡辺　真由子'    , 'user8', 'user8'
@@ -110,10 +110,24 @@ u14 = create_user 3, '伊藤　勝'       , 'user9', 'user9'
 u15 = create_user 3, '企画政策課予定'  , '001004_0', '001004_0'
 
 g = System::Group.where(code: '001003').first
-create_user_group({:user_id => u12.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u13.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u14.id, :group_id => g.id, :start_at  => Time.now})
-create_user_group({:user_id => u15.id, :group_id => g.id, :start_at  => Time.now})
+create_user_group({user_id: u12.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u13.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u14.id, group_id: g.id, start_at: Time.now})
+create_user_group({user_id: u15.id, group_id: g.id, start_at: Time.now})
 
+
+
+## ---------------------------------------------------------
+## load demo data
+
+if File.exists?("#{Rails.root}/public/_attaches")
+  FileUtils.rm_r("#{Rails.root}/public/_attaches/")
+end
+
+dir = "#{Rails.root}/db/seed/demo"
+Dir::entries(dir).each do |file|
+  next if file !~ /\.rb$/
+  load "#{Rails.root}/db/seed/demo/#{file}"
+end
 
 puts "Imported demo data."

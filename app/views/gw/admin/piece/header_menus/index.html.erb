@@ -3,7 +3,6 @@
 <ul>
 <%= cache_if Joruri.config.application['gw.cache_header_menu'], @items + [@portal_mode, Core.user] do %>
 <%
-dump @items.inspect
 @items.each_with_index do |item, idx|
   item.opened_children.preload_opened_children.each_with_index do |level3_item, idx3|
     next if @portal_mode.normal_mode? && level3_item.mode == 3
