@@ -1,3 +1,9 @@
+4.0.0
+  * 過去のマイグレーションファイルを削除しました。
+  不要テーブルの削除を行う場合は、下記のマイグレーションを実行してください。
+  RAILS_ENVの値は実行環境により適宜変更してください。
+  rake db:migrate:up VERSION=20160415040000 RAILS_ENV=production
+
 3.1.0
   * 指定のマイグレーションを実行してください。RAILS_ENVの値は実行環境により適宜変更してください。
   rake db:migrate:up VERSION=20150901053335 RAILS_ENV=production
