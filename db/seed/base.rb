@@ -4,6 +4,7 @@
 ## methods
 
 def truncate_table(table)
+  return if table == "schema_migrations"
   puts "TRUNCATE TABLE #{table}"
   ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table}"
 end

@@ -238,7 +238,7 @@ SMTP接続情報
 テーブルを作成します。
 
   $ su - joruri
-  $ cd /var/share/jorurigw && bundle exec rake db:setup RAILS_ENV=production
+  $ cd /var/share/jorurigw && bundle exec rake db:schema:load RAILS_ENV=production
 
 初期データを登録します。
 
