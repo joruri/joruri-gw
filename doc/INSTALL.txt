@@ -239,9 +239,10 @@ SMTP接続情報
 
   $ su - joruri
   $ cd /var/share/jorurigw && bundle exec rake db:setup RAILS_ENV=production
+
 初期データを登録します。
 
-  $ /usr/bin/mysql -u root -p production_jorurigw < ./db/sql/jorurigw_init.sql
+  $ cd /var/share/jorurigw && bundle exec rake db:seed:demo RAILS_ENV=production
 
 ======================================================================
  8.3 assetのコンパイル
