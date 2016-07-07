@@ -1,6 +1,10 @@
 class DefaultMailer < ActionMailer::Base
-  default :charset => "UTF-8"
-  
+  default charset: 'iso-2022-jp'
+  Util::Config.load(:smtp).each do |key, val|
+    smtp_settings[key.to_sym] = val
+  end
+
+
 #  def send_message(msg)
 #    mail(
 #      :from    => msg.from,
@@ -11,7 +15,7 @@ class DefaultMailer < ActionMailer::Base
 #    ) do |format|
 #      #format.html { msg.body.decoded }
 #      format.text { msg.body.decoded }
-#      
+#
 #      msg.attachments.each do |f|
 #        name = f.original_filename
 #        name = NKF.nkf('-jM', name).split.join if charset.downcase == 'iso-2022-jp'
