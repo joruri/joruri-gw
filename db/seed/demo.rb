@@ -7,7 +7,7 @@ load "#{Rails.root}/db/seed/base.rb"
 
 def create_group(parent, level_no, sort_no, code, name, name_en)
   create_group_history(parent, level_no, sort_no, code, name, name_en)
-  System::Group.create({parent_id: (parent == 0 ? 0 : parent.id),
+  System::Group.create({parent_id: (parent.blank? ? 0 : parent.id),
     level_no: level_no,
     sort_no:  sort_no,
     state:    'enabled',
@@ -19,7 +19,7 @@ def create_group(parent, level_no, sort_no, code, name, name_en)
 end
 
 def create_group_history(parent, level_no, sort_no, code, name, name_en)
-  System::GroupHistory.create({parent_id: (parent == 0 ? 0 : parent.id),
+  System::GroupHistory.create({parent_id: (parent.blank? ? 0 : parent.id),
     level_no:  level_no,
     sort_no:   sort_no,
     state:     'enabled',
@@ -43,35 +43,35 @@ end
 ## system data
 
 r = System::Group.find(1)
-p = create_group r, 2, 2 , '001'   , '企画部'        , 'kikakubu'
-    create_group p, 3, 1 , '001001', '秘書広報課'    , 'hisyokohoka'
-    create_group p, 3, 2 , '001002', '人事課'        , 'jinjika'
-    create_group p, 3, 3 , '001003', '企画政策課'    , 'kikakuseisakuka'
-    create_group p, 3, 4 , '001004', '行政情報室'    , 'gyoseijohoshitsu'
-    create_group p, 3, 5 , '001005', 'IT推進課'      , 'itsuishinka'
-p = create_group r, 2, 3 , '002'   , '総務部'        , 'somubu'
-    create_group p, 3, 1 , '002001', '財政課'        , 'zaiseika'
-    create_group p, 3, 2 , '002002', '庁舎建設推進室', 'chosyakensetsusuishinka'
-    create_group p, 3, 3 , '002003', '管財課'        , 'kanzaika'
-    create_group p, 3, 4 , '002004', '税務課'        , 'zeimuka'
-    create_group p, 3, 5 , '002005', '納税課'        , 'nozeika'
-p = create_group r, 2, 4 , '003'   , '市民部'        , 'shiminbu'
-p = create_group r, 2, 5 , '004'   , '環境管理部'    , 'kankyokanribu'
-p = create_group r, 2, 6 , '005'   , '保健福祉部'    , 'hokenhukushibu'
-p = create_group r, 2, 7 , '006'   , '産業部'        , 'sangyobu'
-p = create_group r, 2, 8 , '007'   , '建設部'        , 'kensetsubu'
-p = create_group r, 2, 9 , '008'   , '特定事業部'    , 'tokuteijigyobu'
-p = create_group r, 2, 10, '009'   , '会計'          , 'kaikei'
-p = create_group r, 2, 11, '010'   , '水道部'        , 'suidobu'
-p = create_group r, 2, 12, '011'   , '教育委員会'    , 'kyoikuiinkai'
-p = create_group r, 2, 13, '012'   , '議会'          , 'gikai'
-p = create_group r, 2, 14, '013'   , '農業委員会'    , 'nogyoiinkai'
-p = create_group r, 2, 15, '014'   , '選挙管理委員会', 'senkyokanriiinkai'
-p = create_group r, 2, 16, '015'   , '監査委員'      , 'kansaiin'
-p = create_group r, 2, 17, '016'   , '公平委員会'    , 'koheiiinkai'
-p = create_group r, 2, 18, '017'   , '消防本部'      , 'syobohonbu'
-p = create_group r, 2, 19, '018'   , '住民センター'  , 'jumincenter'
-p = create_group r, 2, 20, '019'   , '公民館'        , 'kominkan'
+p = create_group r, 2, 2000 , '001'   , '企画部'        , 'kikakubu'
+    create_group p, 3, 2010 , '001001', '秘書広報課'    , 'hisyokohoka'
+    create_group p, 3, 2020 , '001002', '人事課'        , 'jinjika'
+    create_group p, 3, 2030 , '001003', '企画政策課'    , 'kikakuseisakuka'
+    create_group p, 3, 2040 , '001004', '行政情報室'    , 'gyoseijohoshitsu'
+    create_group p, 3, 2050 , '001005', 'IT推進課'      , 'itsuishinka'
+p = create_group r, 2, 3000 , '002'   , '総務部'        , 'somubu'
+    create_group p, 3, 3010 , '002001', '財政課'        , 'zaiseika'
+    create_group p, 3, 3020 , '002002', '庁舎建設推進室', 'chosyakensetsusuishinka'
+    create_group p, 3, 3030 , '002003', '管財課'        , 'kanzaika'
+    create_group p, 3, 3040 , '002004', '税務課'        , 'zeimuka'
+    create_group p, 3, 3050 , '002005', '納税課'        , 'nozeika'
+p = create_group r, 2, 4000 , '003'   , '市民部'        , 'shiminbu'
+p = create_group r, 2, 5000 , '004'   , '環境管理部'    , 'kankyokanribu'
+p = create_group r, 2, 6000 , '005'   , '保健福祉部'    , 'hokenhukushibu'
+p = create_group r, 2, 7000 , '006'   , '産業部'        , 'sangyobu'
+p = create_group r, 2, 8000 , '007'   , '建設部'        , 'kensetsubu'
+p = create_group r, 2, 9000 , '008'   , '特定事業部'    , 'tokuteijigyobu'
+p = create_group r, 2, 10000, '009'   , '会計'          , 'kaikei'
+p = create_group r, 2, 11000, '010'   , '水道部'        , 'suidobu'
+p = create_group r, 2, 12000, '011'   , '教育委員会'    , 'kyoikuiinkai'
+p = create_group r, 2, 13000, '012'   , '議会'          , 'gikai'
+p = create_group r, 2, 14000, '013'   , '農業委員会'    , 'nogyoiinkai'
+p = create_group r, 2, 15000, '014'   , '選挙管理委員会', 'senkyokanriiinkai'
+p = create_group r, 2, 16000, '015'   , '監査委員'      , 'kansaiin'
+p = create_group r, 2, 17000, '016'   , '公平委員会'    , 'koheiiinkai'
+p = create_group r, 2, 18000, '017'   , '消防本部'      , 'syobohonbu'
+p = create_group r, 2, 19000, '018'   , '住民センター'  , 'jumincenter'
+p = create_group r, 2, 20000, '019'   , '公民館'        , 'kominkan'
 
 
 System::User.where(id: 2).update_all(name: "徳島　太郎")

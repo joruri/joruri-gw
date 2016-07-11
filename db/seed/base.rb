@@ -57,7 +57,7 @@ System::GroupHistory.create({
 System::Group.create({
   level_no:  2,
   sort_no:   1,
-  parent_id: 1,
+  parent_id: 1000,
   state:     'enabled',
   ldap:      0,
   code:      "000",
@@ -68,7 +68,7 @@ System::Group.create({
 System::GroupHistory.create({
   level_no:  2,
   sort_no:   1,
-  parent_id: 1,
+  parent_id: 1000,
   state:     'enabled',
   ldap:      0,
   code:      "000",
@@ -79,7 +79,7 @@ System::GroupHistory.create({
 
 System::Group.create({
   level_no:  3,
-  sort_no:   1,
+  sort_no:   1010,
   parent_id: 2,
   state:     'enabled',
   ldap:      0,
@@ -91,7 +91,7 @@ System::Group.create({
 
 System::GroupHistory.create({
   level_no:  3,
-  sort_no:   1,
+  sort_no:   1010,
   parent_id: 2,
   state:     'enabled',
   ldap:      0,
