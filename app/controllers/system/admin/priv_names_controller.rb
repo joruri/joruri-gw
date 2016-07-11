@@ -4,8 +4,8 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
+    @is_admin = System::Role.is_admin? || @is_dev
+    return error_auth unless @is_admin
 
     search_condition
 

@@ -83,7 +83,7 @@ create_admin_role(gwcircular, admin)
 
 gwmonitor = create_role_name('照会・回答システム', 'gwmonitor', 107)
 create_role_name_priv(gwmonitor.id, admin.id)
-create_admin_role(gw_event, admin)
+create_admin_role(gwmonitor, admin)
 
 enquete = create_role_name('アンケート', 'enquete', 108)
 create_role_name_priv(enquete.id, admin.id)

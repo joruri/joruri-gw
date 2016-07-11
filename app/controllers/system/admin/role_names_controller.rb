@@ -4,8 +4,8 @@ class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
+    @is_admin = System::Role.is_admin? || @is_dev
+    return error_auth unless @is_admin
 
     search_condition
 
@@ -38,7 +38,7 @@ class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
     @item = System::RoleName.find(params[:id])
     @item.attributes = params[:item]
 
-    _update @item, :success_redirect_uri => "/system/role_names#{@qs}" 
+    _update @item, :success_redirect_uri => "/system/role_names#{@qs}"
   end
 
   def destroy

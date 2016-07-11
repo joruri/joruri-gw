@@ -6,8 +6,8 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
     return redirect_to system_role_name_privs_path if params[:reset]
 
     @is_dev = System::Role.is_dev?
-    @is_admin = System::Role.is_admin?
-    return error_auth unless @is_dev
+    @is_admin = System::Role.is_admin? || @is_dev
+    return error_auth unless @is_admin
 
     @role_id = nz(params[:role_id], '0')
     @priv_id = nz(params[:priv_id], '0')
@@ -50,14 +50,14 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
     @item = System::RoleNamePriv.find(params[:id])
     @item.attributes = params[:item]
 
-    _update @item, :success_redirect_uri => "/system/role_name_privs/#{@item.id}#{@params_set}", 
+    _update @item, :success_redirect_uri => "/system/role_name_privs/#{@item.id}#{@params_set}",
       :notice => "機能権限設定の更新に成功しました。"
   end
 
   def destroy
     @item = System::RoleNamePriv.new.find(params[:id])
 
-    _destroy @item, :success_redirect_uri => "/system/role_name_privs#{@params_set}", 
+    _destroy @item, :success_redirect_uri => "/system/role_name_privs#{@params_set}",
       :notice => "機能権限設定の削除に成功しました。"
   end
 
