@@ -1,4 +1,4 @@
-## Joruri Gw 3.2.0 インストールマニュアル                   2015.08.03
+Joruri Gw 4.0.0 インストールマニュアル CentOS7バージョン
 
 **********************************************************************
  1 想定環境
@@ -7,6 +7,7 @@
 [システム]
 OS         : CentOS 7.2 (64bit)
 Webサーバ  : Apache 2.4
+APPサーバ  : PhusionPassenger 5.0.29
 DBシステム : MySQL 5.6
 Ruby       : Ruby 2.3.1
 Rails      : Rails 4.2.6
@@ -38,29 +39,62 @@ rootユーザに変更します。
 
   $ su -
 
+Joruriユーザを作成します。
+
+  # useradd -m joruri              # ユーザの作成
+  # passwd joruri                  # パスワードの設定 ※ パスワードは適宜変更してください。
+
+RPMパッケージを最新にします。
+
+  # yum -y update
+
 Joruri Gw の実行に必要なパッケージをインストールします。
 
-  # yum -y install wget make gcc-c++ git httpd httpd-devel memcached \
-    libjpeg-devel libpng-devel \
-    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel \
-    readline-devel
+  # yum -y install wget make gcc-c++ httpd httpd-devel memcached \
+    libjpeg-devel libpng-devel git \
+    ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel
 
 MySQL5.6をインストールします。
 
-  # yum install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-  # yum install mysql mysql-devel mysql-server mysql-utilities
+  RPMのインストール
+  # wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+  # rpm -Uvh mysql-community-release-el7-5.noarch.rpm
+  # vi /etc/yum.repos.d/mysql-community.repo
+  以下のように変更します。
+  -----------------------------------------------------------------------
+  [mysql-connectors-community]
+  ：（略）
+  enabled=1
+  ↓変更
+  enabled=0
+  [mysql-tools-community]
+  ：（略）
+  enabled=1
+  ↓変更
+  enabled=0
+  [mysql56-community]
+  ：（略）
+  enabled=1
+  ↓変更
+  enabled=0
+  -----------------------------------------------------------------------
+  MySQLのインストール
+  # yum install --enablerepo=mysql56-community mysql-community-client.x86_64 mysql-community-devel.x86_64 mysql-community-server.x86_64
 
-Joruriユーザを作成します。
+JoruriGwをダウンロードします。
 
-  # useradd -m joruri
+  # cd /usr/local/src/
+  # wget https://github.com/joruri/joruri-gw/archive/v4.0.0.tar.gz
+  # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
 
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf v3.1.0.tar.gz -C /var/share
-  # mv /var/share/joruri-gw-3.1.0 /var/share/jorurigw
+  # tar xvzf v4.0.0.tar.gz -C /var/share
+  # mv /var/share/joruri-gw-4.0.0 /var/share/jorurigw
   # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
   # chown -R joruri:joruri /var/share/jorurigw
+
 
 **********************************************************************
  4 Apache の設定
@@ -69,19 +103,22 @@ Joruri Gwソースコードを設置します。
 Apacheの設定ファイルを編集します。
 
   # vi /etc/httpd/conf/httpd.conf
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #実際のサーバのアドレスを設定します
+  -----------------------------------------------------------------------
   ServerName 192.168.0.2
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
 
 設定ファイルにエラーがないことを確認し、Apacheを起動します。
+  # service httpd configtest                 # confファイルの構文チェック
+  # systemctl start httpd.service            # apacheの起動
+  # systemctl status httpd.service           # apacheの起動確認
 
-  # /sbin/service httpd configtest
-  # /sbin/service httpd start
+  ※ 起動失敗時はsystemdログを確認します。
+  # journalctl -xn
 
 自動起動に設定します。
+  # systemctl enable httpd.service           # 自動起動の設定
+  # systemctl list-unit-files -t service | grep httpd    # 自動起動の設定の確認
 
-  # /sbin/chkconfig httpd on
 
 **********************************************************************
  5 MySQL の設定
@@ -91,71 +128,98 @@ MySQLの設定を行います。
 文字エンコーディングの標準を UTF-8 に設定します。
 
   # vi /etc/my.cnf
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
   [mysqld]
   character-set-server=utf8
 
   [client]
   default-character-set = utf8
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
   ## [mysqld]に設定を追加、[client]と設定を追加。
 
+MySQLを起動します。
 
-初期設定をします。
+  # /usr/bin/mysql_install_db --user=mysql
+  # systemctl start mysqld.service
 
-  # mysql_install_db --user=mysql
+自動起動に設定します。
 
-  # service mysqld start             <- CentOS6の場合
-  # systemctl start mysqld.service   <- CentOS7の場合
+  # systemctl enable mysqld.service
+  # systemctl list-unit-files -t service | grep mysql    # 自動起動の設定の確認
 
-  # mysql_secure_installation
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  Enter current password for root (enter for none): # そのままEnter
-  Set root password? [Y/n]                          # そのままEnter
-  New password:                                     # rootのパスワードを*決めて*入力
-  Re-enter new password:                            # 同じパスワードを再度入力
-  Remove anonymous users? [Y/n]                     # そのままEnter
-  Disallow root login remotely? [Y/n]               # そのままEnter
-  Remove test database and access to it? [Y/n]      # そのままEnter
-  Reload privilege tables now? [Y/n]                # そのままEnter
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # mysql -u root -p -e "GRANT ALL ON production_jorurigw.* TO joruri@localhost IDENTIFIED BY 'pass'"
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  Enter password:                                   # rootのパスワードを入力
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+rootユーザのパスワードを設定します。
 
-  # service mysqld stop             <- CentOS6
-  # systemctl stop mysqld.service   <- CentOS7
+  # /usr/bin/mysqladmin -u root password "pass"
+
+joruriユーザを作成します。
+
+  # /usr/bin/mysql -u root -p -e "grant all on *.* to joruri@localhost IDENTIFIED BY 'pass'"
+
 
 **********************************************************************
  6 memcached の設定
 **********************************************************************
 
-memcachedを自動起動に設定します。
+Fwの設定を行います。
 
-  # /sbin/chkconfig memcached on
+  # firewall-cmd --add-port=11211/tcp --zone=public --permanent    # memcached
+  # firewall-cmd --reload          # 設定値の反映を行います。
+  # firewall-cmd --list-all        # 設定値を確認します。
 
 memcachedを起動します。
 
-  # /sbin/service memcached start
+ # systemctl start memcached.service    # memcachedの起動
+ # systemctl status memcached.service   # memcachedの起動確認
+
+memcachedを自動起動します。
+
+ # systemctl enable memcached.service
+
 
 **********************************************************************
  7 Ruby on Rails のインストール
 **********************************************************************
 
 ======================================================================
- 7.1 Ruby のインストール
+ 7.1 rbenvのインストール
 ======================================================================
 
-Rubyをインストールします。
+必要なライブラリをインストールします。
+
+  # yum install libffi libffi-devel zlib zlib-devel openssl openssl-devel  readline-devel  bzip2 libyaml libyaml-devel
+
+rbenvをインストールします。
 
   # git clone git://github.com/sstephenson/rbenv.git /usr/local/rbenv
   # git clone git://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
 
+rbenvの環境設定を行います。
+
   # echo 'export RBENV_ROOT="/usr/local/rbenv"' >> /etc/profile.d/rbenv.sh
   # echo 'export PATH="${RBENV_ROOT}/bin:${PATH}"' >> /etc/profile.d/rbenv.sh
   # echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
-  # source /etc/profile.d/rbenv.sh
+  # cat /etc/profile.d/rbenv.sh               # 確認
+  # source /etc/profile.d/rbenv.sh            # 問題なければ再読み込み
+  # rbenv --version                           # rbenvのバージョン確認
+  # su joruri
+  $ source /etc/profile.d/rbenv.sh            # 一般ユーザで使えるように反映させます
+  $ rbenv --version                           # 一般ユーザでバージョンが確認
+  $ exit                                      # root戻ります
+
+======================================================================
+ 7.2 Ruby のインストール
+======================================================================
+
+yamlライブラリをインストールします。
+
+  # cd /usr/local/src
+  # tar -zxvf yaml-0.1.6.tar.gz
+  # cd yaml-0.1.6
+  # ./configure
+  # make
+  # make install
+
+Rubyをインストールします。
 
   # rbenv install 2.3.1
   # rbenv global 2.3.1
@@ -165,15 +229,26 @@ Rubyをインストールします。
   # gem update --system
   # gem install bundler
 
+
 ======================================================================
  7.2 Phusion Passenger のインストール
 ======================================================================
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 5.0.23
-  # passenger-install-apache2-module -a
-  # cp /var/share/jorurigw/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
+  # gem install passenger -v 5.0.29 --no-rdoc --no-ri
+  # passenger-install-apache2-module
+
+  ( 画面の内容を確認して Enterキーを押してください。 )
+
+Phusion Passengerがインストールされていることを確認します。
+
+  # passenger -v
+
+Phusion Passengerの動作環境を設定します。
+
+  #  cp /var/share/jorurigw/config/samples/passenger.conf /etc/httpd/conf.d/passenger.conf
+
 
 ======================================================================
  7.3 gemライブラリ のインストール
@@ -187,6 +262,7 @@ Joruri Gw に必要なライブラリをインストールします。
   ネットワーク経由でファイルのダウンロードとインストールが行われます。
   正しく完了すれば次のようなメッセージが表示されます。
     =>Your bundle is complete! Use `bundle show [gemname]` to see where a bundled gem is installed.
+
 
 **********************************************************************
   8 Joruri Gw のインストール
@@ -216,7 +292,7 @@ LDAP接続情報
 
 SMTP接続情報
 
-  $ vi config/environments/production.rb
+  $ vi config/smtp.yml
 
   ※連絡メモの「携帯等メール転送設定」などメール機能を利用する場合はSMTPの設定が必要です。
 
@@ -224,25 +300,17 @@ SMTP接続情報
  8.2 データベースの作成
 ======================================================================
 
-※作業の途中でmysqlに設定したパスワードを聞かれますのでご用意ください。
-
-必要なデータベースを作成します。
-
-  # service mysqld start && chkconfig mysqld on
-
+※作業の途中でmysqlに設定したrootユーザのパスワードを聞かれますのでご用意ください。
 
 データベースを作成します。
 
-  $ /usr/bin/mysql -u root -p -e "create database production_jorurigw"
+  $ cd /var/share/jorurigw
 
-テーブルを作成します。
-
-  $ su - joruri
-  $ cd /var/share/jorurigw && bundle exec rake db:schema:load RAILS_ENV=production
+  $ bundle exec rake db:setup RAILS_ENV=production
 
 初期データを登録します。
 
-  $ cd /var/share/jorurigw && bundle exec rake db:seed:demo RAILS_ENV=production
+  $ bundle exec rake db:seed:demo RAILS_ENV=production
 
 ======================================================================
  8.3 assetのコンパイル
@@ -262,30 +330,54 @@ cronによる定期実行処理を設定します。
 
 定期実行処理の内容を確認します。
 
-  $ crontab -e
+  $ crontab -l
 
   ※以下のコメントで囲まれた部分が設定内容となります。
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
   # Begin Whenever generated tasks ...
   (この部分に定期実行処理が設定されます)
   # End Whenever generated tasks ...
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
 
 ======================================================================
  8.5 delayed_job の起動
 ======================================================================
 
-delayed_jobを自動起動に設定します。
+delayed_jobの起動スクリプトを配置します。
 
   $ su -
-  # cp /var/share/jorurigw/config/samples/delayed_job /etc/init.d/
-  # chmod +x /etc/init.d/delayed_job
-  # /sbin/chkconfig --add delayed_job
-  # /sbin/chkconfig delayed_job on
+  # cp /var/share/jorurigw/config/samples/delayed_job /opt/delayed_job
+  # chmod +x /opt/delayed_job
+
+Unit定義を作成します。
+
+  # vi /etc/systemd/system/delayed_job.service
+  -----------------------------------------------------------------------
+  [Unit]
+  Description = delayed_job daemon
+
+  [Service]
+  ExecStart = /opt/delayed_job start
+  ExecStop = /opt/delayed_job stop
+  ExecReload = /opt/delayed_job restart
+  Type = simple
+
+  [Install]
+  WantedBy = multi-user.target
+  -----------------------------------------------------------------------
+
+  # systemctl list-unit-files --type=service | grep delayed_job   # サービスに登録されているか確認する
+
+自動起動の設定を行います。
+
+  # systemctl enable delayed_job.service
+  # systemctl list-unit-files --type=service | grep delayed_job   # 自動起動になっているか確認する
 
 delayed_jobを起動します。
 
-  # /etc/init.d/delayed_job start
+  # systemctl daemon-reload                 # daemonの再読み込み
+  # systemctl start delayed_job.service     # delayed_jobの起動
+  # systemctl status delayed_job.service    # delayed_jobの起動確認
 
 ======================================================================
  8.6 VirtualHost の反映
@@ -294,21 +386,26 @@ delayed_jobを起動します。
 Apacheに設定を追加します。
 
   # vi /etc/httpd/conf.d/vhosts.conf
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  NameVirtualHost *:80
-
+  ※ 下記設定は誰でもアクセスできるようにしています。IP制限等を掛ける場合は適宜設定してください。
+  -----------------------------------------------------------------------
   <VirtualHost *:80>
       ServerName default
       DocumentRoot /var/share/jorurigw/public
       RackEnv production
       PassengerHighPerformance on
+      <Location / >
+        AllowOverride all
+        Require all granted
+        Options -MultiViews
+      </Location>
   </VirtualHost>
-  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  -----------------------------------------------------------------------
 
 Apache を再起動します。
 
   # /sbin/service httpd configtest
-  # /sbin/service httpd restart
+  # systemctl restart httpd.service
+  # systemctl restart delayed_job.service
 
 
 以上でJoruri Gwのインストールが完了です。
