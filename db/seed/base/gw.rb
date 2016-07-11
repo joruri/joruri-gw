@@ -65,10 +65,26 @@ Gw::UserProperty.create({class_id:3 ,uid: 'portal_add',name: 'portal_disp_patter
 Gw::UserProperty.create({class_id:3 ,uid: 0,name: 'portal', type_name: 'mode', options: '2'})
 
 
+Gwcircular::Control.create({
+  state: 'public', default_published: 7, doc_body_size_capacity: 100, doc_body_size_currently: 0,
+  upload_graphic_file_size_capacity: 10, upload_graphic_file_size_capacity_unit: 'GB',
+  upload_graphic_file_size_max: 5, upload_document_file_size_max: 5, upload_document_file_size_capacity: 30,
+  upload_graphic_file_size_currently: 0, upload_document_file_size_currently: 0,
+  commission_limit: 200, left_index_use: 1, sort_no: 0, categoey_view_line: 0,
+  upload_system: 3, limit_date: 'use', title: '回覧板', recognize: 0,
+  default_limit: 200,
+  admingrps: {gid: 3},admingrps_json: '[]',adms: '',adms_json: '[]',
+  editors: {gid: 3},editors_json: %Q{[["", "0", "制限なし"]]},
+  readers: {gid: 3},readers_json: %Q{[["", "0", "制限なし"]]},
+  sueditors: {gid: 3},sueditors_json: '[]',
+  sureaders: {gid: 3},sureaders_json: '[]',
+  help_display: 1
+})
+
 Gwworkflow::Control.create({
   state: 'public', default_published: 7, doc_body_size_capacity: 100, doc_body_size_currently: 0,
   upload_graphic_file_size_capacity: 10, upload_graphic_file_size_capacity_unit: 'GB',
-  upload_graphic_file_size_max: 5, upload_document_file_size_max: 5,
+  upload_graphic_file_size_max: 5, upload_document_file_size_capacity: 30,upload_document_file_size_max: 10,
   upload_graphic_file_size_currently: 0, upload_document_file_size_currently: 0,
   commission_limit: 200, left_index_use: 1, sort_no: 0, categoey_view_line: 0,
   upload_system: 3, limit_date: 'use', title: 'ワークフロー', recognize: 0,
