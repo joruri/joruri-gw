@@ -62,10 +62,10 @@ class Gw::Memo < Gw::Database
     end
   }
   scope :finished_memos_for_reminder, ->(read_memos_display) {
-    where(is_finished: 1).where(arel_table[:created_at].gt(Date.today - read_memos_display + 1))
+    where(arel_table[:is_finished].eq(1)).where(arel_table[:created_at].gt(Date.today - read_memos_display + 1))
   }
   scope :unfinished_memos_for_reminder, ->(unread_memos_display) {
-    where(is_finished: 0).where(arel_table[:created_at].gt(Date.today - unread_memos_display + 1))
+    where(arel_table[:is_finished].eq(0)).where(arel_table[:created_at].gt(Date.today - unread_memos_display + 1))
   }
 
   def is_finished_label
