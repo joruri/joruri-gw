@@ -1,5 +1,5 @@
 class DefaultMailer < ActionMailer::Base
-  default charset: 'iso-2022-jp'
+  default :charset => "UTF-8"
   Util::Config.load(:smtp).each do |key, val|
     smtp_settings[key.to_sym] = val
   end
