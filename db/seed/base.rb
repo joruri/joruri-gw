@@ -8,18 +8,12 @@ def truncate_table(table)
   ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table}"
 end
 
-def load_seed_file(file)
-  load "#{Rails.root}/db/seed/#{file}"
-end
-
-
 ## ---------------------------------------------------------
 ## truncate
 
-dir = "#{Rails.root}/db/seed/reset"
-Dir::entries(dir).each do |file|
+Dir::entries("#{Rails.root}/db/seed/reset").each do |file|
   next if file !~ /\.rb$/
-  load_seed_file "reset/#{file}"
+  load "#{Rails.root}/db/seed/reset/#{file}"
 end
 
 ## ---------------------------------------------------------
@@ -145,10 +139,9 @@ Core.user_group = Core.user.groups[0]
 ## ---------------------------------------------------------
 ## gw settings
 
-dir = "#{Rails.root}/db/seed/base"
-Dir::entries(dir).each do |file|
+Dir::entries("#{Rails.root}/db/seed/base").each do |file|
   next if file !~ /\.rb$/
-  load_seed_file "base/#{file}"
+  load "#{Rails.root}/db/seed/base/#{file}"
 end
 
 puts "Imported base data."

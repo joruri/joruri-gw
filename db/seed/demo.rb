@@ -124,4 +124,10 @@ if File.exists?("#{Rails.root}/public/_attaches")
   FileUtils.rm_r("#{Rails.root}/public/_attaches/")
 end
 
+Dir::entries("#{Rails.root}/db/seed/demo").each do |file|
+  next if file !~ /\.rb$/
+  load "#{Rails.root}/db/seed/demo/#{file}"
+end
+
+
 puts "Imported demo data."
