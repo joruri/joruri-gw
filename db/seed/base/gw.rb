@@ -118,7 +118,6 @@ bbs = Gwbbs::Control.create({
      upload_document_file_size_max: 10,
      upload_graphic_file_size_currently: 0,
      upload_document_file_size_currently: 0,
-     create_section: Core.user_group.code ,
      sort_no: 0 ,
      caption: "" ,
      help_display: 1,
@@ -150,13 +149,6 @@ Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 3, level_no:
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 4, level_no: 1, name: ' 全庁通知'})
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 5, level_no: 1, name: ' 調査・照会'})
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 7, level_no: 1, name: ' その他'})
-
-board_group = System::Group.where('000001').first
-
-Gwbbs::Role.create({ title_id: bbs.id, role_code: 'w', group_id: board_group.id, group_code: '000001', group_name: '管理課'})
-Gwbbs::Role.create({ title_id: bbs.id, role_code: 'a', group_id: board_group.id, group_code: '000001', group_name: '管理課'})
-Gwbbs::Role.create({ title_id: bbs.id, role_code: 'r', group_id: 0, group_code: '0', group_name: '制限なし'})
-
 
 Gwboard::Synthesetup.create({content_id: 2, gwbbs_check: nil, gwfaq_check: nil, gwqa_check: nil,  doclib_check: nil,  digitallib_check: nil,  limit_date: 'yesterday'})
 Gwboard::Synthesetup.create({content_id: 0, gwbbs_check: 1, gwfaq_check: 1, gwqa_check: 1,  doclib_check: 1,  digitallib_check: 1,  limit_date: nil})

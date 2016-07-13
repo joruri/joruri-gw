@@ -117,10 +117,10 @@ stafflist = create_link_piece(3,left_piece.id,"職員名簿",70,0,nil,nil,nil,3,
 create_link_piece(4,stafflist.id,"電子職員録",10,0,nil,nil,nil,nil,nil,"/gwsub/sb04/01/sb04stafflistview",nil,1,1,nil,nil)
 create_link_piece(4,stafflist.id,"電子事務分掌表",20,0,nil,nil,nil,nil,nil,"/gwsub/sb04/02/sb04divideduties",nil,1,1,nil,nil)
 
-def create_tab(level_no,parent_id,name,sort_no,tab_keys,display_auth,other_controller_use,other_controller_url,link_url,icon_path,link_div_class,class_external,class_sso,field_account,field_pass)
+def create_tab(is_public,level_no,parent_id,name,sort_no,tab_keys,display_auth,other_controller_use,other_controller_url,link_url,icon_path,link_div_class,class_external,class_sso,field_account,field_pass)
   Gw::EditTab.create({
     class_created: 1, published: 'opened', state: 'enabled',
-    level_no: level_no, parent_id: parent_id, name: name, sort_no: sort_no,css_id:0, is_public: 1,
+    level_no: level_no, parent_id: parent_id, name: name, sort_no: sort_no,css_id:0, is_public: is_public,
     tab_keys: tab_keys, display_auth: display_auth, other_controller_use: other_controller_use,
     other_controller_url: other_controller_url,
     link_url: link_url, icon_path: icon_path, link_div_class: link_div_class,
@@ -129,27 +129,27 @@ def create_tab(level_no,parent_id,name,sort_no,tab_keys,display_auth,other_contr
 end
 
 
-top_tab = create_tab(1,nil,"TOP",10,0,nil,2,nil,nil,nil,nil,1,1,nil,nil)
+top_tab = create_tab(0,1,nil,"TOP",10,0,nil,2,nil,nil,nil,nil,1,1,nil,nil)
 
-create_tab(2,top_tab.id,"ポータル",10,1,nil,1,"/",nil,nil,nil,1,1,nil,nil)
+create_tab(0,2,top_tab.id,"ポータル",10,1,nil,1,"/",nil,nil,nil,1,1,nil,nil)
 
-gwsub_tab = create_tab(2,top_tab.id,"個別業務",50,80,nil,2,nil,nil,nil,nil,1,1,nil,nil)
+gwsub_tab = create_tab(0,2,top_tab.id,"個別業務",50,80,nil,2,nil,nil,nil,nil,1,1,nil,nil)
 
-sub_system = create_tab(3,gwsub_tab.id,"個別システム",10,0,nil,2,nil,nil,nil,nil,1,1,nil,nil)
+sub_system = create_tab(0,3,gwsub_tab.id,"個別システム",10,0,nil,2,nil,nil,nil,nil,1,1,nil,nil)
 
-create_tab(4,sub_system.id,"アンケート集計システム",30,0,nil,2,nil,"/questionnaire/",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"議員表示　管理者用UI",40,0,"Gw::PrefAssemblyMember.editable?",2,nil,"/gw/pref_assembly_member_admins",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"全庁幹部在庁表示　管理者用UI",50,0,"Gw::PrefExecutive.is_admin?",2,nil,"/gw/pref_executive_admins",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"部課長在庁表示　管理者用UI",60,0,"Gw::PrefDirector.is_admin?",2,nil,"/gw/pref_director_admins",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"電子職員録",70,0,nil,2,nil,"/gwsub/sb04/01/sb04stafflistview",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"研修等申込・受付システム",80,0,nil,2,nil,"/gwsub/sb01/sb01_training_entries",nil,nil,1,1,nil,nil)
-create_tab(4,sub_system.id,"担当者名等管理",90,0,nil,2,nil,"/gwsub/sb06/sb06_assigned_conferences",nil,nil,0,1,nil,nil)
-create_tab(4,sub_system.id,"予算担当登録",100,0,nil,2,nil,"/gwsub/sb06/sb06_budget_notices?v=2",nil,nil,0,1,nil,nil)
-create_tab(4,sub_system.id,"広報依頼システム",110,0,nil,2,nil,"/gwsub/sb05/sb05_requests",nil,nil,0,1,nil,nil)
-create_tab(4,sub_system.id,"週間・月間行事予定表（承認・公開）",120,0,nil,2,nil,"/gw/schedule_events/",nil,nil,0,1,nil,nil)
-create_tab(4,sub_system.id,"USBメモリ登録管理台帳",130,0,nil,2,nil,"/gwsub/sb12/externalusbs/",nil,nil,0,1,nil,nil)
-create_tab(4,sub_system.id,"その他の外部記録媒体登録管理台帳",140,0,nil,2,nil,"/gwsub/sb13/externalmedias/",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"アンケート集計システム",30,0,nil,2,nil,"/questionnaire/",nil,nil,1,1,nil,nil)
+create_tab('2',4,sub_system.id,"議員表示　管理者用",40,0,"Gw::PrefAssemblyMember.editable?",2,nil,"/gw/pref_assembly_member_admins",nil,nil,1,1,nil,nil)
+create_tab('2',4,sub_system.id,"全庁幹部在庁表示　管理者用",50,0,"Gw::PrefExecutive.is_admin?",2,nil,"/gw/pref_executive_admins",nil,nil,1,1,nil,nil)
+create_tab('2',4,sub_system.id,"部課長在庁表示　管理者用",60,0,"Gw::PrefDirector.is_admin?",2,nil,"/gw/pref_director_admins",nil,nil,1,1,nil,nil)
+create_tab(0,4,sub_system.id,"電子職員録",70,0,nil,2,nil,"/gwsub/sb04/01/sb04stafflistview",nil,nil,1,1,nil,nil)
+create_tab(0,4,sub_system.id,"研修等申込・受付システム",80,0,nil,2,nil,"/gwsub/sb01/sb01_training_entries",nil,nil,1,1,nil,nil)
+create_tab(0,4,sub_system.id,"担当者名等管理",90,0,nil,2,nil,"/gwsub/sb06/sb06_assigned_conferences",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"予算担当登録",100,0,nil,2,nil,"/gwsub/sb06/sb06_budget_notices?v=2",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"広報依頼システム",110,0,nil,2,nil,"/gwsub/sb05/sb05_requests",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"週間・月間行事予定表（承認・公開）",120,0,nil,2,nil,"/gw/schedule_events/",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"USBメモリ登録管理台帳",130,0,nil,2,nil,"/gwsub/sb12/externalusbs/",nil,nil,0,1,nil,nil)
+create_tab(0,4,sub_system.id,"その他の外部記録媒体登録管理台帳",140,0,nil,2,nil,"/gwsub/sb13/externalmedias/",nil,nil,0,1,nil,nil)
 
-link_tab = create_tab(2,top_tab.id,"便利リンク",60,3,nil,2,nil,nil,nil,nil,0,1,nil,nil)
-create_tab(3,link_tab.id,"便利リンク",10,0,nil,2,nil,nil,nil,nil,0,1,nil,nil)
+link_tab = create_tab(0,2,top_tab.id,"便利リンク",60,3,nil,2,nil,nil,nil,nil,0,1,nil,nil)
+create_tab(0,3,link_tab.id,"便利リンク",10,0,nil,2,nil,nil,nil,nil,0,1,nil,nil)
 

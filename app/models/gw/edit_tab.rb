@@ -30,7 +30,7 @@ class Gw::EditTab < Gw::Database
     f.validates :link_url, presence: true
   end
   with_options if: lambda {|item| item.level_no == 2 && item.other_controller_use.to_i == 2} do |f|
-    f.validates :tab_keys, presence: true, numericality: { only_integr: true, greater_than: 0 }, 
+    f.validates :tab_keys, presence: true, numericality: { only_integr: true, greater_than: 0 },
       uniqueness: { scope: [:parent_id, :deleted_at] }
   end
 
@@ -238,11 +238,11 @@ protected
   end
 
   def set_default_values
-    self.is_public ||= '0'
+    self.is_public ||= 0
   end
 
   def clear_needless_values
-    if self.is_public != '2'
+    if self.is_public != 2
       self.display_auth = nil
     end
   end
