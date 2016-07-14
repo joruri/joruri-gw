@@ -4,6 +4,12 @@ load "#{Rails.root}/db/seed/base.rb"
 
 ## method
 
+def read_data(path)
+  path = "#{Rails.root}/db/seed/files/#{path}.txt"
+  return nil unless FileTest.exists?(path)
+  ::File.new(path).read.force_encoding('utf-8')
+end
+
 
 def create_group(parent, level_no, sort_no, code, name, name_en)
   create_group_history(parent, level_no, sort_no, code, name, name_en)

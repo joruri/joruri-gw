@@ -33,15 +33,16 @@ def create_doclib(title)
         default_limit: '20',
         form_name: 'form001',
         title: title,
-        admingrps_json: %Q{[["000001", "3", "システム管理課"]]},
+        admingrps_json: %Q{[["", "3", "システム管理課"]]},
         adms_json: "[]",
-        sueditors_json: [["user1","1","徳島太郎"]],
+        sueditors_json: [["","2","徳島太郎"]],
         readers_json: %Q{[["", "0", "制限なし"]]}
       })
 end
 
 def create_doc(parent, options = {})
-  str_section_code = Core.user_group.code
+  section_code = Core.user_group.code
+  section_name = Core.user_group.name
   title = options[:title] || '○○○○○'
   body = options[:body] || '○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />'
   Doclibrary::Doc.create({
@@ -50,7 +51,8 @@ def create_doc(parent, options = {})
       latest_updated_at: Time.now,
       importance: 1,
       one_line_note: 0,
-      section_code: str_section_code ,
+      section_code: section_code ,
+      section_name: section_name,
       category4_id: 0,
       category1_id: parent.id,
       wiki: 0,
@@ -80,12 +82,12 @@ Doclibrary::Role.create({ title_id: first_library.id, role_code: 'r', group_id: 
 
 parent_folder = Doclibrary::Folder.where(title_id: first_library.id).first
 
-doc1 = create_doc(parent_folder, {title: 'ABCDに関する会議議事録'})
+doc1 = create_doc(parent_folder, {title: 'ABCDに関する会議議事録', body: read_data('doclibrary/1/body')})
 
-doc2 = create_doc(parent_folder, {title: '第１回　会議議事録'})
+doc2 = create_doc(parent_folder, {title: '第１回　会議議事録', body: read_data('doclibrary/2/body')})
 create_file(first_library, doc2, "#{Rails.root}/db/seed/files/doclibrary/1.pdf", {filename: '議事録　○○○○○○○○○○○○○○○○○○○○○について.pdf'})
 
-doc3 = create_doc(parent_folder, {title: '第２回　会議議事録'})
+doc3 = create_doc(parent_folder, {title: '第２回　会議議事録', body: read_data('doclibrary/3/body')})
 create_file(first_library, doc3, "#{Rails.root}/db/seed/files/doclibrary/1.odt", {filename: '議事録　○○○○○○○○○○○○○○○○○○○○○について.odt'})
 create_file(first_library, doc3, "#{Rails.root}/db/seed/files/doclibrary/1.ods", {filename: '四国４県.ods'})
 
@@ -96,12 +98,12 @@ Doclibrary::Role.create({ title_id: second_library.id, role_code: 'r', group_id:
 
 parent_folder = Doclibrary::Folder.where(title_id: second_library.id).first
 
-doc1 = create_doc(parent_folder, {title: '△△に関する報告書', body: '表題の件、掲載いたします。<br />添付ファイルをご確認ください。'})
+doc1 = create_doc(parent_folder, {title: '△△に関する報告書', body: read_data('doclibrary/4/body')})
 create_file(second_library, doc1, "#{Rails.root}/db/seed/files/doclibrary/2.odt", {filename: '報告書.odt'})
 create_file(second_library, doc1, "#{Rails.root}/db/seed/files/doclibrary/1.ods", {filename: '四国４県.ods'})
 
 
-doc2 = create_doc(parent_folder, {title: '○○についての報告書', body: '報告書を掲示します。'})
+doc2 = create_doc(parent_folder, {title: '○○についての報告書', body: read_data('doclibrary/5/body')})
 
 create_file(second_library, doc2, "#{Rails.root}/db/seed/files/doclibrary/2.pdf", {filename: '報告書.pdf'})
 
@@ -114,7 +116,7 @@ Doclibrary::Role.create({ title_id: third_library.id, role_code: 'r', group_id: 
 
 parent_folder = Doclibrary::Folder.where(title_id: third_library.id).first
 
-doc1 = create_doc(parent_folder, {title: '平成２４年度グループウェア運用責任者一覧', body: '平成２４年度グループウェア運用責任者一覧を添付して掲載します。 '})
+doc1 = create_doc(parent_folder, {title: '平成２４年度グループウェア運用責任者一覧', body: read_data('doclibrary/6/body')})
 create_file(third_library, doc1, "#{Rails.root}/db/seed/files/doclibrary/1.xls", {filename: '運用責任者.xls'})
 
 

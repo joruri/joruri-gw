@@ -3,7 +3,7 @@
 puts "Import bbs demo"
 
 def create_board(title,options)
-  admin_groups_json = options[:admin_group]  || %Q{[["000001", "3", "システム管理課"]]}
+  admin_groups_json = options[:admin_group]  || %Q{[["", "3", "システム管理課"]]}
   editors_json_json = options[:editor_group] || %Q{[["", "0", "制限なし"]]}
   readers_json      = options[:reader_group] || %Q{[["", "0", "制限なし"]]}
   sort_no           = options[:sort_no] || 0
@@ -55,7 +55,8 @@ def create_board(title,options)
 end
 
 def create_doc(control, category, options = {})
-  str_section_code = Core.user_group.code
+  section_code = Core.user_group.code
+  section_name = Core.user_group.name
   title = options[:title] || '○○○○○'
   body = options[:body] || '○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />'
   doc = Gwbbs::Doc.create({
@@ -64,7 +65,8 @@ def create_doc(control, category, options = {})
       latest_updated_at: Time.now,
       importance: 1,
       one_line_note: 0,
-      section_code: str_section_code ,
+      section_code: section_code ,
+      section_name: section_name,
       category4_id: 0,
       category1_id: category.id,
       wiki: 0,
@@ -100,17 +102,16 @@ groups = System::Group.where(code: ['001001','001002','001003'])
 i = 1
 groups.each do |group|
   options = {
-    admin_group: %Q{[["#{group.code}", "3", "#{group.name}"]]},
-    editor_group: %Q{[["#{group.code}", "3", "#{group.name}"]]},
-    reader_group: %Q{[["#{group.code}", "3", "#{group.name}"]]},
+    admin_group: %Q{[["", "#{group.id}", "#{group.name}"]]},
+    editor_group: %Q{[["", "#{group.id}", "#{group.name}"]]},
+    reader_group: %Q{[["", "#{group.id}", "#{group.name}"]]},
     sort_no: i * 10,
     create_section: group.code
   }
   board_item = create_board(%Q(#{group.name}掲示板),options)
   Gwbbs::Role.create({ title_id: board_item.id, role_code: 'w', group_id: group.id, group_code: group.code, group_name: group.name})
-  Gwbbs::Role.create({ title_id: board_item.id, role_code: 'a', group_id: group.id, group_code: group.code, group_name: group.name})
   Gwbbs::Role.create({ title_id: board_item.id, role_code: 'r', group_id: group.id, group_code: group.code, group_name: group.name})
-  emergency_board_groups << %Q{["#{group.code}", "3", "#{group.name}"]}
+  emergency_board_groups << %Q{["", "#{group.id}", "#{group.name}"]}
   i+=1
 end
 
@@ -126,6 +127,5 @@ emergency_options = {
 emergency_bbs = create_board(%Q(防災掲示板),emergency_options)
 groups.each do |group|
   Gwbbs::Role.create({ title_id: emergency_bbs.id, role_code: 'w', group_id: group.id, group_code: group.code, group_name: group.name})
-  Gwbbs::Role.create({ title_id: emergency_bbs.id, role_code: 'a', group_id: group.id, group_code: group.code, group_name: group.name})
   Gwbbs::Role.create({ title_id: emergency_bbs.id, role_code: 'r', group_id: group.id, group_code: group.code, group_name: group.name})
 end

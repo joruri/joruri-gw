@@ -133,7 +133,7 @@ bbs = Gwbbs::Control.create({
      restrict_access: 0 ,
      default_limit: '30',
      form_name: 'form001' ,
-     admingrps_json:%Q{[["000001", "3", "システム管理課"]]},
+     admingrps_json:%Q{[["", "3", "システム管理課"]]},
      adms_json: "[]",
      editors_json: %Q{[["", "0", "制限なし"]]},
      sueditors_json: "[]",

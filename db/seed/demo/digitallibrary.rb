@@ -21,6 +21,8 @@ def create_folder(parent, title)
 end
 
 def create_doc(parent, options = {})
+  section_code = Core.user_group.code
+  section_name = Core.user_group.name
   title = options[:title] || '○○○○○'
   body = options[:body] || '○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○<br />'
   Digitallibrary::Doc.create(
@@ -36,7 +38,8 @@ def create_doc(parent, options = {})
         order_no: Digitallibrary::Doc::MAX_SEQ_NO.to_i,
         sort_no: Digitallibrary::Doc::MAX_SEQ_NO.to_i,
         display_order: 100,
-        section_code: Core.user_group.code,
+        section_code: section_code ,
+        section_name: section_name,
         category4_id: 0,
         category1_id: parent.id ,
         wiki: 0,
@@ -86,9 +89,9 @@ first_library = Digitallibrary::Control.create({
       title: '○○規定',
       separator_str1: '.',
       separator_str2: '.',
-      admingrps_json: %Q{[["000001", "3", "システム管理課"]]},
+      admingrps_json: %Q{[["", "3", "システム管理課"]]},
       adms_json: "[]",
-      sueditors_json: [["user1","1","徳島太郎"]],
+      sueditors_json: [["","2","徳島太郎"]],
       readers_json: %Q{[["", "0", "制限なし"]]}
     })
 
@@ -150,9 +153,9 @@ seond_library = Digitallibrary::Control.create({
       title: 'グループウェア利用マニュアル',
       separator_str1: '.',
       separator_str2: '.',
-      admingrps_json: %Q{[["000001", "3", "システム管理課"]]},
+      admingrps_json: %Q{[["", "3", "システム管理課"]]},
       adms_json: "[]",
-      sueditors_json: [["user1","1","徳島太郎"]],
+      sueditors_json: [["","2","徳島太郎"]],
       readers_json: %Q{[["", "0", "制限なし"]]}
     })
 
