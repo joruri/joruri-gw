@@ -199,3 +199,7 @@ Gwcircular::Role.create({ title_id: circular.id, role_code: 'r', group_id: 0, gr
 
 Gwmonitor::Form.create({sort_no:0, level_no: 0, form_name: 'form001', form_caption: 'テキスト形式'})
 Gwmonitor::Form.create({sort_no:10, level_no: 10, form_name:  'form002', form_caption: '複数行形式'})
+
+disp_option = Gw::Property::PortalAddDispOption.first_or_new
+disp_option.options_value = [['closed'],['closed'],['closed']]
+disp_option.save
