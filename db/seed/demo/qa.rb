@@ -55,6 +55,8 @@ def create_doc(control, options = {})
   title = options[:title] || '○○○○○'
   body = options[:body] || '○○○○○'
   doc_type = options[:doc_type] || 0
+  content_state = options[:content_state] || 'unresolved'
+  answer_count = options[:answer_count] || 0
   parent_id = doc_type == 1 ? options[:parent_id] : 0
   doc = Gwqa::Doc.create({
       state: 'public',
@@ -69,7 +71,10 @@ def create_doc(control, options = {})
       category1_id: 0,
       wiki: 0,
       title: title,
-      body: body
+      body: body,
+      doc_type: doc_type,
+      answer_count: answer_count,
+      content_state: content_state
     })
 end
 g1 = System::Group.where(code: '001004').first
@@ -88,10 +93,10 @@ Gwqa::Role.create({ title_id: qa1.id, role_code: 'w', group_id: g1.id, group_cod
 Gwqa::Role.create({ title_id: qa1.id, role_code: 'w', group_id: g2.id, group_code: g2.code, group_name: g2.name})
 Gwqa::Role.create({ title_id: qa1.id, role_code: 'r', group_id: 0, group_code: '0', group_name: '制限なし'})
 
-q1 = create_doc(qa1, {title: '公用車の利用マニュアルはどこにありますか？',body: read_data('qa/question')})
+q1 = create_doc(qa1, {title: '公用車の利用マニュアルはどこにありますか？',body: read_data('qa/question'), answer_count: 1})
 create_doc(qa1, {title: '公用車の利用マニュアルはどこにありますか？',body: read_data('qa/answer'), doc_type: 1, parent_id: q1.id})
 
-q2 = create_doc(qa1, {title: '会議室の予約方法を知りたい',body: read_data('qa/question')})
+q2 = create_doc(qa1, {title: '会議室の予約方法を知りたい',body: read_data('qa/question'), answer_count: 1, content_state: 'resolved'})
 create_doc(qa1, {title: '会議室の予約方法を知りたい',body: read_data('qa/answer'), doc_type: 1, parent_id: q2.id})
 
 create_doc(qa1, {title: '庁内にあるコピー機の配置を教えてください。',body: read_data('qa/question')})

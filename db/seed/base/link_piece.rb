@@ -62,8 +62,19 @@ create_link_piece(4,link.id,"Joruri公式サイト",10,0,nil,nil,nil,nil,nil,"ht
 portal = create_link_piece(3,head_piece.id,"ポータル",10,0,1,nil,nil,nil,nil,"/",nil,1,1,nil,nil)
 create_link_piece(4,portal.id,"ポータル",10,0,1,nil,nil,nil,nil,"/","/_common/themes/gw/files/menu/ic_home.gif",1,1,nil,nil)
 
-mail = create_link_piece(3,head_piece.id,"メール",20,0,1,nil,nil,nil,12,"demo.webmail.joruri.org",nil,2,2,"account","password")
-create_link_piece(4,mail.id,"メール",10,0,1,nil,nil,nil,nil,"demo.webmail.joruri.org","/_common/themes/gw/files/menu/ic_mailer.gif",2,2,"account","password")
+
+mail_product = System::Product.create({
+  name: "JoruriMail",
+  product_type: "mail",
+  sort_no: 10,
+  product_synchro: 1,
+  sso: 1,
+  sso_url: "http://demo.webmail.joruri.org/_admin/air_sso",
+  sso_url_mobile: "http://demo.webmail.joruri.org/_admin/air_sso"
+})
+
+mail = create_link_piece(3,head_piece.id,"メール",20,0,1,nil,nil,nil,12,"",nil,2,mail_product.product_type,"account","password")
+create_link_piece(4,mail.id,"メール",10,0,1,nil,nil,nil,nil,"","/_common/themes/gw/files/menu/ic_mailer.gif",2,mail_product.product_type,"account","password")
 
 schedule = create_link_piece(3,head_piece.id,"スケジュール",40,0,1,nil,nil,nil,13,"/gw/schedules/show_month",nil,1,1,nil,nil)
 create_link_piece(4,schedule.id,"スケジュール",10,0,1,nil,nil,nil,nil,"/gw/schedules/show_month","/_common/themes/gw/files/menu/ic_schedule.gif",1,1,nil,nil)
