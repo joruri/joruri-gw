@@ -27,7 +27,7 @@
     <label for="item">ファイル指定::</label>
     <%= f.file_field :upload %>
     <%= submit_tag 'ファイルを登録する', :type => 'button', :onclick => "check_extension()" %><br />
-    <%= render 'gwboard/admin/attachments/file', wiki: params[:wiki], system: params[:system], title_id: params[:title_id], parent_id: params[:parent_id] %>
+    <%= render 'gwboard/admin/ajaxuploads/form', wiki: params[:wiki], system: params[:system], title_id: params[:title_id], parent_id: params[:parent_id] %>
     <%= @title.upload_graphic_file_size_max_message %>
     <%= @title.upload_document_file_size_max_message %>
     </p>
