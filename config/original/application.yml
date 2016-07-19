@@ -13,3 +13,5 @@ sys:
   file_encode_prefix: 'MSIE,Trident'
   # 初期パスワードでのログイン禁止
   refuse_initial_password: off
+  # ドラッグアンドドロップによるファイルアップロード
+  fileupload_with_drag_and_drop: on
