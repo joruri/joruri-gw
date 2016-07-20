@@ -458,6 +458,38 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     end
   end
 
+  def update_date
+    @item = Gw::Schedule.find(params[:id])
+    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
+    return error_auth if auth_level[:edit_level] != 1
+    if params[:to_day] == params[:from_day]
+      return render json: {result: 'not-modified'}
+    end
+    today_time  = Gw.get_parsed_date(params[:to_day])
+    if @item.st_at.strftime("%Y-%m-%d") != params[:from_day]
+      return render json: {result: 'moved'}
+    end
+    if today_time.present?
+      today = Gw.datetime_to_date(today_time) # 時刻型から日付型に変更
+      st_at = @item.st_at
+      ed_at = @item.ed_at
+
+      st_at_day = Date.new(st_at.year, st_at.month, st_at.day)
+      ed_at_day = Date.new(ed_at.year, ed_at.month, ed_at.day)
+      diff_day = ed_at_day - st_at_day
+
+      new_ed_at_day = today + diff_day
+      st_at_time_str = @item.st_at.strftime("%H:%M:%S")
+      ed_at_time_str  = @item.ed_at.strftime("%H:%M:%S")
+      @item.st_at = "#{today.strftime("%Y-%m-%d")} #{st_at_time_str}"
+      @item.ed_at = "#{new_ed_at_day.strftime("%Y-%m-%d")} #{ed_at_time_str}"
+      @item.save(validate: false)
+      return render json: {result: 'ok'}
+    else
+      return render json: {result: 'ng'}
+    end
+  end
+
   def update
     @item = Gw::Schedule.find(params[:id])
 

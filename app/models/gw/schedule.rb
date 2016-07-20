@@ -1481,6 +1481,14 @@ URL
     is_creator?(user) || is_participant?(user)
   end
 
+  def draggable_schedule_id
+    "user-schedule-#{id}"
+  end
+
+  def draggable_state
+    'draggableSchedule'
+  end
+
   def display_title(display_prop = nil, options = {})
     if display_prop && display_prop.pm_related?
       sp = self.schedule_props.detect{|sp| sp.prop == display_prop}

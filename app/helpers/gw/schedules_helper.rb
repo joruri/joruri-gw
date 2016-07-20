@@ -104,4 +104,8 @@ module Gw::SchedulesHelper
     class_str.concat ' selectDay' if (week_add_day) == nz(params[:s_date], Date.today.to_s).to_date
     return class_str
   end
+
+  def create_day_id(week_add_day)
+    %Q(schedule-td-#{week_add_day.strftime("%Y-%m-%d")})
+  end
 end

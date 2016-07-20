@@ -177,6 +177,7 @@ Rails.application.routes.draw do
         member do
           get :show_one, :editlending, :edit_1, :edit_2, :quote, :destroy_repeat
           put :editlending, :edit_1, :edit_2
+          post :update_date
         end
       end
       resources :schedule_search_blanks do
