@@ -52,6 +52,8 @@ gem 'jquery-rails', '3.1.1'
 gem 'jquery-ui-rails', '~> 5.0.0'
 gem 'jquery-timepicker-addon-rails', '~> 1.4.1'
 
+gem 'jquery-fileupload-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 
@@ -62,6 +64,8 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+
 
 group :development do
   gem 'rack-mini-profiler' # profiler
