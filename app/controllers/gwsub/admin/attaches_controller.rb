@@ -12,8 +12,8 @@
 class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
 
+  layout :switch_layout
   def pre_dispatch
-    self.class.layout 'admin/gwsub_base'
     params[:parent_id] = params[:gwsub_id]
   end
 
@@ -95,6 +95,61 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
     end
 
     redirect_to "/_admin/gwsub/#{params[:parent_id]}/attaches?system=#{params[:system]}&menu_type=#{params[:menu_type]}"
+  end
+
+  def upload
+    params[:files].each do |file|
+      case params[:system]
+      when "sb01_training"
+        @item = Gwsub::Sb01TrainingFile.new
+      when "sb05_requests"
+        @item = Gwsub::Sb05File.new
+      else
+        @item = nil
+      end
+      if @item
+        @item.content_type = file.content_type
+        @item.filename = file.original_filename
+        @item.size = file.size
+        @item.parent_id = params[:parent_id]
+        @item.content_id = 1
+        @item.db_file_id = 0
+        @item._upload_file(file)
+        @item.save
+        @item.after_create
+
+        if @item.content_type =~ /image/
+          begin
+            require 'RMagick'
+            content = File.read(@item.f_name)
+            image = Magick::Image.from_blob(content).shift
+          if image.format =~ /(GIF|JPEG|PNG)/
+            @item.width  = image.columns
+            @item.height = image.rows
+          end
+          rescue LoadError
+          rescue Magick::ImageMagickError
+          rescue NoMethodError
+          end
+
+          @item.update_attribute(:width, image.columns)
+          @item.update_attribute(:height, image.rows)
+        end
+        if @item.save
+          respond_to do |format|
+            format.html {}
+            format.json {
+              render :json => @item.to_json
+            }
+          end
+        else
+          render :json => [{:error => "custom_failure"}], :status => 304
+        end
+      else
+        render :json => [{:error => "custom_failure"}], :status => 304
+      end
+    end
+
   end
 
   def create_file(system)
@@ -181,4 +236,15 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
     parent_show_path  = "gwsub/sb01/sb01_training_plans/#{@file.parent_id}"
     redirect_to parent_show_path
   end
+private
+
+  def switch_layout
+    case params[:action]
+    when 'upload'
+      false
+    else
+      'admin/gwsub_base'
+    end
+  end
+
 end
