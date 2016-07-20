@@ -29,22 +29,22 @@
         maxFileSize: 'ファイルサイズが大きすぎます。',
         minFileSize: 'ファイルサイズが小さすぎます。'
       }
-    });
-  })
-  .on('fileuploadprogress', function(e, data) {
-    $('#dropZoneNotice').html('アップロード中……');
-  })
-  .on('fileuploadprocessdone', function(e, data) {
-    $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
-  })
-  .on('fileuploaddone', function(e, data) {
-    if (data.textStatus == 'success') {
+    })
+    .on('fileuploadprogress', function(e, data) {
+      $('#dropZoneNotice').html('アップロード中……');
+    })
+    .on('fileuploadprocessdone', function(e, data) {
       $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
-      $('#uploadedList').append( data.result );
-    } else {
-      var result = $.parseJSON(data.result);
-      alert(result.message);
-    }
+    })
+    .on('fileuploaddone', function(e, data) {
+      if (data.textStatus == 'success') {
+        $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
+        $('#uploadedList').append( data.result );
+      } else {
+        var result = $.parseJSON(data.result);
+        alert(result.message);
+      }
+    });
   });
 })(jQuery);
 </script>
