@@ -105,7 +105,12 @@ module Gw::SchedulesHelper
     return class_str
   end
 
-  def create_day_id(week_add_day)
-    %Q(schedule-td-#{week_add_day.strftime("%Y-%m-%d")})
+  def create_day_id(week_add_day, user=nil)
+    if user
+      %Q(#{user.id}_schedule-td-#{week_add_day.strftime("%Y-%m-%d")})
+    else
+      %Q(schedule-td-#{week_add_day.strftime("%Y-%m-%d")})
+    end
+
   end
 end

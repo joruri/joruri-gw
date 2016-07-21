@@ -55,6 +55,8 @@ end
         var id = schedule_id.replace(/user-schedule-/, '');
         var todate = date_id.replace(/schedule-td-/,'');
         var fromdate = ui.draggable.closest("td").attr("id").replace(/schedule-td-/,'');
+        todate = todate.replace(/\d+_/, "")
+        fromdate = fromdate.replace(/\d+_/, "")
         url = '<%=url_for({controller: '/gw/admin/schedules' ,action: :index})%>/' + id + '/update_date';
         $.ajax({
           url: url,

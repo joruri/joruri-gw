@@ -45,7 +45,7 @@ show_week_header = render '/gw/admin/schedules/show_week_header'
           week_add_day = @calendar_first_day + i
           schedules = user_schedules.select {|s| s.date_between?(week_add_day) }
           %>
-          <td id="<%=create_day_id(week_add_day)%>" class="droppableTd scheduleDroppable <%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
+          <td id="<%=create_day_id(week_add_day, user)%>" class="droppableTd scheduleDroppable <%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
             <%= render '/gw/admin/schedules/show_week_one', schedules: schedules, week_add_day: week_add_day, display_prop: nil if schedules.present? %>
             <%= show_schedule_edit_icon(week_add_day, uid: user.id) if @edit -%>
           </td>
