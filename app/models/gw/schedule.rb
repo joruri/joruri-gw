@@ -1481,13 +1481,16 @@ URL
     is_creator?(user) || is_participant?(user)
   end
 
-  def draggable_schedule_id
-    "user-schedule-#{id}"
-  end
 
-  def draggable_state
-    return 'draggableSchedule' if is_draggable?
-    return ''
+  def is_draggable?
+    return false if schedule_props.present?
+    return false if schedule_events.present?
+    return false if guide_state.present? && guide_state != 0
+    is_gw_admin = Gw.is_admin_admin?
+    is_pm_admin = is_gw_admin ? true : Gw::ScheduleProp.is_pm_admin?
+    edit_level = get_edit_delete_level(is_gw_admin: is_gw_admin, is_pm_admin: is_pm_admin)
+    return true if edit_level[:edit_level] == 1
+    return false
   end
 
   def display_title(display_prop = nil, options = {})
@@ -1611,14 +1614,6 @@ URL
     else
       false
     end
-  end
-
-  def is_draggable?
-    is_gw_admin = Gw.is_admin_admin?
-    is_pm_admin = @is_gw_admin ? true : Gw::ScheduleProp.is_pm_admin?
-    edit_level = get_edit_delete_level(is_gw_admin: is_gw_admin, is_pm_admin: is_pm_admin)
-    return true if edit_level[:edit_level] == 1
-    return false
   end
 
   def is_quotable_participant?(user = Core.user)

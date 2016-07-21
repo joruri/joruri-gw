@@ -53,6 +53,7 @@ end
         var schedule_id = ui.draggable.attr("id");
         var date_id = $(this).attr("id");
         var id = schedule_id.replace(/user-schedule-/, '');
+        id = id.replace(/\d+_/, "");
         var todate = date_id.replace(/schedule-td-/,'');
         var fromdate = ui.draggable.closest("td").attr("id").replace(/schedule-td-/,'');
         todate = todate.replace(/\d+_/, "")

@@ -105,6 +105,20 @@ module Gw::SchedulesHelper
     return class_str
   end
 
+
+  def create_schedule_id(schedule, user=nil)
+    if user
+      "#{user.id}_user-schedule-#{schedule.id}"
+    else
+      "user-schedule-#{schedule.id}"
+    end
+  end
+
+  def draggable_state(schedule)
+    return 'draggableSchedule' if schedule.is_draggable?
+    return ''
+  end
+
   def create_day_id(week_add_day, user=nil)
     if user
       %Q(#{user.id}_schedule-td-#{week_add_day.strftime("%Y-%m-%d")})
