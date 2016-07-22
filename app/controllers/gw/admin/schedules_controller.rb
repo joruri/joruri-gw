@@ -484,6 +484,11 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       @item.st_at = "#{today.strftime("%Y-%m-%d")} #{st_at_time_str}"
       @item.ed_at = "#{new_ed_at_day.strftime("%Y-%m-%d")} #{ed_at_time_str}"
       @item.save(validate: false)
+      if schedule_todo = @item.schedule_todo
+        schedule_todo.st_at = @item.st_at
+        schedule_todo.ed_at = @item.ed_at
+        schedule_todo.save
+      end
       return render json: {result: 'ok'}
     else
       return render json: {result: 'ng'}
