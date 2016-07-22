@@ -246,11 +246,17 @@ Rails.application.routes.draw do
       end
       resources :meetings_previews
       resources :meeting_guide_backgrounds do
+        collection do
+          put :sort_update
+        end
         member do
           get :updown
         end
       end
       resources :meeting_guide_notices do
+        collection do
+          put :sort_update
+        end
         member do
           get :updown
         end
@@ -258,6 +264,7 @@ Rails.application.routes.draw do
       resources :meeting_guide_places do
         collection do
           get :get_prop_id, :prop_sync
+          put :sort_update
         end
         member do
           get :updown
