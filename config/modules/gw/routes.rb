@@ -77,6 +77,7 @@ Rails.application.routes.draw do
       resources :edit_tabs do
         collection do
           get :list, :getajax
+          put :sort_update
         end
         member do
           get :updown
@@ -85,6 +86,7 @@ Rails.application.routes.draw do
       resources :edit_link_pieces do
         collection do
           get :list, :getajax_priv
+          put :sort_update
         end
         member do
           get :updown, :swap
