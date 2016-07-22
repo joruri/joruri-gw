@@ -48,6 +48,11 @@
    <% end %>
   </td>
   <td style="width: 30px; text-align: center;">
-    <%= link_to '削除', {:action => :destroy, :id => item, :wiki => params[:wiki], :system => params[:system], :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete %>
+    <%= link_to '削除',
+      url_for({controller: 'gwboard/admin/attachments', action: :destroy,
+        parent_id: item.parent_id, id: item.id,
+        wiki: params[:wiki], system: params[:system], title_id: params[:title_id]}),
+      :confirm => '削除してよろしいですか？', :method => :delete %>
   </td>
+
 </tr>

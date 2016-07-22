@@ -33,6 +33,9 @@
     </td>
   <% end %>
   <td style="width: 30px; text-align: center;">
-    <%= link_to '削除', {:action => :destroy, :id => item}, :confirm => '削除してよろしいですか？', :method => :delete %>
+    <%= link_to '削除',
+      url_for({controller: 'gwworkflow/admin/attachments', action: :destroy,
+        gwworkflow_id: item.parent_id, id: item.id}),
+      :confirm => '削除してよろしいですか？', :method => :delete %>
   </td>
 </tr>

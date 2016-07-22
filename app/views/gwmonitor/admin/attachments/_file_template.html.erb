@@ -32,6 +32,9 @@
     </td>
   <% end %>
   <td style="width: 30px; text-align: center;">
-    <%= link_to '削除', {:action => :destroy, :id => item, :system => @title.system_name, :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete %>
+    <%= link_to '削除',
+      url_for({controller: 'gwmonitor/admin/attachments', system: @title.system_name,
+          action: :destroy, gwmonitor_id: item.parent_id, title_id: item.title_id, id: item.id}),
+      :confirm => '削除してよろしいですか？', :method => :delete %>
   </td>
 </tr>
