@@ -837,6 +837,9 @@ table.scheduleTable td.user {
 .category800 a {
   border-left: solid 6px #FFC300;
 }
+.category850 a {
+  border-left: solid 6px #666;
+}
 .category900 a {
   border-left: solid 6px #8658B2;
 }

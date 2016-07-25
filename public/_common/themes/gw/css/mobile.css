@@ -314,6 +314,9 @@ table.bbsExpirydate {
 .category800 {
   border-left: solid 6px #FFC300;
 }
+.category850 {
+  border-left: solid 6px #666;
+}
 .category900 {
   border-left: solid 6px #8658B2;
 }
