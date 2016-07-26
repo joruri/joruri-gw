@@ -372,3 +372,9 @@ a.btConfirmed {
 .notice {
   color: green;
 }
+
+/* 未読・既読ステータス
+-----------------------------------------*/
+a.unread{
+  font-weight: bold;
+}

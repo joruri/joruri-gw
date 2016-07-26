@@ -40,7 +40,7 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     @item = @title.docs.find_by(id: params[:id])
     return find_migrated_item unless @item
     return error_auth if !@title.is_readable? && !@item.is_recognizable? && !@item.is_publishable?
-
+    @item.set_read_flag
     # 前後記事
     items = index_docs.select(:id, :title_id)
     current = items.index{|item| item.id == @item.id}.to_i

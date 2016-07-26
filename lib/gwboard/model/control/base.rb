@@ -45,6 +45,10 @@ module Gwboard::Model::Control::Base
     [["使用する","0"],["使用しない","1"]]
   end
 
+  def use_flags_list
+    [["使用しない",false],["使用する",true]]
+  end
+
   def use_states_list
     [["使用しない","0"],["使用する","1"]]
   end

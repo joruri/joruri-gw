@@ -1157,3 +1157,8 @@ table.index td.edit a {
   text-align: right;
 }
 
+/* 未読・既読ステータス
+-----------------------------------------*/
+td.unread{
+  font-weight: bold;
+}

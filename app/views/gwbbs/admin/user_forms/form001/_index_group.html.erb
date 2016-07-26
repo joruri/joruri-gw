@@ -29,7 +29,7 @@ mode = 'date' if @title.category == 0
       <% if @title.importance == 1 %>
       <td class="bbsImportant" style="text-align: center;"><%=raw retstr_important_span(item.importance) %></td>
       <% end %>
-      <td class="docTitle"><%= link_to hbr(item.title), item.show_path  + gwbbs_params_set %><%=raw '<span class="new">new</span>' if @title.id == 1 && item.new_mark_flg %></td>
+      <td class="docTitle<%=title_read_flag(@title, item)%>"><%= link_to hbr(item.title), item.show_path  + gwbbs_params_set %><%=raw '<span class="new">new</span>' if @title.id == 1 && item.new_mark_flg %></td>
       <td class="bbsAttach"><%=raw retstr_attache_span(item.attachmentfile) %></td>
       <td class="bbsBalloon"><%=raw retstr_balloon_span(item) %></td>
       <% if mode.blank? %>

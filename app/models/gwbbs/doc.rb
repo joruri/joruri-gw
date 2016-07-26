@@ -6,6 +6,7 @@ class Gwbbs::Doc < Gwboard::CommonDb
   include Gwboard::Model::Doc::Base
   include Gwboard::Model::Doc::Auth
   include Gwboard::Model::Doc::Recognizer
+  include Gwboard::Model::Doc::ReadFlag
   include Gwboard::Model::Doc::Wiki
   include Gwbbs::Model::Systemname
   include Concerns::Gwbbs::Doc::Form001
@@ -28,7 +29,7 @@ class Gwbbs::Doc < Gwboard::CommonDb
   has_many :comment, :foreign_key => :parent_id, :class_name => 'Gwbbs::Comment'
   has_many :roles, :foreign_key => :title_id, :primary_key => :title_id
   has_one :section, :foreign_key => :code, :primary_key => :section_code, :class_name => 'System::Group'
-
+  has_many :read_flags, :foreign_key => :parent_id, :class_name => 'Gwbbs::Flag'
   has_many :comments_only_id, -> { select(:id, :parent_id).order(:id) }, :foreign_key => :parent_id, :class_name => 'Gwbbs::Comment'
 
   after_create :save_name_with_check_digit

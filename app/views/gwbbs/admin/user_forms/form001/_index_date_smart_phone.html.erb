@@ -14,7 +14,7 @@ brk_key = nil
       <% else %>
         <% title_class = "leftLine" %>
       <% end %>
-      <td class="docTitle <%= title_class %>">
+      <td class="docTitle <%= title_class %><%=title_read_flag(@title, item)%>">
         <%= link_to item.show_path  + gwbbs_params_set do %>
           <%=hbr item.title %><%=raw '<span class="new">new</span>' if @title.id == 1 && item.new_mark_flg %>
         <% end %>
