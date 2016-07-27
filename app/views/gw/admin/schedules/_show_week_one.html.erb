@@ -1,6 +1,6 @@
 <% schedules.each do |schedule| %>
 <% if schedule.is_public_auth?(@is_gw_admin) %>
-  <div id="<%=create_schedule_id(schedule)%>" title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) %>" class="ind tooltip <%=draggable_state(schedule)%>">
+  <div id="<%=create_schedule_id(schedule,week_add_day)%>" title="<%= schedule.display_tooltip(params[:s_genre], @is_pm_admin) %>" class="ind tooltip <%=draggable_state(schedule)%>">
     <a class="<%= schedule.display_category_class(display_prop) %>" href="/gw/schedules/<%= schedule.id %>/show_one">
       <span><%= schedule.display_time(display_prop, week_add_day) %></span>
       <span class="title"><%= schedule.display_title(display_prop) %></span>
@@ -11,7 +11,7 @@
   </div>
 <% else %>
   <% unless schedule.todo? %>
-    <div id="<%=create_schedule_id(schedule)%>" title="<%= "#{schedule.display_time(display_prop, week_add_day)} [非公開予定]" %>" class="ind tooltip <%=draggable_state(schedule)%>">
+    <div id="<%=create_schedule_id(schedule,week_add_day)%>" title="<%= "#{schedule.display_time(display_prop, week_add_day)} [非公開予定]" %>" class="ind tooltip <%=draggable_state(schedule)%>">
       <span><%= schedule.display_time(display_prop, week_add_day) %></span>
       <span class="title">[非公開予定]</span>
     </div>

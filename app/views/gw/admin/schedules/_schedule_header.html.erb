@@ -53,11 +53,11 @@ end
         var schedule_id = ui.draggable.attr("id");
         var date_id = $(this).attr("id");
         var id = schedule_id.replace(/user-schedule-/, '');
-        id = id.replace(/\d+_/, "");
+        id = id.replace(/\d+_/g, "");
         var todate = date_id.replace(/schedule-td-/,'');
         var fromdate = ui.draggable.closest("td").attr("id").replace(/schedule-td-/,'');
-        todate = todate.replace(/\d+_/, "")
-        fromdate = fromdate.replace(/\d+_/, "")
+        todate = todate.replace(/\d+_/g, "")
+        fromdate = fromdate.replace(/\d+_/g, "")
         url = '<%=url_for({controller: '/gw/admin/schedules' ,action: :index})%>/' + id + '/update_date';
         $.ajax({
           url: url,
@@ -75,6 +75,25 @@ end
               alert("すでに移動された予定です、ページを更新して確認してください。");
             }else if(data.result == "ok"){
               $('#' + schedule_id).insertBefore('#' + date_id + ' > a' );
+            }else if(data.result == "over"){
+              location.reload();
+              /*var regexp = new RegExp('user-schedule-' + id + '$')
+              var dateList = []
+              $(".draggableSchedule").each(function(i, elem) {
+                if($(elem).attr("id").match(regexp)){
+                  dateList.push($(elem).attr("id"));
+                }
+               });
+               $.each(data.range,
+                    function(n, e) {
+                      if(dateList[n]){
+                        if($('#schedule-td-' + e).length){
+                          $('#' + dateList[n]).insertBefore('#schedule-td-' + e + ' > a' );
+                        }else{
+                          $('#' + dateList[n]).remove();
+                        }
+                      }
+                  });*/
             }else if(data.result == "ng"){
               alert("パラメータが不正のため、移動できませんでした。");
             }

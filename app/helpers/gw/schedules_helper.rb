@@ -106,11 +106,11 @@ module Gw::SchedulesHelper
   end
 
 
-  def create_schedule_id(schedule, user=nil)
+  def create_schedule_id(schedule, d, user=nil)
     if user
-      "#{user.id}_user-schedule-#{schedule.id}"
+      "#{user.id}_#{d.strftime("%Y_%m_%d")}_user-schedule-#{schedule.id}"
     else
-      "user-schedule-#{schedule.id}"
+      "#{d.strftime("%Y_%m_%d")}_user-schedule-#{schedule.id}"
     end
   end
 

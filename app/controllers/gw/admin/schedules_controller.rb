@@ -489,7 +489,15 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         schedule_todo.ed_at = @item.ed_at
         schedule_todo.save
       end
-      return render json: {result: 'ok'}
+      if @item.st_at.strftime("%Y-%m-%d") != @item.ed_at.strftime("%Y-%m-%d")
+        date_range = []
+        (@item.st_at.to_date..@item.ed_at.to_date).each do |date|
+          date_range << date.strftime("%Y-%m-%d")
+        end
+        return render json: {result: 'over', range: date_range}
+      else
+        return render json: {result: 'ok'}
+      end
     else
       return render json: {result: 'ng'}
     end
