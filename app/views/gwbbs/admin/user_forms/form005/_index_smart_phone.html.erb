@@ -5,7 +5,7 @@
   </tr>
   <% @items.each do |item| %>
     <tr class="article">
-      <td class="docTitle leftLine"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+      <td class="docTitle leftLine<%=title_read_flag(@title, item)%>"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
       <td rowspan="2"><%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
     </tr>
     <tr class="article">

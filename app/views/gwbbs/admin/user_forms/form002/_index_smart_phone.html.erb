@@ -29,7 +29,7 @@
   </tr>
   <% end %>
   <tr class="article">
-    <td class="leftLine docTitle"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="leftLine docTitle<%=title_read_flag(@title, item)%>"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td rowspan="2"><%= item.inpfld_004 %></td>
   </tr>
   <tr>

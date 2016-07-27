@@ -6,7 +6,7 @@
     <th class="update">最終更新日</th>
   </tr>
   <% @items.each do |item| %>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
+  <tr class="<%= cycle 'article', 'article cycle' %><%=title_read_flag(@title, item)%>">
     <td class="category"><%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="name"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="update"><%= link_to item.latest_updated_at.strftime('%Y-%m-%d'), "#{item.show_path}#{gwbbs_params_set}" %></td>

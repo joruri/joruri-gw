@@ -378,3 +378,6 @@ a.btConfirmed {
 a.unread{
   font-weight: bold;
 }
+p.unread{
+  font-weight: bold;
+}

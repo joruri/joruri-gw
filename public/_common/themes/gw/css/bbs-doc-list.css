@@ -346,3 +346,6 @@ table.bbsUserformBody table.border  {
 td.unread{
   font-weight: bold;
 }
+tr.unread td{
+  font-weight: bold;
+}
