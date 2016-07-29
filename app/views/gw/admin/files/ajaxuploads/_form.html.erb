@@ -1,0 +1,51 @@
+<%- if use_drag_and_drop
+  upload_path = url_for({controller: 'gw/admin/files/ajaxuploads',action: :create,
+      system: system, title_id: title_id, parent_id: parent_id}) -%>
+
+<div id="jqueryFileUploader" style="display: none;">
+  <div id="fileUpload">
+    <span id="dropZoneNotice" class="dropZoneNotice">（ここにファイルをドロップできます）</span>
+  </div>
+</div>
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#jqueryFileUploader').show();
+
+    var jqXHR = [];
+
+    $('#jqueryFileUploader').fileupload({
+      url: '<%= upload_path.html_safe %>',
+      type: 'post',
+      dataType: 'html',
+      formData: {
+        authenticity_token: '<%= form_authenticity_token %>',
+      },
+      dropZone: $('#fileUpload'),
+      sequentialUploads: true,
+      minFileSize: 1,
+      maxFileSize: 5 * 1024 * 1024,
+      messages: {
+        maxFileSize: 'ファイルサイズが大きすぎます。',
+        minFileSize: 'ファイルサイズが小さすぎます。'
+      }
+    })
+    .on('fileuploadprogress', function(e, data) {
+      $('#dropZoneNotice').html('アップロード中……');
+    })
+    .on('fileuploadprocessdone', function(e, data) {
+      $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
+    })
+    .on('fileuploaddone', function(e, data) {
+      if (data.textStatus == 'success') {
+        $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
+        $('#uploadedList').append( data.result );
+      } else {
+        var result = $.parseJSON(data.result);
+        alert(result.message);
+      }
+    });
+  });
+})(jQuery);
+</script>
+<%- end -%>

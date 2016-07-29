@@ -1,0 +1,5 @@
+<a href="#" onclick="chageDisp(this,'file_attach_form');return false;">開く▼</a>
+<%-
+  files_uri = url_for({controller: 'gw/admin/files/attachments', parent_id: item.tmp_id, system: system_name})
+%>
+<iframe id="file_attach_form" src="<%= files_uri %>" style="width: 100%; height: 500px; display: none;" frameborder="0"></iframe>

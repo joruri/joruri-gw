@@ -41,6 +41,12 @@ sid  = params[:_session_id]
     <th>備考</th>
     <td><%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %></td>
   </tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= render 'file_list'%>
+    </td>
+  </tr>
 </table>
 <br />
 

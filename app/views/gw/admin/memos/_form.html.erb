@@ -2,7 +2,7 @@
 suffixes_raw = I18n.a('enum.gw/memo.category')
 suffixes = Gw.options_for_select(suffixes_raw, nil)
 %>
-
+<%= f.hidden_field :tmp_id %>
 <%= raw(get_form_title_div params) %>
 
 <span class="required">※は必須項目です。</span>
@@ -31,6 +31,10 @@ suffixes = Gw.options_for_select(suffixes_raw, nil)
     <th>備考</th>
     <td><%= f.text_area :body, :rows => 5, :style => "width: 30em; ime-mode: active;" %></td>
   </tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td><%= gw_attachments_form(f, @item, 'memo') %></td>
+  </tr>
 </table>
 
 <%= render 'form_participant', f: f %>
@@ -42,6 +46,15 @@ suffixes = Gw.options_for_select(suffixes_raw, nil)
     var idxs = select_options_selected_indexes(fr);
     var to = $('item_title');
     to.value = fr[idxs].innerHTML;
+  }
+  function chageDisp(obj,changeObjId) {
+    var display = document.getElementById(changeObjId).style.display;
+    if (display == '') {
+      obj.innerHTML = '開く▼';
+    } else if (display == 'none') {
+      obj.innerHTML = '閉じる▲';
+    }
+    Element.toggle($(changeObjId));
   }
 //]]>
 </script>

@@ -13,6 +13,13 @@ Rails.application.routes.draw do
 
   namespace mod do
     scope :module => scp do
+    ## upload system
+    resources :ajaxuploads,
+      :controller => 'files/ajaxuploads',
+      :path => 'files/ajaxuploads'
+    resources :attachments,
+      :controller => 'files/attachments',
+      :path => 'files/attachments'
     ## gw
       resources :portal
       resources :test, :except =>['show','index','destroy','update'] do
