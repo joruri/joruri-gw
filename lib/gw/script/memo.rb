@@ -22,6 +22,20 @@ class Gw::Script::Memo < System::Script::Base
     end
   end
 
+  def self.delete_tempfiles
+    run do
+      log "不要な添付ファイル削除処理" do
+        Gw::MemoFile.created_before(Time.now.yesterday).group(:tmp_id).each do |file|
+          if parent = Gw::Memo.where(tmp_id: file.tmp_id).first
+            next
+          else
+            Gw::MemoFile.where(tmp_id: file.tmp_id).destroy_all
+          end
+        end
+      end
+    end
+  end
+
   private
 
   def self.setting_value_to_days(value)
