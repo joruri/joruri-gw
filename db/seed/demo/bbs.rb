@@ -50,7 +50,8 @@ def create_board(title,options)
          editors_json: editors_json_json,
          readers_json: readers_json,
          limit_date: 'none',
-         docslast_updated_at:  Time.now
+         docslast_updated_at:  Time.now,
+         use_read_flag: true
       })
 end
 

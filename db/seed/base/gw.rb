@@ -140,7 +140,8 @@ bbs = Gwbbs::Control.create({
      readers_json: %Q{[["", "0", "制限なし"]]},
      sureaders_json: "[]",
      limit_date: 'none',
-     docslast_updated_at:  Time.now
+     docslast_updated_at:  Time.now,
+     use_read_flag: true
     })
 
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 1, level_no: 1, name: 'お知らせ'})
