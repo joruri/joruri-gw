@@ -16,18 +16,18 @@ sid  = params[:_session_id]
 担当者　<%if !@item.fr_user.blank?%><%= convert_for_mobile_body(@item.fr_user, sid) %>様から<%end%><br />
 伝言　<%= convert_for_mobile_body(@item.title, sid) %><br />
 備考　<%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %><br />
-<%- if @item.files.present? -%>
+<br />
+送り先<br />
+<% @item.memo_users.each do |mu| %>
+<%= mu.class_id_label %>：<%= "#{mu.uname} (#{mu.ucode})" %><br />
+<% end %>
+<%- if @item.files.present? -%><br />
 添付ファイル<br />
 <% @item.files.each do |file|%>
 ・<%= link_to "#{file.original_file_name} (#{file.eng_unit})", file.file_path %><br />
 <% end %>
 <br /><span style="color: #ff0000;"><%=Joruri.config.application['air_watch.download_allow_message']%></span>
 <%- end -%>
-<br />
-送り先<br />
-<% @item.memo_users.each do |mu| %>
-<%= mu.class_id_label %>：<%= "#{mu.uname} (#{mu.ucode})" %><br />
-<% end %>
 <hr class="borderDash"/>
 <p class="leftPad2">
 <%= link_to "戻る", {action: :index} %>
