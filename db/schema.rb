@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160415041553) do
+ActiveRecord::Schema.define(version: 20160727084620) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,     default: 0, null: false
@@ -1148,6 +1148,22 @@ ActiveRecord::Schema.define(version: 20160415041553) do
     t.integer  "created_gid",    limit: 4
   end
 
+  create_table "gw_memo_files", force: :cascade do |t|
+    t.integer  "parent_id",          limit: 4
+    t.string   "tmp_id",             limit: 255
+    t.string   "content_type",       limit: 255
+    t.text     "file_name",          limit: 65535
+    t.string   "file_path",          limit: 255
+    t.string   "file_directory",     limit: 255
+    t.string   "original_file_name", limit: 255
+    t.text     "memo",               limit: 65535
+    t.integer  "size",               limit: 4
+    t.integer  "width",              limit: 4
+    t.integer  "height",             limit: 4
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
   create_table "gw_memo_mobiles", force: :cascade do |t|
     t.string   "domain",     limit: 255
     t.datetime "created_at"
@@ -1183,6 +1199,7 @@ ActiveRecord::Schema.define(version: 20160415041553) do
     t.text     "body",               limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "tmp_id",             limit: 255
   end
 
   create_table "gw_monitor_reminders", force: :cascade do |t|
@@ -2582,6 +2599,7 @@ ActiveRecord::Schema.define(version: 20160415041553) do
     t.datetime "docslast_updated_at"
     t.text     "icon_filename",                           limit: 65535
     t.string   "icon_position",                           limit: 255
+    t.boolean  "use_read_flag",                                                        default: false
   end
 
   add_index "gwbbs_controls", ["notification"], name: "index_gwbbs_controls_on_notification", using: :btree
@@ -2700,6 +2718,19 @@ ActiveRecord::Schema.define(version: 20160415041553) do
 
   add_index "gwbbs_files", ["parent_id"], name: "index_gwbbs_files_on_parent_id", using: :btree
   add_index "gwbbs_files", ["title_id"], name: "index_gwbbs_files_on_title_id", using: :btree
+
+  create_table "gwbbs_flags", force: :cascade do |t|
+    t.integer  "title_id",      limit: 4
+    t.integer  "parent_id",     limit: 4
+    t.string   "state",         limit: 255
+    t.string   "user_id",       limit: 255
+    t.string   "created_user",  limit: 255
+    t.string   "created_group", limit: 255
+    t.string   "updated_user",  limit: 255
+    t.string   "updated_group", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
 
   create_table "gwbbs_images", force: :cascade do |t|
     t.integer  "unid",              limit: 4
