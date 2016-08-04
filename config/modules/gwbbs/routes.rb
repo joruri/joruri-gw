@@ -36,7 +36,7 @@ Rails.application.routes.draw do
           :path => "docs" do
             member do
               get :recognize_update, :publish_update, :clone
-              get :export_file, :file_exports
+              get :export_file, :file_exports, :unread
             end
             collection do
               get :destroy_void_documents

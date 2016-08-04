@@ -18,13 +18,19 @@ module Gwboard::Model::Doc::ReadFlag
     }
   end
 
-  def set_read_flag
-    return if read_flags.present?
+  def set_read_flag(user=Core.user)
+    return if read_flags.where(user_id: user.id).first.present?
     read_flags.create({title_id: title_id, user_id: Core.user.id})
   end
 
-  def read_flag_class
-    return " read" if read_flags.present?
+  def remove_read_flag(user=Core.user)
+    if user_state = read_flags.where(user_id: user.id).first
+      user_state.destroy
+    end
+  end
+
+  def read_flag_class(user=Core.user)
+    return " read" if read_flags.where(user_id: user.id).present?
     return " unread"
   end
 

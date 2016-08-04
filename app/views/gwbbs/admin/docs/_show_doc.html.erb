@@ -15,13 +15,13 @@
       <% end %>
     <% end %><!--edit_forbidden-->
   <% end %><!--編集権限あり-->
-  
+
   <% if @title.is_writable? %><!--掲示板に書込権があれば、どの記事でも複製可能-->
     <% unless @title.addnew_forbidden %>
       <span class="btReproduce rightSide"><%= link_to '複製', "#{clone_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => 'この記事を複製しますか' %></span>
     <% end %>
   <% end unless @title.id == 1 %>
-  
+
   <% if @item.is_editable? %><!--編集権限あり-->
     <% unless @title.delete_forbidden %>
      <% if @title.id != 17 || (@title.id == 17 && @title.is_admin?) %>
@@ -36,6 +36,9 @@
   <% if @item.is_publishable? && @item.state == 'recognized' %>
     <span class="btPublish"><%= link_to '公開', "#{publish_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
   <% end %>
+  <%- if @item.read_flags.present? -%>
+    <span class="btUnread"><%= link_to '既読に戻す', "#{unread_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => 'この記事を未読の状態に戻しますか？' %></span>
+  <%- end -%>
 </div>
 
 <%= show_prev_next_link = render 'show_prev_next_link' %>

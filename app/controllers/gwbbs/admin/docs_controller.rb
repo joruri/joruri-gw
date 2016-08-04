@@ -119,6 +119,13 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     _destroy @item, success_redirect_uri: "#{@title.docs_path}#{gwbbs_params_set}"
   end
 
+  def unread
+    @item = @title.docs.find(params[:id])
+    @item.remove_read_flag
+    flash[:notice] = '指定した記事を未読の状態に戻しました。'
+    return redirect_to @title.docs_path
+  end
+
   def destroy_void_documents
     return error_auth unless @title.is_admin?
 
