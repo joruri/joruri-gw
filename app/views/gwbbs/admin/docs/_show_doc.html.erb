@@ -36,7 +36,7 @@
   <% if @item.is_publishable? && @item.state == 'recognized' %>
     <span class="btPublish"><%= link_to '公開', "#{publish_update_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}" %></span>
   <% end %>
-  <%- if @item.read_flags.present? -%>
+  <%- if @title.use_read_flag && @item.read_flags.present? -%>
     <span class="btUnread"><%= link_to '既読に戻す', "#{unread_gwbbs_doc_path(@item,{:title_id=>@item.title_id})}#{gwbbs_params_set}", :confirm => 'この記事を未読の状態に戻しますか？' %></span>
   <%- end -%>
 </div>
