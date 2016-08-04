@@ -53,7 +53,7 @@ def create_file(control, parent, file_path, file_attributes)
       file: Sys::Lib::File::NoUploadedFile.new(file_path, file_attributes),
       memo: '',
       parent_id: parent.id,
-      content_id: control.upload_system,
+      content_id: parent.content_id,
       db_file_id: 0
     )
   doc_file.save
