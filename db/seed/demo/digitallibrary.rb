@@ -39,7 +39,7 @@ def create_doc(parent, options = {})
         sort_no: Digitallibrary::Doc::MAX_SEQ_NO.to_i,
         display_order: 100,
         section_code: section_code ,
-        section_name: section_name,
+        section_name: "#{section_code}#{section_name}",
         category4_id: 0,
         category1_id: parent.id ,
         wiki: 0,

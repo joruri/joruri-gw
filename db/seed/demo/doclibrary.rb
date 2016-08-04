@@ -52,7 +52,7 @@ def create_doc(parent, options = {})
       importance: 1,
       one_line_note: 0,
       section_code: section_code ,
-      section_name: section_name,
+      section_name: "#{section_code}#{section_name}",
       category4_id: 0,
       category1_id: parent.id,
       wiki: 0,

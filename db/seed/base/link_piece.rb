@@ -54,8 +54,6 @@ create_link_piece(4,prop.id,"公用車予約",10,0,nil,nil,nil,nil,nil,"/gw/sche
 create_link_piece(4,prop.id,"会議室予約",20,0,nil,nil,nil,nil,nil,"/gw/schedule_props/show_week?s_genre=other&cls=other&type_id=200",nil,1,1,nil,nil)
 create_link_piece(4,prop.id,"一般備品",30,0,nil,nil,nil,nil,nil,"/gw/schedule_props/show_week?s_genre=other&cls=other&type_id=300",nil,1,1,nil,nil)
 
-create_link_piece(3,left_piece.id,"質問管理",90,0,1,nil,nil,6,9,"/gwfaq",nil,1,1,nil,nil)
-
 link = create_link_piece(3,left_piece.id,"リンク",100,0,1,nil,nil,7,9,nil,nil,1,1,nil,nil)
 create_link_piece(4,link.id,"Joruri公式サイト",10,0,nil,nil,nil,nil,nil,"http://joruri.org/",nil,2,1,nil,nil)
 
@@ -118,8 +116,6 @@ left_monitor = create_link_piece(3,left_piece.id ,"照会・回答",60,0,nil,nil
 create_link_piece(4,left_monitor.id,"照会・回答システム",10,0,nil,nil,nil,17,9,"/gwmonitor",nil,1,1,nil,nil)
 create_link_piece(4,left_monitor.id,"アンケート集計システム",20,0,nil,nil,nil,nil,nil,"/enquete/",nil,1,1,nil,nil)
 create_link_piece(4,left_monitor.id,"研修等申込・受付システム",30,0,nil,nil,nil,nil,nil,"/gwsub/sb01/sb01_training_entries",nil,1,1,nil,nil)
-
-create_link_piece(3,left_piece.id,"総務事務システム",30,0,nil,nil,nil,1,8,"#",nil,1,1,nil,nil)
 
 workflow = create_link_piece(3,left_piece.id,"電子決裁・文書管理",50,0,nil,nil,nil,2,9,"#",nil,1,1,nil,nil)
 create_link_piece(4,workflow.id,"ワークフロー",10,0,nil,nil,nil,2,nil,"/gwworkflow",nil,1,1,nil,nil)
