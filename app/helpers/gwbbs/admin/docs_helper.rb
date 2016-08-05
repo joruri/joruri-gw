@@ -36,8 +36,4 @@ module Gwbbs::Admin::DocsHelper
     return msg
   end
 
-  def title_read_flag(title, doc)
-    return "" unless title.use_read_flag
-    return doc.read_flag_class
-  end
 end
