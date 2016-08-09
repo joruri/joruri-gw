@@ -54,32 +54,10 @@ Joruri Gw の実行に必要なパッケージをインストールします。
     libjpeg-devel libpng-devel git \
     ImageMagick ImageMagick-devel curl-devel libevent libevent-devel openssl openssl-devel
 
-MySQL5.6をインストールします。
+MySQLをインストールします。
 
-  RPMのインストール
-  # wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
-  # rpm -Uvh mysql-community-release-el7-5.noarch.rpm
-  # vi /etc/yum.repos.d/mysql-community.repo
-  以下のように変更します。
-  -----------------------------------------------------------------------
-  [mysql-connectors-community]
-  ：（略）
-  enabled=1
-  ↓変更
-  enabled=0
-  [mysql-tools-community]
-  ：（略）
-  enabled=1
-  ↓変更
-  enabled=0
-  [mysql56-community]
-  ：（略）
-  enabled=1
-  ↓変更
-  enabled=0
-  -----------------------------------------------------------------------
-  MySQLのインストール
-  # yum install --enablerepo=mysql56-community mysql-community-client.x86_64 mysql-community-devel.x86_64 mysql-community-server.x86_64
+  # yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+  # yum -y install mysql-community-server
 
 JoruriGwをダウンロードします。
 
@@ -340,44 +318,12 @@ cronによる定期実行処理を設定します。
   -----------------------------------------------------------------------
 
 ======================================================================
- 8.5 delayed_job の起動
+ 9.5 delayed_job の起動
 ======================================================================
 
-delayed_jobの起動スクリプトを配置します。
+delayed_job を起動します。
 
-  $ su -
-  # cp /var/share/jorurigw/config/samples/delayed_job /opt/delayed_job
-  # chmod +x /opt/delayed_job
-
-Unit定義を作成します。
-
-  # vi /etc/systemd/system/delayed_job.service
-  -----------------------------------------------------------------------
-  [Unit]
-  Description = delayed_job daemon
-
-  [Service]
-  ExecStart = /opt/delayed_job start
-  ExecStop = /opt/delayed_job stop
-  ExecReload = /opt/delayed_job restart
-  Type = simple
-
-  [Install]
-  WantedBy = multi-user.target
-  -----------------------------------------------------------------------
-
-  # systemctl list-unit-files --type=service | grep delayed_job   # サービスに登録されているか確認する
-
-自動起動の設定を行います。
-
-  # systemctl enable delayed_job.service
-  # systemctl list-unit-files --type=service | grep delayed_job   # 自動起動になっているか確認する
-
-delayed_jobを起動します。
-
-  # systemctl daemon-reload                 # daemonの再読み込み
-  # systemctl start delayed_job.service     # delayed_jobの起動
-  # systemctl status delayed_job.service    # delayed_jobの起動確認
+  $ bundle exec rake delayed_job:start RAILS_ENV=production
 
 ======================================================================
  8.6 VirtualHost の反映
