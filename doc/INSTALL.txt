@@ -304,7 +304,7 @@ assetをコンパイルします。
 
 cronによる定期実行処理を設定します。
 
-  $ whenever -w --set 'environment=production'
+  $ bundle exec whenever --update-crontab
 
 定期実行処理の内容を確認します。
 
