@@ -14,7 +14,7 @@ gem 'therubyracer','0.10.2'
 
 gem 'ruby-ldap', '0.9.16'
 gem 'will_paginate', '3.0.7'
-gem 'jpmobile', '~> 4.2.0'
+gem 'jpmobile', '4.2.3'
 gem 'net-ssh', '2.9.1'
 gem 'rmagick', '2.13.2', require: false
 gem 'hpricot', '0.8.4'
