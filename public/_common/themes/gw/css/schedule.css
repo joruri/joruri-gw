@@ -1492,6 +1492,14 @@ div.scheduleUser .title span {
 }
 
 /*
+ スケジュール移動
+ */
+
+td.draggableHover.ui-droppable{
+  background: #6495ed !important;
+}
+
+/*
 ----------------------------------------*/
 .linkLine {
   clear: both;

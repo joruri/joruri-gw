@@ -36,7 +36,7 @@ end
     });
     $('.droppableTd').droppable({
       accept: '.draggableSchedule',
-      tolerance: 'fit',
+      tolerance: 'intersect',
       activeClass: 'active',
       hoverClass: 'draggableHover',
       drop: function( event, ui ) {
@@ -77,28 +77,10 @@ end
               $('#' + schedule_id).insertBefore('#' + date_id + ' > a' );
             }else if(data.result == "over"){
               location.reload();
-              /*var regexp = new RegExp('user-schedule-' + id + '$')
-              var dateList = []
-              $(".draggableSchedule").each(function(i, elem) {
-                if($(elem).attr("id").match(regexp)){
-                  dateList.push($(elem).attr("id"));
-                }
-               });
-               $.each(data.range,
-                    function(n, e) {
-                      if(dateList[n]){
-                        if($('#schedule-td-' + e).length){
-                          $('#' + dateList[n]).insertBefore('#schedule-td-' + e + ' > a' );
-                        }else{
-                          $('#' + dateList[n]).remove();
-                        }
-                      }
-                  });*/
             }else if(data.result == "ng"){
               alert("パラメータが不正のため、移動できませんでした。");
             }
             $("#lockScreen").remove();
-
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
              alert("このスケジュールは移動できません。");
