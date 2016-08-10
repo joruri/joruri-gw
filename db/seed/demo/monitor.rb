@@ -2,6 +2,7 @@
 ## digital library
 puts "Import gwmonitor demo"
 
+g0 = System::Group.where(code: '000001').first
 g1 = System::Group.where(code: '001001').first
 g2 = System::Group.where(code: '001004').first
 
@@ -34,7 +35,7 @@ monitor_params1 = {
   state: 'public',
   admin_setting: 0,
   form_id: 1,
-  reader_groups_json: %Q{[["", "#{g1.id}", "#{g1.name}"]]}
+  reader_groups_json: %Q{[["","0","全ての所属"]]}
 }
 
 title1.attributes = monitor_params1
@@ -73,7 +74,7 @@ monitor_params2 = {
   state: 'public',
   admin_setting: 0,
   form_id: 1,
-  reader_groups_json: %Q{[["", "#{g1.id}", "#{g1.name}"],["", "#{g2.id}", "#{g2.name}"]]}
+  reader_groups_json: %Q{[["", "#{g0.id}", "#{g0.name}"],["", "#{g1.id}", "#{g1.name}"],["", "#{g2.id}", "#{g2.name}"]]}
 }
 
 title2.attributes = monitor_params2

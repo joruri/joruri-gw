@@ -151,7 +151,7 @@ Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 4, level_no:
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 5, level_no: 1, name: ' 調査・照会'})
 Gwbbs::Category.create({state: 'public', title_id: bbs.id, sort_no: 7, level_no: 1, name: ' その他'})
 
-Gwboard::Synthesetup.create({content_id: 2, gwbbs_check: nil, gwfaq_check: nil, gwqa_check: nil,  doclib_check: nil,  digitallib_check: nil,  limit_date: 'yesterday'})
+Gwboard::Synthesetup.create({content_id: 2, gwbbs_check: nil, gwfaq_check: nil, gwqa_check: nil,  doclib_check: nil,  digitallib_check: nil,  limit_date: '7.days'})
 Gwboard::Synthesetup.create({content_id: 0, gwbbs_check: 1, gwfaq_check: 1, gwqa_check: 1,  doclib_check: 1,  digitallib_check: 1,  limit_date: nil})
 
 Gwboard::Bgcolor.create({content_id: 0, state: 'public', title: '#FFFCF0', color_code_hex: '#FFFCF0', color_code_class: 'bgColor1', pair_font_color: '#000000'})
