@@ -16,7 +16,7 @@ gem 'ruby-ldap', '0.9.16'
 gem 'will_paginate', '3.0.7'
 gem 'jpmobile', '4.2.3'
 gem 'net-ssh', '2.9.1'
-gem 'rmagick', '2.13.2', require: false
+gem 'rmagick', '2.15.4', require: false
 gem 'hpricot', '0.8.4'
 gem 'tamtam', '0.0.3'
 gem 'zipruby', '0.3.6'
