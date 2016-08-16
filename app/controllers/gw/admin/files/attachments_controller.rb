@@ -13,6 +13,8 @@ class Gw::Admin::Files::AttachmentsController < Gw::Controller::Admin::Base
     case params[:system]
     when 'memo'
       @items = Gw::MemoFile.where(tmp_id: params[:parent_id])
+    when 'schedule'
+      @items = Gw::ScheduleFile.where(tmp_id: params[:parent_id])
     else
       @item = nil
     end
@@ -25,6 +27,12 @@ class Gw::Admin::Files::AttachmentsController < Gw::Controller::Admin::Base
         tmp_id: params[:parent_id],
         file: params[:item][:upload]
         })
+    when 'schedule'
+      @item = Gw::ScheduleFile.new({
+        tmp_id: params[:parent_id],
+        file: params[:item][:upload]
+        })
+
     else
       @item = nil
     end
@@ -41,6 +49,8 @@ class Gw::Admin::Files::AttachmentsController < Gw::Controller::Admin::Base
     case params[:system]
     when 'memo'
       @item = Gw::MemoFile.where(tmp_id: params[:parent_id], id: params[:id]).first
+    when 'schedule'
+      @item = Gw::ScheduleFile.where(tmp_id: params[:parent_id], id: params[:id]).first
     else
       @item = nil
     end

@@ -440,6 +440,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       @item.destroy_rentcar_temporaries
       render :action => 'new'
     else
+      @item.renew_attach_files = true
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
         flash_notice '予定の登録', true
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=new"
@@ -528,10 +529,12 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       @item.destroy_rentcar_temporaries
       render :action => 'edit'
     else
+      @item.renew_attach_files = true
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
         flash[:notice] = '予定の編集に成功しました。'
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=edit"
         @item.destroy_rentcar_temporaries
+
         if request.mobile?
           if @item.schedule_parent_id.blank?
             redirect_url += "?gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"

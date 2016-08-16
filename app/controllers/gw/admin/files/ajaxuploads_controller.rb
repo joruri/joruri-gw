@@ -17,6 +17,11 @@ class Gw::Admin::Files::AjaxuploadsController < Gw::Controller::Admin::Base
             tmp_id: params[:parent_id],
             file: file
             })
+        when 'schedule'
+          item = Gw::ScheduleFile.new({
+            tmp_id: params[:parent_id],
+            file: file
+            })
         else
           next
         end

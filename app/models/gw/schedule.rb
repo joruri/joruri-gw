@@ -10,6 +10,8 @@ class Gw::Schedule < Gw::Database
     d_ed = Gw.get_parsed_date(record.ed_at)
     record.errors.add attr, 'と終了日時の前後関係が異常です。' if d_st > d_ed
   end
+  after_save :set_parent_id_to_files
+  attr_accessor :renew_attach_files
 
   has_many :public_roles, :foreign_key => :schedule_id, :class_name => 'Gw::SchedulePublicRole', :dependent => :destroy
   has_many :schedule_users, :foreign_key => :schedule_id, :class_name => 'Gw::ScheduleUser', :dependent => :destroy
@@ -23,6 +25,7 @@ class Gw::Schedule < Gw::Database
   belongs_to :repeat, :foreign_key => :schedule_repeat_id, :class_name => 'Gw::ScheduleRepeat'
   belongs_to :parent, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
   has_many :child, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
+  has_many :files, :primary_key => :tmp_id, :foreign_key => :tmp_id, :class_name => 'Gw::ScheduleFile', :dependent => :destroy
 
   has_many  :schedule_prop_temporaries, :foreign_key => :tmp_id, :primary_key => :tmp_id, :class_name => 'Gw::SchedulePropTemporary'
 
@@ -60,6 +63,12 @@ class Gw::Schedule < Gw::Database
       self.arel_table[:id].eq(self.arel_table[:schedule_parent_id])
     ].reduce(:or))
   }
+
+  def set_parent_id_to_files
+    return if tmp_id.blank?
+    return unless renew_attach_files
+    Gw::ScheduleFile.where(tmp_id: tmp_id).update_all(parent_id: id)
+  end
 
   def title_category_label
     I18n.t('enum.gw/schedule.title_category_id')[title_category_id]

@@ -232,6 +232,10 @@ form_kind_radio_str = radio(f, 'form_kind_id', Gw::Schedule.gw_schedules_form_ki
     <th>メモ</th>
     <td><%= form_text_area f, :memo %></td>
   </tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td><%= gw_attachments_form(f, @item, 'schedule') %></td>
+  </tr>
 </table>
 
 <%
