@@ -29,5 +29,33 @@
 </table>
 
 <div class="preserve">
-<%= submit_for f, caption: '保存' %>
+<%= submit_for f, caption: '保存', id: 'assemblySubmit' %>
 </div>
+
+
+<script type="text/javascript">
+(function($) {
+  $(function() {
+    $('#assemblySubmit').on('click',function(){
+      var g_order = $("#item_g_order").val();
+      if(g_order==null){
+        return true;
+      }
+      if(g_order==10 || g_order==20 || g_order > 20){
+        return true;
+      }
+      if((g_order >= 1 && g_order <= 9) || (g_order >= 11 && g_order <= 19)){
+        if(!confirm('議員在庁表示に表示させるには会派並び順を21以降に設定してください。このまま登録しますか。')){
+          return false;
+        }else{
+          return true;
+        }
+      }else{
+        return true;
+      }
+      return false;
+    });
+  });
+})(jQuery);
+</script>
+

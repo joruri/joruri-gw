@@ -8,8 +8,16 @@ class Gw::PrefAssemblyMember < Gw::Database
   before_update :set_updator
 
   validates :g_name, :g_order, :u_name, :u_lname, :u_order, presence: true
+  validates :g_order, uniqueness: {message: 'が10又は20のユーザはそれぞれ1人のみ登録することができます。', scope: :deleted_at},
+     if: :check_group_order?
 
   default_scope -> { where(deleted_at: nil) }
+
+  def check_group_order?
+    return true if g_order == 10
+    return true if g_order == 20
+    return false
+  end
 
   def state_label
     self.class.state_show(state)
@@ -23,26 +31,26 @@ class Gw::PrefAssemblyMember < Gw::Database
     state_select.rassoc(state).try(:first)
   end
 
-	#議長レコードを抽出する。議長は g_order = 10 のレコード
-	def self.get_chairman
-		self.where(:g_order => 10)
-	end
+  #議長レコードを抽出する。議長は g_order = 10 のレコード
+  def self.get_chairman
+    self.where(:g_order => 10)
+  end
 
-	#副議長レコードを抽出する。副議長は g_order = 20 のレコード
-	def self.get_vicechairmen
-		self.where(:g_order => 20)
-	end
+  #副議長レコードを抽出する。副議長は g_order = 20 のレコード
+  def self.get_vicechairmen
+    self.where(:g_order => 20)
+  end
 
-	#議員一覧を抽出する。議員は g_order > 20 のレコード
-	def self.get_members
-		self.where(arel_table[:g_order].gt(20))
-	end
+  #議員一覧を抽出する。議員は g_order > 20 のレコード
+  def self.get_members
+    self.where(arel_table[:g_order].gt(20))
+  end
 
-	#
-	#在庁フラグをON/OFF切り替える。
-	# ==== Parameters
-	# * + new_state -指定のフラグ値('on', 'off')。指定しない場合は現在の状態を反転させる。
-	#
+  #
+  #在庁フラグをON/OFF切り替える。
+  # ==== Parameters
+  # * + new_state -指定のフラグ値('on', 'off')。指定しない場合は現在の状態を反転させる。
+  #
   def toggle_state(new_state = nil)
     if new_state
       case new_state.downcase
