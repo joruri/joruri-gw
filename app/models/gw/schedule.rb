@@ -1310,7 +1310,7 @@ class Gw::Schedule < Gw::Database
 
   def display_category_class(display_prop = nil)
     if display_prop && (sp = self.schedule_props.detect{|sp| sp.prop == display_prop})
-      "category#{sp.prop_stat_category_id || 1}"
+      "category#{sp.prop_stat_category_id(self.title_category_id) || 1}"
     else
       if self.schedule_todo.present?
         if self.schedule_todo.is_finished == 1

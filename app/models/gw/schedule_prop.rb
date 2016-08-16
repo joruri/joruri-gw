@@ -402,7 +402,7 @@ class Gw::ScheduleProp < Gw::Database
     end
   end
 
-  def prop_stat_category_id
+  def prop_stat_category_id(category_id=nil)
     case self.prop_type
     when "Gw::PropRentcar"
       self.cancelled? ? 900 :
@@ -416,7 +416,7 @@ class Gw::ScheduleProp < Gw::Database
     when "Gw::PropOther"
       self.cancelled? ? 900 :
         self.returned? ? 3 :
-        self.rented? ? 2 : nil
+        self.rented? ? 2 : category_id
     else
       nil
     end
