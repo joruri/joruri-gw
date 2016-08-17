@@ -1,6 +1,6 @@
 module Digitallibrary::Admin::DocsHelper
 
-  def digitallib_uri_params
+  def digitallib_uri_params(category=nil)
     if params.blank?
       state = 'CATEGORY'
     else
@@ -10,7 +10,7 @@ module Digitallibrary::Admin::DocsHelper
     if state=='GROUP'
       ret = base_path+"&grp=#{params[:grp]}&gcd=#{params[:gcd]}"
     else
-      ret = base_path+"&cat=#{params[:cat]}"
+      ret = base_path+"&cat=#{category || params[:cat]}"
     end
     return ret
   end
