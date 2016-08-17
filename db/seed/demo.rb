@@ -126,10 +126,6 @@ create_user_group({user_id: u15.id, group_id: g.id, start_at: Time.now})
 ## ---------------------------------------------------------
 ## load demo data
 
-if File.exists?("#{Rails.root}/public/_attaches")
-  FileUtils.rm_r("#{Rails.root}/public/_attaches/")
-end
-
 Dir::entries("#{Rails.root}/db/seed/demo").each do |file|
   next if file !~ /\.rb$/
   load "#{Rails.root}/db/seed/demo/#{file}"
