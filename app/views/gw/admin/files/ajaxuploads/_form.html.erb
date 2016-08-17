@@ -45,6 +45,26 @@
         alert(result.message);
       }
     });
+    $(document).on('drop dragover', function (e) {
+      e.preventDefault();
+    })
+    .on('dragover', function(e) {
+      var dropZone = $('#fileUpload');
+      var timeout = window.dropZoneTimeout;
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      if (e.target.id == 'fileUpload' || $(e.target).parents('#fileUpload').length) {
+        dropZone.addClass('hover');
+      } else {
+        dropZone.removeClass('hover');
+      }
+      window.dropZoneTimeout = setTimeout(function () {
+        window.dropZoneTimeout = null;
+        dropZone.removeClass('hover');
+      }, 200);
+    });
+
   });
 })(jQuery);
 </script>
