@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160727084620) do
+ActiveRecord::Schema.define(version: 20160810091516) do
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,     default: 0, null: false
@@ -1964,6 +1964,22 @@ ActiveRecord::Schema.define(version: 20160727084620) do
   end
 
   add_index "gw_schedule_events", ["schedule_id"], name: "index_gw_schedule_events_on_schedule_id", using: :btree
+
+  create_table "gw_schedule_files", force: :cascade do |t|
+    t.integer  "parent_id",          limit: 4
+    t.string   "tmp_id",             limit: 255
+    t.string   "content_type",       limit: 255
+    t.text     "file_name",          limit: 65535
+    t.string   "file_path",          limit: 255
+    t.string   "file_directory",     limit: 255
+    t.string   "original_file_name", limit: 255
+    t.text     "memo",               limit: 65535
+    t.integer  "size",               limit: 4
+    t.integer  "width",              limit: 4
+    t.integer  "height",             limit: 4
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
 
   create_table "gw_schedule_options", force: :cascade do |t|
     t.integer  "schedule_id", limit: 4
