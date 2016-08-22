@@ -415,6 +415,7 @@ Rails.application.routes.draw do
         collection do
           get :csvput
           post :csvup
+          put :sort_update, :group_sort_update
         end
         member do
           get :g_updown, :updown

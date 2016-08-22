@@ -31,6 +31,14 @@ class Gw::PrefAssemblyMember < Gw::Database
     state_select.rassoc(state).try(:first)
   end
 
+  def is_chairman?
+    g_order == 10
+  end
+
+  def is_vicechairmen?
+    g_order == 20
+  end
+
   #議長レコードを抽出する。議長は g_order = 10 のレコード
   def self.get_chairman
     self.where(:g_order => 10)
