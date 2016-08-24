@@ -43,7 +43,7 @@ end
 <% end %>
 <%= link_to '印刷',url_for("/gwsub/sb06/sb06_assigned_conferences/#{@item.id}/show_print"), :target => "_blank" -%>
 </div>
-<%= render render_show_str %>
+<%= render render_show_str rescue nil%>
 <% if @show_mode == "recognize"%>
   <% if @item.search_recognized_after(@rec_items) == true and search_recognize_user(@rec_items) == true -%>
   <div class="showMenu">

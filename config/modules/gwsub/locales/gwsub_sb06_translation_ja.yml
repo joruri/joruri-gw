@@ -24,6 +24,7 @@ ja:
         conf_title: タイトル
         conf_form_no: フォーム番号
         conf_max_count: 最大明細数
+        conf_body: 本文
       gwsub/sb06_assigned_conf_group:
         fyear_id: "年度"
         group_id: "管理所属"
