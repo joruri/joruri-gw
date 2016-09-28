@@ -6,6 +6,15 @@ class Gw::PrefSoumuMessage < Gw::Database
   validates :tab_keys, numericality: true
   validates :sort_no, numericality: true
 
+  validate :check_script_body
+
+  def check_script_body
+    if body.present? && body =~ /script/
+      errors.add(:body, "にスクリプトは利用できません。")
+    end
+  end
+
+
   def self.state_select
     [['する',1],['しない',2]]
   end
