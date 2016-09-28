@@ -189,6 +189,8 @@ ja:
       gw/prop_meetingroom_image:
         file: ファイル
         note: 備考
+      gw/prop_meetingroom:
+        max_person: 収容可能人数
       gw/prop_rentcar:
         car_model: 車名
         name: 号車
