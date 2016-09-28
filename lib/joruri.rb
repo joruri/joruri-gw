@@ -1,6 +1,6 @@
 module Joruri
   def self.version
-    "4.0.0"
+    "3.2.0"
   end
 
   def self.default_config
