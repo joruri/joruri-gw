@@ -1,4 +1,4 @@
-<% 
+<%
 text_style = 'width:30em;'
 %>
 
@@ -29,7 +29,7 @@ text_style = 'width:30em;'
     <td><%= f.text_field :tel, :style => text_style %></td>
   </tr>
   <tr>
-    <th>収容可能人数</th>
+    <th>収容可能人数 <%= required %></th>
     <td><%= f.text_field :max_person, :style => text_style %></td>
   </tr>
   <tr>

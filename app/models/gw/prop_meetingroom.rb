@@ -14,7 +14,7 @@ class Gw::PropMeetingroom < Gw::PropBase
 
   before_save :set_group_name
 
-  validates :name, :type_id, presence: true
+  validates :name, :type_id, :max_person, presence: true
 
   def get_type_class
     "room"
