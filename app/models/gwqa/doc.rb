@@ -31,6 +31,8 @@ class Gwqa::Doc < Gwboard::CommonDb
   validates :state, presence: true
   with_options unless: :state_preparation? do |f|
     f.validates :title, presence: { message: "を入力してください。" }, if: :doc_type_question?
+    f.validates :section_code, presence: { message: "記事管理課を選択してください。" }, if: :doc_type_question?
+    f.validates :section_code, presence: { message: "編集可能所属を選択してください。" }, if: :doc_type_answer?
     f.validates :category1_id, presence: { message: "を設定してください。" }, if: "doc_type_question? && category_use?"
   end
 
@@ -58,7 +60,7 @@ class Gwqa::Doc < Gwboard::CommonDb
     rel
   }
   scope :index_select, ->(control = nil) {
-    select(:id, :title_id, :category1_id, :state, :title, :section_name, :section_code, 
+    select(:id, :title_id, :category1_id, :state, :title, :section_name, :section_code,
       :answer_count, :content_state, :latest_answer, :latest_updated_at)
   }
   scope :index_docs_with_params, ->(control, params) {
