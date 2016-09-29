@@ -37,7 +37,7 @@ created_at = 'now()'
 
 d_load_st, d_load_ed = case params[:action]
 when 'edit', 'quote'
-  if params[:action] == 'quote' && @item.guide_state == 2
+  if (params[:action] != 'new' || params[:action] != 'create') && @item.guide_state == 2
     @item.guide_state = 1
   end
   if !@item.schedule_events.blank?
@@ -356,7 +356,7 @@ var my_submit = function() {
 //  }
 
   <% if params[:action] != 'new' && params[:action] != 'create' &&
-      ( (nz(repeat_mode, 1) == 1 && @item.guide_state == 2 ) || (nz(repeat_mode, 1) == 2 && @item.guide_state_repeat_approval_check ) ) -%>
+      ( (nz(repeat_mode, 1) == 1 && @item.guide_state_was == 2 ) || (nz(repeat_mode, 1) == 2 && @item.guide_state_repeat_approval_check ) ) -%>
   if(window.confirm('確定すると，会議等案内表示の承認が取り消されます。よろしいですか？')){// 「OK」時の処理終了
   } else {
     return false;
