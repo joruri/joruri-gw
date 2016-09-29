@@ -21,6 +21,7 @@ def centos
 
   system 'yum install -y memcached'
   system 'service memcached start'
+  system 'chkconfig memcached on'
 
 end
 
