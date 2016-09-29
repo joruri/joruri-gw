@@ -19,9 +19,14 @@ class Digitallibrary::Control < Gw::Database
 
   validates :state, :recognize, :title, presence: true
   validates :category1_name, :separator_str1, :separator_str2, presence: true
-  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
+  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max,
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
+  validates_each :other_system_link, :banner, :left_banner, :caption  do |record, attr, value|
+    if value.present? && value =~ /script/
+      record.errors.add(attr, "にスクリプトは利用できません。")
+    end
+  end
   def get_root_folder
     Digitallibrary::Folder.where(:title_id=>self.id, :parent_id=>nil, :level_no => 1, :doc_type=>0).first
   end

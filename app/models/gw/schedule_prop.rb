@@ -340,6 +340,39 @@ class Gw::ScheduleProp < Gw::Database
     return :cancel_done
   end
 
+  def other_schedule_not_duplicate?
+    rent_item_flg = true
+    prop_join = "inner join gw_schedule_props on gw_schedules.id = gw_schedule_props.schedule_id"
+    st_at = "#{schedule.st_at.strftime("%Y-%m-%d %H:%M")}"
+    ed_at = "#{schedule.ed_at.strftime("%Y-%m-%d %H:%M")}"
+
+    cond_results_shar = " and (extra_data is null or extra_data not like '%\"cancelled\":1%')" +
+      " and (schedule_repeat_id <> '#{schedule.schedule_repeat_id}' or schedule_repeat_id is null)" +
+      " and ( (gw_schedule_props.st_at <= '#{st_at}' and gw_schedule_props.ed_at > '#{st_at}' )" +
+      " or (gw_schedule_props.st_at < '#{ed_at}' and gw_schedule_props.ed_at >= '#{ed_at}' )" +
+      " or ('#{st_at}' <= gw_schedule_props.st_at and gw_schedule_props.st_at < '#{ed_at}') )"
+
+    cond_actual_shar = " and (extra_data is null or extra_data not like '%\"cancelled\":1%')" +
+      " and schedule_repeat_id = '#{schedule.schedule_repeat_id}'" +
+      " and ( (gw_schedule_props.st_at <= '#{st_at}' and gw_schedule_props.ed_at > '#{st_at}' )" +
+      " or (gw_schedule_props.st_at < '#{ed_at}' and gw_schedule_props.ed_at >= '#{ed_at}' )" +
+      " or ('#{st_at}' <= gw_schedule_props.st_at and gw_schedule_props.st_at < '#{ed_at}') )"
+
+    rent_item = Gw::Schedule.joins(prop_join).where.not(id: schedule.id).where("prop_type='#{prop_type}' and prop_id='#{prop_id}'" + cond_results_shar)
+    dump rent_item.to_sql
+    rent_item_flg = false if rent_item.present?
+
+
+    if !schedule.schedule_repeat_id.blank?
+      rent_item = Gw::Schedule.joins(prop_join).where.not(id: schedule.id).where("prop_type='#{prop_type}'" + cond_actual_shar)
+      rent_item.each { |ritem|
+        rent_item_flg = false if ritem.is_actual?
+      }
+    end
+    dump rent_item_flg
+    return rent_item_flg
+  end
+
   def uncancell!
     set_extra_data({'cancelled' => nil})
     self.cancelled_uid = nil
