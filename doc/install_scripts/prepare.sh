@@ -1,8 +1,8 @@
 #!/bin/bash
 
 EPEL_RPM_URL="http://dl.fedoraproject.org/pub/epel/6/`uname -i`/epel-release-6-8.noarch.rpm"
-INSTALL_SCRIPTS_URL='https://raw.githubusercontent.com/joruri/joruri-gw/master/doc/install_scripts'
-#INSTALL_SCRIPTS_URL='https://raw.githubusercontent.com/joruri/joruri-gw/develop/doc/install_scripts'
+#INSTALL_SCRIPTS_URL='https://raw.githubusercontent.com/joruri/joruri-gw/master/doc/install_scripts'
+INSTALL_SCRIPTS_URL='https://raw.githubusercontent.com/joruri/joruri-gw/v4-develop/doc/install_scripts'
 
 echo '#### Prepare to install ####'
 
@@ -35,6 +35,9 @@ centos() {
   rm -f install_all.sh
   for file in ${files[@]}; do
     echo "./$file" >> install_all.sh
+    if [ $file = 'install_ruby.sh' ]; then
+      echo ". /etc/profile" >> install_all.sh
+    fi
   done
 cat <<'EOF' >> install_all.sh
 

@@ -8,7 +8,7 @@ gem 'activerecord-session_store'
 gem 'activerecord-deprecated_finders'
 gem 'protected_attributes', '1.0.8'
 
-gem 'mysql2','0.3.16'
+gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'execjs','1.4.0'
 gem 'therubyracer','0.10.2'
 

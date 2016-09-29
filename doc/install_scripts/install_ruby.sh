@@ -13,7 +13,7 @@ ubuntu() {
 centos() {
   echo "It's CentOS!"
 
-  yum -y install gcc-c++ libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
+  yum -y install gcc-c++ libffi libffi-devel libyaml-devel make openssl-devel readline-devel zlib-devel
 
   git clone git://github.com/sstephenson/rbenv.git /usr/local/rbenv
   git clone git://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
