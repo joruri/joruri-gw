@@ -22,8 +22,8 @@ centos() {
 
   yum install -y ImageMagick-devel libxml2-devel libxslt-devel mysql-devel openldap-devel
 
-  git clone https://github.com/joruri/joruri-gw.git /var/share/jorurigw
-  # git clone -b develop https://github.com/joruri/joruri-gw.git /var/share/jorurigw
+  # git clone https://github.com/joruri/joruri-gw.git /var/share/jorurigw
+  git clone -b v4-develop https://github.com/joruri/joruri-gw.git /var/share/jorurigw
 
   cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
 
