@@ -636,27 +636,25 @@ class Gw::ScheduleRepeat < Gw::Database
 
     %w(title is_public).each{|x| item.errors.add x, 'を入力してください。' if par_item_base[x].blank?}
 
-    if par_item_base[:inquire_to].blank?
-      if params[:s_genre] == "other"
-        unless is_gw_admin
-          prop_type = nil
-          prop_type = Gw::PropType.find_by(id: params[:type_id]) if params[:type_id].present?
-          if prop_type && prop_type.restricted == 1
-            item.errors.add :inquire_to, "は、管財課施設（会議室・レンタカー）、他所属管理施設、#{prop_type.name}を予約するときに必須となります。入力してください。"
-          else
-            unless other_admin_flg
-              item.errors.add :inquire_to, "は、管財課施設（会議室・レンタカー）、他所属管理施設を予約するときに必須となります。入力してください。"
-            end
-          end
-        end
-      else
-        if kanzai_flg
-          if !is_pm_admin && !is_gw_admin
+
+    if kanzai_flg
+      if !is_pm_admin && !is_gw_admin
+        item.errors.add :inquire_to, "は、管財課施設（会議室・レンタカー）、他所属管理施設を予約するときに必須となります。入力してください。"
+      end
+    else
+      unless is_gw_admin
+        prop_type = nil
+        prop_type = Gw::PropType.find_by(id: params[:type_id]) if params[:type_id].present?
+        if prop_type && prop_type.restricted == 1
+          item.errors.add :inquire_to, "は、管財課施設（会議室・レンタカー）、他所属管理施設、#{prop_type.name}を予約するときに必須となります。入力してください。"
+        else
+          unless other_admin_flg
             item.errors.add :inquire_to, "は、管財課施設（会議室・レンタカー）、他所属管理施設を予約するときに必須となります。入力してください。"
           end
         end
       end
-    end
+    end if par_item_base[:inquire_to].blank? && prop_flg
+
     if has_mr_pm > 0
       err_num_st = item.errors.size
       item.errors.add :participant_nums_inner, 'を入力してください。' if par_item_base[:participant_nums_inner].blank?
