@@ -43,7 +43,7 @@
         <td class="<%= item.is_finished? ? 'read' : 'unRead' %>" ><%= item.is_finished_label -%></td>
         <td><%= item.fr_group -%></td>
         <td><%= item.fr_user -%></td>
-        <td><%= item.title -%></td>
+        <td><%= sanitize(item.title, {tags: ['a', 'img']}) -%></td>
         <td><%=l item.ed_at if item.ed_at -%></td>
       </tr>
       <tr>
