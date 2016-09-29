@@ -38,12 +38,11 @@
     })
     .on('fileuploaddone', function(e, data) {
       if (data.textStatus == 'success') {
-        $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
         $('#uploadedList').append( data.result );
       } else {
-        var result = $.parseJSON(data.result);
-        alert(result.message);
+        alert("アップロードに失敗しました。添付ファイルの容量等を確認してください。");
       }
+      $('#dropZoneNotice').html('（ここにファイルをドロップできます）');
     });
     $(document).on('drop dragover', function (e) {
       e.preventDefault();
