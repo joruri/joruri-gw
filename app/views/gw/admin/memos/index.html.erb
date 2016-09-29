@@ -47,7 +47,7 @@
         <td><%=l item.ed_at if item.ed_at -%></td>
       </tr>
       <tr>
-        <td colspan="6"><%=hbr item.body -%></td>
+        <td colspan="6"><%=sanitize(item.body, {tags: ['a', 'img']}) -%></td>
       </tr>
       <% end -%>
     <% end -%>
