@@ -11,6 +11,10 @@ ja:
         upload_graphic_file_size_max: 画像ファイルのサイズ制限
         upload_document_file_size_max: 添付ファイルのサイズ制限
         monthly_view_line: 月別件数行数
+        other_system_link: 他シス連携指定
+        banner: 右上バナー指定
+        left_banner: 左上バナー指定
+        caption: 利用説明
       gwqa/category:
         sort_no: 並び順
         name: 名称
@@ -18,6 +22,7 @@ ja:
         state: 状態
         title: タイトル
         category1_id: 分類
+        section_code: ""
       gwqa/file:
         file: ファイル
         filename: ファイル名

@@ -17,6 +17,10 @@ ja:
         adms_json: 管理者設定
         sueditors_json: 編集者設定
         sureaders_json: 閲覧者設定
+        other_system_link: 他シス連携指定
+        banner: 右上バナー指定
+        left_banner: 左上バナー指定
+        caption: 利用説明
       digitallibrary/doc:
         state: 状態
         title: タイトル

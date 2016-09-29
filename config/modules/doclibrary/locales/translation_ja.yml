@@ -11,6 +11,10 @@ ja:
         upload_document_file_size_capacity: 添付の総容量制限
         upload_graphic_file_size_max: 画像ファイルのサイズ制限
         upload_document_file_size_max: 添付ファイルのサイズ制限
+        other_system_link: 他シス連携指定
+        banner: 右上バナー指定
+        left_banner: 左上バナー指定
+        caption: 利用説明
       doclibrary/category:
         state: 状態
         wareki: 和暦

@@ -14,10 +14,16 @@ class Gwqa::Control < Gw::Database
   has_many :files, :foreign_key => :title_id
 
   validates :state, :title, presence: true
-  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
+  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max,
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
-  validates :monthly_view_line,  
+  validates :monthly_view_line,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates_each :other_system_link, :banner, :left_banner, :caption  do |record, attr, value|
+    if value.present? && value =~ /script/
+      record.errors.add(attr, "にスクリプトは利用できません。")
+    end
+  end
 
   def display_category1_name
     category1_name.presence || '分類'

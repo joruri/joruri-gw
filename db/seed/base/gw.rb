@@ -204,3 +204,5 @@ Gwmonitor::Form.create({sort_no:10, level_no: 10, form_name:  'form002', form_ca
 disp_option = Gw::Property::PortalAddDispOption.first_or_new
 disp_option.options_value = [['closed'],['closed'],['closed']]
 disp_option.save
+
+Gw::PrefConfig.create(state: 'enabled', option_type: 'directors2', name: 'admin')

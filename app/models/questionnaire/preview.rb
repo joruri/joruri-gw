@@ -105,7 +105,7 @@ private
         field_name = item['field_name']
         self[field_name] = self._item_params[field_name] if item['question_type'] == 'radio' #チェック有->全部なし
         self[field_name] = self._item_params[field_name] if item['question_type'] == 'checkbox' #チェック有->全部なし
-        self[field_name] = JSON.generate(self[field_name]) unless self[field_name].blank?
+        self[field_name] = JSON.parse(self[field_name]) unless self[field_name].blank?
       end
     end
   end

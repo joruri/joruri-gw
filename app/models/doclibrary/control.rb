@@ -18,9 +18,14 @@ class Doclibrary::Control < Gw::Database
   after_save :set_root_folder
 
   validates :state, :title, :category1_name, presence: true
-  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
+  validates :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max,
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
+  validates_each :other_system_link, :banner, :left_banner, :caption  do |record, attr, value|
+    if value.present? && value =~ /script/
+      record.errors.add(attr, "にスクリプトは利用できません。")
+    end
+  end
   def get_readable_folder_ids(state,grp_codes,user_code, is_admin)
     cond_arr = []
     cond_str = "(state = ? AND doclibrary_folders.title_id = ?) AND ((acl_flag = 0)"
