@@ -26,7 +26,7 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
     item = Questionnaire::Base.new
     item.join "left join enquete_answers on questionnaire_bases.id = enquete_answers.title_id AND enquete_answers.user_code = '#{Core.user.code}'"
     @items = item.find(:all, :select =>  "distinct questionnaire_bases.*, enquete_answers.id AS ans_id",
-    :conditions=>["questionnaire_bases.include_index = ? AND enquete_answers.id IS NULL AND questionnaire_bases.state = ?", true,'public' ] , :order=>:expiry_date)
+    :conditions=>["questionnaire_bases.include_index = ? AND enquete_answers.state IS NULL AND questionnaire_bases.state = ?", true,'public' ] , :order=>:expiry_date)
     _index @items
   end
 
@@ -39,6 +39,7 @@ class Enquete::Admin::MenusController < Gw::Controller::Admin::Base
 #    item.and :enquete_division, true
     item.and :user_code, Core.user.code
 #    item.and :expiry_date, '>=', Time.now
+    item.and :state, 'public'
     item.order 'expiry_date DESC'
     item.page(params[:page], params[:limit])
     @items = item.find(:all)
