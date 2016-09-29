@@ -1,4 +1,4 @@
-class System::Controller::Mail::Smtp < ActionMailer::Base
+class System::Controller::Mail::Smtp < DefaultMailer
   def default_mail(mail_fr, mail_to, subject, message)
     mail({
       :from    => mail_fr,
