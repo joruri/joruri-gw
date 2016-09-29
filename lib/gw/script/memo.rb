@@ -29,7 +29,7 @@ class Gw::Script::Memo < System::Script::Base
           if parent = Gw::Memo.where(tmp_id: file.tmp_id).first
             next
           else
-            Gw::MemoFile.where(tmp_id: file.tmp_id).destroy_all
+            Gw::MemoFile.where(tmp_id: file.tmp_id).destroy_all rescue next
           end
         end
       end
