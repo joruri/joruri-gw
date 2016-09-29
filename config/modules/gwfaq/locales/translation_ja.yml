@@ -20,6 +20,7 @@ ja:
         category1_id: 分類
         category1: 分類
         recognizers: 承認者
+        section_code: ""
       gwfaq/file:
         file: ファイル
         filename: ファイル名

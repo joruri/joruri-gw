@@ -18,6 +18,7 @@ ja:
         state: 状態
         title: タイトル
         category1_id: 分類
+        section_code: ""
       gwqa/file:
         file: ファイル
         filename: ファイル名
