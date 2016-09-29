@@ -42,6 +42,13 @@ class Gw::EditTab < Gw::Database
      end
   end
 
+  validate :check_script_name
+
+  def check_script_name
+    if name.present? && name =~ /script/
+      errors.add(:name, "にスクリプトは利用できません。")
+    end
+  end
   default_scope { where.not(state: 'deleted') }
   scope :preload_opened_children, -> {
     preload([:parent, :opened_children => [:parent, :opened_children => :parent]])
