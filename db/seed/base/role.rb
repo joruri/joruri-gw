@@ -4,7 +4,7 @@ puts "Import user auth settings"
 
 def create_priv_name(display_name,priv_name,sort_no)
   System::PrivName.create({
-    display_name: display_name, priv_name: priv_name, sort_no:sort_no
+    display_name: display_name, priv_name: priv_name, sort_no:sort_no, state: 'public'
   })
 end
 
