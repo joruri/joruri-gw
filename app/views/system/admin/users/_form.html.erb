@@ -51,7 +51,7 @@
 <table class="show">
   <tr>
     <th>グループ</th>
-    <td><%= select_tag('ug[group_id]', options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @group_id || safe{params[:ug][:group_id]}), :include_blank => true) %></td>
+    <td><%= select_tag('ug[group_id]', options_for_select(System::Group.order(:parent_id).first.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @group_id || safe{params[:ug][:group_id]}), :include_blank => true) %></td>
   </tr>
   <tr>
     <th>本務・兼務</th>
