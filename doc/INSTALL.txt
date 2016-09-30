@@ -342,7 +342,7 @@ Apacheに設定を追加します。
   </IfModule>
 
   <VirtualHost *:80>
-      ServerName jorurigw.example.com
+      ServerName default
       DocumentRoot /var/share/jorurigw/public
       Alias /_common/ "/var/share/jorurigw/public/_common/"
       setenv LANG ja_JP.UTF-8
