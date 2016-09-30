@@ -33,11 +33,11 @@
   </tr>
   <tr>
     <th>伝言</th>
-    <td><%=hbr @item.title %></td>
+    <td><%= @item.title %></td>
   </tr>
   <tr>
     <th>備考</th>
-    <td><%=hbr @item.body %></td>
+    <td><%=hbr sanitize_for_memo(@item.body) %></td>
   </tr>
   <tr>
     <th>添付ファイル</th>

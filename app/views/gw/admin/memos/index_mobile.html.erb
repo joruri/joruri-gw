@@ -42,7 +42,7 @@
 <%- else -%>
 <%= item.is_finished_label %>
 <%- end -%>
-<%= link_to item.title, {action: :show, id: item.id} %>
+<%= link_to sanitize_for_memo(item.title), {action: :show, id: item.id} %>
 </p>
 相手　<%= params[:s_send_cls] == '1' ? item.sender_label : item.receiver_label -%><br />
 <%= Gw.date_common(item.ed_at) -%><br />
