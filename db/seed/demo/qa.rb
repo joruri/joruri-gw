@@ -13,7 +13,7 @@ def create_qa(title,options)
          published_at: Time.now,
          recognize: 0,
          importance: '0',
-         category: '1',
+         category: '0',
          left_index_use: '1',
          left_index_pattern: 0,
          category1_name: '分類',
