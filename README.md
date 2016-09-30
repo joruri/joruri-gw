@@ -22,7 +22,7 @@ Japan Originated Ruby-based RESTful and Integrated GW
 
 コマンド：
 
-    export LANG=ja_JP.UTF-8; curl -L https://raw.githubusercontent.com/joruri/joruri-gw/v4-develop/doc/install_scripts/prepare.sh | bash
+    export LANG=ja_JP.UTF-8; curl -L https://raw.githubusercontent.com/joruri/joruri-gw/master/doc/install_scripts/prepare.sh | bash
 
 ## ライセンス
 
