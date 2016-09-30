@@ -1,6 +1,7 @@
 class Gw::AdminMessage < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Util::ValidateScript
 
   validates :state, :sort_no, :body, :mode, presence: true
   validates :sort_no, numericality: true
@@ -9,9 +10,7 @@ class Gw::AdminMessage < Gw::Database
   validate :check_script_body
 
   def check_script_body
-    if body.present? && body =~ /script/
-      errors.add(:body, "にスクリプトは利用できません。")
-    end
+    errors.add(:body, "にスクリプトは利用できません。") if check_script(body)
   end
 
   def modes
