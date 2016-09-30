@@ -361,7 +361,7 @@ table.show td.mceEditor {
   padding:0px;
 }
 
-/* table list(添付ファイル欄を開いたテーブル)(使われてる？)
+/* table list
 -----------------------------------------------------*/
 table.list {
   width: 100%;
@@ -369,23 +369,35 @@ table.list {
   border-left: solid 2px #FFF;
   border-right: solid 2px #FFF;
 }
-* html table.list {
+* html table.list,
+* html table.detailList {
   width: 720px;
 }
-table.list th {
+table.list th,
+table.detailList th {
   padding: 6px 7px;
   background-color: #E3EFFF;
   color: #000;
   font-weight: lighter;
   text-align: left;
 }
-table.list td {
+table.list td,
+table.detailList td {
   padding: 6px 7px;
   border: 1px solid #ccc;
 }
-table.list tr.cycle td {
+table.list tr.cycle td,
+table.detailList tr.cycle td {
   background-color: #000;
 }
+/* table list
+-----------------------------------------------------*/
+table.detailList {
+  width: 100%;
+  border-left: solid 2px #FFF;
+  border-right: solid 2px #FFF;
+}
+
 
 /* table form
 -----------------------------------------------------*/

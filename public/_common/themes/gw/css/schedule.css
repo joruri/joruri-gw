@@ -379,7 +379,7 @@ html:not(:target) .pieceBody .pieceBodyFooter {
   float: left;
   margin-left: 5px;
 }
-.schedulePiece .pieceBodyFooter .lineBox span.month a, 
+.schedulePiece .pieceBodyFooter .lineBox span.month a,
 .schedulePiece .pieceBodyFooter .lineBox span.month span {
   border-color: #aaa #666 #666 #aaa;
   border-style: solid;
@@ -954,6 +954,12 @@ th.rangeOut span.nobr a {
   background-color: #FFC300;
   color: #000;
 }
+.ind a.category850,
+.ind.allday a.category800 .square,
+.ind.allday a.category800 span.allday {
+  background-color: #666;
+  color: #FFF;
+}
 .ind a.category900,
 .ind.allday a.category900 .square,
 .ind.allday a.category900 span.allday {
@@ -1483,6 +1489,14 @@ div.scheduleUser .title span {
 
 #page-gw-schedules-event_week .schedulePiece .ind {
   background: none;
+}
+
+/*
+ スケジュール移動
+ */
+
+td.draggableHover.ui-droppable.droppableTd{
+  border: solid 3px #6495ed !important;
 }
 
 /*

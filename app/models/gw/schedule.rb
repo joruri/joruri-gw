@@ -10,6 +10,8 @@ class Gw::Schedule < Gw::Database
     d_ed = Gw.get_parsed_date(record.ed_at)
     record.errors.add attr, 'と終了日時の前後関係が異常です。' if d_st > d_ed
   end
+  after_save :set_parent_id_to_files
+  attr_accessor :renew_attach_files
 
   has_many :public_roles, :foreign_key => :schedule_id, :class_name => 'Gw::SchedulePublicRole', :dependent => :destroy
   has_many :schedule_users, :foreign_key => :schedule_id, :class_name => 'Gw::ScheduleUser', :dependent => :destroy
@@ -23,6 +25,7 @@ class Gw::Schedule < Gw::Database
   belongs_to :repeat, :foreign_key => :schedule_repeat_id, :class_name => 'Gw::ScheduleRepeat'
   belongs_to :parent, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
   has_many :child, :foreign_key => :schedule_parent_id, :class_name => 'Gw::Schedule'
+  has_many :files, :primary_key => :tmp_id, :foreign_key => :tmp_id, :class_name => 'Gw::ScheduleFile', :dependent => :destroy
 
   has_many  :schedule_prop_temporaries, :foreign_key => :tmp_id, :primary_key => :tmp_id, :class_name => 'Gw::SchedulePropTemporary'
 
@@ -60,6 +63,12 @@ class Gw::Schedule < Gw::Database
       self.arel_table[:id].eq(self.arel_table[:schedule_parent_id])
     ].reduce(:or))
   }
+
+  def set_parent_id_to_files
+    return if tmp_id.blank?
+    return unless renew_attach_files
+    Gw::ScheduleFile.where(tmp_id: tmp_id).update_all(parent_id: id)
+  end
 
   def title_category_label
     I18n.t('enum.gw/schedule.title_category_id')[title_category_id]
@@ -1300,11 +1309,15 @@ class Gw::Schedule < Gw::Database
   end
 
   def display_category_class(display_prop = nil)
-    if display_prop && (sp = self.schedule_props.detect{|sp| sp.prop == display_prop})
+    if display_prop && (sp = self.schedule_props.detect{|sp| sp.prop == display_prop}) && display_prop.class.to_s != "Gw::PropOther"
       "category#{sp.prop_stat_category_id || 1}"
     else
-      if self.todo?
-        "category800"
+      if self.schedule_todo.present?
+        if self.schedule_todo.is_finished == 1
+          "category850"
+        else
+          "category800"
+        end
       else
         "category#{self.title_category_id || 0}"
       end
@@ -1345,6 +1358,7 @@ class Gw::Schedule < Gw::Database
   def todo?
     self.todo == 1
   end
+
 
   def todo_flg
      !self.schedule_todo.blank?
@@ -1479,6 +1493,18 @@ URL
 
   def is_creator_or_participant?(user = Core.user)
     is_creator?(user) || is_participant?(user)
+  end
+
+
+  def is_draggable?
+    return false if schedule_props.present?
+    return false if schedule_events.present?
+    return false if guide_state.present? && guide_state != 0
+    is_gw_admin = Gw.is_admin_admin?
+    is_pm_admin = is_gw_admin ? true : Gw::ScheduleProp.is_pm_admin?
+    edit_level = get_edit_delete_level(is_gw_admin: is_gw_admin, is_pm_admin: is_pm_admin)
+    return true if edit_level[:edit_level] == 1
+    return false
   end
 
   def display_title(display_prop = nil, options = {})

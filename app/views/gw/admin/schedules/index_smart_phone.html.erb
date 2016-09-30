@@ -10,7 +10,7 @@
     <% elsif @dis=="week" %>
       <%= render '/gw/admin/schedules/show_week', link_params: link_params %>
     <% else %>
-      <%= render '/gw/admin/schedules/show', link_params: link_params %>
+      <%= render '/gw/admin/schedules/show_week', link_params: link_params %>
     <% end %>
   <% else %>
   <%= render '/gw/admin/schedules/show_days' %>

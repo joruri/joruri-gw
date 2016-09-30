@@ -1,0 +1,58 @@
+<tr>
+  <% if item.is_image %>
+    <td style="text-align: center;"><img src="<%= item.file_uri(params[:system]) %>" style="<%= item.reduced_size(:width => 80, :height => 40, :output => :css) %>" alt= ''/></td>
+  <% else %>
+    <td><%= link_to '', item.file_uri(params[:system]), :class => item.icon_type, :target => '_blank' %></td>
+  <% end %>
+  <td>
+  <% if item.is_image %>
+    <%= link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(params[:system]), :target => '_blank' %>
+  <% else %>
+    <%= link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(params[:system]) %>
+  <% end %>
+  </td>
+  <td style="text-align: center;"><%= item.eng_unit %><br /><%= item.graphic_size_label %></td>
+  <td style="text-align: center;">
+   <%
+   if wiki_state == true
+     attach_onclick = "wikiInsert('<UN>>" + '\n' + "<a href=" + item.file_uri(params[:system]) + " class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>" + '\n' + "<<UN>'); return false;"
+   else
+     attach_onclick = "mceInsertContent('<a href=\"" + item.file_uri(params[:system]) + "\" class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>'); return false;"
+   end
+   %>
+   <%=link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => attach_onclick %>
+  </td>
+  <td style="text-align: center;">
+   <% if item.is_image %>
+     <%
+     if item.width > 720
+        if @title.system_name == 'doclibrary'
+          rst = item.regulate_size(700)
+        else
+          rst = item.regulate_size(720)
+        end
+        img_tag = "<img src=\\'#{item.file_uri(params[:system])}\\' alt=\\'#{item.filename}\\' height=\\'#{rst[:height]}\\' width=\\'#{rst[:width]}\\'>"
+        %>
+        <% if wiki_state == true %>
+          <a href="#" id="link_image_regulate" onclick="wikiInsert('<UN>>\n<%= img_tag -%>\n<<UN>'); return false;">貼付</a>
+        <% else %>
+          <a href="#" id="link_image_regulate" onclick="mceInsertContent('<%= img_tag -%>'); return false;">貼付</a>
+        <% end %>
+     <% else %>
+       <% if wiki_state == true %>
+         <a href="#" id="link_image_regulate" onclick="wikiInsert('<%= "[[#{item.filename}|#{item.file_uri(params[:system])}]]" -%>'); return false;">貼付</a>
+       <% else %>
+         <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%="#{item.file_uri(params[:system])}"%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+       <% end %>
+     <% end %>
+   <% end %>
+  </td>
+  <td style="width: 30px; text-align: center;">
+    <%= link_to '削除',
+      url_for({controller: 'gwboard/admin/attachments', action: :destroy,
+        parent_id: item.parent_id, id: item.id,
+        wiki: params[:wiki], system: params[:system], title_id: params[:title_id]}),
+      :confirm => '削除してよろしいですか？', :method => :delete %>
+  </td>
+
+</tr>

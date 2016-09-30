@@ -167,3 +167,9 @@ table.index td.down_last {
 #menuBody .headLine .emergency .repeat {
   background-image: url("/_common/themes/gw/files/title/tl_re_emergency.gif");
 }
+
+/* 未読・既読ステータス
+-----------------------------------------*/
+td.unread{
+  font-weight: bold;
+}

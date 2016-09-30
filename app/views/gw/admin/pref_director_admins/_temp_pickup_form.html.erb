@@ -1,5 +1,5 @@
 <%
-options = @item.options.split(',')
+options = @item.options.blank? ? [] : @item.options.split(',')
 %>
 
 <table class="show">

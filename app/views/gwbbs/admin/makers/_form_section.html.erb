@@ -20,6 +20,10 @@
     <td><%= f.radio_buttons :importance, @item.use_states_list %></td>
   </tr>
   <tr>
+    <th>既読／未読ステータス使用区分</th>
+    <td><%= f.radio_buttons :use_read_flag, @item.use_flags_list %></td>
+  </tr>
+  <tr>
     <th>分類使用区分</th>
     <td><%= f.radio_buttons :category, @item.use_states_list %></td>
   </tr>

@@ -1,0 +1,13 @@
+<%- if @item.files.present? -%>
+<table class="detailList">
+  <tr>
+    <th colspan="2">添付ファイル名</th>
+  </tr>
+<% @item.files.each do |file|%>
+<tr>
+  <td style="width:30px;" class="attachIcon"><%= link_to '', file.file_path, :class => file.icon_type %></td>
+  <td><%= link_to "#{file.original_file_name} (#{file.eng_unit})", file.file_path %></td>
+</tr>
+<% end %>
+</table>
+<%- end -%>

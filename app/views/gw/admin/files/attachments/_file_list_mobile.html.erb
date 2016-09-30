@@ -1,0 +1,7 @@
+<%- if @item.files.present? -%><br />
+添付ファイル<br />
+<% @item.files.each do |file|%>
+・<%= link_to "#{file.original_file_name} (#{file.eng_unit})", file.file_path %><br />
+<% end %>
+<br /><span style="color: #ff0000;"><%=Joruri.config.application['air_watch.download_allow_message']%></span>
+<%- end -%>

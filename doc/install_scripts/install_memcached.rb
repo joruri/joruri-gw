@@ -15,9 +15,14 @@ end
 def centos
   puts "It's CentOS!"
 
+  system 'firewall-cmd --add-port=11211/tcp --zone=public --permanent    # memcached'
+  system 'firewall-cmd --reload'
+  system 'firewall-cmd --list-all'
+
   system 'yum install -y memcached'
   system 'service memcached start'
   system 'chkconfig memcached on'
+
 end
 
 def others

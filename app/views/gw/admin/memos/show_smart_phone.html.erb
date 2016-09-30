@@ -35,11 +35,17 @@ sid  = params[:_session_id]
   </tr>
   <tr>
     <th>伝言</th>
-    <td><%= convert_for_mobile_body(@item.title, sid) %></td>
+    <td><%= sanitize_for_memo(convert_for_mobile_body(@item.title, sid)) %></td>
   </tr>
   <tr>
     <th>備考</th>
-    <td><%= convert_for_mobile_body(@item.body, sid) if @item.body.present? %></td>
+    <td><%= sanitize_for_memo(convert_for_mobile_body(@item.body, sid)) if @item.body.present? %></td>
+  </tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= render 'gw/admin/files/attachments/file_list'%>
+    </td>
   </tr>
 </table>
 <br />

@@ -7,7 +7,7 @@
 <% if brk_key != item.latest_updated_at.to_date %>
   <p class="bgAsh"><%=l item.latest_updated_at, format: :date if item.latest_updated_at %><br /></p>
 <% end %>
-・<%= link_to hbr(item.title), item.show_path  + gwbbs_params_set %>
+・<%= link_to hbr(item.title), item.show_path  + gwbbs_params_set, :class=>title_read_flag(@title, item) %>
 <br />
 <% brk_key = item.latest_updated_at.to_date %>
 <% end %>

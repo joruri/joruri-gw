@@ -38,6 +38,31 @@ class Gwsub::Sb06AssignedConfKind < Gwsub::GwsubPref
     end
   end
 
+  def form_no_text
+    form_no_select.each{|a| return a[0] if a[1] == conf_form_no}
+    return nil
+  end
+
+  def form_no_select
+    [
+      ["form101", "101"],
+      ["form103", "103"],
+      ["form104", "104"],
+      ["form105", "105"],
+      ["form106", "106"],
+      ["form201", "201"],
+      ["form202", "202"],
+      ["form301", "301"],
+      ["form302", "302"],
+      ["form303", "303"],
+      ["form401", "401"],
+      ["form501", "501"],
+      ["form502", "502"],
+      ["form601", "601"],
+      ["form602", "602"],
+    ]
+  end
+
   def self.sb06_assign_conf_kind_id_select(options={})
     # options
     # :feyar_id 年度絞り込み　指定がないときは、実行日の年度

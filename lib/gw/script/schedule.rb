@@ -40,6 +40,20 @@ class Gw::Script::Schedule < System::Script::Base
     end
   end
 
+  def self.delete_tempfiles
+    run do
+      log "不要な添付ファイル削除処理" do
+        Gw::ScheduleFile.created_before(Time.now.yesterday).group(:tmp_id).each do |file|
+          if parent = Gw::Schedule.where(tmp_id: file.tmp_id).first
+            next
+          else
+            Gw::ScheduleFile.where(tmp_id: file.tmp_id).destroy_all rescue next
+          end
+        end
+      end
+    end
+  end
+
   def self.schedule_prop_temporary_delete
     run do
       date_str = Time.now.yesterday

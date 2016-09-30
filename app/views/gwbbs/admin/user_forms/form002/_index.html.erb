@@ -33,7 +33,7 @@
   </tr>
   <% end %>
   <tr class="<%= cycle 'article', 'article cycle' %>">
-    <td><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
+    <td class="<%=title_read_flag(@title, item)%>"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="startDate"><%= item.inpfld_001 %></td>
     <td class="closeDate"><%= item.inpfld_002 %></td>
     <td class="unit"><%= item.inpfld_004 %></td>

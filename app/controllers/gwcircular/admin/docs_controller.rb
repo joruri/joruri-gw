@@ -40,7 +40,7 @@ class Gwcircular::Admin::DocsController < Gw::Controller::Admin::Base
     return http_error(404) if @item.state == 'preparation'
     return error_auth if !@title.is_admin? && @item.target_user_code != Core.user.code
 
-    if @item.state == 'unread' || @item.state == 'mobile' && @item.confirmation != 1
+    if (@item.state == 'unread' || @item.state == 'mobile') && @item.confirmation != 1
       if request.mobile?
         @item.state = 'mobile'
       else
@@ -77,7 +77,7 @@ class Gwcircular::Admin::DocsController < Gw::Controller::Admin::Base
 
     @item.published_at ||= Time.now if @item.state_was == 'unread'
     @item.latest_updated_at = Time.now
-		@item.set_creater_editor
+    @item.set_creater_editor
 
     _update @item, :success_redirect_uri => "#{@item.show_path}?cond=#{params[:cond]}"
   end

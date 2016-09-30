@@ -54,6 +54,7 @@ end
 <p class="leftPad2">場所</p>
 <p class="leftPad1"><%=hbr @item.place %></p>
 <p class="leftPad2">メモ</p><p class="leftPad1"><%=hbr @item.memo %></p>
+<%= render 'gw/admin/files/attachments/file_list_mobile'%>
 <p class="leftPad2">公開</p>
 <p class="leftPad1"><%= @item.is_public_label %></p>
 <% if @item.is_public == 2 %>

@@ -24,6 +24,7 @@ class Gwfaq::Doc < Gwboard::CommonDb
   validates :state, presence: true
   with_options unless: :state_preparation? do |f|
     f.validates :title, presence: { message: "を入力してください。" }
+    f.validates :section_code, presence: { message: "記事管理課を選択してください。" }
     f.validates :category1_id, presence: { message: "を設定してください。" }, if: :category_use?
   end
 

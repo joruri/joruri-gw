@@ -17,7 +17,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:pid).symbolize_keys) 
+    super.merge(params.slice(:pid).symbolize_keys)
   end
 
   def index
@@ -73,6 +73,22 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
     @item.save(:validate => false)
 
     redirect_to url_for(action: :index), notice: '削除処理が完了しました。'
+  end
+
+  def sort_update
+    @items = Gw::EditLinkPiece.where(parent_id: @parent.id, uid: nil).order(sort_no: :asc)
+    params[:items].each do |id, param|
+      item = @items.detect{|i| i.id == id.to_i}
+      item.attributes = param if item
+    end
+
+    if @items.map(&:valid?).all?
+      @items.each(&:save)
+      redirect_to url_for(action: :index, pid: @parent.id), notice: '並び順を更新しました。'
+    else
+      flash.now[:notice] = '並び順の更新に失敗しました。'
+      render :index
+    end
   end
 
   def updown

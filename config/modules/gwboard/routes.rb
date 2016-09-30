@@ -13,6 +13,9 @@ Rails.application.routes.draw do
               put :update_file_memo
             end
         end
+        resources "ajaxuploads",
+          :controller => "ajaxuploads",
+          :path => ":parent_id/ajaxuploads"
         resources "maps",
           :controller => "maps",
           :path => ":parent_id/maps"

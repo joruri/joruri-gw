@@ -160,3 +160,8 @@ form.confirm-form {
 div.confirm-submitter{
   text-align: center;
 }
+/*drag and drop form
+--------------------------------------------------------- */
+.draggableItem{
+  width: 110px;
+}

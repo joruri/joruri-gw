@@ -47,6 +47,17 @@ module Gwbbs::Admin::IndicesHelper
     return str
   end
 
+  def retstr_colspan(title, num)
+    num += 1 if title.importance == 1
+    num += 1 if title.use_read_flag
+    return num
+  end
+
+  def title_read_flag(title, doc)
+    return "" unless title.use_read_flag
+    return doc.read_flag_class
+  end
+
   def convert_for_mobile_body(body, sid)
     Gw::Controller::Mobile.convert_for_mobile_body(body, sid, request).html_safe
   end

@@ -19,6 +19,8 @@ namespace :joruri do
       Rake::Task['joruri:questionnaire:delete_expired'].invoke
       Rake::Task['joruri:system:session:delete_expired'].invoke
       # delete preparation data
+      Rake::Task['joruri:gw:schedule:delete_tempfiles'].invoke
+      Rake::Task['joruri:gw:memo:delete_tempfiles'].invoke
       Rake::Task['joruri:gwbbs:delete_preparation'].invoke
       Rake::Task['joruri:gwfaq:delete_preparation'].invoke
       Rake::Task['joruri:gwqa:delete_preparation'].invoke
@@ -33,6 +35,10 @@ namespace :joruri do
       task :delete_expired => :environment do
         Rake::Task['joruri:core:initialize'].invoke
         Gw::Script::Schedule.delete
+      end
+      task :delete_tempfiles=> :environment do
+        Rake::Task['joruri:core:initialize'].invoke
+        Gw::Script::Schedule.delete_tempfiles
       end
     end
     namespace :schedule_prop_temporaries do
@@ -63,6 +69,11 @@ namespace :joruri do
       task :delete_expired => :environment do
         Rake::Task['joruri:core:initialize'].invoke
         Gw::Script::Memo.delete
+      end
+      desc '不要となった連絡メモ添付ファイルのデータを削除します'
+      task :delete_tempfiles=> :environment do
+        Rake::Task['joruri:core:initialize'].invoke
+        Gw::Script::Memo.delete_tempfiles
       end
     end
 

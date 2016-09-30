@@ -1,10 +1,17 @@
 class Gw::AdminMessage < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Util::ValidateScript
 
   validates :state, :sort_no, :body, :mode, presence: true
   validates :sort_no, numericality: true
   validates :body, length: { maximum: 10000 }
+
+  validate :check_script_body
+
+  def check_script_body
+    errors.add(:body, "にスクリプトは利用できません。") if check_script(body)
+  end
 
   def modes
     [['いつも',1], ['通常時',2], ['災害時',3]]

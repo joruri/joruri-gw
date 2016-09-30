@@ -62,11 +62,25 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "この背景画像は削除しました。"
   end
+  def sort_update
+    @items = @model.order(sort_no: :asc)
+    params[:items].each do |id, param|
+      item = @items.detect{|i| i.id == id.to_i}
+      item.attributes = param if item
+    end
 
+    if @items.map(&:valid?).all?
+      @items.each(&:save)
+      redirect_to url_for(action: :index), notice: '並び順を更新しました。'
+    else
+      flash.now[:notice] = '並び順の更新に失敗しました。'
+      render :index
+    end
+  end
   def updown
     item = @model.find(params[:id])
 
-    item_rep = 
+    item_rep =
       case params[:order]
       when 'up'
         @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!

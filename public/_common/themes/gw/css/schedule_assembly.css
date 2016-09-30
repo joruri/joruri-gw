@@ -568,8 +568,8 @@ html>/**/body .schedulePiece .pieceBodyBody {
 .schedulePiece table .left-header,
 .schedulePiece table .userIcon1 {
   min-height: 36px;
-  height: auto !important;  
-  height: 36px; 
+  height: auto !important;
+  height: 36px;
   background-image: url(/_common/themes/gw/files/ic_human_01.gif);
   background-repeat: no-repeat;
   background-position:0 0px;
@@ -579,8 +579,8 @@ html>/**/body .schedulePiece .pieceBodyBody {
 *:first-child+html .schedulePiece table .left-header,
 *:first-child+html .schedulePiece table .userIcon1 {
   min-height: 37px;
-  height: auto !important;  
-  height: 37px; 
+  height: auto !important;
+  height: 37px;
   background-position:0 1px;
 }
 .schedulePiece table .governor,
@@ -883,7 +883,7 @@ table.scheduleTable span.allday {
 .schedulePiece table .scheduleTableBody td.saturday {
   background-color: #F1FCFF;
 }
-.schedulePiece.monthview table .scheduleTableHead.dayHead th.rangeOut, 
+.schedulePiece.monthview table .scheduleTableHead.dayHead th.rangeOut,
 .schedulePiece.monthview table .scheduleTableBody td.rangeOut,
 .schedulePiece.dayview table .scheduleTableBody td.rangeOut {
   background-color: #EEEEEE;
@@ -995,11 +995,11 @@ th.scheduleUser a img {
 html:not(:nth-child(n)) .schedulePiece .pieceBodyBody table th.scheduleUser {
   width: 186px;
 }
-#contentBody .schedulePiece .pieceBodyBody table th.scheduleUser, 
+#contentBody .schedulePiece .pieceBodyBody table th.scheduleUser,
 x:not(:target):-moz-broken {
   width: 175px;
 }
-.schedulePiece .meetingroom .ind a, 
+.schedulePiece .meetingroom .ind a,
 .schedulePiece .rentcar .ind a,
 .schedulePiece .maaPropBs .ind a{
   white-space: nowrap;
@@ -1139,6 +1139,14 @@ x:not(:target):-moz-broken {
   background-color: #FFC300;
   color: #000;
 }
+.schedulePiece .ind a.category850,
+.schedulePiece .ind.allday a.category850 .square,
+.schedulePiece .ind.allday a.category850 span.allday {
+  background-color: #CCC;
+  color: #FFF;
+}
+
+
 .schedulePiece .ind a.category11,
 .schedulePiece .ind.allday a.category11 .square,
 .schedulePiece .ind.allday a.category11 span.allday,
@@ -1182,7 +1190,7 @@ x:not(:target):-moz-broken {
   color: white;
 }
 
-/*-- rentcar,meetingroom --*/ 
+/*-- rentcar,meetingroom --*/
 #page-gw-scheduleProps-showGuard .rentcar td.scheduleData,
 #page-gw-scheduleProps-showGuard .meetingroom td.scheduleData {
   overflow: hidden;

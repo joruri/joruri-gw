@@ -45,7 +45,7 @@ end
 <td><%= f.text_area  :conf_body , :cols=>50 ,:rows=>3 %></td>
 </tr>
 <tr><th>フォーム番号<%= required %></th>
-<td><%= f.text_field :conf_form_no , :class=>'num' %></td>
+<td><%= f.select :conf_form_no , options_for_select(@item.form_no_select, @item.conf_form_no), :class=>'num' %></td>
 </tr>
 <tr><th>最大明細数<%= required %></th>
 <td><%= f.text_field :conf_max_count , :class=>'num' %></td>

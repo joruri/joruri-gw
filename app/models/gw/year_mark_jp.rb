@@ -4,7 +4,7 @@ class Gw::YearMarkJp < Gw::Database
 
   before_validation :mark_upcase
 
-  validates_presence_of :name, :mark, :start_at
+  validates :name, :mark, :start_at, presence: true
   validates_uniqueness_of :name, :mark, :start_at
 
   #記号の半角英数字チェック
@@ -153,7 +153,11 @@ class Gw::YearMarkJp < Gw::Database
   end
 
   def editable?
-    !Gw::YearMarkJp.where("start_at > '#{start_at.strftime("%Y-%m-%d 00:00:00")}'").exists?
+    if start_at.blank?
+      !Gw::YearMarkJp.where("start_at > '#{Time.now.strftime("%Y-%m-%d 00:00:00")}'").exists?
+    else
+      !Gw::YearMarkJp.where("start_at > '#{start_at.strftime("%Y-%m-%d 00:00:00")}'").exists?
+    end
   end
 
   def deletable?

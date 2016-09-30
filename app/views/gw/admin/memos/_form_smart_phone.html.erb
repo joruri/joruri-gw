@@ -3,6 +3,7 @@ suffixes_raw = I18n.a('enum.gw/memo.category')
 suffixes = Gw.options_for_select(suffixes_raw, nil,{:include_blank=>['', '']})
 %>
 <%= render '/gw/admin/memos/form_participant', f: f %>
+<%= f.hidden_field :tmp_id %>
 <table class="show">
   <tr>
     <th>時刻<span class="textRed">※</span></th>

@@ -6,18 +6,18 @@
 </div>
 
 <div class="pieceBodyBody">
-  
+
 <div class="editingBox">
   <div class="btEdit"><%= link_to "編集する", action: :edit unless @item.is_finished? %></div>
   <div class="btQuote"><%= link_to "引用作成", action: :quote %></div>
   <% if @item.is_finished? %>
     <div class="btUnread"><%= link_to '未読に戻す', action: :finish %></div>
-  <% else %>  
+  <% else %>
     <div class="btRead"><%= link_to '既読にする', action: :finish %></div>
   <% end %>
   <div class="btDestroy"><%= link_to "削除する", {action: :destroy}, :method => :delete, :confirm => "この連絡メモを削除します。よろしいですか？" %></div>
 </div>
-  
+
 <table class="show">
   <tr>
     <th>時刻</th>
@@ -33,11 +33,17 @@
   </tr>
   <tr>
     <th>伝言</th>
-    <td><%=hbr @item.title %></td>
+    <td><%= @item.title %></td>
   </tr>
   <tr>
     <th>備考</th>
-    <td><%=br @item.body %></td>
+    <td><%=hbr sanitize_for_memo(@item.body) %></td>
+  </tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= render 'gw/admin/files/attachments/file_list'%>
+    </td>
   </tr>
   <tr>
     <th>作成者所属</th>

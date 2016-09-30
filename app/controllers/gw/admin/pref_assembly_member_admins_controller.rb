@@ -14,11 +14,11 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
   end
 
   def url_options
-    super.merge(params.slice(:g_cat).symbolize_keys) 
+    super.merge(params.slice(:g_cat).symbolize_keys)
   end
 
   def index
-    @items = 
+    @items =
       if params[:g_cat].present?
         Gw::PrefAssemblyMember.where(g_order: params[:g_cat].to_i)
       else
@@ -105,10 +105,31 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     redirect_to url_for(action: :index), notice: "CSVファイルの読み込みが完了しました。"
   end
 
+  def group_sort_update
+    @items = Gw::PrefAssemblyMember.order(g_order: :asc)
+    params[:items].each do |id, param|
+      item = @items.detect{|i| i.id == id.to_i}
+      Gw::PrefAssemblyMember.where(g_order: item.g_order).update_all(g_order: param[:g_order]) if item
+    end
+
+    redirect_to url_for(action: :index), notice: '並び順を更新しました。'
+  end
+
+  def sort_update
+    @items = Gw::PrefAssemblyMember.order(u_order: :asc)
+    params[:items].each do |id, param|
+      item = @items.detect{|i| i.id == id.to_i}
+      Gw::PrefAssemblyMember.where(id: item.id).update_all(u_order: param[:u_order]) if item
+    end
+
+    redirect_to url_for(action: :index), notice: '並び順を更新しました。'
+  end
+
+
   def updown
     item = Gw::PrefAssemblyMember.find(params[:id])
 
-    item_rep = 
+    item_rep =
       case params[:order]
       when 'up'
         Gw::PrefAssemblyMember.where(g_order: item.g_order).where("u_order < #{item.u_order}").order(u_order: :desc).first!
@@ -126,7 +147,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
   def g_updown
     item = Gw::PrefAssemblyMember.find(params[:id])
 
-    item_rep = 
+    item_rep =
       case params[:order]
       when 'up'
         Gw::PrefAssemblyMember.where("g_order < #{item.g_order}").order(g_order: :desc).group(:g_order).first!

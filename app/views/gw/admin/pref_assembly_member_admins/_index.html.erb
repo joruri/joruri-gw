@@ -1,19 +1,28 @@
+
+<%= form_tag url_for(action: :sort_update), {method: :put} do %>
 <table class="index">
   <tr>
     <th></th>
     <th></th>
-    <th class="sort" colspan="2">表示順</th>
+    <th class="sort">表示順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
     <th>会派</th>
     <th>氏名</th>
   </tr>
   <% @items.each_with_index do |item, idx| -%>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
-      <td><%= link_to '編集', {action: :edit, id: item.id} %></td>
-      <td class="up"><%= link_to '▲', {action: :updown, id: item.id, order: 'up'} if @items.offset + idx >= 1 %></td>
-      <td class="down"><%= link_to '▼', {action: :updown, id: item.id, order: 'down'} if @items.offset + idx < @items.total_entries - 1 %></td>
-      <td><%= item.g_name %></td>
-      <td><%= item.u_lname %>　<%= item.u_name %></td>
-    </tr>
+    <%
+      uid = did = 0
+      uid = @items[idx-1].id if idx >= 1
+      did = @items[idx+1].id if idx <= @items.length-2
+    %>
+    <%= fields_for 'items[]', item do |f| %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+        <td><%= link_to '編集', {action: :edit, id: item.id} %></td>
+        <td><%= f.text_field :u_order, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+        <td><%= item.g_name %></td>
+        <td><%= item.u_lname %>　<%= item.u_name %></td>
+      </tr>
+    <% end -%>
   <% end -%>
 </table>
+<% end -%>

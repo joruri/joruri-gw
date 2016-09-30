@@ -324,7 +324,11 @@ Rails.application.routes.draw do
 
   scope '_admin' do
     resources :gwsub do
-      resources :attaches, :controller => 'gwsub/admin/attaches'
+      resources :attaches, :controller => 'gwsub/admin/attaches' do
+        collection do
+          post :upload
+        end
+      end
       resources :receipts, :controller => 'gwsub/admin/receipts' do
         member do
           get :download_object, :show_object

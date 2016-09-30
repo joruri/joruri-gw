@@ -13,3 +13,8 @@ sys:
   file_encode_prefix: 'MSIE,Trident'
   # 初期パスワードでのログイン禁止
   refuse_initial_password: off
+  # ドラッグアンドドロップによるファイルアップロード
+  fileupload_with_drag_and_drop: on
+air_watch:
+  #モバイル端末向けファイルダウンロードメッセージ
+  download_allow_message: '※パケット定額サービスに入っていない場合、高額の通信料が発生する場合があります。'

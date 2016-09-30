@@ -113,6 +113,12 @@ end
     <td><%= @item.memo %></td>
   </tr>
   <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= render 'gw/admin/files/attachments/file_list'%>
+    </td>
+  </tr>
+  <tr>
     <th>作成者</th>
     <td><%= @item.creator_gname %>　<%= @item.creator_uname %></td>
   </tr>

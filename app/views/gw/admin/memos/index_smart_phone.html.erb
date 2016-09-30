@@ -29,7 +29,7 @@
     <td><%= Gw.date_common(item.ed_at) -%></td>
   </tr>
   <tr>
-    <td colspan="2"><%= link_to item.title, {action: :show, id: item.id} %></td>
+    <td colspan="2"><%= link_to sanitize_for_memo(item.title), {action: :show, id: item.id} %></td>
   </tr>
 <% end -%>
 </table>

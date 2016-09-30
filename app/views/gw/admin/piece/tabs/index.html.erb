@@ -9,7 +9,7 @@ uri = ''
     end_tab = 'endTab' if idx == @items.size - 1
     grayout = 'grayout' if item.state == 'disabled'
     uri = '#void' if item.state == 'disabled'
-    
+
     concat raw link_to(item.name.to_s.html_safe, uri, :class => "tab#{idx+1} #{current} #{grayout} #{end_tab}")
   end
 end
@@ -17,7 +17,7 @@ concat raw link_to('', uri, :class => 'end')
 %>
 </div>
 
-<% if controller.parent_controller.controller_name == "portal" %>
+<% if controller.parent_controller && controller.parent_controller.controller_name == "portal" %>
 <%
 if Gw::Property::ScheduleSetting.where(uid: Core.user.id).first_or_new.display_portal_schedule?
   cls = "on"

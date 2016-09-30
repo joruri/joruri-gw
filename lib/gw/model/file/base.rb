@@ -94,8 +94,8 @@ module Gw::Model::File::Base
     self.update_columns(file_directory: file_directory, file_name: file_name, file_path: file_path)
 
     FileUtils.mkdir_p(full_file_dir) unless FileTest.exist?(full_file_dir)
-    File.open(full_file_path, "wb") { |f| f.write(self.file_data) }
     FileUtils.remove_entry(full_file_path_was) if full_file_path_was.present? && FileTest.exist?(full_file_path_was)
+    File.open(full_file_path, "wb") { |f| f.write(self.file_data) }
   rescue => e
     error_log e
     raise e

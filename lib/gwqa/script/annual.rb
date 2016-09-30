@@ -47,7 +47,7 @@ class Gwqa::Script::Annual
     titles = title.find(:all, :order=>'id')
 
     for title in titles
-      groups = JSON.parse(title.admingrps_json)
+      groups = title.admingrps_json.blank? ? [] : JSON.parse(title.admingrps_json)
       is_update = false
       groups.each do |group|
         renewal = Gwboard::RenewalGroup.new
@@ -114,7 +114,7 @@ class Gwqa::Script::Annual
     titles = title.find(:all, :order=>'id')
 
     for title in titles
-      groups = JSON.parse(title.editors_json)
+      groups = title.editors_json.blank? ? [] : JSON.parse(title.editors_json)
       is_update = false
       groups.each_with_index do |group,idx|
         renewal = Gwboard::RenewalGroup.new
@@ -154,7 +154,7 @@ class Gwqa::Script::Annual
     titles = title.find(:all, :order=>'id')
 
     for title in titles
-      groups = JSON.parse(title.readers_json)
+      groups = title.readers_json.blank? ? [] : JSON.parse(title.readers_json)
       is_update = false
       groups.each do |group|
         renewal = Gwboard::RenewalGroup.new
