@@ -1,4 +1,4 @@
-Joruri Gw 4.0.0 インストールマニュアル CentOS7バージョン
+Joruri Gw 3.2.0 インストールマニュアル CentOS7バージョン
 
 **********************************************************************
  1 想定環境
@@ -62,14 +62,14 @@ MySQLをインストールします。
 JoruriGwをダウンロードします。
 
   # cd /usr/local/src/
-  # wget https://github.com/joruri/joruri-gw/archive/v4.0.0.tar.gz
+  # wget https://github.com/joruri/joruri-gw/archive/v3.2.0.tar.gz
   # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
 
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf v4.0.0.tar.gz -C /var/share
-  # mv /var/share/joruri-gw-4.0.0 /var/share/jorurigw
+  # tar xvzf v3.2.0.tar.gz -C /var/share
+  # mv /var/share/joruri-gw-3.2.0 /var/share/jorurigw
   # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
   # chown -R joruri:joruri /var/share/jorurigw
 
@@ -334,16 +334,19 @@ Apacheに設定を追加します。
   # vi /etc/httpd/conf.d/vhosts.conf
   ※ 下記設定は誰でもアクセスできるようにしています。IP制限等を掛ける場合は適宜設定してください。
   -----------------------------------------------------------------------
+  # apache 2.4
+  <IfModule mod_authz_core.c>
+    <Directory />
+      Require all granted
+    </Directory>
+  </IfModule>
+
   <VirtualHost *:80>
-      ServerName default
+      ServerName jorurigw.example.com
       DocumentRoot /var/share/jorurigw/public
+      Alias /_common/ "/var/share/jorurigw/public/_common/"
+      setenv LANG ja_JP.UTF-8
       RackEnv production
-      PassengerHighPerformance on
-      <Location / >
-        AllowOverride all
-        Require all granted
-        Options -MultiViews
-      </Location>
   </VirtualHost>
   -----------------------------------------------------------------------
 
