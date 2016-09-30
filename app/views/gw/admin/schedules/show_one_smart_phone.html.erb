@@ -122,6 +122,12 @@ dte = @item.ed_at.to_datetime
 <table class="show">
   <tr><th>場所</th><td><%=hbr @item.place%></td></tr>
   <tr><th>メモ</th><td><%=hbr @item.memo %></td></tr>
+  <tr>
+    <th>添付ファイル</th>
+    <td>
+      <%= render 'gw/admin/files/attachments/file_list'%>
+    </td>
+  </tr>
   <tr><th>公開</th><td><%= @item.is_public_label %></td></tr>
   <% if @item.is_public == 2 %>
     <tr><th>公開所属</th><td><%=raw Gw.join([@item.public_groups_display], '<br />') %></td></tr>

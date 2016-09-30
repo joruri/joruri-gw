@@ -16,7 +16,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:pid).symbolize_keys) 
+    super.merge(params.slice(:pid).symbolize_keys)
   end
 
   def index
@@ -73,11 +73,27 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "削除処理が完了しました。"
   end
+  def sort_update
+    @items = Gw::EditTab.where(parent_id: @parent.id).order(:sort_no)
+    params[:items].each do |id, param|
+      item = @items.detect{|i| i.id == id.to_i}
+      item.attributes = param if item
+    end
+
+    if @items.map(&:valid?).all?
+      @items.each(&:save)
+      redirect_to url_for(action: :index, pid: @parent.id), notice: '並び順を更新しました。'
+    else
+      flash.now[:notice] = '並び順の更新に失敗しました。'
+      render :index
+    end
+  end
+
 
   def updown
     item = Gw::EditTab.find(params[:id])
 
-    item_rep = 
+    item_rep =
       case params[:order]
       when 'up'
         Gw::EditTab.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first

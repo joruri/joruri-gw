@@ -21,7 +21,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:s_send_cls, :s_index_cls, :s_finished, :sort_keys).symbolize_keys) 
+    super.merge(params.slice(:s_send_cls, :s_index_cls, :s_finished, :sort_keys).symbolize_keys)
   end
 
   def index
@@ -39,6 +39,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
     if request.mobile? && flash[:mail_to].present?
       @item.selected_receiver_uids = flash[:mail_to].split(',')
     end
+    @item.set_tmp_id
   end
 
   def quote
@@ -51,6 +52,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   def create
     @item = Gw::Memo.new(params[:item])
     @item.uid = Core.user.id
+    @item.renew_attach_files = true
     _create @item, success_redirect_uri: {action: :index, s_send_cls: 2}, notice: '連絡メモの登録処理が完了しました。' do
       @item.send_mail_after_addition(@item.memo_users.map(&:uid))
     end
@@ -61,11 +63,13 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
     if request.mobile? && flash[:mail_to].present?
       @item.selected_receiver_uids = flash[:mail_to].split(',')
     end
+    @item.set_tmp_id
   end
 
   def update
     @item = Gw::Memo.find(params[:id])
     @item.attributes = params[:item]
+    @item.renew_attach_files = true
     _update @item, notice: '連絡メモの編集処理が完了しました。' do
       @item.send_mail_after_addition(@item.memo_users.map(&:uid))
     end

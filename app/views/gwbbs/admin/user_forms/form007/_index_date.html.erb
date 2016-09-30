@@ -10,7 +10,7 @@
       <% brk_code = item.latest_updated_at.strftime('%Y-%m-%d') %>
       <tr><th style="text-align: left;"colspan="3"><%= item.latest_updated_at.strftime('%Y年%m月%d日') %></th></tr>
     <% end %>
-    <tr class="<%= cycle 'article', 'article cycle' %>">
+    <tr class="<%= cycle 'article', 'article cycle' %><%=title_read_flag(@title, item)%>">
       <td class="category"><%= link_to gwbd_category_name(@d_categories, item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
       <td class="charge"><%= link_to item.inpfld_002, "#{item.show_path}#{gwbbs_params_set}" %></td>
       <td class="docName"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>

@@ -17,7 +17,7 @@
     <% end %>
     <tr>
       <td class="bbsImportant"><%=raw '<span></span>' if item.importance == 0 %></td>
-      <td class="title"><%= link_to hbr(item.title), item.portal_show_path + gwbbs_params_set %><%=raw '<span class="new">new</span>' if item.new_mark_flg %></td>
+      <td class="title<%=title_read_flag(@title, item)%>"><%= link_to hbr(item.title), item.portal_show_path + gwbbs_params_set %><%=raw '<span class="new">new</span>' if item.new_mark_flg %></td>
       <td class="bbsAttach"><%=raw "<span>#{item.attachmentfile}</span>" if item.attachmentfile != 0 %></td>
       <td class="bbsBalloon"><%=raw "<span>#{item.comments_only_id.size == 0 ? '&nbsp;' : item.comments_only_id.size}</span>" if item.one_line_note == 1 %></td>
       <td class="group"><%= link_to item.section_name, item.portal_index_path + gwbbs_params_set + "&state=GROUP&grp=#{item.section_code}" %></td>

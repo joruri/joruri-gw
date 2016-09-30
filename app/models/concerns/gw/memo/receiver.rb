@@ -9,6 +9,7 @@ module Concerns::Gw::Memo::Receiver
 
   module ClassMethods
     def receiver_options(uids, options = {})
+      return [] if uids.blank?
       users = System::User.select(:id, :code, :name).where(id: uids, state: 'enabled')
       users = users.where(ldap: 1) if Joruri.config.application['system.show_only_ldap_user']
       users.order(:code).preload(:memo_mobile_property).map do |user|

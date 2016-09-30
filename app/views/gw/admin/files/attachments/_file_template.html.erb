@@ -1,0 +1,10 @@
+<%
+delete_path = url_for({controller: 'gw/admin/files/attachments',
+    parent_id: file.tmp_id, system: params[:system],
+    id: file.id, action: :show})
+%>
+<tr>
+  <td style="width:30px;" class="attachIcon"><%= link_to '', file.file_path, :class => file.icon_type %></td>
+  <td><%= link_to "#{file.original_file_name} (#{file.eng_unit})", file.file_path %></td>
+  <td><%= link_to "削除", delete_path, method: :delete, confirm: '削除してよろしいですか？'%></td>
+</tr>

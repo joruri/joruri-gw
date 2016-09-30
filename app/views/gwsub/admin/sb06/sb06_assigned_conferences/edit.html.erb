@@ -30,7 +30,7 @@ managers  = Gwsub::Sb06AssignedConference.managers?(@item,editables_options)
 </div>
 <%= form_for :item, :url => {action: :update}, :html => {method: :put, multipart: true, class: form_class} do |f| %>
   <%= render 'gwsub/admin/sb06/sb06_assigned_conferences/hidden_field_tags'  %>
-  <%= render render_edit_str, f: f, is_manager: managers %>
+  <%= render render_edit_str, f: f, is_manager: managers  rescue nil%>
   <%= render 'form_ajax' %>
   <%= render 'gwsub/admin/sb06/sb0602_admin_group_form', f: f, is_manager: managers %>
   <div id="recognizer_list">
@@ -45,7 +45,7 @@ managers  = Gwsub::Sb06AssignedConference.managers?(@item,editables_options)
     <%= f.submit '保存' %>
   </div>
 <% end %>
-<%= render render_show_str unless @item.blank? %>
+<%= render render_show_str unless @item.blank? rescue nil%>
 </div>
 </div>
 <script type="text/javascript">

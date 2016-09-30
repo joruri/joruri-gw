@@ -1,0 +1,23 @@
+production:
+  address       : localhost
+  port          : 25
+  domain        : localhost
+  user_name     :      
+  password      :       
+  authentication: 
+
+test:
+  address       : 
+  port          : 
+  domain        : 
+  user_name     :      
+  password      :       
+  authentication: 
+
+development:
+  address       : 
+  port          : 
+  domain        : 
+  user_name     :      
+  password      :       
+  authentication: 

@@ -5,7 +5,7 @@
   <th class="clericalName">事務の名称</th>
   <th class="update">最終更新日</th>
   <% @items.each do |item| %>
-  <tr cycle="<%= cycle 'article', 'article cycle' %>">
+  <tr cycle="<%= cycle 'article', 'article cycle' %><%=title_read_flag(@title, item)%>">
     <td class="group"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="category"><%= link_to gwbd_category_name(@d_categories,item.category1_id), "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="clericalName"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>

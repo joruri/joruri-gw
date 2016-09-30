@@ -247,7 +247,7 @@ class System::Group < ActiveRecord::Base
     csv << System::UsersGroup.state_show(self.state)
     csv << "group"
     csv << System::Group.level_show(self.level_no)
-    csv << self.parent.code
+    csv << self.parent.try(:code)
     csv << self.code
     csv << System::UsersGroup.ldap_show(self.ldap)
     csv << ""

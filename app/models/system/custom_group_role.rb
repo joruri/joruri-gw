@@ -8,9 +8,9 @@ class System::CustomGroupRole < ActiveRecord::Base
   belongs_to :user, :foreign_key => :user_id, :class_name => 'System::User'
 
   scope :with_user_or_group, ->(user, priv_name) {
-    where(priv_name: priv_name).where([
+    where(arel_table[:priv_name].eq(priv_name)).where([
       [arel_table[:class_id].eq(1), arel_table[:user_id].eq(user.id)].reduce(:and),
-      [arel_table[:class_id].eq(2), arel_table[:group_id].in(user.groups.first.try(:id))].reduce(:and) 
+      [arel_table[:class_id].eq(2), arel_table[:group_id].in(user.groups.first.try(:id))].reduce(:and)
     ].reduce(:or))
   }
 

@@ -4,11 +4,11 @@ icon_clses = Gw::Reminder.where(state: 'enabled').order(sort_no: :asc).map{|x| [
 
 reminds = []
 %w(memo schedule_todo).each do |mod|
-  #if mod=="circular"
-  #  reminds += eval("Gw::Model::#{mod.capitalize}.remind(Core.user.id, mobile: true).map{|x| x[:c]='#{mod}'; x}")
-  #else
+  begin
     reminds += eval("Gw::Model::#{mod.capitalize}.remind.map{|x| x[:c]='#{mod}'; x}")
-  #end
+  rescue => e
+    dump e
+  end
 end
 %>
 

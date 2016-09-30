@@ -1,6 +1,6 @@
 <hr class="borderDash"/>
 <% @items.each do |item|%>
-  <p class="leftPad2"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></p>
+  <p class="leftPad2<%=title_read_flag(@title, item)%>"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></p>
   <p class="leftPad1">区分別：<%= gwbd_category_name(@d_categories, item.category1_id) %></p>
   <p class="leftPad1">事務の名称：<%= item.title %></p><br />
 <% end %>

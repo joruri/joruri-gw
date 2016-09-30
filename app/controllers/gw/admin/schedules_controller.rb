@@ -440,6 +440,7 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       @item.destroy_rentcar_temporaries
       render :action => 'new'
     else
+      @item.renew_attach_files = true
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
         flash_notice '予定の登録', true
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=new"
@@ -455,6 +456,51 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
           format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
         end
       end
+    end
+  end
+
+  def update_date
+    @item = Gw::Schedule.find(params[:id])
+    auth_level = @item.get_edit_delete_level(is_gw_admin: @is_gw_admin, is_pm_admin: @is_pm_admin)
+    return error_auth if auth_level[:edit_level] != 1
+    if params[:to_day] == params[:from_day]
+      return render json: {result: 'not-modified'}
+    end
+    today_time  = Gw.get_parsed_date(params[:to_day])
+    if @item.st_at.strftime("%Y-%m-%d") != params[:from_day]
+      return render json: {result: 'moved'}
+    end
+    if today_time.present?
+      today = Gw.datetime_to_date(today_time) # 時刻型から日付型に変更
+      st_at = @item.st_at
+      ed_at = @item.ed_at
+
+      st_at_day = Date.new(st_at.year, st_at.month, st_at.day)
+      ed_at_day = Date.new(ed_at.year, ed_at.month, ed_at.day)
+      diff_day = ed_at_day - st_at_day
+
+      new_ed_at_day = today + diff_day
+      st_at_time_str = @item.st_at.strftime("%H:%M:%S")
+      ed_at_time_str  = @item.ed_at.strftime("%H:%M:%S")
+      @item.st_at = "#{today.strftime("%Y-%m-%d")} #{st_at_time_str}"
+      @item.ed_at = "#{new_ed_at_day.strftime("%Y-%m-%d")} #{ed_at_time_str}"
+      @item.save(validate: false)
+      if schedule_todo = @item.schedule_todo
+        schedule_todo.st_at = @item.st_at
+        schedule_todo.ed_at = @item.ed_at
+        schedule_todo.save
+      end
+      if @item.st_at.strftime("%Y-%m-%d") != @item.ed_at.strftime("%Y-%m-%d")
+        date_range = []
+        (@item.st_at.to_date..@item.ed_at.to_date).each do |date|
+          date_range << date.strftime("%Y-%m-%d")
+        end
+        return render json: {result: 'over', range: date_range}
+      else
+        return render json: {result: 'ok'}
+      end
+    else
+      return render json: {result: 'ng'}
     end
   end
 
@@ -483,10 +529,12 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
       @item.destroy_rentcar_temporaries
       render :action => 'edit'
     else
+      @item.renew_attach_files = true
       if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
         flash[:notice] = '予定の編集に成功しました。'
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=edit"
         @item.destroy_rentcar_temporaries
+
         if request.mobile?
           if @item.schedule_parent_id.blank?
             redirect_url += "?gid=#{params[:gid]}&cgid=#{params[:cgid]}&dis=#{params[:dis]}"

@@ -1,0 +1,12 @@
+<%- case params[:system]
+when 'gwmonitor_base'-%>
+   <%= render 'gwmonitor/admin/base_attachments/file_template', wiki_state: params[:wiki] == "1", item: @item, system_name: @title.system_name%>
+<%- when 'gwmonitor' -%>
+   <%= render 'gwmonitor/admin/attachments/file_template', wiki_state: params[:wiki] == "1", item: @item, system_name: @title.system_name%>
+<%- when 'gwcircular' -%>
+   <%= render 'gwcircular/admin/attachments/file_template', wiki_state: params[:wiki] == "1", item: @item, system_name: @title.system_name%>
+<%- when 'gwworkflow' -%>
+   <%= render 'gwworkflow/admin/attachments/file_template', wiki_state: params[:wiki] == "1", item: @item, system_name: @title.system_name%>
+<%- else -%>
+  <%= render 'gwboard/admin/attachments/file_template', wiki_state: params[:wiki] == "1", item: @item%>
+<%- end -%>

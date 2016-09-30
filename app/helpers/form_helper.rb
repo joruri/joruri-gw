@@ -5,6 +5,10 @@ module FormHelper
     super(record, options, &block)
   end
 
+  def use_drag_and_drop
+    return Joruri.config.application['sys.fileupload_with_drag_and_drop']
+  end
+
   def radio_button_tags(name, collections, checked_value = nil, options = {})
     collections.inject(''.html_safe) do |html, (label, value)|
       options.merge!(id: "#{sanitize_to_id(name)}_#{value}")

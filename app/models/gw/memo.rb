@@ -2,11 +2,15 @@ class Gw::Memo < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::Memo::Receiver
+  include Concerns::Gw::Upload::TmpId
 
   has_many :memo_users, :foreign_key => :schedule_id, :class_name => 'Gw::MemoUser', :dependent => :destroy
+  has_many :files, :foreign_key => :parent_id, :class_name => 'Gw::MemoFile', :dependent => :destroy
   belongs_to :sender, :primary_key => :id, :foreign_key => :uid, :class_name => 'System::User'
 
   before_create :set_user_data
+  after_save :set_parent_id_to_files
+  attr_accessor :renew_attach_files
 
   validates :title, :ed_at, presence: true
 
@@ -62,11 +66,17 @@ class Gw::Memo < Gw::Database
     end
   }
   scope :finished_memos_for_reminder, ->(read_memos_display) {
-    where(is_finished: 1).where(arel_table[:created_at].gt(Date.today - read_memos_display + 1))
+    where(arel_table[:is_finished].eq(1)).where(arel_table[:created_at].gt(Date.today - read_memos_display + 1))
   }
   scope :unfinished_memos_for_reminder, ->(unread_memos_display) {
-    where(is_finished: 0).where(arel_table[:created_at].gt(Date.today - unread_memos_display + 1))
+    where(arel_table[:is_finished].eq(0)).where(arel_table[:created_at].gt(Date.today - unread_memos_display + 1))
   }
+
+  def set_parent_id_to_files
+    return if tmp_id.blank?
+    return unless renew_attach_files
+    Gw::MemoFile.where(tmp_id: tmp_id).update_all(parent_id: id)
+  end
 
   def is_finished_label
     is_finished == 1 ? '既読' : '未読'

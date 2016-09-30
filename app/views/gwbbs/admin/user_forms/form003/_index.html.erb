@@ -38,7 +38,7 @@
     <% if flg %>
     <tr><th colspan="4"><%= label_str %></th></tr>
     <% end %>
-    <tr class="<%= cycle 'article', 'article cycle' %>">
+    <tr class="<%= cycle 'article', 'article cycle' %><%=title_read_flag(@title, item)%>">
       <td><%= link_to gwbd_category_name(@groups, item.inpfld_023), "#{item.show_path}#{gwbbs_params_set}" %></td>
       <td><%= link_to item.inpfld_012, "#{item.show_path}#{gwbbs_params_set}" %></td>
       <td><%= link_to lbl_syokuin, "#{item.show_path}#{gwbbs_params_set}" %></td>

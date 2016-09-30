@@ -8,7 +8,7 @@
     <th class="mailAddress">メールアドレス</th>
   </tr>
   <% @items.each do |item| %>
-  <tr class="<%= cycle 'article', 'article cycle' %>">
+  <tr class="<%= cycle 'article', 'article cycle' %><%=title_read_flag(@title, item)%>">
     <td class="group"><%= link_to item.section_name, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="employment"><%= link_to item.inpfld_001, "#{item.show_path}#{gwbbs_params_set}" %></td>
     <td class="name"><%= link_to item.title, "#{item.show_path}#{gwbbs_params_set}" %></td>

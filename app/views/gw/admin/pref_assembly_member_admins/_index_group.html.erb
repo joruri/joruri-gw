@@ -1,16 +1,19 @@
+
+<%= form_tag url_for(action: :group_sort_update), {method: :put} do %>
 <table class="index">
   <tr>
     <th style="width: 180px; align: center;"></th>
-    <th class="sort" colspan="2">表示順</th>
+    <th class="sort">表示順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
     <th>会派</th>
   </tr>
   <% @items.each_with_index do |item, idx| -%>
+    <%= fields_for 'items[]', item do |f| %>
     <tr class="<%= cycle '', 'cycle' %>">
       <td><%= link_to '展開', {action: :index, g_cat: item.g_order} %></td>
-      <td class="up"><%= link_to '▲', {action: :g_updown, id: item.id, order: 'up'} if @items.offset + idx >= 1 %></td>
-      <td class="down"><%= link_to '▼', {action: :g_updown, id: item.id, order: 'down'} if @items.offset + idx < @items.total_entries - 1 %></td>
+      <td><%= f.text_field :g_order, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
       <td><%= item.g_name %></td>
     </tr>
+    <% end -%>
   <% end -%>
 </table>
-
+<% end %>

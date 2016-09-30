@@ -15,7 +15,9 @@ end
 def centos
   puts "It's CentOS!"
 
-  system 'yum install -y mysql-server'
+
+  system 'yum install -y http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm'
+  system 'yum install -y mysql-community-server'
 
   my_cnf = '/etc/my.cnf'
 

@@ -47,7 +47,7 @@ class Gw::ScheduleTodo < Gw::Database
     today = Date.today
     st = today - finish_st + 1
     ed = today + 1
-    where(is_finished: 1).where(arel_table[:ed_at].in(st..ed))
+    where(arel_table[:is_finished].eq(1)).where(arel_table[:ed_at].in(st..ed))
   }
   scope :unfinished_todos_for_reminder, ->(unfinish_st, unfinish_ed) {
     today = st = ed = Date.today
@@ -61,7 +61,7 @@ class Gw::ScheduleTodo < Gw::Database
       st = today - unfinish_st + 1
       ed = today + unfinish_ed
     end
-    where(is_finished: 0).where(arel_table[:ed_at].in(st..ed))
+    where(arel_table[:is_finished].eq(0)).where(arel_table[:ed_at].in(st..ed))
   }
 
   def is_finished?

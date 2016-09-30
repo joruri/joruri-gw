@@ -38,9 +38,13 @@ not_finished_s = max_m.blank? ? 'ありません' :
   min_m == max_m ? "#{Gw.date_format('%Y年%m月', min_m)}" :
   "#{Gw.date_format('%Y年%m月', min_m)}～#{Gw.date_format('%Y年%m月', max_m)}"
 
-
-select_year = min_m.blank? ? last_month.next_month.year : min_m.year
-select_month = min_m.blank? ? last_month.next_month.month : min_m.month
+if last_month.blank? || min_m.blank?
+  select_year = Time.now.last_month.year
+  select_month = Time.now.last_month.month
+else
+  select_year = min_m.blank? ? last_month.next_month.year : min_m.year
+  select_month = min_m.blank? ? last_month.next_month.month : min_m.month
+end
 %>
 
 <div class="piece prop index">

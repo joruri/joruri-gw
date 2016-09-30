@@ -1,0 +1,3 @@
+<% @files.each do |item|%>
+<%= render 'gw/admin/files/attachments/file_template', file: item%>
+<% end if @files.present?%>

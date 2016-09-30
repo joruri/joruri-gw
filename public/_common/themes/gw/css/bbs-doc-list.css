@@ -340,3 +340,12 @@ table.bbsUserformBody table.border  {
   margin-left: 10px;
 }
 
+
+/* 未読・既読ステータス
+-----------------------------------------*/
+td.unread{
+  font-weight: bold;
+}
+tr.unread td{
+  font-weight: bold;
+}

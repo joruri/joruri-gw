@@ -6,24 +6,30 @@
 <% if @items.length == 0 -%>
   <%= show_notice -%>
 <% else -%>
+<%= form_tag url_for(action: :sort_update), {method: :put} do %>
+  <%= hidden_field_tag :page, params[:page] if params[:page].present? %>
+  <%= hidden_field_tag :limit, params[:limit] if params[:limit].present? %>
 <table class="index">
   <tr>
     <th class="action"></th>
     <th class="published">公開</th>
-    <th class="sort" colspan="2" >並び順</th>
+    <th class="sort">並び順<input id="item_submit" name="commit" type="submit" value="更新" /></th>
     <th class="title">表示名</th>
   </tr>
   <% @items.each_with_index do |item, idx| -%>
-    <tr class="<%= cycle '', 'cycle' %>">
-      <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
-      <td><span style="<%= 'color:red;' if item.published != 'opened' %>"><%= item.published_label %></span></td>
-      <td class="up"><%= link_to '▲', {action: :updown, id: item.id, order: "up"} if @items.offset + idx >= 1 %></td>
-      <td class="down"><%= link_to '▼', {action: :updown, id: item.id, order: "down"} if @items.offset + idx < @items.total_entries - 1 %></td>
-      <td><%= item.title %></td>
-    </tr>
+    <%= fields_for 'items[]', item do |f| %>
+      <tr class="<%= cycle '', 'cycle' %>">
+        <td><%= link_to '詳細', {action: :show, id: item.id} %></td>
+        <td><span style="<%= 'color:red;' if item.published != 'opened' %>"><%= item.published_label %></span></td>
+        <td><%= f.text_field :sort_no, class: 'string sort_no', style: 'width: 40px;', size: 5, maxlength: 4 %></td>
+        <td><%= item.title %></td>
+      </tr>
+    <% end -%>
   <% end -%>
 </table>
+
 <%= paginate @items %>
+<% end -%>
 <% end -%>
 
 </div>

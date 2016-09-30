@@ -13,7 +13,7 @@ week_first_day = @calendar_first_day
 
 <div class="pieceBodyBody">
 <% if @read -%>
-<table class="<%= @genre %>">
+<table class="<%= @genre %> scheduleTable">
   <tbody>
     <tr class="scheduleTableHead weekdayHead">
       <% 7.times do |i| %>
@@ -40,7 +40,7 @@ week_first_day = @calendar_first_day
           schedules = @schedules.select {|s| s.date_between?(week_add_day) }
           holidays = @holidays.select {|h| h.ed_at && h.ed_at.to_date == week_add_day }
           %>
-          <td class="<%= create_month_class(week_add_day, @st_date, @holidays, params) %>">
+          <td id="<%=create_day_id(week_add_day)%>" class="droppableTd <%= create_month_class(week_add_day, @st_date, @holidays, params) %>">
             <!-- schedules -->
             <%= render '/gw/admin/schedules/show_week_one', schedules: schedules, week_add_day: week_add_day, display_prop: nil if schedules.present? %>
             <!-- holidays -->

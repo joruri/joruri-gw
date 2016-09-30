@@ -275,7 +275,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
           data << item.cancelled_user_name
           data << cancelled_at_str
         end
-        
+
         csv << data
       end
     end
@@ -389,8 +389,13 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
   def cancel
     init_params
     item = Gw::ScheduleProp.find(params[:id])
-
+    location = "/gw/prop_extras#{@prop_params}"
+    location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
     if item.cancelled?
+      if !item.other_schedule_not_duplicate?
+        flash_notice "競合する予定があるため、キャンセル取消を行うことができません。"
+        return redirect_to location
+      end
       item.uncancell!
       notice = "#{item.prop.try(:name)}のキャンセル取消"
     else
@@ -404,9 +409,8 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
       flash_notice notice, false
     end
 
-    location = "/gw/prop_extras#{@prop_params}"
-    location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
-    redirect_to location
+
+    return redirect_to location
   end
 
   def rent
@@ -429,7 +433,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
 
       item.rent!
 
-      actual = 
+      actual =
         if item.meetingroom_related?
           item.build_prop_extra_pm_meetingroom_actual
         elsif item.rentcar_related?
@@ -481,7 +485,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
 
   def pm_create
     item = Gw::ScheduleProp.find(params[:id])
-    return http_error(404) unless item.meetingroom_related? 
+    return http_error(404) unless item.meetingroom_related?
 
     if item.prop_extra_pm_meetingroom_actual.present?
       return redirect_to "/gw/prop_extras#{@prop_params}", notice: "実績は既に作成されています。"

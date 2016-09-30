@@ -40,7 +40,7 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     @item = @title.docs.find_by(id: params[:id])
     return find_migrated_item unless @item
     return error_auth if !@title.is_readable? && !@item.is_recognizable? && !@item.is_publishable?
-
+    @item.set_read_flag
     # 前後記事
     items = index_docs.select(:id, :title_id)
     current = items.index{|item| item.id == @item.id}.to_i
@@ -117,6 +117,13 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
     return error_auth unless @item.is_editable?
 
     _destroy @item, success_redirect_uri: "#{@title.docs_path}#{gwbbs_params_set}"
+  end
+
+  def unread
+    @item = @title.docs.find(params[:id])
+    @item.remove_read_flag
+    flash[:notice] = '指定した記事を未読の状態に戻しました。'
+    return redirect_to @title.docs_path
   end
 
   def destroy_void_documents

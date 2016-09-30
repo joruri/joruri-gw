@@ -13,6 +13,13 @@ Rails.application.routes.draw do
 
   namespace mod do
     scope :module => scp do
+    ## upload system
+    resources :ajaxuploads,
+      :controller => 'files/ajaxuploads',
+      :path => 'files/ajaxuploads'
+    resources :attachments,
+      :controller => 'files/attachments',
+      :path => 'files/attachments'
     ## gw
       resources :portal
       resources :test, :except =>['show','index','destroy','update'] do
@@ -77,6 +84,7 @@ Rails.application.routes.draw do
       resources :edit_tabs do
         collection do
           get :list, :getajax
+          put :sort_update
         end
         member do
           get :updown
@@ -85,6 +93,7 @@ Rails.application.routes.draw do
       resources :edit_link_pieces do
         collection do
           get :list, :getajax_priv
+          put :sort_update
         end
         member do
           get :updown, :swap
@@ -177,6 +186,7 @@ Rails.application.routes.draw do
         member do
           get :show_one, :editlending, :edit_1, :edit_2, :quote, :destroy_repeat
           put :editlending, :edit_1, :edit_2
+          post :update_date
         end
       end
       resources :schedule_search_blanks do
@@ -243,11 +253,17 @@ Rails.application.routes.draw do
       end
       resources :meetings_previews
       resources :meeting_guide_backgrounds do
+        collection do
+          put :sort_update
+        end
         member do
           get :updown
         end
       end
       resources :meeting_guide_notices do
+        collection do
+          put :sort_update
+        end
         member do
           get :updown
         end
@@ -255,6 +271,7 @@ Rails.application.routes.draw do
       resources :meeting_guide_places do
         collection do
           get :get_prop_id, :prop_sync
+          put :sort_update
         end
         member do
           get :updown
@@ -398,6 +415,7 @@ Rails.application.routes.draw do
         collection do
           get :csvput
           post :csvup
+          put :sort_update, :group_sort_update
         end
         member do
           get :g_updown, :updown

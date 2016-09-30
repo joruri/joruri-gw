@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.9'
+gem 'rails', '4.2.7'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -8,15 +8,15 @@ gem 'activerecord-session_store'
 gem 'activerecord-deprecated_finders'
 gem 'protected_attributes', '1.0.8'
 
-gem 'mysql2','0.3.16'
+gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'execjs','1.4.0'
 gem 'therubyracer','0.10.2'
 
 gem 'ruby-ldap', '0.9.16'
 gem 'will_paginate', '3.0.7'
-gem 'jpmobile', '4.1.4'
+gem 'jpmobile', '4.2.3'
 gem 'net-ssh', '2.9.1'
-gem 'rmagick', '2.13.2'
+gem 'rmagick', '2.15.4', require: false
 gem 'hpricot', '0.8.4'
 gem 'tamtam', '0.0.3'
 gem 'zipruby', '0.3.6'
@@ -52,6 +52,8 @@ gem 'jquery-rails', '3.1.1'
 gem 'jquery-ui-rails', '~> 5.0.0'
 gem 'jquery-timepicker-addon-rails', '~> 1.4.1'
 
+gem 'jquery-fileupload-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 #gem 'turbolinks'
 
@@ -62,6 +64,8 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+
 
 group :development do
   gem 'rack-mini-profiler' # profiler

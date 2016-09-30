@@ -35,4 +35,5 @@ module Gwbbs::Admin::DocsHelper
     msg = required(" ※#{msg} 制限値を超過しました。") if 100 <= usage
     return msg
   end
+
 end

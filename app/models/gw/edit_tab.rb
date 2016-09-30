@@ -2,6 +2,7 @@ class Gw::EditTab < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::EditTab::PublicRole
+  include Util::ValidateScript
 
   acts_as_tree dependent: :destroy
 
@@ -30,7 +31,7 @@ class Gw::EditTab < Gw::Database
     f.validates :link_url, presence: true
   end
   with_options if: lambda {|item| item.level_no == 2 && item.other_controller_use.to_i == 2} do |f|
-    f.validates :tab_keys, presence: true, numericality: { only_integr: true, greater_than: 0 }, 
+    f.validates :tab_keys, presence: true, numericality: { only_integr: true, greater_than: 0 },
       uniqueness: { scope: [:parent_id, :deleted_at] }
   end
 
@@ -42,6 +43,11 @@ class Gw::EditTab < Gw::Database
      end
   end
 
+  validate :check_script_name
+
+  def check_script_name
+    errors.add(:name, "にスクリプトは利用できません。") if check_script(name)
+  end
   default_scope { where.not(state: 'deleted') }
   scope :preload_opened_children, -> {
     preload([:parent, :opened_children => [:parent, :opened_children => :parent]])
@@ -238,11 +244,11 @@ protected
   end
 
   def set_default_values
-    self.is_public ||= '0'
+    self.is_public ||= 0
   end
 
   def clear_needless_values
-    if self.is_public != '2'
+    if self.is_public != 2
       self.display_auth = nil
     end
   end

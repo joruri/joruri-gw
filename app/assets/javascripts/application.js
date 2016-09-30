@@ -19,6 +19,9 @@
 //= require jquery-ui-timepicker-addon
 //= require jquery-ui/jquery-ui-sliderAccess
 //= require jquery-ui/datepicker-custom
+//= require jquery-ui/draggable
+//= require jquery-ui/droppable
+//= require jquery-fileupload/basic
 //= require_tree .
 
 jQuery.noConflict();

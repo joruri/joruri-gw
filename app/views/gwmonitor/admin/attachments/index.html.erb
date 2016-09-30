@@ -8,6 +8,7 @@
   <label for="item">ファイル指定::</label>
   <%= f.file_field :upload %>
   <%= submit_tag 'ファイルを登録する', :type => 'button', :onclick => 'check_extension()' %>
+  <%= render 'gwboard/admin/ajaxuploads/form', wiki: params[:wiki], system: @title.system_name, title_id: @title.id, parent_id: @parent_id %>
   </p>
   <input type="hidden" name="title_id" value='<%="#{params[:title_id]}"%>' />
 <% end -%>
@@ -45,7 +46,7 @@
 //]]>
 </script>
 
-<table class="list">
+<table class="list" id="uploadedList">
 <tr>
   <th style="width: 25px; text-align: center;"></th>
   <th style="text-align: left;">ファイル名</th>
@@ -58,41 +59,6 @@
 </tr>
 <% @items.each do |item| %>
 <tr>
-  <% if item.is_image %>
-    <td style="text-align: center;"><img src="<%= item.file_uri(@title.system_name) %>" style="<%= item.reduced_size(:width => 80, :height => 40, :output => :css) %>" alt= ''/></td>
-  <% else %>
-    <td><%= link_to '', item.file_uri(@title.system_name), :class => item.icon_type, :target => '_blank' %></td>
-  <% end %>
-  <td>
-  <% if item.is_image %>
-    <%= link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(@title.system_name), :target => '_blank' %>
-  <% else %>
-    <%= link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(@title.system_name) %>
-  <% end %>
-  </td>
-  <td style="text-align: center;"><%= item.eng_unit %><br /><%= item.graphic_size_label %></td>
-  <% if false %>
-    <td style="text-align: center;">
-      <% content = link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(@title.system_name), :class => item.icon_type %>
-      <%= link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => "mceInsertContent('#{escape_javascript(content)}'); return false;" %>
-    </td>
-    <td style="text-align: center;">
-    <% if item.is_image %>
-      <%
-        if item.width > 900
-          rst = item.regulate_size(900)
-          content = %Q(<img src="#{item.file_uri(@title.system_name)}" alt="#{item.filename}" height="#{rst[:height]}" width="#{rst[:width]}" />)
-        else
-          content = %Q(<img src="#{item.file_uri(@title.system_name)}" alt="#{item.filename}" />)
-        end
-      %>
-      <a href="#" onclick="mceInsertContent('<%=escape_javascript(content) %>'); return false;">貼付</a>
-    <% end %>
-    </td>
-  <% end %>
-  <td style="width: 30px; text-align: center;">
-    <%= link_to '削除', {:action => :destroy, :id => item, :system => @title.system_name, :title_id => item.title_id}, :confirm => '削除してよろしいですか？', :method => :delete %>
-  </td>
-</tr>
+<%= render 'gwmonitor/admin/attachments/file_template', item: item, system_name: @title.system_name, wiki_state: false%>
 <% end %>
 </table>

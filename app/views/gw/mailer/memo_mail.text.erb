@@ -6,10 +6,11 @@ data = {
   '担当者' => @item.fr_user,
   '時刻' => @item.ed_at ? I18n.l(@item.ed_at) : nil,
   '送信者' => @item.sender_name_and_email,
-  '同時受信者' => @item.memo_users.size > 1 ? @item.memo_users.map(&:user).map(&:name).join(',') : nil
+  '同時受信者' => @item.memo_users.size > 1 ? @item.memo_users.map(&:user).map(&:name).join(',') : nil,
+  '添付ファイル' => @item.files.present? ? 'あり' : 'なし'
 }
 -%>
-連絡メモが届きました。 
+連絡メモが届きました。
 
 <%- data.each do |label, value| -%>
 <%= "#{label}: " if label.present? %><%= value %>

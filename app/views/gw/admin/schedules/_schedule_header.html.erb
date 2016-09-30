@@ -27,8 +27,70 @@ end
 <script type="text/javascript">
 //<![CDATA[
 
-var search_group_search_submit = function () {
-  document.forms['search'].submit();
-}
+(function($) {
+  $(function() {
+    $('.draggableSchedule').draggable({
+        containment: 'scheduleTable',
+        opacity: 0.5,
+        helper: 'clone'
+    });
+    $('.droppableTd').droppable({
+      accept: '.draggableSchedule',
+      tolerance: 'intersect',
+      activeClass: 'active',
+      hoverClass: 'draggableHover',
+      drop: function( event, ui ) {
+        var lockDiv = $('<div />').attr("id", "lockScreen");
+        lockDiv.css("z-index", "999")
+              .css("position", "absolute")
+              .css("top", "0px")
+              .css("left", "0px")
+              .css("right", "0px")
+              .css("bottom", "0px")
+              .css("background-color", "gray")
+              .css("opacity", "0.5");
+        $('body').append(lockDiv);
+        var schedule_id = ui.draggable.attr("id");
+        var date_id = $(this).attr("id");
+        var id = schedule_id.replace(/user-schedule-/, '');
+        id = id.replace(/\d+_/g, "");
+        var todate = date_id.replace(/schedule-td-/,'');
+        var fromdate = ui.draggable.closest("td").attr("id").replace(/schedule-td-/,'');
+        todate = todate.replace(/\d+_/g, "")
+        fromdate = fromdate.replace(/\d+_/g, "")
+        url = '<%=url_for({controller: '/gw/admin/schedules' ,action: :index})%>/' + id + '/update_date';
+        $.ajax({
+          url: url,
+          type:'POST',
+          dataType: 'json',
+          data : {
+            authenticity_token: '<%= form_authenticity_token %>',
+            to_day: todate,
+            from_day: fromdate
+          },
+          success: function(data) {
+            if (data.result == "not-modified"){
+              alert("移動元と移動先の日付が同じです。");
+            }else if (data.result == "moved"){
+              alert("すでに移動された予定です、ページを更新して確認してください。");
+            }else if(data.result == "ok"){
+              $('#' + schedule_id).insertBefore('#' + date_id + ' > a' );
+            }else if(data.result == "over"){
+              location.reload();
+            }else if(data.result == "ng"){
+              alert("パラメータが不正のため、移動できませんでした。");
+            }
+            $("#lockScreen").remove();
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert("このスケジュールは移動できません。");
+             $("#lockScreen").remove();
+           }
+        });
+      }
+    });
+  });
+})(jQuery);
+
 //]]>
 </script>

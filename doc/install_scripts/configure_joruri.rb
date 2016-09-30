@@ -41,9 +41,9 @@ def centos
   system "ln -s #{joruri_conf} /etc/httpd/conf.d/jorurigw.conf"
   system 'service mysqld start'
   sleep 1 until system 'mysqladmin ping' # Not required to connect
-  system "/usr/bin/mysql -u root -ppass -e 'create database production_jorurigw'"
-  system "/usr/bin/mysql -u root -ppass production_jorurigw < /var/share/jorurigw/db/sql/jorurigw_schema.sql"
-  system "/usr/bin/mysql -u root -ppass production_jorurigw < /var/share/jorurigw/db/sql/jorurigw_init.sql"
+  system "su - joruri -c 'cd /var/share/jorurigw && bundle exec rake db:setup RAILS_ENV=production'"
+  system "su - joruri -c 'cd /var/share/jorurigw && bundle exec rake db:seed RAILS_ENV=production'"
+  system "su - joruri -c 'cd /var/share/jorurigw && bundle exec rake db:seed:demo RAILS_ENV=production'"
   system 'service mysqld stop'
 
   system "su - joruri -c 'cd /var/share/jorurigw && bundle exec rake assets:precompile RAILS_ENV=production'"

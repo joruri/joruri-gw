@@ -156,11 +156,11 @@ var changeOtherControllerUse = function() {
     $('item_class_sso').value = 2;
     break;
   <% System::Product.where(sso: 1).all.each do |p| %>
-  case <%= p.product_type %>:
+  case '<%= p.product_type %>':
     Element.hide($('tab_keys_table'));
     Element.hide($('other_controller_table'));
-    Element.show($('sso_link_table'));
-    $('item_class_sso').value = <%= p.product_type %>;
+    Element.hide($('sso_link_table'));
+    $('item_class_sso').value = '<%= p.product_type %>';
     break;
   <% end %>
   }

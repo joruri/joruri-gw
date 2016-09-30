@@ -15,7 +15,8 @@ module Gw::Controller::Mobile
     body.gsub!(/<a .*?href=".*?".*?>.*?<\/a>/iom) do |m|
       uri   = m.gsub(/<a .*?href="(.*?)".*?>.*?<\/a>/iom, '\1')
       label = m.sub(/(<a .*?href=".*?".*?>)(.*?)(<\/a>)/i, '\2')
-      a_class = m.gsub(/<a .*?class="(.*?)".*?>.*?<\/a>/iom, '\1')
+      a_class = ""
+      a_class = m.gsub(/<a .*?class="(.*?)".*?>.*?<\/a>/iom, '\1') if m =~ /class/
       converted_link = self.convert_link(uri,label,session_id,{:class=>a_class})
       converted_link
     end
@@ -25,7 +26,8 @@ module Gw::Controller::Mobile
       else
         uri   = m.gsub(/<a .*?href=(.*?) .*?>.*?<\/a>/iom, '\1')
         label = m.sub(/(<a .*?href=.*?.*?>)(.*?)(<\/a>)/i, '\2')
-        a_class = m.gsub(/<a .*?class="(.*?)".*?>.*?<\/a>/iom, '\1')
+        a_class = ""
+        a_class = m.gsub(/<a .*?class="(.*?)".*?>.*?<\/a>/iom, '\1') if m =~ /class/
         converted_link = self.convert_link(uri,label,session_id,{:class=>a_class})
         converted_link
       end
@@ -68,7 +70,7 @@ module Gw::Controller::Mobile
     @file_link = true if uri =~ /_attach/i
     @file_link = true if uri =~ /download_object/i
     class_str =""
-    class_str =%Q( class="#{options[:class]}") if !options[:class].blank?
+    class_str =%Q( class="#{options[:class]}") if options[:class].present?
 
     if uri =~ /^\/$|^(\/|\.\/|\.\.\/)/
 

@@ -7,7 +7,7 @@ return '' if product.blank? || !product.sso_enabled?
 </div>
 <%= form_tag '/_admin/gw/link_sso/redirect_to_joruri', :method => :post, :name => "mailForm", :target => "mailWindow_#{@item.id}" do %>
   <%= hidden_field_tag :to, 'mail' -%>
-  <%= hidden_field_tag :path, "/_admin/gw/webmail/INBOX/mails/new" -%>
+  <%= hidden_field_tag :path, "/webmail/INBOX/mails/new" -%>
   <%= hidden_field_tag 'item[subject]', @item.title_with_category -%>
   <%= hidden_field_tag 'item[body]', @item.create_mail_body_parameters -%>
 <% end %>

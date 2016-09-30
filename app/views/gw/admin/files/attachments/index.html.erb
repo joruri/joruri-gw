@@ -1,0 +1,43 @@
+<%= form_for :item, :url => {:action => :create, :system => params[:system], :parent_id => params[:parent_id]}, :html => {:multipart => true, :name => 'itemForm'} do |f| %>
+  <%= f.error_messages %>
+    <p>
+    <label for="item">ファイル指定::</label>
+    <%= f.file_field :upload %>
+    <%= submit_tag 'ファイルを登録する', :type => 'button', :onclick => "check_extension()" %><br />
+    <%= render 'gw/admin/files/ajaxuploads/form', wiki: params[:wiki], system: params[:system], title_id: params[:title_id], parent_id: params[:parent_id] %>
+    </p>
+<% end -%>
+
+<div class="docsInnerBox">
+<table class="list" id="uploadedList">
+<tr>
+    <th colspan="2">添付ファイル名</th>
+    <th>削除</th>
+  </tr>
+<% if @items.size > 0 %>
+  <% @items.each do |file| %>
+    <%= render 'gw/admin/files/attachments/file_template', file: file%>
+  <% end %>
+<% end %>
+</table>
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+  function check_extension() {
+    <% if (extensions = Gw::AdminCheckExtension.enabled_extensions).size > 0 %>
+    var filename = document.getElementById("item_upload").value;
+    if (filename.match(/\.(<%= extensions.join('|') -%>)$/i)) {
+      if (!window.confirm('<%=t 'gw.admin.admin_check_extensions.messages.extension_warning' -%>')) {
+        return false;
+      }
+    }
+    <% end %>
+    document.itemForm.submit();
+  }
+
+
+//]]>
+</script>

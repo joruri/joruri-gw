@@ -14,6 +14,15 @@ function hideItem(id){
   }
 }
 
+function chageDisp(obj,changeObjId) {
+  var display = document.getElementById(changeObjId).style.display;
+  if (display == '') {
+    obj.innerHTML = '開く▼';
+  } else if (display == 'none') {
+    obj.innerHTML = '閉じる▲';
+  }
+  Element.toggle($(changeObjId));
+}
 var one_h_check = function() {
   mode = $('init_repeat_mode').value;
   switch (mode) {
