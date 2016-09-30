@@ -68,7 +68,7 @@ class Gwboard::Image  < Gw::Database
   end
 
   def set_fields
-#    return if self._update
+    return if self._update && self._upload.blank?
 
     if self._upload.blank?
       errors.add :_upload, "ファイルを選択してください。"
