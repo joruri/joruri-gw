@@ -6,6 +6,7 @@ class Doclibrary::Control < Gw::Database
   include Gwboard::Model::Control::Auth
   include Doclibrary::Model::Systemname
   include System::Model::Base::Status
+  include Util::ValidateScript
 
   #has_many :adm, :foreign_key => :title_id, :dependent => :destroy
   has_many :role, :foreign_key => :title_id, :dependent => :destroy
@@ -22,10 +23,9 @@ class Doclibrary::Control < Gw::Database
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   validates_each :other_system_link, :banner, :left_banner, :caption  do |record, attr, value|
-    if value.present? && value =~ /script/
-      record.errors.add(attr, "にスクリプトは利用できません。")
-    end
+    record.errors.add(attr, "にスクリプトは利用できません。") if record.check_script(value)
   end
+
   def get_readable_folder_ids(state,grp_codes,user_code, is_admin)
     cond_arr = []
     cond_str = "(state = ? AND doclibrary_folders.title_id = ?) AND ((acl_flag = 0)"

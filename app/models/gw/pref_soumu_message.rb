@@ -1,6 +1,7 @@
 class Gw::PrefSoumuMessage < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
+  include Util::ValidateScript
 
   validates :state, :tab_keys, :sort_no, :body, presence: true
   validates :tab_keys, numericality: true
@@ -9,9 +10,7 @@ class Gw::PrefSoumuMessage < Gw::Database
   validate :check_script_body
 
   def check_script_body
-    if body.present? && body =~ /script/
-      errors.add(:body, "にスクリプトは利用できません。")
-    end
+    errors.add(:body, "にスクリプトは利用できません。") if check_script(body)
   end
 
 

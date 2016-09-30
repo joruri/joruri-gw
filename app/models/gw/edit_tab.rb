@@ -2,6 +2,7 @@ class Gw::EditTab < Gw::Database
   include System::Model::Base
   include System::Model::Base::Content
   include Concerns::Gw::EditTab::PublicRole
+  include Util::ValidateScript
 
   acts_as_tree dependent: :destroy
 
@@ -45,9 +46,7 @@ class Gw::EditTab < Gw::Database
   validate :check_script_name
 
   def check_script_name
-    if name.present? && name =~ /script/
-      errors.add(:name, "にスクリプトは利用できません。")
-    end
+    errors.add(:name, "にスクリプトは利用できません。") if check_script(name)
   end
   default_scope { where.not(state: 'deleted') }
   scope :preload_opened_children, -> {
