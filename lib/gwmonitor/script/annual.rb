@@ -15,8 +15,9 @@ class Gwmonitor::Script::Annual
   def self.renew_controls_section_code
     p "renew_controls_section_code 開始:#{Time.now}."
 
-    sql  = 'SELECT section_code FROM gwmonitor_controls GROUP BY section_code ORDER BY section_code'
-    controls = Gwmonitor::Control.find_by_sql(sql)
+    #sql  = 'SELECT section_code FROM gwmonitor_controls GROUP BY section_code ORDER BY section_code'
+    #controls = Gwmonitor::Control.find_by_sql(sql)
+    controls = Gwmonitor::Control.group(:section_code)
     for control in controls
       #group = Gwboard::RenewalGroup.find_by_present_group_code(control.section_code,start_date)
       group = Gwboard::RenewalGroup.where("present_group_code = ? and start_date = ?", control.section_code,@start_date).first
