@@ -5,17 +5,15 @@ Joruri Gw 3.2.0 インストールマニュアル CentOS7バージョン
 **********************************************************************
 
 [システム]
-OS         : CentOS 7.2 (64bit)
-Webサーバ  : Apache 2.4
-APPサーバ  : PhusionPassenger 5.0.29
-DBシステム : MySQL 5.6
-Ruby       : Ruby 2.3.1
-Rails      : Rails 4.2.6
+OS           : CentOS 7.2 x86_64, CentOS 6.8 x86_64
+Webサーバー  : Apache 2.4, Apache 2.2
+DBシステム   : MySQL 5.6
+Ruby         : 2.3
+Rails        : 4.2
 キャッシュ : memcached 1.4.20
 
-[設定]
-※IPアドレス、ドメインは一例です。ご利用の環境に応じて変更してください。
-IPアドレス : 192.168.0.2
+[ネットワーク関連設定]
+IPアドレス     : 192.168.0.2
 ドメイン   : 192.168.0.2
 
 ※DECOアイコンについて
@@ -28,16 +26,16 @@ IPアドレス : 192.168.0.2
 
 CentOSをインストールします。
 
-インストール完了後、ご利用の環境に合わせて適切なセキュリティ設定を行ってください。
+※インストール完了後、ご利用になられる環境に合わせて適切なセキュリティ設定をお願いします。
 CentOSに関するセキュリティ設定については、本マニュアルの範囲外となります。
+
+rootユーザーに変更します。
+
+  $ su -
 
 **********************************************************************
  3 事前準備
 **********************************************************************
-
-rootユーザに変更します。
-
-  $ su -
 
 Joruriユーザを作成します。
 
@@ -86,16 +84,15 @@ Apacheの設定ファイルを編集します。
   -----------------------------------------------------------------------
 
 設定ファイルにエラーがないことを確認し、Apacheを起動します。
-  # service httpd configtest                 # confファイルの構文チェック
-  # systemctl start httpd.service            # apacheの起動
-  # systemctl status httpd.service           # apacheの起動確認
 
-  ※ 起動失敗時はsystemdログを確認します。
-  # journalctl -xn
+  # /sbin/service httpd configtest
+  # /sbin/service httpd start  <- CentOS 6
+  # systemctl start httpd      <- CentOS 7
 
 自動起動に設定します。
-  # systemctl enable httpd.service           # 自動起動の設定
-  # systemctl list-unit-files -t service | grep httpd    # 自動起動の設定の確認
+
+  # chkconfig httpd on      <- CentOS 6
+  # systemctl enable httpd  <- CentOS 7
 
 
 **********************************************************************
@@ -118,12 +115,13 @@ MySQLの設定を行います。
 MySQLを起動します。
 
   # /usr/bin/mysql_install_db --user=mysql
-  # systemctl start mysqld.service
+  # /sbin/service mysqld start  <- CentOS 6
+  # systemctl start mysqld      <- CentOS 7
 
 自動起動に設定します。
 
-  # systemctl enable mysqld.service
-  # systemctl list-unit-files -t service | grep mysql    # 自動起動の設定の確認
+  # chkconfig mysqld on      <- CentOS 6
+  # systemctl enable mysqld  <- CentOS 7
 
 rootユーザのパスワードを設定します。
 
@@ -138,21 +136,15 @@ joruriユーザを作成します。
  6 memcached の設定
 **********************************************************************
 
-Fwの設定を行います。
-
-  # firewall-cmd --add-port=11211/tcp --zone=public --permanent    # memcached
-  # firewall-cmd --reload          # 設定値の反映を行います。
-  # firewall-cmd --list-all        # 設定値を確認します。
-
 memcachedを起動します。
 
- # systemctl start memcached.service    # memcachedの起動
- # systemctl status memcached.service   # memcachedの起動確認
+  # /sbin/service memcached start  <- CentOS 6
+  # systemctl start memcached      <- CentOS 7
 
-memcachedを自動起動します。
+自動起動に設定します。
 
- # systemctl enable memcached.service
-
+  # chkconfig memcached on      <- CentOS 6
+  # systemctl enable memcached  <- CentOS 7
 
 **********************************************************************
  7 Ruby on Rails のインストール
@@ -352,9 +344,11 @@ Apacheに設定を追加します。
 
 Apache を再起動します。
 
-  # /sbin/service httpd configtest
-  # systemctl restart httpd.service
-  # systemctl restart delayed_job.service
+  # /sbin/service httpd configtest  <- CentOS 6
+  # /sbin/service httpd restart     <- CentOS 6
+
+  # /sbin/service httpd configtest  <- CentOS 7
+  # systemctl restart httpd         <- CentOS 7
 
 
 以上でJoruri Gwのインストールが完了です。
