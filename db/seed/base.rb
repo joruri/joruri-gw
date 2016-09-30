@@ -26,7 +26,7 @@ core_title = Util::Config.load :core, :title
 ## sys
 
 System::Group.create({
-  parent_id: 0,
+  parent_id: nil,
   level_no:  1,
   sort_no:   1,
   state:     'enabled',
@@ -37,7 +37,7 @@ System::Group.create({
   start_at:  "#{Time.now.year}-04-01 00:00:00"
 })
 System::GroupHistory.create({
-  parent_id: 0,
+  parent_id: nil,
   level_no:  1,
   sort_no:   1,
   state:     'enabled',
