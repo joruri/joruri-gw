@@ -1,5 +1,5 @@
 <%
-javascript_fname = 'search_group_search_submit();'
+javascript_fname = 'this.form.submit();'
 grouplist = System::Group.enabled_group_options
 %>
 <%= form_tag '', :method => :get, :class => 'search', :name => 'search' do -%>
