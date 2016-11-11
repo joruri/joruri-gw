@@ -150,7 +150,7 @@ module Gwboard::Model::Image::Base
 
     if self.content_type =~ /^image/
       begin
-        require 'RMagick'
+        require 'rmagick'
         image = Magick::Image.from_blob(self.file_data).shift
         if image.format =~ /(GIF|JPEG|PNG)/
           #self.unid = 1

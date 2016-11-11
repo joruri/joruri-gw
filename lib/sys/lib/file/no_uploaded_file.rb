@@ -13,46 +13,46 @@ class Sys::Lib::File::NoUploadedFile
     @size      = @data.size if @data
     @image     = validate_image
   end
-  
+
   def errors
     @errors
   end
-  
+
   def read
     @data
   end
-  
+
   def original_filename
     @filename
   end
-  
+
   def size
     @size
   end
-  
+
   def mime_type
     @image ? @image.mime_type : @mime_type
   end
-  
+
   def content_type
     mime_type
   end
-  
+
   def image_is
     @image ? 1 : 2
   end
-  
+
   def image_width
     @image ? @image.columns : nil
   end
-  
+
   def image_height
     @image ? @image.rows : nil
   end
-  
+
   def validate_image
     begin
-      require 'RMagick'
+      require 'rmagick'
       image = Magick::Image.from_blob(@data).shift
       if image.format =~ /(GIF|JPEG|PNG)/
         return image

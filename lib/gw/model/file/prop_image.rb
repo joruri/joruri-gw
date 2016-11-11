@@ -1,4 +1,4 @@
-require 'RMagick'
+require 'rmagick'
 module Gw::Model::File::PropImage
   extend ActiveSupport::Concern
 
@@ -70,7 +70,7 @@ module Gw::Model::File::PropImage
   def upload_internal_file
     return unless self.file_data
 
-    idx = self.class.where(parent_id: self.parent_id).maximum(:idx).to_i + 1 
+    idx = self.class.where(parent_id: self.parent_id).maximum(:idx).to_i + 1
 
     file_name = "#{idx}#{File.extname(self.orig_filename)}"
     file_path = File.join(upload_dir, file_name)

@@ -124,7 +124,7 @@ class Gwboard::Image  < Gw::Database
 
   def r_magick(file)
     begin
-      require 'RMagick'
+      require 'rmagick'
       image = Magick::Image.from_blob(file).shift
       if image.format =~ /(GIF|JPEG|PNG)/
         self.width = image.columns
