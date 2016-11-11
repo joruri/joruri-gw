@@ -120,7 +120,7 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
 
         if @item.content_type =~ /image/
           begin
-            require 'RMagick'
+            require 'rmagick'
             content = File.read(@item.f_name)
             image = Magick::Image.from_blob(content).shift
           if image.format =~ /(GIF|JPEG|PNG)/
@@ -178,7 +178,7 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
 
         if @item.content_type =~ /image/
           begin
-            require 'RMagick'
+            require 'rmagick'
             content = File.read(@item.f_name)
             image = Magick::Image.from_blob(content).shift
           if image.format =~ /(GIF|JPEG|PNG)/

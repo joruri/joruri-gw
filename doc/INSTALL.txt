@@ -55,7 +55,7 @@ Joruri Gw の実行に必要なパッケージをインストールします。
 MySQLをインストールします。
 
   # yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
-  # yum -y install mysql-community-server
+  # yum -y install mysql-community-server mysql-devel
 
 JoruriGwをダウンロードします。
 
@@ -288,7 +288,7 @@ SMTP接続情報
 
 assetをコンパイルします。
 
-  $ rake assets:precompile RAILS_ENV=production
+  $ bundle exec rake assets:precompile RAILS_ENV=production
 
 ======================================================================
  8.4 定期実行処理の設定
