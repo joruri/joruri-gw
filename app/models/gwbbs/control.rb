@@ -23,7 +23,7 @@ class Gwbbs::Control < Gw::Database
 
   validates :state, :recognize, :title, :sort_no, presence: true
   validates :categoey_view_line, presence: true
-  validates :default_published, :doc_body_size_capacity, :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max, 
+  validates :default_published, :doc_body_size_capacity, :upload_graphic_file_size_capacity, :upload_document_file_size_capacity, :upload_graphic_file_size_max, :upload_document_file_size_max,
     numericality: { only_integer: true, greater_than_or_equal_to: 1 }
   validates :monthly_view_line,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -148,7 +148,7 @@ class Gwbbs::Control < Gw::Database
   def r_magick(file, itemimage = nil)
     itemimage = self.get_itemimage_data if itemimage.blank?
     begin
-    require 'RMagick'
+    require 'rmagick'
     image = Magick::Image.from_blob(file).shift
     if image.format =~ /(BMP|GIF|JPEG|PNG)/
       itemimage.width = image.columns
