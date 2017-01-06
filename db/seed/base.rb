@@ -139,7 +139,7 @@ System::UsersGroupHistory.create({
 })
 
 Core.user       = System::User.where(code: 'admin').first
-Core.user_group = System::Group.where(code: '000001').first
+Core.user_group = Core.user.groups[0]
 
 ## ---------------------------------------------------------
 ## gw settings
