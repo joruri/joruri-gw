@@ -21,7 +21,7 @@ def create_group(parent, level_no, sort_no, code, name, name_en)
     code:      code,
     name:      name,
     name_en:   name_en,
-    start_at:  "#{Time.now.year}-04-01 00:00:00"})
+    start_at:  "#{@group_year}-04-01 00:00:00"})
 end
 
 def create_group_history(parent, level_no, sort_no, code, name, name_en)
@@ -33,7 +33,7 @@ def create_group_history(parent, level_no, sort_no, code, name, name_en)
     code:      code,
     name:      name,
     name_en:   name_en,
-    start_at:  "#{Time.now.year}-04-01 00:00:00"})
+    start_at:  "#{@group_year}-04-01 00:00:00"})
 end
 
 def create_user(auth_no, name, account, password)
@@ -120,8 +120,6 @@ create_user_group({user_id: u12.id, group_id: g.id, start_at: Time.now})
 create_user_group({user_id: u13.id, group_id: g.id, start_at: Time.now})
 create_user_group({user_id: u14.id, group_id: g.id, start_at: Time.now})
 create_user_group({user_id: u15.id, group_id: g.id, start_at: Time.now})
-
-
 
 ## ---------------------------------------------------------
 ## load demo data
