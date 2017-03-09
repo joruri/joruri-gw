@@ -280,7 +280,7 @@ class Doclibrary::Script::Annual
           next if group.blank?
 
           update_fields = "section_code='#{group.incoming_group_code}', section_name='#{group.incoming_group_code}#{group.incoming_group_name}'"
-          doc_item.where(:id => doc.id , :title_id => @title.id, :section_code=>doc.section_code).update_all(:section_code=>group.incoming_group_code,:section_name=>"#{group.incoming_group_code}#{group.incoming_group_name}")
+          Doclibrary::Doc.where(:title_id => @title.id, :section_code=>doc.section_code).update_all(:section_code=>group.incoming_group_code,:section_name=>"#{group.incoming_group_code}#{group.incoming_group_name}")
           p "#{@title.dbname}, #{doc.section_code}, #{update_fields}, #{Time.now}."
         end
       rescue => ex
