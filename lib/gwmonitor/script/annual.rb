@@ -68,7 +68,7 @@ class Gwmonitor::Script::Annual
 
       update_field="l2_section_code='#{l2_group_code}', section_sort=#{system_group.sort_no}"
       sql_where = "section_code='#{group.incoming_group_code}'"
-      Gwmonitor::Doc.where(:section_code => group.incoming_group_code).update_all(:l2_section_code= => l2_group_code, :section_sort => system_group.sort_no)
+      Gwmonitor::Doc.where(:section_code => group.incoming_group_code).update_all(:l2_section_code => l2_group_code, :section_sort => system_group.sort_no)
 
       p %Q[#{group.incoming_group_code}, "#{update_field}", #{Time.now}.]
     end
