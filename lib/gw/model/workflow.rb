@@ -1,13 +1,11 @@
 module Gw::Model::Workflow
 
   def self.how_long_notifying
-    # ひとまず 5日間を決裁/却下のリマインダー表示期間とする
-    # 10.hour <-たとえば10時間にするならこうかく
     5.day
   end
 
   def self.remind(uid = Core.user.id)
-    to_reminders(Gwworkflow::Doc.all, uid).map{|title, date|
+    to_reminders(self.all_docs(uid), uid).map{|title, date|
       {
       :date_str => date.strftime("%m/%d %H:%M"),
       :cls => 'ワークフロー',
@@ -16,10 +14,21 @@ module Gw::Model::Workflow
       }
     }
   end
-  
-  
+
+  def self.all_docs(uid)
+    docs = Gwworkflow::Doc.arel_table
+    steps = Gwworkflow::Step.arel_table
+    comittees = Gwworkflow::Committee.arel_table
+    Gwworkflow::Doc
+      .joins(:steps => :committees)
+      .where(docs[:creater_id].eq(uid)
+        .or(comittees[:user_id].eq(uid)))
+      .distinct
+  end
+
+
   def self.remind_xml(uid  , xml_data = nil)
-    to_reminders(Gwworkflow::Doc.all, uid).each{|title, date|
+    to_reminders(self.all_docs(uid), uid).each{|title, date|
       xml_data  << %Q(<entry>)
       xml_data  << %Q(<link rel="alternate" href="/gwworkflow"/>)
       xml_data  << %Q(<updated>#{date.strftime('%Y-%m-%d %H:%M:%S')}</updated>)
