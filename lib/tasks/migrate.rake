@@ -262,6 +262,24 @@ namespace :joruri do
       puts "done"
     end
 
+    desc 'TODOデータをスケジュールデータにコピーします。'
+    task :copy_todo_data => :environment do |task, args|
+      Gw::Todo.find_each do |todo|
+        st_at = todo.ed_at.present? ? todo.ed_at.beginning_of_day : todo.created_at.beginning_of_day
+        ed_at = st_at.end_of_day
+        schedule = Gw::Schedule.create creator_uid: todo.uid, updater_uid: todo.uid,
+          owner_uid: todo.uid, title: todo.title, is_public: 3,  memo: todo.body,
+          st_at: st_at, ed_at: ed_at, todo: 1
+        next if schedule.blank?
+        Gw::ScheduleTodo.create schedule_id:schedule.id, st_at: schedule.st_at, ed_at: schedule.ed_at,
+          todo_ed_at_indefinite: 0 , is_finished: todo.is_finished,
+          todo_st_at_id: 2, todo_ed_at_id:1, todo_id: todo.id
+        Gw::ScheduleUser.create schedule_id: schedule.id, class_id: 1, uid: todo.uid,
+          st_at: schedule.st_at, ed_at: schedule.ed_at
+      end
+      puts "done"
+    end
+
     desc 'ボード系テーブルのデータを修正します'
     task :modify_board_data, [:system] => :environment do |task, args|
       doc_models = [Gwbbs::Doc, Gwfaq::Doc, Gwqa::Doc, Doclibrary::Doc, Digitallibrary::Doc]
