@@ -97,7 +97,7 @@ namespace :joruri do
     desc 'サブデータベースをメインデータベースに統合します'
     task :integrate_db => :environment do
       db_conf = JoruriGw::Application.config.database_configuration
-      db_keys = ["dev_jgw_gw", "gw", "gwsub"]
+      db_keys = ["production_jgw_gw", "gw", "gwsub"]
 
       main_conf = db_conf[Rails.env]
       sub_confs = db_keys.map{|key| db_conf[key] if db_conf[key] }.compact
@@ -224,7 +224,7 @@ namespace :joruri do
         controls.each do |control|
           select_models.each do |model, _|
             id = conn.execute("select max(id) from #{control.dbname}.#{model.table_name}").to_a.flatten.first.to_i rescue nil
-            start_id = id+1 if id && id+1 > start_id 
+            start_id = id+1 if id && id+1 > start_id
           end
         end
 
@@ -240,12 +240,12 @@ namespace :joruri do
 
           puts "copying '#{control.dbname}' to '#{main_dbname}' (ID range: #{start_id} - #{start_id + max_id})..."
           models.each do |model, renew_columns|
-            copy_columns = model.column_names.reject{|c| c.in?(renew_columns + ["serial_no", "migrated"])}
+            copy_columns = model.column_names.reject{|c| c.in?(renew_columns + ["serial_no", "migrated", "wiki"])}
             copy_column_sql = copy_columns.join(',')
             renew_column_insert_sql = renew_columns.join(', ')
             renew_column_select_sql = renew_columns.map{|c| "case when #{c} = null then null when #{c} <= 0 then #{c} else #{c} + #{start_id} end" }.join(', ')
             conn.execute <<-SQL
-              insert into #{main_dbname}.#{model.table_name} (#{renew_column_insert_sql}, #{copy_column_sql}, serial_no, migrated) 
+              insert into #{main_dbname}.#{model.table_name} (#{renew_column_insert_sql}, #{copy_column_sql}, serial_no, migrated)
                 select #{renew_column_select_sql}, #{copy_column_sql}, id, 1 from #{control.dbname}.#{model.table_name};
             SQL
           end
@@ -259,6 +259,24 @@ namespace :joruri do
       conn.execute "update doclibrary_group_folders set parent_id = null where level_no = 1"
       conn.execute "update digitallibrary_docs set parent_id = null, chg_parent_id = null, category1_id = null where doc_type = 0 and level_no = 1"
 
+      puts "done"
+    end
+
+    desc 'TODOデータをスケジュールデータにコピーします。'
+    task :copy_todo_data => :environment do |task, args|
+      Gw::Todo.find_each do |todo|
+        st_at = todo.ed_at.present? ? todo.ed_at.beginning_of_day : todo.created_at.beginning_of_day
+        ed_at = st_at.end_of_day
+        schedule = Gw::Schedule.create creator_uid: todo.uid, updater_uid: todo.uid,
+          owner_uid: todo.uid, title: todo.title, is_public: 3,  memo: todo.body,
+          st_at: st_at, ed_at: ed_at, todo: 1
+        next if schedule.blank?
+        Gw::ScheduleTodo.create schedule_id:schedule.id, st_at: schedule.st_at, ed_at: schedule.ed_at,
+          todo_ed_at_indefinite: 0 , is_finished: todo.is_finished,
+          todo_st_at_id: 2, todo_ed_at_id:1, todo_id: todo.id
+        Gw::ScheduleUser.create schedule_id: schedule.id, class_id: 1, uid: todo.uid,
+          st_at: schedule.st_at, ed_at: schedule.ed_at
+      end
       puts "done"
     end
 
@@ -413,7 +431,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwcircular::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwsub::Sb01Training => [:body]
@@ -430,7 +448,7 @@ namespace :joruri do
           # attaches
           doc_model.where("lower(#{column}) regexp 'attaches/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             file_models.each do |file_model|
               system_name = get_system_name(file_model)
               new_body.gsub!(/attaches\/#{system_name}\/(\d+)\/(\d+)\/(\d+)\/(\d+)\//) do |link|
@@ -443,14 +461,14 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
-  
+
           # receipts
           doc_model.where("lower(#{column}) regexp '/gwboard/receipts/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             file_models.each do |file_model|
               system_name = get_system_name(file_model)
               new_body.gsub!(/\/gwboard\/receipts\/(\d+)\/download_object?system=#{system_name}&title_id=(\d+)/) do |link|
@@ -463,14 +481,14 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
-  
+
           # modules
           doc_model.where("lower(#{column}) regexp '/_common/modules/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             image_models.each do |image_model|
               system_name = get_system_name(image_model)
               new_body.gsub!(/\/_common\/modules\/#{system_name}\/(\d+)\/(\d+)\/(\d+)\/(\d+)\//) do |link|
@@ -483,7 +501,7 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
         end
@@ -500,7 +518,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwcircular::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwsub::Sb01Training => [:body],
@@ -526,7 +544,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwcircular::Doc => [:body],
         Gw::Memo => [:body],
