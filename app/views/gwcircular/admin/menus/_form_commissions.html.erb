@@ -116,6 +116,15 @@ first_group_id = Gwcircular::CustomGroup.first_group_id
     var st = $('item_state');
     st.value = state;
     $('itemForm').submit();
+
+    if (st.value == "public" ) {
+      document.getElementById("item_submit").disabled=true;
+      document.getElementById("item_submit").value='配信中...';
+    } else if (st.value == "draft") {
+      document.getElementById("item_submit_draft").disabled=true;
+      document.getElementById("item_submit_draft").value='保存中...';
+    }
+
   }
 
   var load_cand = function () {
