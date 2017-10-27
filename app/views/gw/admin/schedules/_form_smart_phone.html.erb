@@ -2,9 +2,9 @@
 text_style = 'width:30em;'
 unless params[:item].blank?
   st_at_str = %Q(#{params[:item]['st_at(1i)']}-#{params[:item]['st_at(2i)']}-#{params[:item]['st_at(3i)']} #{params[:item]['st_at(4i)']}:#{params[:item]['st_at(5i)']})
-  params[:item][:st_at]= st_at_str
+  params[:item][:st_at]= st_at_str if params[:item][:st_at].blank?
   ed_at_str = %Q(#{params[:item]['ed_at(1i)']}-#{params[:item]['ed_at(2i)']}-#{params[:item]['ed_at(3i)']} #{params[:item]['ed_at(4i)']}:#{params[:item]['ed_at(5i)']})
-  params[:item][:ed_at]= ed_at_str
+  params[:item][:ed_at]= ed_at_str if params[:item][:ed_at].blank?
 end
 @inquire_to_err_flg = false
 if !@item.errors.blank?
@@ -148,9 +148,17 @@ form_kind_radio_str = Gw.join(form_kind_radio, "")
 </td>
 </tr>
 <tr id="start_tr_1"><th>開始日時<span class="textRed">※</span></th></tr>
-<tr id="start_tr_2"><td><%= f.datetime_select_for_mobile :st_at, selected: d_load_st %><%= hidden_field_tag 'init[st_at][mode]', 'datetime' %></td></tr>
+<tr id="start_tr_2"><td>
+<%= f.datetime_select_for_mobile :st_at, {selected: d_load_st}, {onchange: 'update_time()'} %>
+<%= hidden_field_tag 'init[st_at][mode]', 'datetime' %>
+<%= f.hidden_field(:st_at, value: Gw.date_str(d_load_st))%>
+</td></tr>
 <tr><th><span id="ed_set_str">終了日時</span><span class="textRed">※</span></th></tr>
-<tr><td><%= f.datetime_select_for_mobile :ed_at, selected: d_load_ed %><%= hidden_field_tag 'init[ed_at][mode]', 'datetime' %></td></tr>
+<tr><td>
+<%= f.datetime_select_for_mobile :ed_at, {selected: d_load_ed}, {onchange: 'update_time()'} %>
+<%= hidden_field_tag 'init[ed_at][mode]', 'datetime' %>
+<%= f.hidden_field(:ed_at, value: Gw.date_str(d_load_ed))%>
+</td></tr>
 <tr id="allday_id_1"><th>
 時間未定：<%= f.check_box("allday", {:checked => @item.allday.present?, :onclick => 'allday_check(this)'},"1", nil) %></th></tr>
 <tr id="allday_id_2"><td>
@@ -353,6 +361,53 @@ var is_public_click = function () {
   } else {
     Element.hide($('public_groups'));
   }
+}
+
+function update_time(){
+  update_st_at();
+  update_ed_at();
+}
+
+var update_st_at = function() {
+  mode = $('init_st_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_st_at_1i').value + '-' + $('item_st_at_2i').value + '-' + $('item_st_at_3i').value;
+  if (mode == 'datetime' || mode == 'time') {
+    hn = $('item_st_at_4i').value + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+    var hne = $('item_st_at_4i').value;
+    hne-=0;
+    hne = hne + 1;
+    hne+"";
+    var hned = hne + ':' + ("0" + $('item_st_at_5i').value).slice(-2);
+  }
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+  $('item_st_at').value = ret;
+}
+
+var update_ed_at = function() {
+  mode = $('init_ed_at_mode').value;
+  if (mode == 'datetime' || mode == 'date')
+    ymd = $('item_ed_at_1i').value + '-' + $('item_ed_at_2i').value + '-' + $('item_ed_at_3i').value;
+  if (mode == 'datetime' || mode == 'time') {
+    hn = $('item_ed_at_4i').value + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+    var hne = $('item_ed_at_4i').value;
+    hne-=0;
+    hne = hne + 1;
+    hne+"";
+    var hned = hne + ':' + ("0" + $('item_ed_at_5i').value).slice(-2);
+  }
+
+  switch(mode) {
+  case 'datetime': ret = ymd + ' ' + hn; reted = ymd + ' ' + hned; break;
+  case 'date': ret = ymd; reted = ymd; break;
+  case 'time': ret = hn; reted = hned; break;
+  }
+  $('item_ed_at').value = ret;
 }
 
 // Todo用

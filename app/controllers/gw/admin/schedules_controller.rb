@@ -708,20 +708,24 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
     if params_o[:item][:allday] != "1"
       params_o[:item].delete "allday_radio_id"
     end
-    st_at_str = %Q(#{params_o[:item]['st_at(1i)']}-#{params_o[:item]['st_at(2i)']}-#{params_o[:item]['st_at(3i)']} #{params_o[:item]['st_at(4i)']}:#{params_o[:item]['st_at(5i)']})
-    params_o[:item].delete "st_at(1i)"
-    params_o[:item].delete "st_at(2i)"
-    params_o[:item].delete "st_at(3i)"
-    params_o[:item].delete "st_at(4i)"
-    params_o[:item].delete "st_at(5i)"
-    params_o[:item][:st_at]= st_at_str
-    ed_at_str = %Q(#{params_o[:item]['ed_at(1i)']}-#{params_o[:item]['ed_at(2i)']}-#{params_o[:item]['ed_at(3i)']} #{params_o[:item]['ed_at(4i)']}:#{params_o[:item]['ed_at(5i)']})
-    params_o[:item].delete "ed_at(1i)"
-    params_o[:item].delete "ed_at(2i)"
-    params_o[:item].delete "ed_at(3i)"
-    params_o[:item].delete "ed_at(4i)"
-    params_o[:item].delete "ed_at(5i)"
-    params_o[:item][:ed_at]= ed_at_str
+    if  params_o[:item][:st_at].blank?
+      st_at_str = %Q(#{params_o[:item]['st_at(1i)']}-#{params_o[:item]['st_at(2i)']}-#{params_o[:item]['st_at(3i)']} #{params_o[:item]['st_at(4i)']}:#{params_o[:item]['st_at(5i)']})
+      params_o[:item].delete "st_at(1i)"
+      params_o[:item].delete "st_at(2i)"
+      params_o[:item].delete "st_at(3i)"
+      params_o[:item].delete "st_at(4i)"
+      params_o[:item].delete "st_at(5i)"
+      params_o[:item][:st_at]= st_at_str
+    end
+    if params_o[:item][:ed_at].blank?
+      ed_at_str = %Q(#{params_o[:item]['ed_at(1i)']}-#{params_o[:item]['ed_at(2i)']}-#{params_o[:item]['ed_at(3i)']} #{params_o[:item]['ed_at(4i)']}:#{params_o[:item]['ed_at(5i)']})
+      params_o[:item].delete "ed_at(1i)"
+      params_o[:item].delete "ed_at(2i)"
+      params_o[:item].delete "ed_at(3i)"
+      params_o[:item].delete "ed_at(4i)"
+      params_o[:item].delete "ed_at(5i)"
+      params_o[:item][:ed_at]= ed_at_str
+    end
     users_json = []
     if params_o[:item][:schedule_users].blank?
       users_json << ["1",Core.user.id,"#{Core.user.name}"]
