@@ -51,7 +51,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
     error_msg = Array.new
     check = Hash::new
     error_row_cnt = 0
-    
+
 
     ldap_states = System::User.ldap_options
     ldap_states_0 = ldap_states.map {|x| x[0]}
@@ -164,7 +164,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
           end
         end
         if admin_user_check != true
-          row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれてはなりません。"
+          row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれている必要があります。"
           admin_user_check = true # 最初の1件のみに追加する。
         end
         if row[:data_type] == "user" # ユーザー
