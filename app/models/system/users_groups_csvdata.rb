@@ -46,7 +46,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         end
       end
     end
-    
+
     return csv
   end
 
@@ -94,7 +94,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
           csv_hashed = Array.new # ハッシュ変換用
           error_csv_row = csv.dup # エラー返却用CSVデータ
           hankaku_error_string = "半角英数字、および半角アンダーバーのみのデータとしてください。"
-          
+
           code_data = Array.new # コードの値をまとめる配列
           groups_code_data = Array.new # グループのコードの値をまとめる配列
           users_code_pcode_data = Array.new # ユーザーのコード、親グループコードの値をまとめる配列
@@ -192,7 +192,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
                 end
               end
               if admin_user_check != true
-                row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれてはなりません。"
+                row[:error] << "「#{csv_header[:data_type]}」がuserのデータは、「#{csv_header[:code]}」に、1つ以上、GW管理画面の管理者権限を持つユーザーが含まれている必要があります。"
                 admin_user_check = true # 最初の1件のみに追加する。
               end
               if row[:data_type] == "user" # ユーザー
@@ -299,7 +299,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
               end
             end
             row[:end_time] = end_time
-            
+
             if row[:error].present?
               error_row_cnt += 1
               error_csv_row[row[:id]] << row[:error]
@@ -353,7 +353,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         else
           level_no = nil
         end
-        
+
 
         item = self.new
         item.state = state
@@ -377,7 +377,7 @@ class System::UsersGroupsCsvdata < ActiveRecord::Base
         item.end_at = row[:end_time].strftime("%Y-%m-%d 0:0:0") if row[:end_time].present?
         item.save(:validate => false)
       end
-      
+
       all_items = self.find(:all)
       all_items.each do |item|
         if item.parent_code.to_s == "1"
