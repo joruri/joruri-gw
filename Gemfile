@@ -37,7 +37,7 @@ gem 'hikidoc', '~> 0.1.0'
 gem 'memoist', '~> 0.11.0'
 gem 'prawn', '2.0.1'
 gem 'prawn-table', '0.2.1'
-
+gem 'mime-types', require: 'mime/types/full'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.2'
