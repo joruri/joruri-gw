@@ -57,20 +57,11 @@ MySQLをインストールします。
   # yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
   # yum -y install mysql-community-server mysql-devel
 
-JoruriGwをダウンロードします。
-
-  # cd /usr/local/src/
-  # wget https://github.com/joruri/joruri-gw/archive/v3.2.0.tar.gz
-  # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
-
 Joruri Gwソースコードを設置します。
 
   # mkdir /var/share
-  # tar xvzf v3.2.0.tar.gz -C /var/share
-  # mv /var/share/joruri-gw-3.2.0 /var/share/jorurigw
-  # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
+  # git clone https://github.com/joruri/joruri-gw.git /var/share/jorurigw
   # chown -R joruri:joruri /var/share/jorurigw
-
 
 **********************************************************************
  4 Apache の設定
@@ -182,7 +173,8 @@ rbenvの環境設定を行います。
 
 yamlライブラリをインストールします。
 
-  # cd /usr/local/src
+  # cd /usr/local/src/
+  # wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
   # tar -zxvf yaml-0.1.6.tar.gz
   # cd yaml-0.1.6
   # ./configure
