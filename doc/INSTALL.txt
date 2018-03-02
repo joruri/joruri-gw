@@ -62,6 +62,7 @@ Joruri Gwソースコードを設置します。
   # mkdir /var/share
   # git clone https://github.com/joruri/joruri-gw.git /var/share/jorurigw
   # chown -R joruri:joruri /var/share/jorurigw
+  # cp /var/share/jorurigw/config/original/* /var/share/jorurigw/config/
 
 **********************************************************************
  4 Apache の設定
