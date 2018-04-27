@@ -5,11 +5,6 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   def login
     admin_uri = '/gw/portal'
 
-    #return redirect_to(admin_uri) if logged_in?
-    if request.mobile? && params[:_session_id] == ''
-      return redirect_to admin_uri
-    end
-
     @uri = params[:uri] || cookies[:sys_login_referrer] || admin_uri
     @uri = @uri.gsub(/^http:\/\/[^\/]+/, '')
     @uri = NKF::nkf('-w', @uri)
@@ -57,7 +52,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     cookies.delete :sys_login_referrer
 
     respond_to do |format|
-      format.html { redirect_to @uri }
+      format.html { redirect_to_with_session @uri }
       format.xml  { render(:xml => current_user.to_xml) }
     end
   end
@@ -104,4 +99,22 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
       redirect_to uri
     end
   end
+
+  private
+
+  # jpmobile
+  def apply_trans_sid?
+    false
+  end
+
+  def redirect_to_with_session(url)
+    if request.mobile?
+      uri = Addressable::URI.parse(url)
+      uri.query_values = uri.query_values.merge(session_key.to_sym => jpmobile_session_id)
+      redirect_to uri.to_s
+    else
+      redirect_to url
+    end
+  end
+
 end
