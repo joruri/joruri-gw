@@ -24,13 +24,13 @@ centos() {
 
   . /etc/profile.d/rbenv.sh
 
-  rbenv install 2.3.1
-  rbenv global 2.3.1
+  rbenv install 2.3.7
+  rbenv global 2.3.7
   rbenv rehash
   ruby -v
 
   gem update --system
-  gem install bundler
+  gem install bundler -v 1.16.1
 }
 
 others() {
