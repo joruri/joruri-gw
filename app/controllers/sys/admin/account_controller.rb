@@ -5,8 +5,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   def login
     admin_uri = '/gw/portal'
 
-    @uri = params[:uri] || cookies[:sys_login_referrer] || admin_uri
-    @uri = @uri.gsub(/^http:\/\/[^\/]+/, '')
+    @uri = cookies[:sys_login_referrer] || admin_uri
     @uri = NKF::nkf('-w', @uri)
     unless request.post?
       respond_to do |format|
