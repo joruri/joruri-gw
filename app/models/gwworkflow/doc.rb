@@ -8,6 +8,7 @@ class Gwworkflow::Doc < Gw::Database
 
   has_many :files, foreign_key: :parent_id, class_name: 'Gwworkflow::File', dependent: :destroy
   has_many :steps, foreign_key: :doc_id, class_name: 'Gwworkflow::Step', dependent: :destroy
+  has_many :committees, :through => :steps, :class_name => 'Gwworkflow::Committee'
 
   validates :title, :presence => true, :length => { :maximum => 140 }
 
@@ -36,7 +37,8 @@ class Gwworkflow::Doc < Gw::Database
     state = options[:state] ? options[:state].to_sym : :all
     offset = options[:offset] ? options[:offset].to_i : 0
     limit = options[:limit] ? options[:limit].to_i : 20
-
+    step_table = Gwworkflow::Step.arel_table
+    committee_table = Gwworkflow::Committee.arel_table
     sts = case type
       when :committed then [:draft, :accepted, :rejected, :remanded, :applying]
       when :processing then [:applying]
@@ -48,12 +50,19 @@ class Gwworkflow::Doc < Gw::Database
     when :committed
       where(arel_table[:creater_id].eq(Core.user.id))
     when :processing
-      all.select{|doc|
+      all
+      .eager_load([:steps, :committees])
+      .where(committee_table[:user_id].eq(Core.user.id))
+      .where(committee_table[:state].not_eq('accepted'))
+      .select{|doc|
         cs = doc.current_step
         cs ? cs.committee.user_id == Core.user.id : false
       }
     when :accepted
-      all.select{|doc|
+      all
+      .eager_load([:steps, :committees])
+      .where(committee_table[:user_id].eq(Core.user.id))
+      .select{|doc|
         doc.steps.any?{|step|
           (step.committee.user_id == Core.user.id) && (step.committee.state == 'accepted')
         }
