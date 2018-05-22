@@ -1,4 +1,4 @@
-## Joruri Gw 3.2.0 インストールマニュアル                   2016.09.30
+## Joruri Gw 3.2.1 インストールマニュアル                   2018.04.26
 
 **********************************************************************
  1 想定環境
@@ -184,8 +184,8 @@ yamlライブラリをインストールします。
 
 Rubyをインストールします。
 
-  # rbenv install 2.3.1
-  # rbenv global 2.3.1
+  # rbenv install 2.3.7
+  # rbenv global 2.3.7
   # rbenv rehash
   # ruby -v
 
@@ -199,7 +199,7 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 5.0.29 --no-rdoc --no-ri
+  # gem install passenger -v 5.1.12
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )

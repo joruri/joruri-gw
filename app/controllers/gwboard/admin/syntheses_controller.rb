@@ -13,10 +13,18 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
         3.days.ago
       when '4.days'
         4.days.ago
+      when '5.days'
+        5.days.ago
+      when '6.days'
+        6.days.ago
+      when '7.days'
+        7.days.ago
+      when '14.days'
+        14.days.ago
       else
         Date.yesterday
       end
-
+    dump @date
     Page.title = "掲示板新着総合案内"
     @css = ["/_common/themes/gw/css/gwbbs_standard.css"]
 

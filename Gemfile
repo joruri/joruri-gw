@@ -39,6 +39,8 @@ gem 'prawn', '2.0.1'
 gem 'prawn-table', '0.2.1'
 gem 'mime-types', require: 'mime/types/full'
 
+gem 'addressable', '~> 2.4.0'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.2'
 
