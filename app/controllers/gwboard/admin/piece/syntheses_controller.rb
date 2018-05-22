@@ -18,6 +18,18 @@ class Gwboard::Admin::Piece::SynthesesController < ApplicationController
     when '4.days'
       @msg = '4日前から'
       @date = 4.days.ago
+    when '5.days'
+      @msg = '5日前から'
+      @date = 5.days.ago
+    when '6.days'
+      @msg = '6日前から'
+      @date = 6.days.ago
+    when '7.days'
+      @msg = '一週間前から'
+      @date = 7.days.ago
+    when '14.days'
+      @msg = '2週間前から'
+      @date = 14.days.ago
     else
       @msg = '本日'
       @date = Date.yesterday
