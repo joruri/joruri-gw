@@ -19,6 +19,14 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
       @date = 3.days.ago.strftime('%Y-%m-%d')
     when '4.days'
       @date = 4.days.ago.strftime('%Y-%m-%d')
+    when '5.days'
+      @date = 5.days.ago.strftime('%Y-%m-%d')
+    when '6.days'
+      @date = 6.days.ago.strftime('%Y-%m-%d')
+    when '7.days'
+      @date = 7.days.ago.strftime('%Y-%m-%d')
+    when '14.days'
+      @date = 14.days.ago.strftime('%Y-%m-%d')
     else
       @date = Date.yesterday.strftime('%Y-%m-%d')
     end
@@ -50,8 +58,8 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
     item = Gwboard::Synthesis.new
     item.gwbbs_readable_syntheses(@date)
     item.page params[:page], params[:limit]
-    @items = item.find(:all, 
-      :select => 'gwboard_syntheses.*', 
+    @items = item.find(:all,
+      :select => 'gwboard_syntheses.*',
       :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
@@ -59,8 +67,8 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
     item = Gwboard::Synthesis.new
     item.gwfaq_readable_syntheses(@date)
     item.page params[:page], params[:limit]
-    @items = item.find(:all, 
-      :select => 'gwboard_syntheses.*', 
+    @items = item.find(:all,
+      :select => 'gwboard_syntheses.*',
       :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
 
@@ -68,7 +76,7 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
     item = Gwboard::Synthesis.new
     item.gwqa_readable_syntheses(@date)
     item.page params[:page], params[:limit]
-    @items = item.find(:all, 
+    @items = item.find(:all,
       :select => 'gwboard_syntheses.*',
       :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
@@ -77,7 +85,7 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
     item = Gwboard::Synthesis.new
     item.doclibrary_readable_syntheses(@date)
     item.page params[:page], params[:limit]
-    @items = item.find(:all, 
+    @items = item.find(:all,
       :select => 'gwboard_syntheses.*',
       :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
@@ -86,7 +94,7 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
     item = Gwboard::Synthesis.new
     item.digitallibrary_readable_syntheses(@date)
     item.page params[:page], params[:limit]
-    @items = item.find(:all, 
+    @items = item.find(:all,
       :select => 'gwboard_syntheses.*',
       :order => 'gwboard_syntheses.latest_updated_at DESC')
   end
