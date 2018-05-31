@@ -2,17 +2,13 @@
 class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   protect_from_forgery :except => [:login]
 
+  before_filter :reset_unauthorized_session, only: [:login]
+
   def login
     skip_layout
     admin_uri = '/gw/portal'
 
-    #return redirect_to(admin_uri) if logged_in?
-    if request.mobile? && params[:_session_id] == ''
-      return redirect_to admin_uri
-    end
-
-    @uri = params[:uri] || cookies[:sys_login_referrer] || admin_uri
-    @uri = @uri.gsub(/^http:\/\/[^\/]+/, '')
+    @uri = cookies[:sys_login_referrer] || admin_uri
     @uri = NKF::nkf('-w', @uri)
     return unless request.post?
 
@@ -44,7 +40,7 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     System::Session.delete_past_sessions_at_random
 
     respond_to do |format|
-      format.html { redirect_to @uri }
+      format.html { redirect_to_with_session @uri }
       format.xml  { render(:xml => current_user.to_xml) }
     end
   end
@@ -95,4 +91,30 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
       redirect_to uri
     end
   end
+
+private
+
+  def reset_unauthorized_session
+    reset_session if params[session_key]
+  end
+
+  # jpmobile
+  def apply_trans_sid?
+    false
+  end
+
+  def redirect_to_with_session(url)
+    if request.mobile?
+      uri = Addressable::URI.parse(url)
+      if uri.query_values.present?
+        uri.query_values = uri.query_values.merge(session_key.to_sym => jpmobile_session_id)
+      else
+        uri.query_values = {session_key: jpmobile_session_id}
+      end
+      redirect_to uri.to_s
+    else
+      redirect_to url
+    end
+  end
+
 end

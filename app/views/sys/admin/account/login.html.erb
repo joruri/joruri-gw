@@ -22,11 +22,11 @@
     <span class="head">ユーザID</span><%= text_field_tag 'account', '' %>
     <br />
     <br style="line-height: 0.8;" />
-    <span class="head">パスワード</span><%= password_field_tag 'password', '' %>
+    <span class="head">パスワード</span><%= password_field_tag 'password', '', autocomplete: 'off' %>
     <br />
   </div>
 
-  <% 
+  <%
     footer = Joruri.config.application['sys.login_footer']
     if footer == ""
       submitter_style = "margin-top:14px"
