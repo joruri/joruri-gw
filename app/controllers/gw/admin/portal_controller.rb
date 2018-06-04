@@ -3,7 +3,7 @@ class Gw::Admin::PortalController < Gw::Controller::Admin::Base
   layout "admin/template/portal"
 
   def pre_dispatch
-    Page.title = "Joruri Gw ポータル"
+    Page.title = "ポータル"
   end
 
   def index
