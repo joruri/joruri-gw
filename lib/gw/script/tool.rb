@@ -3,39 +3,6 @@ class Gw::Script::Tool
   require 'pp'
   require 'yaml'
 
-  def self.backup_databases(prefix='dev')
-    dbs = []
-    Gw::Schedule.connection.execute(%Q(show databases like '#{prefix}_jgw_%';)).each{|x| dbs.push x[0]}
-    env = Hash[*'dev:development:pre:production:devpro:development_debug'.split(':').to_a]
-    env_s = Gw.nz(env[prefix],prefix)
-    dbconfig = ActiveRecord::Base.configurations[env_s]
-    dbs.each do |db|
-      fn = "_wrk/#{db.sub(/^#{prefix}_/, '')}.sql"
-      %x(mysqldump -u #{dbconfig['username']} --password=#{dbconfig['password']} #{db} > #{fn})
-    end
-  end
-
-  def self.restore_databases(prefix='dev')
-    dbs = []
-    Gw::Schedule.connection.execute(%Q(show databases like '#{prefix}_jgw_%';)).each{|x| dbs.push x[0]}
-    fns = Dir["_wrk/jgw_*.sql"]
-    env = Hash[*'dev:development:pre:production:devpro:development_debug'.split(':').to_a]
-    env_s = Gw.nz(env[prefix],prefix)
-    dbconfig = ActiveRecord::Base.configurations[env_s]
-    mysql_core_s = "mysql -u #{dbconfig['username']} --password=#{dbconfig['password']}"
-    fns.sort.each do |fn|
-      db = %Q[#{prefix}_#{fn.sub(/^_wrk\//, '').sub(/\.sql$/, '')}]
-      sqlex = %Q(#{mysql_core_s} #{db} < #{fn})
-      if dbs.index(db).nil?
-        p "creating database #{db}"
-        sql_create = %Q(echo create database #{db}|#{mysql_core_s})
-        p sql_create
-        ret_create_db = %x(#{sql_create})
-      end
-      ret_restore = %x(#{sqlex})
-    end
-  end
-
   def self.import_csv_if(filename, csv_setting_name)
     f = open(filename).read
     s_to = import_csv(f, csv_setting_name)
