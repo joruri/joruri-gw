@@ -1,11 +1,10 @@
 class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
-	layout "admin/template/pref"
+  layout "admin/template/pref"
 
   def pre_dispatch
     init_params
     return error_auth unless @u_role
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     @css = %w(/_common/themes/gw/css/admin.css)
   end

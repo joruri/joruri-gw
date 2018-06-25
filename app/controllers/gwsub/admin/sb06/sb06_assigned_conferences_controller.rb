@@ -16,7 +16,6 @@
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "担当者名等管理"
   end

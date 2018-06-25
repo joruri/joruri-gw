@@ -7,7 +7,6 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     @role_admin     = Gw::PrefAssemblyMember.is_admin?
     @u_role = @role_developer || @role_admin
     return error_auth unless @u_role
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     Page.title = "議員在庁表示管理"
     @css = %w(/_common/themes/gw/css/admin.css)

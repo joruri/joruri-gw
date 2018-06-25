@@ -5,10 +5,6 @@ class Gwsub::Admin::Sb00::Sb00ConferenceManagersController < Gw::Controller::Adm
   def pre_dispatch
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "通知先管理者設定"
-
-#    index_path = "#{Site.current_node.public_uri}"
-#    return redirect_to(index_path) if params[:reset]
-#    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

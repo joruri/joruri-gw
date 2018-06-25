@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "10予算担当処理権限"
   end

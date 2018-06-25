@@ -6,7 +6,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingBoardsController < Gw::Controller::Admin::
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_schedule_props"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     # ユーザー権限設定
     @role_developer  = Gwsub::Sb01Training.is_dev?

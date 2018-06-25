@@ -3,8 +3,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfKindsController < Gw::Controller::Admi
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-#pp request.env['HTTP_USER_AGENT']
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "30申請書種別"
     init_params

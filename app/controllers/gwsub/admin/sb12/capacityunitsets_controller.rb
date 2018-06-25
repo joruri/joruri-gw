@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb12::CapacityunitsetsController < Gw::Controller::Admin::Ba
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
   end
 
   def init_params

@@ -4,7 +4,6 @@ class Gw::Admin::HolidaysController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     return error_auth unless Gw.is_admin_admin?
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @css = %w(/_common/themes/gw/css/schedule.css)
     Page.title = "休日管理"
   end

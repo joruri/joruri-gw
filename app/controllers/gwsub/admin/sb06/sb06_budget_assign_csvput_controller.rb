@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignCsvputController < Gw::Controller::Adm
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "予算担当CSV出力"
   end
@@ -19,7 +19,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignCsvputController < Gw::Controller::Adm
     if @item.extras[:name].blank?
       @item.errors.add(:base, "ファイル名を入力してください。")
       return
-    end 
+    end
 
     target_columns = [:multi_group_code, :multi_user_code, :user_name, :budget_role_code]
     csv = Gwsub::Sb06BudgetAssign.select(target_columns)

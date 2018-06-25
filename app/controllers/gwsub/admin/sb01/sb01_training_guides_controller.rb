@@ -8,7 +8,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_guides"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -99,7 +98,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
     @role_developer  = Gwsub::Sb01Training.is_dev?
     @role_admin      = Gwsub::Sb01Training.is_admin?
     @u_role = @role_developer || @role_admin
-    
+
     # 表示行数　設定
     @limits = nz(params[:limit],30)
     # 掲示板分類

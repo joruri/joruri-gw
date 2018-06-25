@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb13::ExternalmediasController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     section_name_select_list
 
     @usage_sql = 'ending_at IS NULL'

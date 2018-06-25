@@ -8,7 +8,6 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
 
     index_path = @index_uri
     return redirect_to(index_path) if params[:reset]
-#    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

@@ -3,7 +3,7 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @is_gw_admin = Gw.is_admin_admin?
     Page.title = "カスタムグループ設定"
   end

@@ -5,7 +5,6 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
   before_action :load_prop_type, only: [:new, :create]
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
     Page.title = "スケジュール"
 
     @title = 'ユーザー'

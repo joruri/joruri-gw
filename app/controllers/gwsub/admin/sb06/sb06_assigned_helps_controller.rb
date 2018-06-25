@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedHelpsController < Gw::Controller::Admin::B
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "担当者名等説明"
     init_params

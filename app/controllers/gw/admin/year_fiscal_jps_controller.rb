@@ -3,7 +3,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
 
     @role_developer = Gw::YearMarkJp.is_dev?
     @role_admin = Gw::YearMarkJp.is_admin?
@@ -15,7 +15,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:limit, :s_keyword).symbolize_keys) 
+    super.merge(params.slice(:limit, :s_keyword).symbolize_keys)
   end
 
   def index

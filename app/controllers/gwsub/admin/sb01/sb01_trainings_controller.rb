@@ -7,7 +7,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_trainings"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

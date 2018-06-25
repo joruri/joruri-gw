@@ -4,7 +4,7 @@ class Gw::Admin::PropExtraPmGenreCommonController < Gw::Controller::Admin::Base
   layout "admin/template/schedule"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
   end
 
   def init_params

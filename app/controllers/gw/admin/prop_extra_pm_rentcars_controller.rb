@@ -1,6 +1,6 @@
 class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreCommonController
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @extra_genre = :pm
   end
 

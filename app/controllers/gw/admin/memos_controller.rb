@@ -6,7 +6,6 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   before_action :adjust_params_for_mobile, only: [:create, :update], if: -> { request.mobile? }
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     firefox = firefox_browser(request.headers['HTTP_USER_AGENT'])
     ie = file_name_encode?(request.headers['HTTP_USER_AGENT'])

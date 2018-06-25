@@ -5,7 +5,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
   def pre_dispatch
 #    pp ['initialize',params]
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end

@@ -4,8 +4,6 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
   layout "admin/template/schedule"
 
   def pre_dispatch
-    #リセットボタンを押すと、エラーが発生するため変更
-    #return redirect_to(request.env['PATH_INFO']) if params[:reset]
     return redirect_to "/gw/prop_extras?s_genre=#{params[:s_genre]}&cls=#{params[:cls]}&order=#{params[:order]}" if params[:reset]
   end
 

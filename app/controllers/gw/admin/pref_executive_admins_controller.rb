@@ -7,7 +7,6 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
     @role_admin     = Gw::PrefExecutive.is_admin?
     @u_role = @role_developer || @role_admin
     return error_auth unless @u_role
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     Page.title = "全庁幹部在庁表示管理"
     @css = %w(/_common/themes/gw/css/admin.css)

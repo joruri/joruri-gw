@@ -6,7 +6,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
 
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "所属名長管理"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to @index_uri if params[:reset]
   end
 
   def index

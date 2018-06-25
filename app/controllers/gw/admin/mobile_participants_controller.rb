@@ -5,7 +5,7 @@ class Gw::Admin::MobileParticipantsController < Gw::Controller::Admin::Base
   layout "admin/template/memo"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    #
   end
 
   def index

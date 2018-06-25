@@ -6,7 +6,7 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     @sp_mode = :prop
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
   end
 
   def init_params
@@ -20,12 +20,12 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:cls).symbolize_keys) 
+    super.merge(params.slice(:cls).symbolize_keys)
   end
 
   def index
     @items = @model
-    @items = @items.where(delete_state: 0) unless @is_admin 
+    @items = @items.where(delete_state: 0) unless @is_admin
     @items = @items.order(delete_state: :asc, reserved_state: :desc, gid: :asc, sort_no: :asc, name: :asc)
       .paginate(page: params[:page], per_page: params[:limit])
   end

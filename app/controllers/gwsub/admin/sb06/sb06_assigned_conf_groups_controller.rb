@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "20申請書管理所属"
     init_params
