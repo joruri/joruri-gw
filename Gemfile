@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.10'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -64,15 +64,16 @@ gem 'jbuilder', '~> 1.2'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
-  gem 'sdoc', require: false
+  gem 'sdoc', '0.4.2',  require: false
 end
 
 
 
 group :development do
-  gem 'rack-mini-profiler' # profiler
+  gem 'rack-mini-profiler', '0.10.7' # profiler
   gem 'rb-readline', '~> 0.5.1'
   gem 'quiet_assets', '~> 1.0.3'
+  gem 'brakeman', :require => false
 end
 
 # To use ActiveModel has_secure_password
