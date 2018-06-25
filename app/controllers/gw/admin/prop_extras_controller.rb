@@ -423,6 +423,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
     init_params
 
     item = Gw::ScheduleProp.find(params[:id])
+    return http_error(404) if item.blank?
     actual = nil
 
     if item.prop_stat == 2
@@ -433,7 +434,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
       if item.meetingroom_related? && item.someone_renting_currently?
         flash[:notice] = '貸出に失敗しました。該当設備は貸出中です。'
         location = "/gw/prop_extras#{@prop_params}"
-        location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
+        location =  show_one_gw_schedule_path(params[:sid]) if params[:ref] == 'show_one'
         return redirect_to location
       end
 
@@ -466,8 +467,16 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
     end
 
     location = "/gw/prop_extras#{@prop_params}"
-    location = "/gw/prop_extra_pm_#{item.genre_name}s/#{actual.id}" if actual
-    location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
+    if actual
+      location = case item.genre_name
+      when 'meetingroom'
+        gw_prop_extra_pm_meetingroom_path(actual)
+      else
+        gw_prop_extra_pm_rentcar_path(actual)
+      end
+    end
+
+    location = show_one_gw_schedule_path(params[:sid]) if params[:ref] == 'show_one'
     return redirect_to location
   end
 

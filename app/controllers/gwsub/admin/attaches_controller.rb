@@ -226,16 +226,6 @@ class Gwsub::Admin::AttachesController < Gw::Controller::Admin::Base
     @title.save
   end
 
-  # 備考欄変更
-  def update_file_memo
-    file = Gwsub::Sb01TrainingFile
-    @file = file.where(:id => params[:id]).first
-    @file.memo  = params[:file]['memo']
-    @file.save
-
-    parent_show_path  = "gwsub/sb01/sb01_training_plans/#{@file.parent_id}"
-    redirect_to parent_show_path
-  end
 private
 
   def switch_layout
