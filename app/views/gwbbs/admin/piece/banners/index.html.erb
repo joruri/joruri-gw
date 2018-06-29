@@ -1,5 +1,5 @@
 <% if params[:piece_param].blank? %>
-<div class="contentBanner"><%=raw @title.banner %></div>
+<div class="contentBanner"><%=sanitize @title.banner %></div>
 <% else %>
 <%
 # デザイン反映設定
@@ -17,8 +17,8 @@ else
   font = %Q[style="color:#{@title.font_color}"]
 end
 %>
-<div class="pieceBanner" <%== s_style -%>>
-<h3><%== icon -%><span <%== font -%>><%= @title.title %></span></h3>
+<div class="pieceBanner" <%=sanitize s_style -%>>
+<h3><%== icon -%><span <%=sanitize font -%>><%= @title.title %></span></h3>
 <% unless @title.addnew_forbidden %>
   <% if @title.is_writable? %>
     <%= link_to " ", new_gwbbs_doc_path(title_id: params[:title_id], limit: params[:limit]), class: "btNew" %>

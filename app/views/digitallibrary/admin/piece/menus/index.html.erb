@@ -5,8 +5,8 @@ title_path = digitallibrary_docs_path({:title_id => @title.id})
 %>
 <%= render '/digitallibrary/admin/docs/search' %>
 <% unless params[:state] == 'DATE'%>
-<div class="sideMenu" <%=raw @title.sidelist_style %>>
-<%=raw @title.other_system_link unless @title.other_system_link.blank? %>
+<div class="sideMenu" <%=sanitize @title.sidelist_style %>>
+<%=sanitize @title.other_system_link unless @title.other_system_link.blank? %>
 <% unless @title.left_index_use == '0' %>
 <div id="sideList">
 <ul>

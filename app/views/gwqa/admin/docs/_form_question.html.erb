@@ -43,7 +43,7 @@
     <th>記事入力方式</th></tr><tr>
     <td>
       <%= f.radio_buttons :wiki, Gwqa::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
+      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=sanitize Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
     </td>
   </tr>
 </table>

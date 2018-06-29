@@ -44,7 +44,7 @@
       %>
       <tr class="<%= cycle '' , 'cycle' %>">
         <td><%= link_to_show item.id if detail==0 %></td>
-        <td><%= raw(g_name) %></td>
+        <td><%= sanitize g_name %></td>
         <td><%= item.limit %></td>
         <td><%= count[@prop_types.size] %></td>
         <% @prop_types.each_with_index do |type, i| %>

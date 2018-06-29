@@ -7,8 +7,8 @@ str_current_cat  = ' current' if params[:state] == 'CATEGORY'
 str_current_grp  = ' current' if params[:state] == 'GROUP'
 str_current_date = ' current' if params[:state] == 'DATE'
 %>
-<div class="sideMenu" <%=raw @title.sidelist_style %>>
-<%=raw @title.other_system_link unless @title.other_system_link.blank? %>
+<div class="sideMenu" <%=sanitize @title.sidelist_style %>>
+<%=sanitize @title.other_system_link unless @title.other_system_link.blank? %>
 <% unless @title.left_index_use == '0' %>
   <%= render 'search' %>
   <%= link_to @title.left_banner.html_safe, @title.docs_path if @title.left_banner.present? %>
