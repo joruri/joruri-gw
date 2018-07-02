@@ -96,9 +96,9 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     item_rep =
       case params[:order]
       when 'up'
-        Gw::EditTab.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first
+        Gw::EditTab.where(parent_id: @parent.id).where(Gw::EditTab.arel_table[:sort_no].lt(item.sort_no).order(sort_no: :desc).first
       when 'down'
-        Gw::EditTab.where(parent_id: @parent.id).where("sort_no > #{item.sort_no}").order(sort_no: :asc).first
+        Gw::EditTab.where(parent_id: @parent.id).where(Gw::EditTab.arel_table[:sort_no].gt(item.sort_no)).order(sort_no: :asc).first
       end
     return http_error(404) unless item_rep
 

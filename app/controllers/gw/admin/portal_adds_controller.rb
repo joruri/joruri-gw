@@ -65,9 +65,9 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
     item = Gw::PortalAdd.find(params[:id])
     item_rep = case params[:order]
       when 'up'
-        Gw::PortalAdd.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
+        Gw::PortalAdd.where(Gw::PortalAdd.arel_table[:sort_no].lt(item.sort_no)).order(sort_no: :desc).first!
       when 'down'
-        Gw::PortalAdd.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
+        Gw::PortalAdd.where(Gw::PortalAdd.arel_table[:sort_no].gt(item.sort_no)).order(sort_no: :asc).first!
       end
 
     item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
