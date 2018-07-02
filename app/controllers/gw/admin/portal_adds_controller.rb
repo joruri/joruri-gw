@@ -61,19 +61,5 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
     redirect_to url_for(action: :index), notice: "指定の広告を削除しました。"
   end
 
-  def updown
-    item = Gw::PortalAdd.find(params[:id])
-    item_rep = case params[:order]
-      when 'up'
-        Gw::PortalAdd.where(Gw::PortalAdd.arel_table[:sort_no].lt(item.sort_no)).order(sort_no: :desc).first!
-      when 'down'
-        Gw::PortalAdd.where(Gw::PortalAdd.arel_table[:sort_no].gt(item.sort_no)).order(sort_no: :asc).first!
-      end
 
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
-  end
 end

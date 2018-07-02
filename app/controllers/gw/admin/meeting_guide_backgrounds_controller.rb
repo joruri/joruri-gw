@@ -77,21 +77,4 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
       render :index
     end
   end
-  def updown
-    item = @model.find(params[:id])
-
-    item_rep =
-      case params[:order]
-      when 'up'
-        @model.where(@model.arel_table[:sort_no].lt(item.sort_no)).order(sort_no: :desc).first!
-      when 'down'
-        @model.where(@model.arel_table[:sort_no].gt(item.sort_no)).order(sort_no: :asc).first!
-      end
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
-  end
 end

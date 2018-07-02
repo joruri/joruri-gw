@@ -89,25 +89,6 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     end
   end
 
-
-  def updown
-    item = Gw::EditTab.find(params[:id])
-
-    item_rep =
-      case params[:order]
-      when 'up'
-        Gw::EditTab.where(parent_id: @parent.id).where(Gw::EditTab.arel_table[:sort_no].lt(item.sort_no).order(sort_no: :desc).first
-      when 'down'
-        Gw::EditTab.where(parent_id: @parent.id).where(Gw::EditTab.arel_table[:sort_no].gt(item.sort_no)).order(sort_no: :asc).first
-      end
-    return http_error(404) unless item_rep
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-    redirect_to url_for(action: :index)
-  end
-
   def list
     @items = Gw::EditTab.where(level_no: 2).order(state: :desc, sort_no: :asc)
   end

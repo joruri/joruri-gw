@@ -33,7 +33,7 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
     @item.sort_no = 0
     @item.group_patterns.each do |pattern|
       pattern.attributes = {
-        state: @item.state, title: @item.title, group_id: @item.group_id, 
+        state: @item.state, title: @item.title, group_id: @item.group_id,
         pattern: @item.pattern, place: @item.place, skip_validate_size: true
       }
     end
@@ -58,7 +58,7 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
     @item.attributes = params[:item]
     @item.group_patterns.each do |pattern|
       pattern.attributes = {
-        state: @item.state, title: @item.title, group_id: @item.group_id, 
+        state: @item.state, title: @item.title, group_id: @item.group_id,
         pattern: @item.pattern, place: @item.place, skip_validate_size: true
       }
     end
@@ -95,10 +95,10 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
     item_rep, items_rep = nil
     case params[:order]
     when 'up'
-      item_rep = Gw::PortalAddPattern.where("group_id < #{item.group_id}").order(group_id: :desc).group(:group_id).first!
+      item_rep = Gw::PortalAddPattern.where(Gw::PortalAddPattern.arel_table[:group_id].lt(item.group_id)).order(group_id: :desc).group(:group_id).first!
       items_rep = Gw::PortalAddPattern.where(group_id: item_rep.group_id).order(group_id: :desc)
     else
-      item_rep = Gw::PortalAddPattern.where("group_id > #{item.group_id}").order(group_id: :asc).group(:group_id).first!
+      item_rep = Gw::PortalAddPattern.where(Gw::PortalAddPattern.arel_table[:group_id].gt(item.group_id)).order(group_id: :asc).group(:group_id).first!
       items_rep = Gw::PortalAddPattern.where(group_id: item_rep.group_id).order(group_id: :asc)
     end
 

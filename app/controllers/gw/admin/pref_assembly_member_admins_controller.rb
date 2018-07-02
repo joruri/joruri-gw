@@ -149,9 +149,9 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     item_rep =
       case params[:order]
       when 'up'
-        Gw::PrefAssemblyMember.where("g_order < #{item.g_order}").order(g_order: :desc).group(:g_order).first!
+        Gw::PrefAssemblyMember.where(Gw::PrefAssemblyMember.arel_table[:g_order].lt(item.g_order)).order(g_order: :desc).group(:g_order).first!
       else
-        Gw::PrefAssemblyMember.where("g_order > #{item.g_order}").order(g_order: :asc).group(:g_order).first!
+        Gw::PrefAssemblyMember.where(Gw::PrefAssemblyMember.arel_table[:g_order].gt(item.g_order)).order(g_order: :asc).group(:g_order).first!
       end
 
     item.group_members.each {|m| m.g_order = item_rep.g_order }
