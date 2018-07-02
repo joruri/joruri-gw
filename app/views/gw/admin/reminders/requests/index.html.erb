@@ -5,7 +5,7 @@
   reminders.each do |reminder|
     next if reminder.name =~ /hcs/
     begin
-      remind += eval("Gw::Model::#{reminder.name.capitalize}.remind.collect{|x| x[:c]='#{reminder.name}'; x}")
+      remind += Gw::Model::Reminder.model_class(reminder.name).remind.collect{|x| x[:c]=reminder.name; x}
     rescue => e
       dump e
     end

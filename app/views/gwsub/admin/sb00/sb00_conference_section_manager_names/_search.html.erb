@@ -8,11 +8,11 @@ else
   if fyear_base.blank?
     groups = [['すべて',0]]
   else
-    p_cond  = "level_no=2 "
-    p_cond  << " and sort_no < 90000"  if Core.user.code.size > 3 # ３桁ユーザーには、開発テスト用データも表示
-    p_cond  << " and (start_at <= '#{fyear_base.start_at.strftime('%Y-%m-%d 00:00:00')}' and (end_at is null or end_at >= '#{fyear_base.end_at.strftime('%Y-%m-%d 23:59:59')}') )"
-    p_order = "code"
-    parent_groups = System::GroupHistory.where(p_cond).order(p_order).all
+    history_table = System::GroupHistory.arel_table
+    parent_groups = System::GroupHistory.where(level_no: 2)
+    parent_groups = parent_groups.where(history_table[:start_at].lteq(fyear_base.start_at.strftime('%Y-%m-%d 00:00:00')))
+    parent_groups = parent_groups.where(history_table[:end_at].eq(nil).or(history_table[:end_at].gteq(fyear_base.end_at.strftime('%Y-%m-%d 23:59:59'))))
+    parent_groups = parent_groups.order(:code)
     groups = [['すべて',0]]
     parent_groups.each do |g|
       groups << [g.ou_name , g.id]

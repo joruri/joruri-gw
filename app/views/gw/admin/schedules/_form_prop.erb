@@ -5,7 +5,7 @@ mee_prop_types = prop_types[0]  # 会議室
 ren_prop_types = prop_types[1]  # レンタカー
 oth_prop_types = prop_types[2]  # 一般施設（自所属）
 
-owner_u = 
+owner_u =
   if params[:item].present? && params[:item][:owner_uid].present?
     {id: params[:item][:owner_uid], displayname: params[:item][:owner_udisplayname]}
   elsif @item.owner_uid.present? && params[:action] != 'quote'

@@ -4,7 +4,7 @@ doc_link = %Q(#{@item1.title})
 <table class="show leftSide">
   <tr>
     <th>研修名</th>
-    <td><%=raw(doc_link)%></td>
+    <td><%=sanitize doc_link%></td>
   </tr>
   <tr>
     <th>企画所属</th>

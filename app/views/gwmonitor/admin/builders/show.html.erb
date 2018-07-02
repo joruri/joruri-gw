@@ -37,7 +37,7 @@ help_links = Gwmonitor::Property::HelpLink.first_or_new.help_links
     <% if @item.wiki_enabled? -%>
       <td class="wiki"><%=raw wiki_show(@item.caption) -%></td>
     <% else -%>
-      <td><%=raw @item.caption -%></td>
+      <td><%=sanitize @item.caption -%></td>
     <% end -%>
   </tr>
   <tr>
