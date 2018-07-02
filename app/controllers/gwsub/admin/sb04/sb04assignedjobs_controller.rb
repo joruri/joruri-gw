@@ -13,7 +13,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb04assignedjob.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     if @role_sb04_dev
       gids = Gwsub::Sb04stafflistviewMaster.get_division_sb04_gids # ログインユーザーの主管課範囲のid
       condition = Condition.new()
@@ -262,7 +262,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb04CheckAssignedjob.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     @l3_current = '08'
   end

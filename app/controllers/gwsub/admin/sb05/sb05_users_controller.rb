@@ -14,7 +14,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
     item = Gwsub::Sb05User.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @users = item.find(:all)
     _index @users
   end

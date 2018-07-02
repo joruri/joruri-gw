@@ -171,7 +171,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     params.delete('group_parent_id') if params[:group_parent_id]
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
   end
   def index_main
@@ -180,7 +180,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     item.search params
     item.and 'sql',"group_parent_id=#{Core.user_group.parent_id}"
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all )
 #pp main_cond,@items
   end
@@ -190,7 +190,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     params[:group_id] = Core.user_group.id
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
   end
 

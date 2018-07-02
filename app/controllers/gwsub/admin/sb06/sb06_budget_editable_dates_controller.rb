@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
     item.search params
 #    item.creator
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
 #pp params,@items
     _index @items

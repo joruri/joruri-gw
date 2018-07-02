@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
     item = Gwsub::Sb00ConferenceReference.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
 
     @items = item.find(:all)
     _index @items

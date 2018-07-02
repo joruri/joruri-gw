@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     item   = Gwsub::Sb01TrainingScheduleMember.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

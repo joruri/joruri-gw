@@ -39,7 +39,7 @@ class Gwsub::Admin::Sb12::CapacityunitsetsController < Gw::Controller::Admin::Ba
     item = Gwsub::Capacityunitset.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

@@ -27,7 +27,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedHelpsController < Gw::Controller::Admin::B
       item.conf_cat_id    = @c_cat_id
     end
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

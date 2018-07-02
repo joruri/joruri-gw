@@ -21,7 +21,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
 #    end
 #    item.search params
 #    item.page   params[:page], params[:limit]
-#    item.order  params[:id], @sort_keys
+#    item.order @sort_keys, 'id ASC'
     order = @sort_keys
     if @role_developer==true
       @items = Gwsub::Sb05MediaType.order(order)

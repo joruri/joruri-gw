@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb04section.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -266,7 +266,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb04CheckSection.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
   end
 

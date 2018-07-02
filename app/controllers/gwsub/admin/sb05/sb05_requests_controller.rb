@@ -19,7 +19,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     item.search params
     item.and 'sql','start_at is not null'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
     _index @requests
   end
@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     item.search params
     item.and 'sql','start_at is not null'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
   end
   def index_before_publish
@@ -51,7 +51,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     item.search params
     item.and 'sql','start_at is not null'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
   end
   def index_before_confirm
@@ -69,7 +69,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     item.search params
     item.and 'sql','start_at is not null'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
   end
 

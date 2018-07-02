@@ -17,7 +17,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfCategoriesController < Gw::Controller:
     item = Gwsub::Sb06AssignedConfCategory.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

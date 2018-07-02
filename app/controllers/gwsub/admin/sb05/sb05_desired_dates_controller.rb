@@ -19,7 +19,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb05DesiredDate.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

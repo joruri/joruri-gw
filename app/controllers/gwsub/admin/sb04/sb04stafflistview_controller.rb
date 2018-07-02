@@ -14,7 +14,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
     item.and "sql" , Gwsub::Sb04stafflist.staff_select(@u_role || @role_sb04_dev)
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

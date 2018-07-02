@@ -37,10 +37,16 @@ module System::Model::Base::ConditionBuilder
 
   def order(columns, default = nil)
     if columns.to_s != ''
-      cb_extention[:order] = columns
+      ordering_columns = columns
     elsif default.to_s != ''
-      cb_extention[:order] = default
+      ordering_columns = default
     end
+    ordering_columns = []
+    ordering_columns.split(/,/).each do |c|
+      column, direction = c.split(/ /)
+      ordering_columns << "#{sanitize_column(column)} #{sanitize_column_direction(direction)}"
+    end
+    cb_extention[:order] = ordering_columns.join(', ')
   end
 
   def group_by(columns)
@@ -125,4 +131,16 @@ module System::Model::Base::ConditionBuilder
     end
     #return self.class.count(column_name, options)
   end
+
+  private
+  def sanitize_column(column)
+    self.class.column_names.each{|a| return a if a == column}
+    return "created_at"
+  end
+
+  def sanitize_column_direction(direction)
+    direction = direction.upcase
+    ['DESC', 'ASC'].include?(direction) ? direction : "DESC"
+  end
+
 end

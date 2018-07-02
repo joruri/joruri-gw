@@ -40,7 +40,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     item.search params
 #    item.creator
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
 
     @items = item.find(:all)
     _index @items

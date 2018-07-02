@@ -16,7 +16,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsFinishedController < Gw::Controller::Admin
     item.and 'sql'," start_at is not null"
     item.and 'sql'," base_at = '#{Gw.date_str(@base_at)} 00:00:00'" unless @base_at.to_s=='0'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
     _index @requests
   end
