@@ -158,7 +158,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     # 開催日id
     prop_cond = "gwsub_sb01_training_schedules.training_id=#{@t_id}"
     prop_order = "gwsub_sb01_training_schedule_conditions.from_at"
-    @p_id_top = Gwsub::Sb01TrainingSchedule.includes(:condition).where(prop_cond).references(:condition).order(prop_order).first
+    @p_id_top = Gwsub::Sb01TrainingSchedule
+      .includes(:condition)
+      .where(Gwsub::Sb01TrainingSchedule.arel_table[:training_id].eq(@t_id))
+      .references(:condition)
+      .order(prop_order).first
     @p_id = nz(params[:p_id],@p_id_top.id)
     # 経路
     @top_menu = nz(params[:t_menu],'entries')

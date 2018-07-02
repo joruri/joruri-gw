@@ -135,10 +135,11 @@ module System::Model::Base::ConditionBuilder
   private
   def sanitize_column(column)
     self.class.column_names.each{|a| return a if a == column}
-    return "created_at"
+    return "id"
   end
 
   def sanitize_column_direction(direction)
+    return 'ASC' if direction.blank?
     direction = direction.upcase
     ['DESC', 'ASC'].include?(direction) ? direction : "DESC"
   end

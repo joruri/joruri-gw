@@ -20,9 +20,9 @@ class Gw::YearFiscalJp < Gw::Database
     else
       next_year = pd[0].to_i + 1
     end
-    order = "start_at ASC"
-    cond = "start_at >= '#{next_year}-04-01 00:00:00'"
-    item = Gw::YearFiscalJp.where(cond).order(order).first
+    item = Gw::YearFiscalJp
+      .where(Gw::YearFiscalJp.arel_table[:start_at].gteq('#{next_year}-04-01 00:00:00'))
+      .order(start_at: :asc).first
     return item
   end
 
@@ -32,9 +32,9 @@ class Gw::YearFiscalJp < Gw::Database
     rescue
       return nil
     end
-    order = "start_at DESC"
-    cond = "start_at <= '#{pd[0]}-#{pd[1]}-#{pd[2]} 00:00:00'"
-    item = Gw::YearFiscalJp.where(cond).order(order).first
+    item = Gw::YearFiscalJp
+      .where(Gw::YearFiscalJp.arel_table[:start_at].lteq('#{pd[0]}-#{pd[1]}-#{pd[2]} 00:00:00'))
+      .order(start_at: :desc).first
     return item
   end
 

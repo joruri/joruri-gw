@@ -252,9 +252,11 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
 
     @item.attributes = params[:item]
 
-    f_cond = "state!='deleted'"
-    f_cond << " and fyear_id=#{@item.extras[:fyear_id]}" if @item.extras[:fyear_id] && @item.extras[:fyear_id].to_i != 0
-    csv = Gwsub::Sb00ConferenceSectionManagerName.where(f_cond).order(markjp: :desc, g_sort_no: :asc, g_code: :asc).to_csv
+    items = Gwsub::Sb00ConferenceSectionManagerName
+      .where(Gwsub::Sb00ConferenceSectionManagerName.arel_table[:state].not_eq('deleted'))
+    items = items.where(fyear_id: @item.extras[:fyear_id]) if @item.extras[:fyear_id] && @item.extras[:fyear_id].to_i != 0
+    items = items.order(markjp: :desc, g_sort_no: :asc, g_code: :asc)
+    csv = items.to_csv
 
     filename = "所属長名管理_sb00_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
     send_data @item.encode(csv), filename: filename

@@ -214,7 +214,9 @@ pp current_fyear,next_fyear
 #      ref_cond  = "group_id=#{Core.user_group.id}"
       ref_cond  = "controler='#{nz(params[:ctrl],nil)}'"
       ref_order = "fyear_markjp DESC"
-      max_fyear = Gwsub::Sb00ConferenceManager.where(ref_cond).order(ref_order).first
+      max_fyear = Gwsub::Sb00ConferenceManager
+        .where(controler: nz(params[:ctrl],nil))
+        .order(fyear_markjp: :desc).first
       @copy_fyear_id  = max_fyear.fyear_id unless max_fyear.blank?
     end
     # 表示行数　設定

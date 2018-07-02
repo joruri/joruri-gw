@@ -30,13 +30,12 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
 
   def index
 
-    item = Gwboard::RenewalGroup.new
+    item = Gwboard::RenewalGroup
     show_start_at = @start_at
     if !show_start_at.blank?
-      item.and :start_date, show_start_at
+      item = item.where(start_date: show_start_at)
     end
-    item.order :incoming_group_code
-    @items = item.find(:all)
+    @items = item.order(:incoming_group_code)
   end
 
   def show

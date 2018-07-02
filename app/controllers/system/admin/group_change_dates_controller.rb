@@ -15,10 +15,9 @@ class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
   end
 
   def index
-      item = System::GroupChangeDate.new#.readable
-      item.page  params[:page], params[:limit]
-      item.order params[:sort], "start_at desc"
-      @items = item.find(:all)
+      @items = System::GroupChangeDate
+        .paginate(page: params[:page],per_page: params[:per_page])
+        .order(start_at: :desc)
       _index @items
   end
 

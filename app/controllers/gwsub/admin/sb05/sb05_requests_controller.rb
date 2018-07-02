@@ -166,8 +166,8 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     # 新規登録画面用の記入書式を取得
 #    @media_code = @media.media_code
 #    @categories_code = @media.categories_code
-    m_cond = "media_code='#{@media_code}' and categories_code='#{@categories_code}'"
-    @notice = Gwsub::Sb05Notice.where(m_cond).first
+
+    @notice = Gwsub::Sb05Notice.where(media_code: @media_code, categories_code: @categories_code).first
     if @notice.blank?
       templates = nil
     else
@@ -225,8 +225,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     @media_code       = @media.media_code
     @categories_code  = @media.categories_code
     # ヘルプ入力要領
-    m_cond            = "media_code=#{@media_code} and categories_code=#{@categories_code}"
-    @notice           = Gwsub::Sb05Notice.where(m_cond).first
+    @notice           = Gwsub::Sb05Notice.where(media_code: @media_code, categories_code: @categories_code).first
     # 登録ユーザー
     @user             = Gwsub::Sb05User.find(@req1.sb05_users_id)
   end
@@ -475,8 +474,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     media.media_code      = params[:media_code] unless params[:media_code].to_i==0
     media.categories_code = params[:cat_code]   unless params[:cat_code].to_i==0
     @media                = media.find(:first,:order=>m_order,:conditions=>m_cond)
-    m_cond                = "media_code='#{media.media_code}' and categories_code='#{media.categories_code}'"
-    @notice               = Gwsub::Sb05Notice.where(m_cond).first
+    @notice               = Gwsub::Sb05Notice.where(media_code: media.media_code, categories_code: media.categories_code).first
     if @notice.blank?
       templates = nil
     else

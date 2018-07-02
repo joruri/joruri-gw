@@ -1129,7 +1129,7 @@ pp items
           return
         end
       else
-        item.order params[:id], @sort_keys
+        item.order @sort_keys, 'id ASC'
         select = "group_name_display,conf_item_title,official_title_name,user_name,conf_at,conf_mark,conf_no"
         # 出力データ抽出
         item = item.find(:all,:select=>select)

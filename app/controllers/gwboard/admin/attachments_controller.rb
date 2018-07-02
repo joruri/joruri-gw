@@ -74,7 +74,7 @@ class Gwboard::Admin::AttachmentsController < Gw::Controller::Admin::Base
 
     if params[:system].to_s == 'doclibrary'
       if @title.form_name == 'form002'
-        parent  = Doclibrary::Doc.where("id=#{params[:parent_id]}").first
+        parent  = Doclibrary::Doc.where(id: params[:parent_id]).first
         parent_show_path  = "/doclibrary/docs/#{parent.id}?system=#{params[:system]}&title_id=#{params[:title_id]}"+ret
       else
         parent_show_path  = "/doclibrary/docs/#{@file.parent_id}?system=#{params[:system]}&title_id=#{params[:title_id]}"+ret
@@ -99,7 +99,7 @@ class Gwboard::Admin::AttachmentsController < Gw::Controller::Admin::Base
 private
 
   def load_file(title, id)
-    item = 
+    item =
       if params[:system] == 'gwmonitor_base'
         title.base_files.find_by(id: id)
       else

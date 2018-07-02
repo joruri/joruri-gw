@@ -115,9 +115,8 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
       @fy_id  = nz(params[:fy_id],current_fyear.id)
     end
     # 所属設定
-    c_group_conditions  = "categories_id=#{@cat_id}"
     c_group_order = "cat_sort_no , fyear_markjp DESC"
-    c_group = Gwsub::Sb06AssignedConfGroup.order(c_group_order).where(c_group_conditions).first
+    c_group = Gwsub::Sb06AssignedConfGroup.order(c_group_order).where(categories_id: @cat_id).first
     if c_group.blank?
       @c_group_id  = nz(params[:c_group_id],0)
     else

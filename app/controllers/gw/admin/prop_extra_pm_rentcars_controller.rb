@@ -266,7 +266,7 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
           summary.each{|ym, summary_detail|
             summary_detail.each{|gid, hx|
               if options[:mode] == :summarize
-                Gw::PropExtraPmRentcarSummary.destroy_all "summaries_at='#{Gw.date_str(ym)}' and group_id=#{gid}"
+                Gw::PropExtraPmRentcarSummary.where(summaries_at: Gw.date_str(ym), group_id: gid).destroy_all
                 summary_tbl = Gw::PropExtraPmRentcarSummary.new({
                   :summaries_at => ym,
                   :group_id => gid,
@@ -283,8 +283,9 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
                 summary_tbl.bill_state = '1'
                 driver_g = System::GroupHistory.where(:id => gid).first
 
-                modified_at_cond = %Q(`modified_at` > '#{st_at.strftime('%Y-%m-%d 0:0:0')}' and `modified_at` < '#{ed_at.strftime('%Y-%m-%d 23:59:59')}')
-                modified_at_items = Gw::PropExtraPmRenewalGroup.where(modified_at_cond)
+                modified_at_items = Gw::PropExtraPmRenewalGroup
+                  .where(Gw::PropExtraPmRenewalGroup.arel_table[:modified_at].gt(st_at.strftime('%Y-%m-%d 0:0:0')))
+                  .where(Gw::PropExtraPmRenewalGroup.arel_table[:modified_at].lt(ed_at.strftime('%Y-%m-%d 23:59:59')))
 
                 if modified_at_items.blank?
                   driver_grp_s = "#{driver_g.code}#{driver_g.name}"

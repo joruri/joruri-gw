@@ -75,8 +75,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
       :success_redirect_uri=>location,
       :after_process=>Proc.new{
 #        cond="sb05_users_id=#{params[:id]}"
-        cond="sb05_users_id=#{params[:id]} and org_code='#{@user.org_code}' and org_name='#{@user.org_name}'"
-        requests = Gwsub::Sb05Request.where(cond)
+        requests = Gwsub::Sb05Request.where(sb05_users_id: params[:id], org_code: @user.org_code, org_name: @user.org_name)
         requests.each do |x|
           x.telephone = params[:user]['telephone']
           x.save

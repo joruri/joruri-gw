@@ -16,11 +16,9 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   end
 
   def index
-    item = System::UsersGroup.new
-    item.group_id = @parent.id
-    item.page  params[:page], params[:limit]
-    item.order params[:sort], "user_code ASC"
-    @items = item.find(:all)
+    @items = System::UsersGroup.where(group_id: @parent.id)
+      .paginate(page: params[:page],per_page: params[:per_page])
+      .order(user_code: :asc)
 
     _index @items
   end

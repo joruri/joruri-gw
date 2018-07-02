@@ -105,18 +105,26 @@ class Gwsub::Admin::Sb05::Sb05RequestsPutController < Gw::Controller::Admin::Bas
         return
       end
       m_cond = "state=1 and media_code=#{par_item[:media_code]}"
-      @media = Gwsub::Sb05MediaType.where(m_cond).first
+      @media = Gwsub::Sb05MediaType.where(state: 1, media_code: par_item[:media_code]).first
 #      filename = "sb05_requests_select_#{par_item[:nkf]}.csv"
       filename = "広報原稿_#{@media.media_name}_#{par_item[:b_at]}_#{par_item[:nkf]}.csv"
       order = "start_at ASC,media_code ASC,categories_code ASC"
       cond = set_condition(par_item)
       # 出力項目指定
-      cols = par_item[:chks].to_a.sort
+      col_params = par_item[:chks].to_a.sort
+      cols = []
+      Gwsub::Sb05MediaType.column_names.each{|c| cols << c if col_params.include?(c) }
       sel_cols = cols.join(',')
       select = "title,body1"
       select += ",#{sel_cols}" if !sel_cols.blank?
       # 出力データ抽出
-      items = Gwsub::Sb05Request.where(cond).order(order).select(select)
+      items = Gwsub::Sb05Request
+        .where(m_state: '2')
+        .where(r_state: param[:r_status])
+        .where(media_code: param[:media_code])
+        .where(base_at: param[:b_at])
+        .order(order)
+        .select(select)
       if items.blank?
       else
         file = Gw::Script::Tool.ar_to_csv(items, :cols=>select)

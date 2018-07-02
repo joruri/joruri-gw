@@ -85,9 +85,8 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
 
     par_item = params[:item]
     m_cd = par_item[:m_cd]
-    m_cond="media_code='#{m_cd}'"
     m_order = "media_code,categories_code"
-    media = Gwsub::Sb05MediaType.where(m_cond).order(m_order).first
+    media = Gwsub::Sb05MediaType.where(media_code: m_cd).order(m_order).first
     return if media.blank?
 
     if par_item[:chks1].blank? ||

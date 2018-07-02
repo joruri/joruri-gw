@@ -303,6 +303,7 @@ class Gwsub
     # option : 未実装
 
     # 対象年度開始日取得
+    group_table = System::Group.arel_table
     if fyear_id.to_i==0
       target_fyear_id = Gw::YearFiscalJp.get_record(Time.now).id
     else
@@ -311,22 +312,31 @@ class Gwsub
     target_start_at = Gw::YearFiscalJp.find(target_fyear_id).start_at.strftime("%Y-%m-%d 00:00:00")
     # 所属指定時は存在・有効チェック
     unless section_id.to_i==0
-      group_cond    = "state='enabled'"
-      group_cond    << " and start_at <= '#{target_start_at}'"
-      group_cond    << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{target_start_at}' ) "
       group_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
-      gid_lists = System::Group.where(group_cond).order(group_order).map{|x| x.id}
+      gid_lists = System::Group.where(state: 'enabled')
+        .where(group_table[:start_at].lteq(target_start_at))
+        .where(group_table[:end_at].eq(nil)
+          .or(group_table[:end_at].gteq(target_start_at))
+          .or(group_table[:end_at].eq('0000-00-00 00:00:00'))
+          )
+        .order(group_order).map{|x| x.id}
       check = gid_lists.index(section_id.to_i)
       unless check.blank?
         return section_id
       end
     end
     # 有効な所属リストの先頭のidを返す
-    child_cond    = "state='enabled' and level_no=3"
-    child_cond    << " and start_at <= '#{target_start_at}'"
-    child_cond    << " and (end_at IS Null or end_at = '0000-00-00 00:00:00' or end_at >= '#{target_start_at}' ) "
     child_order   = "sort_no , code , start_at DESC, end_at IS Null ,end_at DESC"
     child1 = System::Group.where(child_cond).order(child_order).first
+
+      child1 = System::Group.where(state: 'enabled')
+        .where(level_no: 3)
+        .where(group_table[:start_at].lteq(target_start_at))
+        .where(group_table[:end_at].eq(nil)
+          .or(group_table[:end_at].gteq(target_start_at))
+          .or(group_table[:end_at].eq('0000-00-00 00:00:00'))
+          )
+        .order(child_order).first
     if child1.blank?
       sec_id = 0
     else

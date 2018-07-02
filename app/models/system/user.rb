@@ -158,8 +158,8 @@ class System::User < ActiveRecord::Base
   def has_table_priv?(table, priv)
     roles = System::Role.arel_table
     System::Role.where(table_name: table, priv_name: priv).where([
-        roles[:class_id].eq(0), 
-        roles[:class_id].eq(1).and( roles[:uid].eq(id) ), 
+        roles[:class_id].eq(0),
+        roles[:class_id].eq(1).and( roles[:uid].eq(id) ),
         roles[:class_id].eq(2).and( roles[:uid].in(groups[0].self_and_ancestors.map(&:id)) )
       ].reduce(:or)
     ).order(:idx).first.try(:priv) == 1
