@@ -32,7 +32,7 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(notice_params)
     _create @item, notice: 'お知らせの登録に成功しました。'
   end
 
@@ -42,7 +42,7 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = notice_params
     _update @item, notice: 'お知らせの更新に成功しました。'
   end
 
@@ -74,4 +74,9 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
       render :index
     end
   end
+private
+  def notice_params
+    params.require(:item).permit(:sort_no, :state, :published, :title)
+  end
+
 end

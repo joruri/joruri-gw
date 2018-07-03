@@ -114,4 +114,10 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "会議室との同期に成功しました。"
   end
+
+private
+
+  def place_params
+    params.require(:item).permit(:sort_no, :state, :place)
+  end
 end

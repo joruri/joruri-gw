@@ -46,7 +46,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::EditTab.new(params[:item])
+    @item = Gw::EditTab.new(edit_tab_params)
     _create @item
   end
 
@@ -56,7 +56,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::EditTab.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = edit_tab_params
     _update @item
   end
 
@@ -97,5 +97,15 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     group = System::Group.find(params[:group_id])
     options = group.self_and_enabled_descendants.map{|g| [g.name, g.id]}
     render text: view_context.options_for_select(options)
+  end
+
+private
+
+  def edit_tab_params
+    params.require(:item).permit(:parent_id, :level_no, :sort_no, :published, :state, :name,
+      :class_sso, :other_controller_use, :tab_keys, :other_controller_url,
+      :link_url, :class_external, :field_account, :field_pass, :icon_path,
+      :is_public, :display_auth,
+      :selected_public_group_ids => [])
   end
 end

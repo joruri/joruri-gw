@@ -39,10 +39,17 @@ class Doclibrary::Admin::CategoriesController < Gw::Controller::Admin::Base
 
   end
 
+  def create
+    @item = Doclibrary::Category.new(category_params)
+    @item.state = 'public'
+
+    _create @item
+  end
+
   def update
     item = Doclibrary::Category
     @item = item.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = category_params
     @item.state = 'public'
 
     _update @item, :success_redirect_uri => @item.item_path
@@ -54,4 +61,10 @@ class Doclibrary::Admin::CategoriesController < Gw::Controller::Admin::Base
 
     _destroy @item, :success_redirect_uri => @item.item_path
   end
+
+private
+  def category_params
+    params.require(:item).permit(:filename, :wareki, :nen, :gatsu, :sono)
+  end
+
 end

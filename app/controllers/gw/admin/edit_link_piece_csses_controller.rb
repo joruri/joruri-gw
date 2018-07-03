@@ -31,7 +31,7 @@ class Gw::Admin::EditLinkPieceCssesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::EditLinkPieceCss.new(params[:item])
+    @item = Gw::EditLinkPieceCss.new(edit_link_piece_css_params)
     @item.created_user = Core.user.name
     @item.created_group = Core.user_group.name
     _create @item
@@ -43,7 +43,7 @@ class Gw::Admin::EditLinkPieceCssesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::EditLinkPieceCss.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = edit_link_piece_css_params
     @item.updated_user = Core.user.name
     @item.updated_group = Core.user_group.name
     _update @item
@@ -59,4 +59,11 @@ class Gw::Admin::EditLinkPieceCssesController < Gw::Controller::Admin::Base
 
     _update @item, notice: "#{@item.css_name}の削除に成功しました"
   end
+
+private
+
+  def edit_link_piece_css_params
+    params.require(:item).permit(:state, :css_name, :css_sort_no, :css_class, :css_type)
+  end
+
 end

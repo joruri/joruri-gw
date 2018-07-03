@@ -188,4 +188,13 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
       http_error(404)
     end
   end
+
+private
+  def doc_params
+    params.require(:item).permit(:body, :category1_id, :chg_parent_id,
+      :display_order, :doc_alias, :section_code, :skip_updating_updated_at,
+      :seq_no, :state, :title, :wiki_body, :wiki, :selected_recognizer_uids => [])
+  end
+
+
 end

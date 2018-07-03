@@ -69,7 +69,7 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
         items = @title.folders.roots.includes(
           :public_children_for_prev_and_next_link => {
             :public_children_for_prev_and_next_link => {
-              :public_children_for_prev_and_next_link => 
+              :public_children_for_prev_and_next_link =>
                 :public_children_for_prev_and_next_link}})
         next_and_prev_items(items)
       end
@@ -121,7 +121,7 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
 
   def update
     @item = @title.docs.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
 
     @item.latest_updated_at = Time.now unless @item.skip_updating_updated_at == '1'
     @item.doc_type = 1
@@ -203,4 +203,13 @@ class Digitallibrary::Admin::DocsController < Gw::Controller::Admin::Base
       http_error(404)
     end
   end
+
+private
+  def doc_params
+    params.require(:item).permit(:body, :category4_id, :chg_parent_id,
+      :display_order, :doc_alias, :section_code, :skip_updating_updated_at,
+      :seq_no, :state, :title, :wiki_body, :wiki, :selected_recognizer_uids => [])
+  end
+
+
 end

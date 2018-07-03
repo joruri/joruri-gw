@@ -73,7 +73,7 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Digitallibrary::Folder.new(params[:item])
+    @item = Digitallibrary::Folder.new(folder_params)
     @item.latest_updated_at = Time.now
     @item.title_id = @title.id
     @item.parent_id = @item.chg_parent_id
@@ -106,7 +106,7 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
     _search_condition
 
-    @item.attributes = params[:item]
+    @item.attributes = folder_params
     @item.doc_type = 0
 
     if @item.parent_id != @item.chg_parent_id
@@ -139,4 +139,10 @@ class Digitallibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   def check_title_writable
     return error_auth unless @title.is_writable?
   end
+
+private
+  def folder_params
+    params.require(:item).permit(:state, :chg_parent_id, :seq_no, :display_order, :title)
+  end
+
 end

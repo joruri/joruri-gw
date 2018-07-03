@@ -47,7 +47,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::EditLinkPiece.new(params[:item])
+    @item = Gw::EditLinkPiece.new(edit_link_piece_params)
     _create @item
   end
 
@@ -57,7 +57,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::EditLinkPiece.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = edit_link_piece_params
     _update @item
   end
 
@@ -104,4 +104,14 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   def list
     @items = Gw::EditLinkPiece.where(level_no: 2, uid: nil).order(state: :desc, sort_no: :asc)
   end
+
+private
+
+  def edit_link_piece_params
+    params.require(:item).permit(:published, :state, :name, :tab_keys,
+      :mode, :block_icon_id, :block_css_id, :display_auth,
+      :class_sso, :link_url, :class_external,
+      :field_account, :field_pass, :icon_path)
+  end
+
 end

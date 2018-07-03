@@ -63,7 +63,8 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Digitallibrary::Control.new(params[:item])
+    dump params[:item].each{|k, v| dump k}
+    @item = Digitallibrary::Control.new(cabinet_params)
     return error_auth unless @item.is_admin?
 
     @item.left_index_use = '1'
@@ -89,7 +90,7 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     @item = Digitallibrary::Control.find(params[:id])
     return error_auth unless @item.is_admin?
 
-    @item.attributes = params[:item]
+    @item.attributes = cabinet_params
 
     load_theme_settings
 
@@ -131,4 +132,27 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     end
     return csses
   end
+
+private
+
+  def cabinet_params
+    params.require(:item).permit(:state, :create_section, :recognize , :title,
+      :default_limit , :importance,  :category1_name, :category,
+      :separator_str1, :separator_str2, :notification,
+      :upload_graphic_file_size_capacity, :upload_graphic_file_size_capacity_unit,
+      :upload_document_file_size_capacity, :upload_document_file_size_capacity_unit,
+      :upload_graphic_file_size_max, :upload_document_file_size_max,
+      :sort_no, :view_hide, :caption,
+      :admingrps_json, :adms_json,
+      :editors_json,  :sueditors_json,
+      :readers_json, :sureaders_json,
+      :dbname, :other_system_link, :left_index_use,
+      :upload_graphic_file_size_currently, :upload_document_file_size_currently,
+      :banner, :left_banner, :left_index_bg_color, :help_display, :help_url,
+      :help_admin_url,
+      :admingrps => [:gid], :adms => [:gid],
+      :editors => [:gid], :sueditors => [:gid],
+      :readers => [:gid], :sureaders => [:gid])
+  end
+
 end

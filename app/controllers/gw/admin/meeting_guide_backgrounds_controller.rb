@@ -32,7 +32,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(background_params)
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _create @item, notice: '背景画像の登録に成功しました。'
@@ -44,7 +44,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = background_params
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _update @item, notice: '背景画像の更新に成功しました。'
@@ -77,4 +77,10 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
       render :index
     end
   end
+
+private
+  def background_params
+    params.require(:item).permit(:sort_no, :state, :published, :file, :background_color, :area, :caption)
+  end
+
 end
