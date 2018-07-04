@@ -30,8 +30,8 @@ class Gw::Admin::PrefSoumuMessagesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PrefSoumuMessage.new(params[:item])
-    _create @item 
+    @item = Gw::PrefSoumuMessage.new(soumu_message_params)
+    _create @item
   end
 
   def edit
@@ -40,7 +40,7 @@ class Gw::Admin::PrefSoumuMessagesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PrefSoumuMessage.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = soumu_message_params
     _update @item
   end
 
@@ -48,4 +48,10 @@ class Gw::Admin::PrefSoumuMessagesController < Gw::Controller::Admin::Base
     @item = Gw::PrefSoumuMessage.find(params[:id])
     _destroy @item
   end
+
+private
+  def soumu_message_params
+    params.require(:item).permit(:state, :tab_keys, :sort_no, :body)
+  end
+
 end

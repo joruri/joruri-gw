@@ -44,7 +44,7 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(prop_params)
     _create @item, notice: "#{@model.model_name.human}の登録に成功しました"
   end
 
@@ -54,7 +54,7 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = prop_params
     _update @item, notice: "#{@model.model_name.human}の更新に成功しました"
   end
 
@@ -66,12 +66,12 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
 
   def upload
     @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
+    @image_item = @item.images.build
   end
 
   def image_create
     @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
+    @image_item = @item.images.build(image_params)
 
     if @image_item.save
       redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の追加に成功しました。"
@@ -95,5 +95,19 @@ class Gw::Admin::PropGenreCommonController < Gw::Controller::Admin::Base
 
   def check_auth
     return error_auth unless @is_admin
+  end
+
+  def prop_params
+    params.require(:item).permit(:reserved_state, :sort_no, :car_model,
+      :name, :type_id, :position,
+      :register_no, :exhaust, :year_type,
+      :comment, :delete_state,
+      :extra_flag, :gid,
+      :max_person, :max_tables, :max_chairs,
+      :meter => [:travelled_km])
+  end
+
+  def image_params
+    params.require(:item).permit(:file, :note)
   end
 end

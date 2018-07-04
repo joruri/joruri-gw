@@ -15,7 +15,7 @@ class Gw::Admin::PlusUpdateSettingsController < Gw::Controller::Admin::Base
 
   def create
     @item = Gw::Property::PlusUpdate.where(uid: Core.user.id).first_or_new
-    @item.options_value = params[:item].values
+    @item.options_value = plus_update_setting_params.values
     @item.save
     redirect_to "/gw/plus_update_settings"
   end
@@ -42,4 +42,10 @@ class Gw::Admin::PlusUpdateSettingsController < Gw::Controller::Admin::Base
     end unless project_items.blank?
     return redirect_to sns_url
   end
+
+private
+  def plus_update_setting_params
+    params.require(:item).permit!
+  end
+
 end

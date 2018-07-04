@@ -56,4 +56,11 @@ class Gw::Admin::PropTypesController < Gw::Controller::Admin::Base
 
     _update @item, :notice => "削除処理は完了しました。"
   end
+
+private
+
+  def type_params
+    params.require(:item).permit(:name, :sort_no, :restricted, :user_str)
+  end
+
 end

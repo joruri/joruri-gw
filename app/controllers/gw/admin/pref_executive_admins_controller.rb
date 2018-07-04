@@ -25,7 +25,7 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
 
   def create
     @items = Gw::PrefExecutive.order(u_order: :asc, id: :asc)
-    @items = params[:items].values.map do |param|
+    @items = member_params.values.map do |param|
       item = @items.detect{|i| i.id == param[:id].to_i} || Gw::PrefExecutive.new(state: 'off')
       item.attributes = param.except(:id)
       item
@@ -67,7 +67,7 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
     @items = Gw::PrefExecutive.order(u_order: :asc, id: :asc)
       .paginate(page: params[:page], per_page: params[:limit])
 
-    params[:item].each do |id, param|
+    item_params.each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
       item.attributes = param if item
     end
@@ -83,9 +83,9 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    return if item_params.nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
 
     csv = Gw::PrefExecutive.order(:u_order).to_csv(headers: ["並び順","職員番号","氏名","職名","Gwに表示","AIRに表示"]) do |item|
       data = [item.u_order, item.u_code, item.u_name, item.title]
@@ -98,9 +98,9 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
 
   def csvup
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    return if item_params.nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
     return unless @item.valid_file?
 
     begin
@@ -117,4 +117,16 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
     group = System::Group.find(params[:group_id])
     render text: view_context.options_for_select(group.enabled_user_options(ldap: 1))
   end
+
+
+private
+
+  def member_params
+    params.require(:items).permit!
+  end
+
+  def item_params
+    params.require(:item).permit!
+  end
+
 end

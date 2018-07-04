@@ -207,7 +207,7 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
     return error_auth unless @is_pm_admin
 
     @item = @mdl_actual.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = pm_rentcar_params
     @item.updated_user = Core.user.name
     @item.updated_group = "#{Core.user_group.code}#{Core.user_group.name}"
 
@@ -336,4 +336,13 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
     else
     end
   end
+
+private
+
+  def pm_rentcar_params
+    params.require(:item).permit(:start_meter, :end_meter, :start_at, :end_at,
+      :driver_user_id, :driver_group_id, :user_uname, :user_gname,
+      :toll_fee, :refuel_amount, :to_go, :title)
+  end
+
 end

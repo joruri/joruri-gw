@@ -11,7 +11,7 @@ class Gw::Admin::PropExtraPmRemarksController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:s_prop_class_id).symbolize_keys) 
+    super.merge(params.slice(:s_prop_class_id).symbolize_keys)
   end
 
   def index
@@ -30,7 +30,7 @@ class Gw::Admin::PropExtraPmRemarksController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PropExtraPmRemark.new(params[:item])
+    @item = Gw::PropExtraPmRemark.new(remark_params)
     _create @item
   end
 
@@ -40,12 +40,18 @@ class Gw::Admin::PropExtraPmRemarksController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PropExtraPmRemark.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = remark_params
     _update @item
   end
 
   def destroy
     @item = Gw::PropExtraPmRemark.find(params[:id])
     _destroy @item
+  end
+
+private
+
+  def remark_params
+    params.require(:item).permit(:prop_class_id, :state, :sort_no, :title, :url)
   end
 end

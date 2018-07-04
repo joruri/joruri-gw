@@ -44,7 +44,7 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PrefDirector.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = item_params
     @item.group_directors.each do|d|
       if d._destroy_flag == '1'
         d.state = 'deleted'
@@ -70,7 +70,7 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
     @items = Gw::PrefDirector.where(parent_g_order: params[:g_cat].to_i)
       .order(parent_g_order: :asc, u_order: :asc).paginate(page: params[:page], per_page: params[:limit])
 
-    params[:item].each do |id, param|
+    item_params.each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
       item.attributes = param if item
     end
@@ -91,9 +91,9 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    return if item_params.nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
 
     items =
       if @item.extras[:g_cat] == "0"
@@ -122,9 +122,9 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def csvup
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    return if item_params.nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
     return unless @item.valid_file?
 
     begin
@@ -183,13 +183,22 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def temp_csv
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    return if item_params.nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
 
     csv = Gw::PrefDirectorTemp.where(deleted_at: nil).order(parent_g_order: :asc, u_order: :asc)
       .to_csv(headers: ['並び順','職員番号','氏名','職名','部局','Gwに表示']) {|item| item_to_csv(item) }
 
     send_data @item.encode(csv), type: 'text/csv', filename: "部課長在庁表示管理_仮一覧_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
   end
+
+
+private
+
+  def item_params
+    params.require(:item).permit!
+  end
+
+
 end

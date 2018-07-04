@@ -27,7 +27,7 @@ class Gw::Admin::PropOtherLimitsController < Gw::Controller::Admin::Base
 
   def create
     @item = Gw::PropOtherLimit.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = limit_params
 
     _update @item, success_redirect_uri: "/gw/prop_other_limits"
   end
@@ -38,7 +38,7 @@ class Gw::Admin::PropOtherLimitsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PropOtherLimit.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes =limit_params
 
     _update @item, success_redirect_uri: "/gw/prop_other_limits/#{@item.id}"
   end
@@ -69,4 +69,10 @@ class Gw::Admin::PropOtherLimitsController < Gw::Controller::Admin::Base
 
     redirect_to "/gw/prop_other_limits/", notice: "同期処理は終了しました。"
   end
+
+private
+  def limit_params
+    params.require(:item).permit(:gid, :limit)
+  end
+
 end
