@@ -73,7 +73,7 @@ class Gwcircular::Admin::DocsController < Gw::Controller::Admin::Base
 
     @parent = @title.docs.find(@item.parent_id)
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
 
     @item.published_at ||= Time.now if @item.state_was == 'unread'
     @item.latest_updated_at = Time.now
@@ -118,6 +118,10 @@ class Gwcircular::Admin::DocsController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def doc_params
+    params.require(:item).permit(:body)
+  end
 
   def check_title_readable
     return error_auth unless @title.is_readable?

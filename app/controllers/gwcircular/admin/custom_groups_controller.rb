@@ -33,7 +33,7 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwcircular::CustomGroup.new(params[:item])
+    @item = Gwcircular::CustomGroup.new(custom_group_params)
     @item.owner_uid = Core.user.id
     _create @item
   end
@@ -48,7 +48,7 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
     return http_error(404) unless @item
     return error_auth  unless @item.owner_uid == Core.user.id
 
-    @item.attributes = params[:item]
+    @item.attributes = custom_group_params
     @item.owner_uid = Core.user.id
     _update(@item)
   end
@@ -91,4 +91,11 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
       end
     end
   end
+
+private
+
+  def custom_group_params
+    params.require(:item).permit(:state, :sort_no, :name, :readers_json, :item_readers_uid => [])
+  end
+
 end

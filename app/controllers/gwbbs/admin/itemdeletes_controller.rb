@@ -11,7 +11,7 @@ class Gwbbs::Admin::ItemdeletesController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:page).symbolize_keys) 
+    super.merge(params.slice(:page).symbolize_keys)
   end
 
   def index
@@ -23,7 +23,7 @@ class Gwbbs::Admin::ItemdeletesController < Gw::Controller::Admin::Base
 
   def create
     @item = Gwbbs::Itemdelete.where(content_id: 0).first
-    @item.attributes = params[:item]
+    @item.attributes = delete_params
     @item.admin_code = Core.user.code
     _create @item
   end
@@ -44,6 +44,10 @@ class Gwbbs::Admin::ItemdeletesController < Gw::Controller::Admin::Base
   end
 
 protected
+
+  def delete_params
+    params.require(:item).permit(:limit_date)
+  end
 
   def check_gw_system_admin
     @is_sysadm = Core.user.has_role?('_admin/admin')

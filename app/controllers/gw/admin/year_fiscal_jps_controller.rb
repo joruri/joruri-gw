@@ -32,7 +32,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::YearFiscalJp.new(params[:item])
+    @item = Gw::YearFiscalJp.new(fiscal_jp_params)
     _create @item
   end
 
@@ -42,7 +42,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::YearFiscalJp.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = fiscal_jp_params
     _update @item
   end
 
@@ -50,4 +50,11 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
     @item = Gw::YearFiscalJp.find(params[:id])
     _destroy @item
   end
+
+private
+
+  def fiscal_jp_params
+    params.require(:item).permit(:fyear)
+  end
+
 end

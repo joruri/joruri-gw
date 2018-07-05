@@ -79,7 +79,7 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwbbs::Control.new(params[:item])
+    @item = Gwbbs::Control.new(maker_params)
     return error_auth unless @item.is_admin?
 
     load_theme_settings
@@ -118,7 +118,7 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
 
     load_theme_settings
 
-    @item.attributes = params[:item]
+    @item.attributes = maker_params
     @item.categoey_view_line = 0
     @item._update = true
     @item._makers = true
@@ -203,4 +203,34 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
     item = Gwboard::Image.new
     return item.find(:all, :conditions => sql.where, :order=>'share, id')
   end
+
+private
+
+
+  def maker_params
+    params.require(:item).permit(:state, :create_section, :recognize , :title,
+      :default_limit , :importance, :use_read_falg, :one_line_use, :doc_body_size_capacity,
+      :category1_name, :category, :notification, :default_published, :limit_date,
+      :upload_graphic_file_size_capacity, :upload_graphic_file_size_capacity_unit,
+      :upload_document_file_size_capacity, :upload_document_file_size_capacity_unit,
+      :upload_graphic_file_size_max, :upload_document_file_size_max,
+      :sort_no, :view_hide, :caption, :left_index_pattern,
+      :categoey_view , :group_view, :monthly_view, :monthly_view_line,
+      :preview_mode, :banner_position, :font_color,       :css,
+      :admingrps_json, :adms_json,
+      :editors_json,  :sueditors_json,
+      :readers_json, :sureaders_json,
+      :dbname, :other_system_link, :left_index_use, :doc_body_size_currently,
+      :upload_graphic_file_size_currently, :upload_document_file_size_currently,
+      :banner, :left_banner, :left_index_bg_color, :help_display, :help_url,
+      :help_admin_url, :form_name, :special_link,
+      :restrict_access, :addnew_forbidden, :edit_forbidden, :draft_forbidden,
+      :delete_forbidden, :notes_field01, :notes_field02, :notes_field03,
+      :notes_field04, :notes_field05, :notes_field06, :notes_field07,
+      :notes_field08, :notes_field09, :notes_field10,
+      :admingrps => [:gid], :adms => [:gid],
+      :editors => [:gid], :sueditors => [:gid],
+      :readers => [:gid], :sureaders => [:gid])
+  end
+
 end

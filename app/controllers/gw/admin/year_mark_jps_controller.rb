@@ -33,7 +33,7 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::YearMarkJp.new(params[:item])
+    @item = Gw::YearMarkJp.new(mark_jp_params)
     _create @item
   end
 
@@ -43,12 +43,18 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::YearMarkJp.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = mark_jp_params
     _update @item
   end
 
   def destroy
     @item = Gw::YearMarkJp.find(params[:id])
     _destroy @item
+  end
+
+private
+
+  def mark_jp_params
+    params.require(:item).permit(:name, :mark, :start_at)
   end
 end

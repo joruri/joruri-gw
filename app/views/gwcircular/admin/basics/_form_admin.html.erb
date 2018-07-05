@@ -1,21 +1,10 @@
 <%= required_head %>
 
-<table style="display:none;" class="show">
-  <tr>
-    <th>状態</th>
-    <td><%= f.collection_radio_buttons :state, @item.states, :first, :last %></td>
-  </tr>
-  <tr>
-    <th>所属管理者用画面</th>
-    <td><%= f.select :create_section_flag, @item.use_section_admin, :class => 'select default_limit'%></td>
-  </tr>
-</table>
+<%= f.hidden_field :state %>
+<%= f.hidden_field :create_section_flag %>
+<%= f.hidden_field :recognize %>
 
 <table class="show">
-  <tr style="display:none;">
-    <th>承認機能</th>
-    <td><%= f.collection_radio_buttons :recognize, @item.recognize_states, :first, :last %></td>
-  </tr>
   <tr>
     <th>回覧板タイトル<%= required('※') %></th>
     <td><%= f.text_field :title, :class => 'string title' %></td>
