@@ -26,6 +26,11 @@ class Gwboard::Admin::Piece::SynthesesController < ApplicationController
 
   def index
     init_params
+    @bbs_docs = 0
+    @faq_docs = 0
+    @qa_docs = 0
+    @doclib_docs = 0
+    @digitallib_docs = 0
     if @setup
       index_gwbbs if @setup.gwbbs_check
       index_gwfaq if @setup.gwfaq_check
