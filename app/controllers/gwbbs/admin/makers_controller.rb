@@ -206,7 +206,6 @@ class Gwbbs::Admin::MakersController < Gw::Controller::Admin::Base
 
 private
 
-
   def maker_params
     params.require(:item).permit(:state, :create_section, :recognize , :title,
       :default_limit , :importance, :use_read_falg, :one_line_use, :doc_body_size_capacity,

@@ -39,7 +39,7 @@ class Gwmonitor::Admin::Menus::DocsController < Gw::Controller::Admin::Base
     @item = @title.docs.find(params[:id])
     return error_auth unless @item.is_commissioned?
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Time.now
     @item.set_creater_editor
 
@@ -103,4 +103,11 @@ class Gwmonitor::Admin::Menus::DocsController < Gw::Controller::Admin::Base
       redirect_to @item.show_path
     end
   end
+
+private
+
+  def doc_params
+    params.require(:item).permit(:title, :body, :answer=>[], :remark=>[])
+  end
+
 end

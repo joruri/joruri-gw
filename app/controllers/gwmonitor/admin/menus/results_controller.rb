@@ -33,11 +33,19 @@ class Gwmonitor::Admin::Menus::ResultsController < Gw::Controller::Admin::Base
 
   def update
     @item = @title.docs.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Time.now
     @item.editdate = Time.now.strftime("%Y-%m-%d %H:%M")
     @item.note = "#{@item.note}#{Time.now.strftime("%Y-%m-%d %H:%M")}:#{Core.user.name}によって回答が更新されました。\n"
 
     _update @item, success_redirect_uri: url_for(action: :index)
   end
+
+private
+
+  def doc_params
+    params.require(:item).permit(:title, :body, :answer=>[], :remark=>[])
+  end
+
+
 end

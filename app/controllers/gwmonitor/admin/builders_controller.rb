@@ -58,7 +58,7 @@ class Gwmonitor::Admin::BuildersController < Gw::Controller::Admin::Base
     @item = Gwmonitor::Control.find(params[:id])
     #return error_auth unless @item.is_admin?
 
-    @item.attributes = params[:item]
+    @item.attributes = builder_params
     @item.state = 'closed' if @item.state_was == 'closed'
     @item.able_date = Time.now if @item.state_was == 'preparation' || @item.state_was == 'draft'
 
@@ -130,4 +130,21 @@ class Gwmonitor::Admin::BuildersController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index)
   end
+
+private
+  def builder_params
+    params.require(:item).permit(:title, :wiki, :caption, :wiki_caption,
+      :state, :admin_setting, :spec_config, :reminder_start_section,
+      :expiry_date, :form_id, :send_change, :custom_groups_json,
+      :reader_groups_json, :custom_readers_json, :readers_json,
+      :custom_groups => [:gid, :uid => []],
+      :reader_groups => [:gid, :uid => []],
+      :custom_readers => [:gid, :uid => []],
+      :readers => [:gid, :uid => []],
+      :main_title => [],
+      :label => []).tap do |whitelisted|
+        whitelisted[:enable] = params[:item][:enable].permit! if params[:item][:enable]
+    end
+  end
+
 end
