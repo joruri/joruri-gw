@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
   def create
     init_params
     @l3_current = '03'
-    @item = Gwsub::Sb04officialtitle.new(params[:item])
+    @item = Gwsub::Sb04officialtitle.new(official_title_params)
     location = "/gwsub/sb04/04/sb04officialtitles?#{@qs}"
     if @item.officialtitle_data_save(params, :create)
       flash_notice '更新', true
@@ -57,7 +57,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     init_params
     @item = Gwsub::Sb04officialtitle.new.find(params[:id])
     return http_error(404) if @item.blank?
-    @item.attributes = params[:item]
+    @item.attributes = official_title_params
     location = "/gwsub/sb04/04/sb04officialtitles/#{@item.id}?#{@qs}"
 
     if @item.officialtitle_data_save(params, :update)
@@ -234,6 +234,12 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 #    end
     @param = nil
     return @param
+  end
+
+private
+
+  def official_title_params
+    params.require(:item).permit(:fyear_id, :code, :name, :remarks)
   end
 
 end

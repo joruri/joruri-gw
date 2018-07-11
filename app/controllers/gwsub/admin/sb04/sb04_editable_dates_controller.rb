@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
     init_params
 
     @l3_current = '03'
-    new_item = Gwsub::Sb04EditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb04EditableDate.set_f(editable_date_params)
     @item = Gwsub::Sb04EditableDate.new(new_item)
     options = { :location=>"/gwsub/sb04/04/sb04_editable_dates?#{@qs}" }
     _create(@item,options)
@@ -50,7 +50,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
     @item = Gwsub::Sb04EditableDate.find(params[:id])
     return http_error(404) if @item.blank?
 
-    new_item = Gwsub::Sb04EditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb04EditableDate.set_f(editable_date_params)
     @item.attributes = new_item
 
     options = { :location=>"/gwsub/sb04/04/sb04_editable_dates/#{@item.id}?#{@qs}" }
@@ -107,5 +107,11 @@ pp params
   end
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'fyear_markjp DESC')
+  end
+
+private
+
+  def editable_date_params
+    params.require(:item).permit(:fyear_id, :start_at, :end_at, :headline_at)
   end
 end

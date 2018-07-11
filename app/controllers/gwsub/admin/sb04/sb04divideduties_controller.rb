@@ -190,7 +190,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     @items = item.find(:all)
 
     if Gwsub::Sb04dividedutie.dividedutie_data_save(params, @item, :update)
-      @item.attributes = params[:item]
+      @item.attributes = divide_duty_params
 
       # 更新後は詳細画面を表示
       location = "#{@csv_base_url}/#{@item.id}?#{@qs}"
@@ -239,7 +239,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     # 同一所属内で本務に担当を割当
     init_params
     @item = Gwsub::Sb04stafflist.find(params['item_user_id'])
-    @item.attributes  = params[:item]
+    @item.attributes  = additional_update_params
     location = "#{@csv_base_url}/#{@item.id}#{@qs}"
     options = {:location=>location}
     _update(@item,options)
@@ -292,7 +292,7 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
     assigned_job = Gwsub::Sb04assignedjob.where(:id =>@item.assignedjobs_id).first
     return http_error(404) if assigned_job.blank?
 
-    assigned_job.attributes =params[:assigned_job]
+    assigned_job.attributes = assigned_job_params
     assigned_job.save(:validate=>false)
     # 同じ所属・担当のユーザーを取得
     item = Gwsub::Sb04stafflist.new
@@ -439,6 +439,22 @@ class Gwsub::Admin::Sb04::Sb04dividedutiesController < Gw::Controller::Admin::Ba
 #    end
     @param  = nil
     return  @param
+  end
+
+private
+
+  def divide_duty_params
+    params.require(:item).permit(:fyear_id, :section_id, :multi_section_flg, :divide_duties_order,
+      :official_title_id, :assignedjobs_id, :user_id, :extension, :divide_duties, :remarks)
+  end
+
+  def additional_update_params
+    params.require(:item).permit(:multi_section_flg, :divide_duties_order, :official_title_id,
+      :assignedjobs_id, :user_id, :extension, :divide_duties, :remarks)
+  end
+
+  def assigned_job_params
+    params.require(:item).permit(:fyear_id, :section_id, :code, :remarks, :address, :tel)
   end
 
 end

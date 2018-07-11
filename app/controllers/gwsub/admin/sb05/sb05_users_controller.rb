@@ -40,7 +40,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
   def create
     init_params
 #    pp ['create',params]
-    @user = Gwsub::Sb05User.new(params[:user])
+    @user = Gwsub::Sb05User.new(user_params)
     case @n_from
     when 'r'
       # 依頼登録からのルートは、依頼登録に戻す
@@ -67,7 +67,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
     init_params
 #    pp ['update',params]
     @user = Gwsub::Sb05User.new.find(params[:id])
-    @user.attributes = params[:user]
+    @user.attributes = user_params
     location = "#{@index_uri}#{@user.id}"
     # 更新できたら、requestの連絡先情報も更新する。
 
@@ -199,4 +199,12 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'org_code ASC , org_name ASC , user_name ASC , created_at ASC ')
   end
+
+private
+
+  def user_params
+    params.require(:user).permit(:user_id, :user_code, :user_name, :org_id, :org_code, :org_name,
+      :notes_imported , :telephone)
+  end
+
 end

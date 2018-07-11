@@ -39,7 +39,7 @@ class Gwsub::Admin::Sb04::Sb04SettingsController  < Gw::Controller::Admin::Base
     @item = Gwsub::Sb04Setting.where(:id => params[:id]).first
 
     if params[:item].present?
-      @item.attributes = params[:item]
+      @item.attributes = setting_params
       location = "#{@public_uri}/#{@item.id}"
       options = {
         :success_redirect_uri=>location}
@@ -71,6 +71,11 @@ class Gwsub::Admin::Sb04::Sb04SettingsController  < Gw::Controller::Admin::Base
     @l1_current = '07'
     @l2_current = '02'
     Page.title = "URL設定"
+  end
+
+private
+  def setting_params
+    params.reuqire(:item).permit(:data)
   end
 
 end

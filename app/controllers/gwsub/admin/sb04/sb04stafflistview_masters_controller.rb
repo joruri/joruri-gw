@@ -189,7 +189,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewMastersController < Gw::Controller::A
   end
 
   def put_params(_params, action)
-    _params = _params[:item]
+    _params = _params.require(:item).permit(:fyear_id_sb04, :management_gid_sb04, :management_uid_sb04, :division_gid_sb04, :state)
 
     if _params[:management_uid_sb04].present?
       staff = Gwsub::Sb04stafflist.where(:id =>_params[:management_uid_sb04]).first

@@ -41,7 +41,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     init_params
     return error_auth unless @u_role==true
 
-    @item = Gwsub::Sb05DesiredDate.new(params[:item])
+    @item = Gwsub::Sb05DesiredDate.new(desired_date_params)
     location = @index_uri
     _create(@item,:success_redirect_uri=>location)
   end
@@ -58,7 +58,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     return error_auth unless @u_role==true
 
     @item = Gwsub::Sb05DesiredDate.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = desired_date_params
     location = @index_uri
     _update(@item,:success_redirect_uri=>location)
   end
@@ -236,6 +236,12 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'media_code , desired_at DESC')
+  end
+
+private
+
+  def desired_date_params
+    params.require(:item).permit(:media_id, :media_code, :weekday, :monthly, :media_code, :desired_at, :edit_limit_at)
   end
 
 end

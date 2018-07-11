@@ -194,7 +194,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     @l2_current = '01'
 #pp ['create' , params]
     @user = Gwsub::Sb05User.find(params[:req1]['sb05_users_id'])
-    @req1 = Gwsub::Sb05Request.new(params[:req1])
+    @req1 = Gwsub::Sb05Request.new(request_params)
     @media = Gwsub::Sb05MediaType.find(@req1.media_id)
     @media_code       = @media.media_code
     @categories_code  = @media.categories_code
@@ -234,7 +234,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
 #    @l2_current = nz(params[:l2_c],@l2_current)
     @user = Gwsub::Sb05User.find(params[:req1]['sb05_users_id'])
     @req1 = Gwsub::Sb05Request.new.find(params[:id])
-    @req1.attributes = params[:req1]
+    @req1.attributes = request_params
     @req1.mm_image_state = '0' #edit状態から解放(メルマガ/イベント情報対策)
     location = "/gwsub/sb05//sb05_requests/#{params[:id]}?sb05_users_id=#{@user.id}"
     options = {
@@ -574,4 +574,15 @@ class Gwsub::Admin::Sb05::Sb05RequestsController < Gw::Controller::Admin::Base
     params1 += "&s_keyword=#{params[:s_keyword]}"
     return params1
   end
+
+private
+
+  def request_params
+    params.require(:req1).permit(:start_at, :title, :body1, :contract_at, :m_state, :admin_remarks,
+      :magazine_state, :attaches_file, :sb05_users_id, :user_code,
+      :user_name, :org_code, :org_name, :telephone, :r_state, :media_id,
+      :media_code, :media_name, :categories_code, :categories_name,
+      :start_at, :end_at, :magazine_url, :magazine_url_mobile)
+  end
+
 end

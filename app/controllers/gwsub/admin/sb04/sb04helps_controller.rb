@@ -34,7 +34,7 @@ class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
     @item = Gwsub::Sb04help.where(:id => params[:id]).first
     return http_error(404) if @item.blank?
 
-    @item.attributes = params[:item]
+    @item.attributes = help_params
     _update(@item,{:location=>"/gwsub/sb04/05/sb04helps/#{@item.id}?#{@qs}"})
   end
 
@@ -47,7 +47,7 @@ class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
   def create
     init_params
     @l2_current = '02'
-    @item = Gwsub::Sb04help.new(params[:item])
+    @item = Gwsub::Sb04help.new(help_params)
     _create(@item,{:location=>"/gwsub/sb04/05/sb04helps?#{@qs}"})
   end
 
@@ -89,5 +89,11 @@ class Gwsub::Admin::Sb04::Sb04helpsController < Gw::Controller::Admin::Base
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'title DESC')
   end
+
+private
+
+ def help_params
+   params.require(:item).permit(:categories, :title, :bbs_url, :remarks)
+ end
 
 end

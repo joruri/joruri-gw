@@ -63,7 +63,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     init_params
     @l3_current = '03'
 
-    new_item = Gwsub::Sb04SeatingList.set_f(params[:item])
+    new_item = Gwsub::Sb04SeatingList.set_f(seating_list_params)
 
     @item = Gwsub::Sb04SeatingList.new(new_item)
 
@@ -81,7 +81,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     @item = Gwsub::Sb04SeatingList.where(:id => params[:id]).first
     return redirect_to http_error(404) if @item.blank?
 
-    new_item = Gwsub::Sb04SeatingList.set_f(params[:item])
+    new_item = Gwsub::Sb04SeatingList.set_f(seating_list_params)
     @item.attributes = new_item
 
     options={:location=>"/gwsub/sb04/04/sb04_seating_lists/#{@item.id}?#{@qs}"}
@@ -304,6 +304,12 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
       end
     end
     return '0'
+  end
+
+private
+
+  def seating_list_params
+    params.require(:item).permit(:fyear_markjp, :fyear_id, :title, :bbs_url, :remarks)
   end
 
 end
