@@ -66,7 +66,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     return error_auth unless @u_role==true
     @l1_current='02'
 
-    @item = Gwsub::Sb00ConferenceSectionManagerName.new(params[:item])
+    @item = Gwsub::Sb00ConferenceSectionManagerName.new(section_manager_params)
     location = @index_uri+"?#{@qs}"
     options = {:success_redirect_uri=>location}
     _create(@item,options)
@@ -85,7 +85,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     @item = Gwsub::Sb00ConferenceSectionManagerName.find(params[:id])
     return http_error(404) if @item.state=='deleted'
 
-    @item.attributes = params[:item]
+    @item.attributes = section_manager_params
     location = @index_uri+"?#{@qs}"
     options = {:success_redirect_uri=>location}
     _update(@item,options)
@@ -280,4 +280,11 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     flash[:notice] = '登録処理が完了しました。'
     redirect_to @index_uri
   end
+
+private
+
+  def section_manager_params
+    params.require(:item).permit(:state, :gid, :manager_name)
+  end
+
 end

@@ -81,7 +81,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     init_params
     _kari_id = get_kari_id()
 
-    new_item = Gwsub::Sb01Training.set_f(params[:item])
+    new_item = Gwsub::Sb01Training.set_f(plan_params)
     @item = Gwsub::Sb01Training.new(new_item)
     @cat = @item.categories
     @fyed_id = @item.fyear_id
@@ -156,7 +156,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
   def update
     init_params
     @item = Gwsub::Sb01Training.find(params[:id])
-    new_item = Gwsub::Sb01Training.set_f(params[:item])
+    new_item = Gwsub::Sb01Training.set_f(plan_params)
     @item.attributes = new_item
     @fyed_id = params[:item]['fyear_id']
     location = "#{@public_uri}/#{@item.id}"
@@ -332,4 +332,12 @@ class Gwsub::Admin::Sb01::Sb01TrainingPlansController < Gw::Controller::Admin::B
     }
     _update(@item,options)
   end
+
+private
+
+  def plan_params
+    params.require(:item).permit(:fyear_id, :fyear_markjp, :categories, :state, :bbs_doc_id, :bbs_url,
+      :title, :body, :group_id, :member_id, :member_tel)
+  end
+
 end

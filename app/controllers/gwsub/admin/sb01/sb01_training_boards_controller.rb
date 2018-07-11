@@ -39,7 +39,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingBoardsController < Gw::Controller::Admin::
   def create
     init_params
     @item = Gwsub::Property::TrainingBoard.first_or_new
-    @item.attributes = params[:item]
+    @item.attributes = board_params
     _create(@item)
   end
 
@@ -53,7 +53,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingBoardsController < Gw::Controller::Admin::
     init_params
     @item = Gwsub::Property::TrainingBoard.first
     return http_error(404) if @item.blank?
-    @item.attributes = params[:item]
+    @item.attributes = board_params
     _update(@item)
   end
 
@@ -118,6 +118,12 @@ class Gwsub::Admin::Sb01::Sb01TrainingBoardsController < Gw::Controller::Admin::
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'updated_at' )
 #    @sort_keys = nz(params[:sort_keys], 'fyear_markjp DESC , categories ASC , bbs_url ASC' )
+  end
+
+private
+
+  def board_params
+    params.require(:item).permit(:class_id, :uid, :name, :type_name, :options)
   end
 
 end

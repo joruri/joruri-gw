@@ -57,7 +57,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     init_params
     @item1 = Gwsub::Sb01Training.find(@t_id)
     @ts    = Gwsub::Sb01TrainingSchedule.find(@p_id)
-    @item  = Gwsub::Sb01TrainingScheduleMember.new(params[:item])
+    @item  = Gwsub::Sb01TrainingScheduleMember.new(member_params)
     @item.training_id = @item1.id
     @item.condition_id = @ts.condition_id
     location = "/gwsub/sb01/sb01_training_schedules/#{@p_id}?t_id=#{@item1.id}&t_menu=#{@top_menu}"
@@ -207,5 +207,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
   def user_fields
     users = System::User.get_user_select(params[:g_id])
     render text: view_context.options_for_select([['[指定なし]','']] + users), layout: false
+  end
+
+private
+  def member_params
+    params.require(:item).permit(:training_schedule_id, :training_group_id, :training_user_id, :training_user_tel,
+       :entry_group_id, :entry_user_id, :entry_user_tel)
   end
 end

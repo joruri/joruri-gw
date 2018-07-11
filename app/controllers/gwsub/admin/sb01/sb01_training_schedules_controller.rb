@@ -55,20 +55,20 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     @item = Gwsub::Sb01TrainingSchedule.find(params[:id])
     @trainig = Gwsub::Sb01Training.where(:id =>@item.training_id).first
     @item1 = @trainig
-    case @trainig.state
+    set_state = case @trainig.state
       # 研修のstateに対応する開催日ごとのstateを強制設定
     when '1'
       # 準備中
-      params[:item]['state']='1'
+      '1'
     when '2'
       # 受付中の場合は、開催日個別のstateをそのまま採用
       # 「研修全体として受付中・開催日個別で準備中」も許容する。
     when '3'
       # 締切
-      params[:item]['state']='3'
+      '3'
     when '4'
       # 終了
-      params[:item]['state']='4'
+      '4'
     else
     end
 
@@ -78,13 +78,10 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
     ed_at     = @item.from_end.strftime('%Y-%m-%d ')
     ed_at    += params[:item]['ed_time']
     ed_at    += ":#{params[:item]['ed_time_min']}"
-    params[:item].delete 'st_time'
-    params[:item].delete 'st_time_min'
-    params[:item].delete 'ed_time'
-    params[:item].delete 'ed_time_min'
-    @item.attributes = params[:item]
+    @item.attributes = schedule_params
     @item.from_start = st_at
     @item.from_end   = ed_at
+    @item.state      = set_state
     location = "#{@public_uri}/#{@item.id}?t_id=#{@item.training_id}&t_menu=plans"
     after_process = Proc.new{
       gw_skd = Gw::Schedule.where(:id =>@item.schedule_id).first
@@ -285,5 +282,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulesController < Gw::Controller::Admi
 
     filename = "名簿_#{training.title}_#{skd.from_start.strftime('%Y年%m月%d日')}.csv"
     send_data NKF::nkf('-s', csv), type: 'text/csv', filename: filename
+  end
+
+private
+
+  def schedule_params
+    params.require(:item).permit(:prop_name, :members_max)
   end
 end

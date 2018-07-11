@@ -53,7 +53,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
 
   def create
     init_params
-    new_item = Gwsub::Sb01Training.set_f(params[:item])
+    new_item = Gwsub::Sb01Training.set_f(guide_params)
     @item = Gwsub::Sb01TrainingGuide.new(new_item)
     @cat = @item.categories
     @fyed_id = @item.fyear_id
@@ -74,9 +74,9 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
   def update
     init_params
     @item = Gwsub::Sb01TrainingGuide.find(params[:id])
-    new_item = Gwsub::Sb01Training.set_f(params[:item])
+    new_item = Gwsub::Sb01Training.set_f(guide_params)
     @item.attributes = new_item
-    @fyed_id = params[:item]['fyear_id']
+    @fyed_id = guide_params['fyear_id']
     location = "#{@public_uri}/#{@item.id}"
     options = {
       :success_redirect_uri=>location,
@@ -144,9 +144,9 @@ class Gwsub::Admin::Sb01::Sb01TrainingGuidesController < Gw::Controller::Admin::
     @sort_keys = nz(params[:sort_keys], 'categories ASC , fyear_markjp DESC , updated_at DESC' )
   end
 
-  def destory
-    #試しに
-    init_params
-    @item = Gwsub::Sb01TrainingGuide.find(params[:id])
+private
+
+  def guide_params
+    params.require(:item).permit(:fyear_markjp, :categories, :fyear_id, :title, :bbs_url, :remarks)
   end
 end

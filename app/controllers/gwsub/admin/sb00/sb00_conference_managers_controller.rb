@@ -126,7 +126,7 @@ pp current_fyear,next_fyear
     unless params[:l4_c]
       @l4_current ='02'
     end
-    @item = Gwsub::Sb00ConferenceManager.new(params[:item])
+    @item = Gwsub::Sb00ConferenceManager.new(manager_params)
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -152,7 +152,7 @@ pp current_fyear,next_fyear
   def update
     init_params
     @item = Gwsub::Sb00ConferenceManager.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = manager_params
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -208,7 +208,7 @@ pp current_fyear,next_fyear
     # コピー元id 設定
     if params[:do]=="copy"
       @copy_fyear_id = 0
-#      fyear = Gw::YearFiscalJp.get_record(Date.today)
+#      fyear = Gw::YearFiscal, Jp.get_record(Date.today)
 #      @copy_fyear_id = fyear.id unless fyear.blank?
       # 最終登録年度を取得し、その翌年度を設定
 #      ref_cond  = "group_id=#{Core.user_group.id}"
@@ -285,4 +285,13 @@ pp current_fyear,next_fyear
     users = System::User.get_user_select(params[:g_id])
     render text: view_context.options_for_select(users), layout: false
   end
+
+
+private
+
+  def manager_params
+    params.require(:item).permit(:controler, :memo_str, :fyear_id, :group_id,
+      :user_id, :send_state)
+  end
+
 end
