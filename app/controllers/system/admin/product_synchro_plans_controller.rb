@@ -24,14 +24,14 @@ class System::Admin::ProductSynchroPlansController < Gw::Controller::Admin::Base
 
   def new
     @item = System::ProductSynchroPlan.new(
-      :state => 'plan', 
+      :state => 'plan',
       :start_at => (Time.now + 1.days).strftime('%Y-%m-%d 00:00'),
       :product_ids => System::Product.all.pluck(:id)
     )
   end
 
   def create
-    @item = System::ProductSynchroPlan.new(params[:item])
+    @item = System::ProductSynchroPlan.new(product_synchro)
 
     _create @item
   end
@@ -42,7 +42,7 @@ class System::Admin::ProductSynchroPlansController < Gw::Controller::Admin::Base
 
   def update
     @item = System::ProductSynchroPlan.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = product_synchro
 
     _update @item
   end
@@ -52,4 +52,10 @@ class System::Admin::ProductSynchroPlansController < Gw::Controller::Admin::Base
 
     _destroy @item
   end
+
+private
+  def product_synchro
+    params.require(:item).permit(:start_at, :product_ids => [])
+  end
+
 end

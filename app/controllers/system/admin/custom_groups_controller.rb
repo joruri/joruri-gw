@@ -23,7 +23,7 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::CustomGroup.new(params[:item])
+    @item = System::CustomGroup.new(custom_group_params)
     _create @item
   end
 
@@ -33,7 +33,7 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::CustomGroup.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = custom_group_params
     _update @item
   end
 
@@ -111,6 +111,18 @@ class System::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def custom_group_params
+    params.require(:item).permit(:state, :name, :sort_no, :state, :is_default, :name_en,
+      :selected_admin_group_ids => [],
+      :selected_admin_user_ids => [],
+      :selected_edit_group_ids => [],
+      :selected_edit_user_ids => [],
+      :selected_read_group_ids => [],
+      :selected_read_user_ids => []).tap do |whitelisted|
+      whitelisted[:user_custom_group_attributes] = params[:item][:user_custom_group_attributes].permit! if params[:item][:user_custom_group_attributes]
+    end
+  end
 
   def load_index_items
     System::CustomGroup

@@ -59,7 +59,7 @@ class Gwsub::Admin::Sb13::ExternalmediakindsController < Gw::Controller::Admin::
   def create
     init_params
     @l4_current='02'
-    @item = Gwsub::Externalmediakind.new(params[:item])
+    @item = Gwsub::Externalmediakind.new(media_kind_params)
 
     _create @item
   end
@@ -71,7 +71,7 @@ class Gwsub::Admin::Sb13::ExternalmediakindsController < Gw::Controller::Admin::
   def update
     init_params
     @item = Gwsub::Externalmediakind.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = media_kind_params
 
     _update @item
   end
@@ -115,4 +115,11 @@ class Gwsub::Admin::Sb13::ExternalmediakindsController < Gw::Controller::Admin::
     flash[:notice] = '登録処理が完了しました。'
     redirect_to url_for(action: :index)
   end
+
+private
+
+  def media_kind_params
+    params.require(:item).permit(:kind, :name, :sort_order)
+  end
+
 end

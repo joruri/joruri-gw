@@ -25,7 +25,7 @@ class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::RoleName.new(params[:item])
+    @item = System::RoleName.new(role_name_params)
 
     _create @item, :success_redirect_uri => "/system/role_names?#{@qs}"
   end
@@ -36,8 +36,7 @@ class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
 
   def update
     @item = System::RoleName.find(params[:id])
-    @item.attributes = params[:item]
-
+    @item.attributes = role_name_params
     _update @item, :success_redirect_uri => "/system/role_names#{@qs}"
   end
 
@@ -53,4 +52,11 @@ class System::Admin::RoleNamesController < Gw::Controller::Admin::Base
     qsa = ['role_id', 'priv_id', 'role', 'priv_user']
     @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
   end
+
+private
+
+  def role_name_params
+    params.require(:item).permit(:display_name, :table_name, :sort_no)
+  end
+
 end

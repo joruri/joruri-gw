@@ -55,7 +55,7 @@ class Questionnaire::Admin::Menus::PreviewsController < Gw::Controller::Admin::B
   def create
     return error_auth unless is_creator
 
-    @item = Questionnaire::Preview.new(params[:item])
+    @item = Questionnaire::Preview.new(answer_params)
     @item.parent_id = @title.id
 
     @item.state = 'public'
@@ -93,7 +93,7 @@ class Questionnaire::Admin::Menus::PreviewsController < Gw::Controller::Admin::B
 
     @item = Questionnaire::Preview.where(:id => params[:id]).first
     return http_error(404) unless @item
-    @item.attributes = params[:item]
+    @item.attributes = answer_params
 
     @item.state = 'public'
 
@@ -173,6 +173,12 @@ class Questionnaire::Admin::Menus::PreviewsController < Gw::Controller::Admin::B
       #params[:item]の内容が無い場合,モデル内で全フィールドを初期化するので何かセットしておく
       @item._item_params = "group" if @item._item_params.blank? unless is_all_blank
     end
+  end
+
+private
+
+  def answer_params
+    params.require(:item).permit!
   end
 
 end

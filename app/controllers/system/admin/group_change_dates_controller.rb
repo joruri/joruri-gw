@@ -39,13 +39,13 @@ class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::GroupChangeDate.new(params[:item])
+    @item = System::GroupChangeDate.new(date_params)
     _create @item
   end
 
   def update
     @item = System::GroupChangeDate.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = date_params
     _update @item
   end
 
@@ -54,5 +54,9 @@ class System::Admin::GroupChangeDatesController < Gw::Controller::Admin::Base
     _destroy @item
   end
 
+private
+  def date_params
+    params.require(:item).permit(:start_at)
+  end
 
 end

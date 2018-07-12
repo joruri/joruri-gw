@@ -94,7 +94,7 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Questionnaire::Base.new(params[:item])
+    @item = Questionnaire::Base.new(base_params)
 
     @item.able_date = Time.now.strftime("%Y-%m-%d")
     @item.section_code = Core.user_group.code
@@ -133,7 +133,7 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
 
     @before_state = @item.state
 
-    @item.attributes = params[:item]
+    @item.attributes = base_params
 
     @item.state = 'closed' if @before_state == 'closed'
     @item._commission_state = @before_state
@@ -222,5 +222,13 @@ class Questionnaire::Admin::MenusController < Gw::Controller::Admin::Base
       end ).join
     return code
   end
+
+private
+
+  def base_params
+    params.require(:item).permit(:send_to_kind, :enquete_division, :send_to, :include_index,
+      :title, :remarks, :admin_setting, :remarks_setting, :expiry_date, :state)
+  end
+
 
 end

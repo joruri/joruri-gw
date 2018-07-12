@@ -36,7 +36,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfItemsController < Gw::Controller::Admi
   def create
 
     @l3_current = '02'
-    @item = Gwsub::Sb06AssignedConfItem.new(params[:item])
+    @item = Gwsub::Sb06AssignedConfItem.new(item_params)
     location = url_for({:action => :index})
     _create(@item,:success_redirect_uri=>location)
   end
@@ -48,7 +48,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfItemsController < Gw::Controller::Admi
   def update
 
     @item = Gwsub::Sb06AssignedConfItem.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = item_params
     location = url_for({:action => :index})
     _update(@item,:success_redirect_uri=>location)
   end
@@ -141,4 +141,11 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfItemsController < Gw::Controller::Admi
     conf_kinds = Gwsub::Sb06AssignedConfKind.sb06_assign_conf_kind_id_select(conf_kind_options)
     render text: view_context.options_for_select(conf_kinds), layout: false
   end
+
+private
+
+  def item_params
+    params.require(:item).permit(:fyear_id, :conf_kind_id, :item_sort_no, :item_title, :item_max_count, :select_list)
+  end
+
 end

@@ -93,7 +93,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetNoticesController < Gw::Controller::Admin::B
       @l2_current='05'
       @l3_current='02'
     end
-    @item = Gwsub::Sb06BudgetNotice.new(params[:item])
+    @item = Gwsub::Sb06BudgetNotice.new(notice_params)
 #    @item = Sb06BudgetNotice.new(params[:item])
     location =url_for({:action => :index})
     options = {
@@ -117,7 +117,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetNoticesController < Gw::Controller::Admin::B
       redirect_to location
     end
     @item = Gwsub::Sb06BudgetNotice.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = notice_params
     location = url_for({:action => :show, :id => params[:id]})
     options = {
       :success_redirect_uri=>location,
@@ -209,6 +209,12 @@ class Gwsub::Admin::Sb06::Sb06BudgetNoticesController < Gw::Controller::Admin::B
   end
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'kind , bbs_url ASC')
+  end
+
+private
+
+  def notice_params
+    params.require(:item).permit(:kind, :title, :bbs_url, :remarks, :state)
   end
 
 end

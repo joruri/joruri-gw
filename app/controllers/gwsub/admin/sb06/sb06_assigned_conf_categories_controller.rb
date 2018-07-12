@@ -35,7 +35,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfCategoriesController < Gw::Controller:
   def create
 
     @l3_current='02'
-    @item = Gwsub::Sb06AssignedConfCategory.new(params[:item])
+    @item = Gwsub::Sb06AssignedConfCategory.new(category_params)
     location = url_for({:action => :index})
     _create(@item,:success_redirect_uri=>location)
   end
@@ -47,7 +47,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfCategoriesController < Gw::Controller:
   def update
 
     @item = Gwsub::Sb06AssignedConfCategory.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = category_params
     location = url_for({:action => :index})
     _update(@item,:success_redirect_uri=>location)
   end
@@ -122,6 +122,12 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfCategoriesController < Gw::Controller:
   def setting_sortkeys
 #    @sort_keys = nz(params[:sort_keys], 'fyear_id DESC , group_code ASC')
     @sort_keys = nz(params[:sort_keys], 'cat_sort_no ')
+  end
+
+private
+
+  def category_params
+    params.require(:item).permit(:cat_sort_no, :cat_code, :cat_name, :select_list)
   end
 
 end

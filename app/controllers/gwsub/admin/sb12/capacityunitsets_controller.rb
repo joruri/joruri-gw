@@ -58,7 +58,7 @@ class Gwsub::Admin::Sb12::CapacityunitsetsController < Gw::Controller::Admin::Ba
   def create
     init_params
     @l4_current='02'
-    @item = Gwsub::Capacityunitset.new(params[:item])
+    @item = Gwsub::Capacityunitset.new(capacityunit_params)
 
     _create @item
   end
@@ -70,7 +70,7 @@ class Gwsub::Admin::Sb12::CapacityunitsetsController < Gw::Controller::Admin::Ba
   def update
     init_params
     @item = Gwsub::Capacityunitset.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = capacityunit_params
 
     _update @item
   end
@@ -114,4 +114,11 @@ class Gwsub::Admin::Sb12::CapacityunitsetsController < Gw::Controller::Admin::Ba
     flash[:notice] = '登録処理が完了しました。'
     redirect_to url_for(action: :index)
   end
+
+private
+
+  def capacityunit_params
+    params.require(:item).permit(:code, :name)
+  end
+
 end

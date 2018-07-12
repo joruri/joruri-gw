@@ -47,7 +47,7 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::User.new(params[:item])
+    @item = System::User.new(user_params)
     @item.id = params[:item]['id']
 
     options={
@@ -79,7 +79,7 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
 
   def update
     @item = System::User.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = user_params
 
     _update @item, :success_redirect_uri => system_user_path(@item.id)
   end
@@ -98,6 +98,11 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   end
 
 private
+
+  def user_params
+    params.require(:item).permit(:code, :state, :ldap, :name, :name_en, :password,
+      :email, :official_position, :assigned_job)
+  end
 
   def search_condition
     params[:limit] = nz(params[:limit], @limit)

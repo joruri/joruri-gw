@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   def create
     init_params
     @l3_current ='02'
-    new_item = Gwsub::Sb06BudgetEditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb06BudgetEditableDate.set_f(editable_date_params)
     @item = Gwsub::Sb06BudgetEditableDate.new(new_item)
     location = url_for({:action => :index})
     options = {
@@ -49,7 +49,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   def update
     init_params
     @item = Gwsub::Sb06BudgetEditableDate.find(params[:id])
-    new_item = Gwsub::Sb06BudgetEditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb06BudgetEditableDate.set_f(editable_date_params)
     @item.attributes = new_item
     location = url_for({:action => :show, :id => params[:id]})
     options = {
@@ -101,6 +101,12 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   end
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'start_at DESC')
+  end
+
+private
+
+  def editable_date_params
+    params.require(:item).permit(:start_at, :end_at, :recognize_at)
   end
 
 end

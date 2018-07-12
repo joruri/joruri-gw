@@ -21,7 +21,7 @@ class System::Admin::ProductsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::Product.new(params[:item])
+    @item = System::Product.new(product_params)
 
     _create @item
   end
@@ -32,7 +32,7 @@ class System::Admin::ProductsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::Product.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = product_params
 
     _update @item
   end
@@ -42,4 +42,11 @@ class System::Admin::ProductsController < Gw::Controller::Admin::Base
 
     _destroy @item
   end
+
+private
+
+  def product_params
+    params.require(:item).permit(:name, :product_type, :sort_no, :product_synchro, :sso, :sso_url, :sso_url_mobile)
+  end
+
 end

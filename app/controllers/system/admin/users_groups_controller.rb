@@ -37,7 +37,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::UsersGroup.new(params[:item])
+    @item = System::UsersGroup.new(user_group_params)
     _create @item
   end
 
@@ -47,7 +47,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::UsersGroup.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = user_group_params
     _update @item
   end
 
@@ -68,4 +68,11 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
 
     @groups = System::Group.get_level2_groups
   end
+
+private
+
+  def user_group_params
+    params.require(:item).permit(:user_id, :group_id, :job_order, :start_at, :end_at)
+  end
+
 end

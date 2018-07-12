@@ -1426,7 +1426,7 @@ pp items
     users_collection(Core.user_group.id)
     init_params
     @item = Gwsub::Sb06AssignedConference.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = docno_params
     member = Gwsub::Sb06AssignedConferenceMember.new
     member.conference_id  = @item.id
     member.order  @sort_keys
@@ -1469,4 +1469,11 @@ pp items
     groups = Gwsub::Sb00ConferenceSectionManagerName.get_g_names(params[:t_id].to_i)
     render text: view_context.options_for_select(groups), layout: false
   end
+
+private
+
+  def docno_params
+    params.require(:item).permit(:conf_mark, :conf_no)
+  end
+
 end

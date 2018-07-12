@@ -16,7 +16,7 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
 
     Page.title = "権限設定"
   end
-  
+
   def index
     item = System::Role.new
     item.page  params[:page], params[:limit]
@@ -37,7 +37,7 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
 
   def create
     conv_uidraw_to_uid
-    @item = System::Role.new(params[:item])
+    @item = System::Role.new(role_params)
 
     _create @item, :success_redirect_uri => "/system/roles?#{@qs}"
   end
@@ -50,7 +50,7 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
     conv_uidraw_to_uid
 
     @item = System::Role.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = role_params
 
     _update @item, :success_redirect_uri => "/system/roles/#{@item.id}?#{@qs}"
   end
@@ -59,7 +59,7 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
     @item = System::Role.find(params[:id])
 
     _destroy @item, :success_redirect_uri => "/system/roles?#{@qs}"
-  end 
+  end
 
   def user_fields
     users = System::User.get_user_select(params[:g_id])
@@ -67,6 +67,10 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
   end
 
 private
+
+  def role_params
+    params.require(:item).permit(:role_name_id, :priv_user_id, :idx, :class_id, :gid_raw, :uid_raw, :priv)
+  end
 
   def search_condition
     params[:role_id] = nz(params[:role_id], @role_id)

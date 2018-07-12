@@ -55,7 +55,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedHelpsController < Gw::Controller::Admin::B
   def create
 
     @l4_current = '02'
-    @item = Gwsub::Sb06AssignedHelp.new(params[:item])
+    @item = Gwsub::Sb06AssignedHelp.new(help_params)
     case @help
     when 'admin'
       param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}"
@@ -78,7 +78,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedHelpsController < Gw::Controller::Admin::B
   def update
 
     @item = Gwsub::Sb06AssignedHelp.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = help_params
     case @help
     when 'admin'
       param = "?help=#{@help}&pre_fy_id=#{@fy_id}&fy_id=#{@fy_id}"
@@ -218,4 +218,12 @@ class Gwsub::Admin::Sb06::Sb06AssignedHelpsController < Gw::Controller::Admin::B
     kinds = Gwsub::Gwsub::Sb06AssignedConfKind.sb06_assign_conf_kind_id_select(cat_id: params[:c_cat_id].to_i)
     render text: view_context.options_for_select(kinds), layout: false
   end
+
+private
+
+  def help_params
+    params.require(:item).permit(:conf_group_id, :help_kind, :state, :sort_no,
+      :conf_cat_id, :conf_kind_id, :title, :bbs_url, :remarks)
+  end
+
 end
