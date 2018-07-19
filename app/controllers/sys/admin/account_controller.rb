@@ -75,32 +75,6 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
   end
 
-  def sso
-    params[:to] ||= 'gw'
-    raise 'SSOの設定がありません。' unless config = Joruri.config.sso_settings[params[:to].to_sym]
-
-    require 'net/http'
-    Net::HTTP.version_1_2
-    http = Net::HTTP.new(config[:host], config[:port])
-    if config[:usessl]
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-
-    http.start do |agent|
-      parameters = "account=#{Core.user.account}&password=#{CGI.escape(Core.user.password.to_s)}&mobile_password=#{CGI.escape(Core.user.mobile_password.to_s)}"
-      response = agent.post("/#{config[:path]}", parameters)
-      token = response.body =~ /^OK/i ? response.body.gsub(/^OK /i, '') : nil
-
-      uri = "#{config[:usessl] ? "https" : "http"}://#{config[:host]}:#{config[:port]}/"
-      if token
-        uri << "#{config[:path]}?account=#{Core.user.account}&token=#{token}"
-        uri << "&path=#{CGI.escape(params[:path])}" if params[:path]
-      end
-      redirect_to uri
-    end
-  end
-
   private
 
   def reset_unauthorized_session
