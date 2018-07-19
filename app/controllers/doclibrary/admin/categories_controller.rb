@@ -16,7 +16,6 @@ class Doclibrary::Admin::CategoriesController < Gw::Controller::Admin::Base
     item.and  :title_id, params[:title_id]
     item.and  :state, 'public'
     item.page  params[:page], params[:limit]
-    item.order params[:sort], 'id DESC'
     @items = item.find(:all)
 
     _index @items

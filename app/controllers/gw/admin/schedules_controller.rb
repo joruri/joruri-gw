@@ -435,12 +435,12 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         render :action => 'new'
       end
     elsif params[:purpose] == "re-entering"
-      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :create , {:validate => true})
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params.permit!, :create , {:validate => true})
       @item.destroy_rentcar_temporaries
       render :action => 'new'
     else
       @item.renew_attach_files = true
-      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :create,{:check_temporaries=>true})
+      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params.permit!, :create,{:check_temporaries=>true})
         flash_notice '予定の登録', true
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=new"
         @item.destroy_rentcar_temporaries
@@ -524,12 +524,12 @@ class Gw::Admin::SchedulesController < Gw::Controller::Admin::Base
         render :action => 'edit'
       end
     elsif params[:purpose] == "re-entering"
-      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params, :update , {:validate => true})
+      Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, params.permit!, :update , {:validate => true})
       @item.destroy_rentcar_temporaries
       render :action => 'edit'
     else
       @item.renew_attach_files = true
-      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params, :update,{:check_temporaries=>true})
+      if Gw::ScheduleRepeat.save_with_rels_concerning_repeat(@item, _params.permit!, :update,{:check_temporaries=>true})
         flash[:notice] = '予定の編集に成功しました。'
         redirect_url = "/gw/schedules/#{@item.id}/show_one?m=edit"
         @item.destroy_rentcar_temporaries

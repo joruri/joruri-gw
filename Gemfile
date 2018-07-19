@@ -6,7 +6,6 @@ gem 'rails', '4.2.10'
 
 gem 'activerecord-session_store'
 gem 'activerecord-deprecated_finders'
-gem 'protected_attributes', '1.0.8'
 
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'execjs','1.4.0'
@@ -70,7 +69,6 @@ end
 
 
 group :development do
-  gem 'rack-mini-profiler', '0.10.7' # profiler
   gem 'rb-readline', '~> 0.5.1'
   gem 'quiet_assets', '~> 1.0.3'
   gem 'brakeman', :require => false
