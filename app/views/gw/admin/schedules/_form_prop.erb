@@ -24,7 +24,7 @@ gcode = ''
 if !params[:prop_id].blank? && !params[:s_genre].blank?
   genre = params[:s_genre]
   mdl_s = Gw::ScheduleProp.prop_conv(:genre_to_mdl, genre)
-  mdl = eval(mdl_s)
+  mdl = Gw::ScheduleProp.genre_to_mdl(genre)
   u = mdl.where(:id => params[:prop_id]).first
   if u.delete_state == 0 && u.reserved_state == 1
     ucls = genre

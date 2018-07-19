@@ -12,7 +12,7 @@
     end
     %>
     <th class="<%= create_month_class(week_add_day, @st_date, @holidays, params) -%>">
-      <span class="nobr"><%= link_to date_format(@format, week_add_day), day_link -%></span>
+      <span class="nobr"><%= link_to sanitize(date_format(@format, week_add_day)), day_link -%></span>
     </th>
   <% end %>
 </tr>
