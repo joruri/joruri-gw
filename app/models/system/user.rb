@@ -210,7 +210,7 @@ class System::User < ActiveRecord::Base
     in_password = Util::String::Crypt.decrypt(in_password) if encrypted
 
     user = nil
-    self.where(code: in_account, state: 'enabled').all.each do |u|
+    self.where(code: in_account, state: 'enabled').each do |u|
       if u.ldap == 1
         ## LDAP Auth
         next unless ou1 = u.groups[0]

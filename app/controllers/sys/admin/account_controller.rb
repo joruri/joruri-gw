@@ -27,9 +27,9 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
 
     if request.mobile?
-      login_ok = new_login_mobile(params[:account], params[:password], params[:mobile_password])
+      login_ok = new_login_mobile(login_params[:account], login_params[:password], login_params[:mobile_password])
     else
-      login_ok = new_login(params[:account], params[:password])
+      login_ok = new_login(login_params[:account], login_params[:password])
     end
 
     unless login_ok
@@ -76,6 +76,10 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
   end
 
   private
+
+  def login_params
+    params.permit(:account, :password, :mobile_password)
+  end
 
   def reset_unauthorized_session
     reset_session if params[session_key]
