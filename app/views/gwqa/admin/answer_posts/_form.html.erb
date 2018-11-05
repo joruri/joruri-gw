@@ -6,13 +6,13 @@
     mce_base_url = cms_tmp_files_path(@item.tmp_id) + "/"
   end
 %>
-<%= tool_tiny_mce mce_base_url%>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <script src="/javascripts/prototype.js" type="text/javascript"></script>
 <table class="show">
   <tr>
       <th>回答</th>
-      <td class="mceEditor"><%= f.text_area :body, :class => 'mediumtext body mceEditor', :style => '100%' %></td>
+      <td class="mceEditor"><%= f.text_area :body, :class => 'mediumtext body mceEditor body ckeditor', :style => '100%' %></td>
   </tr>
 </table>
 

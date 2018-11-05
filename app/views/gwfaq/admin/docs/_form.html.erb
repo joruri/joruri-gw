@@ -6,7 +6,7 @@ else
 mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
 end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <%= required_head %>
 
@@ -55,7 +55,7 @@ end
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
 <tr>
 <th>回答</th></tr><tr>
-<td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+<td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :style => 'width:100%' %></td>
 </tr>
 </table>
 

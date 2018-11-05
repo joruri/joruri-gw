@@ -28,7 +28,7 @@ notes01 = JSON.parse(@title.notes_field01) unless @title.notes_field01.blank?
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr>
     <th>本文</th></tr><tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :rows => 20, :cols => 40, :style => 'height:500px; width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :rows => 20, :cols => 40, :style => 'height:500px; width:100%' %></td>
   </tr>
 </table>
 <%= render '/gwbbs/admin/docs/form_wiki', f: f, title: "本文" %>

@@ -6,8 +6,7 @@
     mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
-
+<%= init_ckeditor baseHref: mce_base_url %>
 <% if @title.is_admin? && @item.state != 'preparation' && @item.state_was != 'preparation' -%>
 <table class="bbsFile">
   <tr>

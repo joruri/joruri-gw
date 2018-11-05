@@ -16,7 +16,7 @@
   <% if false %>
     <td style="text-align: center;">
       <% content = link_to "#{item.filename} (#{item.eng_unit})", item.file_uri(system_name), :class => item.icon_type %>
-      <%= link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => "mceInsertContent('#{escape_javascript(content)}'); return false;" %>
+      <%= link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => "ckeInsertContent('#{escape_javascript(content)}'); return false;" %>
     </td>
     <td style="text-align: center;">
       <% if item.is_image %>
@@ -28,7 +28,7 @@
             content = %Q(<img src="#{item.file_uri(system_name)}" alt="#{item.filename}" />)
           end
         %>
-        <a href="#" onclick="mceInsertContent('<%=escape_javascript content %>'); return false;">貼付</a>
+        <a href="#" onclick="ckeInsertContent('<%=escape_javascript content %>'); return false;">貼付</a>
       <% end %>
     </td>
   <% end %>

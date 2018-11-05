@@ -52,6 +52,33 @@ module FormHelper
     ].join("\n")
   end
 
+  def init_ckeditor(options = {})
+    settings = []
+
+    # リードオンリーではツールバーを表示しない・リンクを動作させる
+    if options[:readOnly]
+      options[:toolbarCanCollapse] = true
+      options[:toolbarStartupExpanded] = false
+      settings.push(<<-EOS)
+        CKEDITOR.on('instanceReady', function (e) {
+          $('#'+e.editor.id+'_top').hide();
+          $('div.cke_wordcount').hide();
+          var links = $('#'+e.editor.id+'_contents > iframe:first').contents().find('a');
+          for (var i = 0; i < links.length; i++) {
+            $(links[i]).click(function (ee) { location.href = ee.target.href; });
+          }
+        });
+      EOS
+    end
+
+    settings.concat(options.map {|k, v|
+      %Q(CKEDITOR.config.#{k} = #{v.kind_of?(String) ? "'#{v}'" : v};)
+    })
+
+    ['<script type="text/javascript" src="/_common/ckeditor/ckeditor.js"></script>',
+     javascript_tag(settings.join)].join.html_safe
+  end
+
   def submission_label(name)
     {
       :add       => '追加する',

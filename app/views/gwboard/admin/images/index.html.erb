@@ -36,6 +36,23 @@ html {
   function mceInsertContent(value) {
     parent.tinyMCE.execInstanceCommand('<%= _form_id %>','mceInsertContent',true, value);
   }
+  function ckeInsertContent(value) {
+    if (parent.CKEDITOR) {
+      if (parent.CKEDITOR.currentInstance) {
+        parent.CKEDITOR.currentInstance.insertHtml(value);
+      } else {
+        for (var i in parent.CKEDITOR.instances) {
+          var instance = parent.CKEDITOR.instances[i];
+          if (instance.container.isVisible()) {
+            instance.insertHtml(value);
+            break;
+          }
+        }
+      }
+    } else {
+      parent.setText(parent.document.getElementById('item_body'), value);
+    }
+  }
 
   function selectAction() {
     var filesForm = document.filesForm;
@@ -83,13 +100,13 @@ html {
         <% if wiki_state == true %>
           <a href="#" id="link_image_regulate" onclick="wikiInsert('<UN>>\n<%= img_tag -%>\n<<UN>'); return false;">貼付</a>
         <% else %>
-          <a href="#" id="link_image_regulate" onclick="mceInsertContent('<%= img_tag -%>'); return false;">貼付</a>
+          <a href="#" id="link_image_regulate" onclick="ckeInsertContent('<%= img_tag -%>'); return false;">貼付</a>
         <% end %>
       <% else %>
         <% if wiki_state == true %>
           <a href="#" id="link_image_regulate" onclick="wikiInsert('<%= "[[#{item.filename}|#{item.file_uri}]]" -%>'); return false;">貼付</a>
         <% else %>
-          <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%= item.file_uri %>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+          <a href="#" id="link_image" onclick="ckeInsertContent('<img src=\'<%= item.file_uri %>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
         <% end %>
       <% end %>
     <% end %>

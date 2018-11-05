@@ -5,7 +5,7 @@
     mce_base_url = '/_common/modules/gwqa/' + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode => true}) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <table class="show">
   <tr><th>編集可能課</th></tr>
@@ -28,7 +28,7 @@
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr><th>回答本文</th></tr>
   <tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :style => 'width:100%' %></td>
   </tr>
 </table>
 
