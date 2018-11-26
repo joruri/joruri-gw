@@ -110,7 +110,7 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
   def update
     @item = @title.docs.find(params[:id])
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Time.now unless @item.skip_updating_updated_at == '1'
     @item.category_use = 1
     @item.form_name = @title.form_name
@@ -191,7 +191,7 @@ class Doclibrary::Admin::DocsController < Gw::Controller::Admin::Base
 
 private
   def doc_params
-    params.require(:item).permit(:body, :category1_id, :chg_parent_id,
+    params.require(:item).permit(:body, :category1_id, :chg_parent_id, :category4_id,
       :display_order, :doc_alias, :section_code, :skip_updating_updated_at,
       :seq_no, :state, :title, :wiki_body, :wiki, :selected_recognizer_uids => [])
   end

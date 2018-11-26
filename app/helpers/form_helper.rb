@@ -72,6 +72,7 @@ module FormHelper
     end
 
     settings.concat(options.map {|k, v|
+      next if v.blank?
       %Q(CKEDITOR.config.#{k} = #{v.kind_of?(String) ? "'#{v}'" : v};)
     })
 
