@@ -108,7 +108,7 @@ class Gwcircular::Doc < Gw::Database
         '期限終了'
       else
         state_options.rassoc(self.state).try(:first)
-      end 
+      end
     else
       if self.state == 'public' && self.expiry_date.present? && self.expiry_date < Time.now
         '期限切れ'
@@ -280,7 +280,7 @@ class Gwcircular::Doc < Gw::Database
 
   def duplicate
     new_doc = self.class.new
-    new_doc.attributes = self.attributes.except(:id)
+    new_doc.attributes = self.attributes.except("id")
     new_doc.unid = nil
     new_doc.created_at = nil
     new_doc.updated_at = nil
@@ -338,9 +338,9 @@ class Gwcircular::Doc < Gw::Database
 
   def count_commissions
     update_columns(
-      commission_count: children.where.not(state: 'preparation').count, 
-      draft_count: children.where(state: 'draft').count, 
-      unread_count: children.where(state: %w(unread mobile)).count, 
+      commission_count: children.where.not(state: 'preparation').count,
+      draft_count: children.where(state: 'draft').count,
+      unread_count: children.where(state: %w(unread mobile)).count,
       already_count: children.where(state: 'already').count
     )
   end
@@ -354,7 +354,7 @@ class Gwcircular::Doc < Gw::Database
   def validate_date_order
     if self.able_date && self.expiry_date && self.able_date > self.expiry_date
       errors.add :expiry_date, "を確認してください。（期限日が作成日より前になっています。）"
-    end 
+    end
   end
 
   def validate_commission_limit
@@ -451,8 +451,8 @@ class Gwcircular::Doc < Gw::Database
     children.where(state: 'draft').update_all(state: 'unread')
 
     children.where(state: 'unread', category3_id: nil).each do |doc|
-      Gwboard.add_reminder_circular(doc.target_user_id.to_s, 
-        "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>", 
+      Gwboard.add_reminder_circular(doc.target_user_id.to_s,
+        "<a href='#{doc.show_path}'>#{self.title}　[#{self.creater}(#{self.creater_id})]</a>",
         "次のボタンから記事を確認してください。<br /><a href='#{doc.show_path}'><img src='/_common/themes/gw/files/bt_addanswer.gif' alt='回覧する' /></a>",
         {:doc_id => doc.id, :parent_id => doc.parent_id, :ed_at => doc.expiry_date.strftime("%Y-%m-%d %H:%M")})
       doc.update_columns(category3_id: 1)
