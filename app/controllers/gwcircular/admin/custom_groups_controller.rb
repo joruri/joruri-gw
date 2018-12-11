@@ -14,11 +14,9 @@ class Gwcircular::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   def index
-    item = Gwcircular::CustomGroup.new
-    item.and :owner_uid , Core.user.id
-    item.order 'sort_no, id'
-    item.page params[:page], params[:limit]
-    @items = item.find(:all)
+    @items = Gwcircular::CustomGroup.where(owner_uid: Core.user.id)
+      .order(:sort_no)
+      .paginate(page: params[:page], per_page: params[:limit])
   end
 
   def show
