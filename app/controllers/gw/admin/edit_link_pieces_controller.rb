@@ -111,7 +111,8 @@ private
     params.require(:item).permit(:published, :state, :name, :tab_keys,
       :mode, :block_icon_id, :block_css_id, :display_auth,
       :class_sso, :link_url, :class_external,
-      :field_account, :field_pass, :icon_path)
+      :field_account, :field_pass, :icon_path,
+      :class_created, :parent_id, :level_no, :sort_no)
   end
 
 end
