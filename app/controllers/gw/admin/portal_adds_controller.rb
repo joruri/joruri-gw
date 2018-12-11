@@ -64,8 +64,9 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
 private
 
   def ad_params
-    params.require(:item).permit(:state, :published, :sort_no, :title, :body, :file, :is_large,
-      :publish_start_at, :publish_end_at, :class_sso, :url, :field_account, :field_pass)
+    params.require(:item).permit(:state, :published, :sort_no, :title,
+      :body, :file, :is_large,  :publish_start_at, :publish_end_at, :place,
+      :class_sso, :url, :field_account, :field_pass)
   end
 
 end
