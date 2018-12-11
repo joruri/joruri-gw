@@ -21,7 +21,14 @@ class Gwmonitor::Admin::ItemdeletesController < Gw::Controller::Admin::Base
   end
 
   def update
-    @item.attributes = params[:item]
+    @item.attributes = delete_params
     _update @item, success_redirect_uri: '/gw/config_settings?c1=1&c2=7'
   end
+
+private
+
+  def delete_params
+    params.require(:item).permit(:limit_date)
+  end
+
 end
