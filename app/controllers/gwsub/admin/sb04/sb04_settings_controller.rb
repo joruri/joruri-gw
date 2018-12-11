@@ -75,7 +75,7 @@ class Gwsub::Admin::Sb04::Sb04SettingsController  < Gw::Controller::Admin::Base
 
 private
   def setting_params
-    params.reuqire(:item).permit(:data)
+    params.require(:item).permit(:data)
   end
 
 end

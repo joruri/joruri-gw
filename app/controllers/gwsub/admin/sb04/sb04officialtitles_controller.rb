@@ -35,7 +35,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     @l3_current = '03'
     @item = Gwsub::Sb04officialtitle.new(official_title_params)
     location = "/gwsub/sb04/04/sb04officialtitles?#{@qs}"
-    if @item.officialtitle_data_save(params, :create)
+    if @item.officialtitle_data_save(official_title_params, :create)
       flash_notice '更新', true
       redirect_to location
     else
@@ -60,7 +60,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     @item.attributes = official_title_params
     location = "/gwsub/sb04/04/sb04officialtitles/#{@item.id}?#{@qs}"
 
-    if @item.officialtitle_data_save(params, :update)
+    if @item.officialtitle_data_save(official_title_params, :update)
       _update @item, :location => location
     else
       respond_to do |format|
