@@ -16,7 +16,7 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   end
 
   def get_start_at
-    fyears = System::GroupChangeDate.order("start_at DESC").first
+    fyears = System::GroupChangeDate.order(start_at: :desc).first
     if fyears.blank?
       return nil
     end

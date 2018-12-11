@@ -34,7 +34,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(place_params)
     _create @item, notice: '場所の登録に成功しました。'
   end
 
@@ -44,7 +44,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = place_params
     _update @item, notice: '場所の更新に成功しました。'
   end
 

@@ -40,12 +40,13 @@ function setTarget() {
 </script>
 <table class="show">
    <tr>
-    <td>引用情報：<%= f.select_with_tree :selector, groups_for_selector %>
-<% groups_objects.each do |g| %>
-<%= hidden_field_tag "group_code_#{g.id}", h(g.code) %>
-<%= hidden_field_tag "group_name_#{g.id}", h(g.name) %>
-<%= hidden_field_tag "group_ldap_#{g.id}", h(g.ldap) %>
-<% end %>
+    <td>引用情報：
+      <%= f.select(:selector, options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, nil), :include_blank => true) %>
+      <% groups_objects.each do |g| %>
+      <%= hidden_field_tag "group_code_#{g.id}", h(g.code) %>
+      <%= hidden_field_tag "group_name_#{g.id}", h(g.name) %>
+      <%= hidden_field_tag "group_ldap_#{g.id}", h(g.ldap) %>
+      <% end %>
     </td>
   </tr>
 </table>
@@ -68,6 +69,8 @@ function setTarget() {
 <table class="show">
   <tr>
     <th><%= @item.locale(:present_group_id) %></th>
-    <td><span><%= f.select_with_tree :present_group_id, groups, :include_blank => true %></span></td>
+    <td>
+      <span><%= f.select(:present_group_id, options_for_select(System::Group.root.self_and_enabled_descendants.map{|g| [g.tree_name, g.id]}, @item.present_group_id), :include_blank => true) %></span>
+    </td>
   </tr>
 </table>
