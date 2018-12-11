@@ -66,7 +66,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
     @items = @model.order(sort_no: :asc)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
