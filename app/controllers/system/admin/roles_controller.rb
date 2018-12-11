@@ -69,7 +69,8 @@ class System::Admin::RolesController < Gw::Controller::Admin::Base
 private
 
   def role_params
-    params.require(:item).permit(:role_name_id, :priv_user_id, :idx, :class_id, :gid_raw, :uid_raw, :priv)
+    params.require(:item).permit(:role_name_id, :priv_user_id, :idx,
+    :class_id, :priv, :uid, :group_id)
   end
 
   def search_condition

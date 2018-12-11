@@ -72,7 +72,7 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
     item_params.each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
