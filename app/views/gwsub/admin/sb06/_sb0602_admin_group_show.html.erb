@@ -10,7 +10,7 @@ else
   admin_group_name = "#{@item.admin_group_code}#{@item.admin_group_name}"
 end
   %>
-<%= admin_group_name %>
+<%= sanitize admin_group_name.html_safe %>
 </td>
 </tr>
 <%end%>
