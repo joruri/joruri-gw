@@ -41,7 +41,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
   end
 
   def create
-    @item = Gw::PrefAssemblyMember.new(params[:item])
+    @item = Gw::PrefAssemblyMember.new(member_params)
     _create @item
   end
 
@@ -51,7 +51,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
   def update
     @item = Gw::PrefAssemblyMember.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = member_params
     _update @item
   end
 
@@ -67,16 +67,16 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    if params[:item].present?
+      @item.attributes = item_params
 
-    @item.attributes = params[:item]
-
-    csv = Gw::PrefAssemblyMember.order(:g_order, :u_order).to_csv(headers: ['会派表示順','会派','議員表示順','姓','名','在席情報']) do |item|
-      data = [item.g_order, item.g_name, item.u_order, item.u_lname, item.u_name]
-      data << (item.state == "on" ? "在席" : "不在")
-      data
+      csv = Gw::PrefAssemblyMember.order(:g_order, :u_order).to_csv(headers: ['会派表示順','会派','議員表示順','姓','名','在席情報']) do |item|
+        data = [item.g_order, item.g_name, item.u_order, item.u_lname, item.u_name]
+        data << (item.state == "on" ? "在席" : "不在")
+        data
+      end
+      return send_data @item.encode(csv), type: 'text/csv', filename: "giin_zaicho_#{@item.encoding}.csv"
     end
-    send_data @item.encode(csv), type: 'text/csv', filename: "giin_zaicho_#{@item.encoding}.csv"
   end
 
   def csvup
@@ -161,4 +161,17 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
     redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
   end
+
+private
+
+  def member_params
+    params.require(:item).permit(:state, :g_order, :g_name, :u_order,
+      :u_lname, :u_name)
+  end
+
+  def item_params
+    params.require(:item).permit!
+  end
+
+
 end

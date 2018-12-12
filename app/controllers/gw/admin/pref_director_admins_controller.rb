@@ -91,27 +91,27 @@ class Gw::Admin::PrefDirectorAdminsController < Gw::Controller::Admin::Base
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if item_params.nil?
+    if params[:item].present?
+      @item.attributes = item_params
 
-    @item.attributes = item_params
+      items =
+        if @item.extras[:g_cat] == "0"
+          Gw::PrefDirector.order(parent_g_order: :asc, g_order: :asc, u_order: :asc)
+        else
+          Gw::PrefDirector.where(parent_g_code: @item.extras[:g_cat]).order(g_order: :asc, u_order: :asc)
+        end
 
-    items =
-      if @item.extras[:g_cat] == "0"
-        Gw::PrefDirector.order(parent_g_order: :asc, g_order: :asc, u_order: :asc)
-      else
-        Gw::PrefDirector.where(parent_g_code: @item.extras[:g_cat]).order(g_order: :asc, u_order: :asc)
+      csv = items.to_csv(headers: ['並び順','職員番号','氏名','職名','部局','Gwに表示']) do |item|
+        item_to_csv(item)
       end
 
-    csv = items.to_csv(headers: ['並び順','職員番号','氏名','職名','部局','Gwに表示']) do |item|
-      item_to_csv(item)
+      if @item.extras[:g_cat] == "0"
+        filename = "部課長在庁表示管理_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
+      else
+        filename = "#{items[0].parent_g_name}_在庁表示管理_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
+      end
+      return send_data @item.encode(csv), type: 'text/csv', filename: filename
     end
-
-    if @item.extras[:g_cat] == "0"
-      filename = "部課長在庁表示管理_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
-    else
-      filename = "#{items[0].parent_g_name}_在庁表示管理_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
-    end
-    send_data @item.encode(csv), type: 'text/csv', filename: filename
   end
 
   def item_to_csv(item)

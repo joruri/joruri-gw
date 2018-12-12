@@ -83,17 +83,18 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if item_params.nil?
 
-    @item.attributes = item_params
+    if params[:item].present?
+      @item.attributes = item_params
 
-    csv = Gw::PrefExecutive.order(:u_order).to_csv(headers: ["並び順","職員番号","氏名","職名","Gwに表示","AIRに表示"]) do |item|
-      data = [item.u_order, item.u_code, item.u_name, item.title]
-      data << (item.is_other_view == 1 ? "表示" : "")
-      data << (item.is_governor_view == 1 ? "表示" : "")
+      csv = Gw::PrefExecutive.order(:u_order).to_csv(headers: ["並び順","職員番号","氏名","職名","Gwに表示","AIRに表示"]) do |item|
+        data = [item.u_order, item.u_code, item.u_name, item.title]
+        data << (item.is_other_view == 1 ? "表示" : "")
+        data << (item.is_governor_view == 1 ? "表示" : "")
+      end
+
+      return send_data @item.encode(csv), type: 'text/csv', filename: "全庁幹部在庁表示_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
     end
-
-    send_data @item.encode(csv), type: 'text/csv', filename: "全庁幹部在庁表示_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
   end
 
   def csvup
