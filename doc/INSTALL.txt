@@ -1,4 +1,4 @@
-## Joruri Gw 3.2.1 インストールマニュアル                   2018.04.26
+## Joruri Gw 3.3.0 インストールマニュアル                   2018.12.21
 
 **********************************************************************
  1 想定環境
@@ -8,7 +8,7 @@
 OS           : CentOS 7.2 x86_64, CentOS 6.8 x86_64
 Webサーバー  : Apache 2.4, Apache 2.2
 DBシステム   : MySQL 5.6
-Ruby         : 2.3
+Ruby         : 2.3.7
 Rails        : 4.2
 キャッシュ : memcached 1.4.20
 
@@ -199,7 +199,7 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 5.1.12
+  # gem install passenger -v 5.3.7
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )
