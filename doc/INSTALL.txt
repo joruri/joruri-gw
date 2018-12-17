@@ -54,7 +54,7 @@ Joruri Gw の実行に必要なパッケージをインストールします。
 
 MySQLをインストールします。
 
-  # yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+  # yum -y install http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
   # yum -y install mysql-community-server mysql-devel
 
 Joruri Gwソースコードを設置します。
@@ -199,7 +199,7 @@ Rubyをインストールします。
 
 Phusion Passengerをインストールします。
 
-  # gem install passenger -v 5.3.7
+  # gem install passenger -v 5.1.12
   # passenger-install-apache2-module
 
   ( 画面の内容を確認して Enterキーを押してください。 )
@@ -219,8 +219,9 @@ Phusion Passengerの動作環境を設定します。
 
 Joruri Gw に必要なライブラリをインストールします。
 
-  # cd /var/share/jorurigw
-  # bundle install --path vendor/bundle --without development test
+  # su - joruri
+  $ cd /var/share/jorurigw
+  $ bundle install --path vendor/bundle --without development test
 
   ネットワーク経由でファイルのダウンロードとインストールが行われます。
   正しく完了すれば次のようなメッセージが表示されます。
@@ -316,6 +317,7 @@ delayed_job を起動します。
 
 Apacheに設定を追加します。
 
+  $ su -
   # vi /etc/httpd/conf.d/vhosts.conf
   ※ 下記設定は誰でもアクセスできるようにしています。IP制限等を掛ける場合は適宜設定してください。
   -----------------------------------------------------------------------
