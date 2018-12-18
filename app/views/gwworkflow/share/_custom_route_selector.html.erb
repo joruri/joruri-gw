@@ -1,7 +1,6 @@
 <%
-  rs = Gwworkflow::CustomRoute.where(:owner_uid => Core.user.id)
+  rs = Gwworkflow::CustomRoute.where(:owner_uid => Core.user.id).order(:sort_no)
     .select{|r| r.enabled? }
-    .sort{|a,b|b.sort_no <=> a.sort_no}
   routes = rs.inject({}){|acc,g| acc.merge({ g.name => g.id }) }
   initial_route = rs ? rs.max{|g| g.sort_no } : nil
 %>
