@@ -77,12 +77,10 @@ class Gw::Admin::LinkSsoController < Gw::Controller::Admin::Base
     require 'net/http'
     http = Net::HTTP.new(@uri.host, @uri.port)
     http.use_ssl = true if @uri.scheme == 'https'
+    request_query = {account: Core.user.code, password: Core.user.password}
+    request_query[:mobile_password] = Core.user.mobile_password if request.mobile?
     http.start do |agent|
-      response = agent.post(@uri.path, {
-        account:Core.user.code,
-        password: Core.user.password,
-        mobile_password: Core.user.mobile_password
-      }.to_query)
+      response = agent.post(@uri.path, request_query.to_query)
       @token = response.body =~ /^OK/i ? response.body.gsub(/^OK /i, '') : nil
     end
     return redirect_to @uri.to_s unless @token
