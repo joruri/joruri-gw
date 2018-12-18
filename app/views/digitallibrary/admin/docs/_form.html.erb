@@ -6,7 +6,7 @@
     mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= raw(tool_tiny_mce(mce_base_url, {:leftbar_mode=>true})) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <%= render 'folder_name' %>
 
@@ -93,14 +93,14 @@
     <th>記事入力方式</th></tr><tr>
     <td>
       <%= f.radio_buttons :wiki, Digitallibrary::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="digitallibrary_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
+      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="digitallibrary_help"><%=sanitize Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
     </td>
   </tr>
 </table>
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr>
     <th>記事</th></tr><tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'body ckeditor mceEditor', :style => 'width:100%' %></td>
   </tr>
 </table>
 <table class="show" id="wiki_body_table" style="<%= 'display: none;' unless @item.wiki_enabled? -%>">
@@ -156,7 +156,7 @@
       Element.hide($('wiki_body_table'));
       Element.hide($('digitallibrary_help'));
     }
-    tinyMCE.getInstanceById('item_body').setContent('');
+    //tinyMCE.getInstanceById('item_body').setContent('');
     $('item_wiki_body').value = "";
     <% if @title.use_old_upload_system? -%>
     var ifm = $('image_attach_form');

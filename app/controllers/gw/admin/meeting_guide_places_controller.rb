@@ -34,7 +34,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(place_params)
     _create @item, notice: '場所の登録に成功しました。'
   end
 
@@ -44,7 +44,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = place_params
     _update @item, notice: '場所の更新に成功しました。'
   end
 
@@ -65,7 +65,7 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
     @items = @model.order(sort_no: :asc)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
@@ -75,24 +75,6 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
       flash.now[:notice] = '並び順の更新に失敗しました。'
       render :index
     end
-  end
-
-  def updown
-    item = @model.find(params[:id])
-
-    item_rep =
-      case params[:order]
-      when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
-      else
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
-      end
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
   end
 
   def prop_sync
@@ -131,5 +113,11 @@ class Gw::Admin::MeetingGuidePlacesController < Gw::Controller::Admin::Base
     )
 
     redirect_to url_for(action: :index), notice: "会議室との同期に成功しました。"
+  end
+
+private
+
+  def place_params
+    params.require(:item).permit(:sort_no, :state, :place)
   end
 end

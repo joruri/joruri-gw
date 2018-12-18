@@ -6,20 +6,20 @@
     mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
+<%= init_ckeditor baseHref: mce_base_url%>
 
 <table class="show bbsText">
   <tr>
     <th>タイトル<%= raw(required('※')) %> ( 記事件名は140文字以内で入力してください )</th>
   </tr>
   <tr>
-    <td><%= f.text_area :title, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px'%></td>
+    <td><%= f.text_area :title, :cols => '140', :rows=>"1", :style => 'width:100%; height:45px;'%></td>
   </tr>
   <tr>
     <th>内容</th>
   </tr>
   <tr>
-    <td class="mceEditor"><%= f.text_area :body, :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :style => 'width:100%; height: 300px;' %></td>
   </tr>
 </table>
 

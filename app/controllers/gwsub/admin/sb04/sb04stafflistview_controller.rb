@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録"
   end
   def index
@@ -14,7 +14,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
     item.and "sql" , Gwsub::Sb04stafflist.staff_select(@u_role || @role_sb04_dev)
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -173,7 +173,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
       staff.fyear_id    = par_item[:fyed_id].to_i   unless par_item[:fyed_id].to_i == 0
       staff.section_id  = par_item[:grped_id].to_i  unless par_item[:grped_id].to_i == 0
       # ソート順指定
-      staff.order params[:id], @sort_keys
+      staff.order @sort_keys, 'id ASC'
       # 出力項目指定
       if par_item[:select]=='all'
         select = "section_code,section_name,assignedjobs_code,assignedjobs_name,divide_duties_order,assignedjobs_tel,staff_no,divide_duties,official_title_name,name,name_print,kana,extension,remarks"
@@ -232,7 +232,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistviewController < Gw::Controller::Admin::B
       staff.section_id  = par_item[:grped_id].to_i  unless par_item[:grped_id].to_i == 0
       staff.assignedjobs_code_int = 10              if par_item[:form] == "pdf" && par_item[:executive] == "1"
       # ソート順指定
-      staff.order params[:id], @sort_keys
+      staff.order @sort_keys, 'id ASC'
       # 出力項目
 
       if par_item[:form] == "csv"

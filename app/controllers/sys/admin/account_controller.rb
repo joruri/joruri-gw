@@ -27,9 +27,9 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
 
     if request.mobile?
-      login_ok = new_login_mobile(params[:account], params[:password], params[:mobile_password])
+      login_ok = new_login_mobile(login_params[:account], login_params[:password], login_params[:mobile_password])
     else
-      login_ok = new_login(params[:account], params[:password])
+      login_ok = new_login(login_params[:account], login_params[:password])
     end
 
     unless login_ok
@@ -75,33 +75,11 @@ class Sys::Admin::AccountController < Sys::Controller::Admin::Base
     end
   end
 
-  def sso
-    params[:to] ||= 'gw'
-    raise 'SSOの設定がありません。' unless config = Joruri.config.sso_settings[params[:to].to_sym]
-
-    require 'net/http'
-    Net::HTTP.version_1_2
-    http = Net::HTTP.new(config[:host], config[:port])
-    if config[:usessl]
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-
-    http.start do |agent|
-      parameters = "account=#{Core.user.account}&password=#{CGI.escape(Core.user.password.to_s)}&mobile_password=#{CGI.escape(Core.user.mobile_password.to_s)}"
-      response = agent.post("/#{config[:path]}", parameters)
-      token = response.body =~ /^OK/i ? response.body.gsub(/^OK /i, '') : nil
-
-      uri = "#{config[:usessl] ? "https" : "http"}://#{config[:host]}:#{config[:port]}/"
-      if token
-        uri << "#{config[:path]}?account=#{Core.user.account}&token=#{token}"
-        uri << "&path=#{CGI.escape(params[:path])}" if params[:path]
-      end
-      redirect_to uri
-    end
-  end
-
   private
+
+  def login_params
+    params.permit(:account, :password, :mobile_password)
+  end
 
   def reset_unauthorized_session
     reset_session if params[session_key]

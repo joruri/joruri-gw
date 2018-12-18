@@ -5,10 +5,6 @@ class Gwsub::Admin::Sb00::Sb00ConferenceManagersController < Gw::Controller::Adm
   def pre_dispatch
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "通知先管理者設定"
-
-#    index_path = "#{Site.current_node.public_uri}"
-#    return redirect_to(index_path) if params[:reset]
-#    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -16,7 +12,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceManagersController < Gw::Controller::Adm
     item = Gwsub::Sb00ConferenceManager.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
 
     @items = item.find(:all)
     _index @items
@@ -130,7 +126,7 @@ pp current_fyear,next_fyear
     unless params[:l4_c]
       @l4_current ='02'
     end
-    @item = Gwsub::Sb00ConferenceManager.new(params[:item])
+    @item = Gwsub::Sb00ConferenceManager.new(manager_params)
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -156,7 +152,7 @@ pp current_fyear,next_fyear
   def update
     init_params
     @item = Gwsub::Sb00ConferenceManager.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = manager_params
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -212,13 +208,15 @@ pp current_fyear,next_fyear
     # コピー元id 設定
     if params[:do]=="copy"
       @copy_fyear_id = 0
-#      fyear = Gw::YearFiscalJp.get_record(Date.today)
+#      fyear = Gw::YearFiscal, Jp.get_record(Date.today)
 #      @copy_fyear_id = fyear.id unless fyear.blank?
       # 最終登録年度を取得し、その翌年度を設定
 #      ref_cond  = "group_id=#{Core.user_group.id}"
       ref_cond  = "controler='#{nz(params[:ctrl],nil)}'"
       ref_order = "fyear_markjp DESC"
-      max_fyear = Gwsub::Sb00ConferenceManager.where(ref_cond).order(ref_order).first
+      max_fyear = Gwsub::Sb00ConferenceManager
+        .where(controler: nz(params[:ctrl],nil))
+        .order(fyear_markjp: :desc).first
       @copy_fyear_id  = max_fyear.fyear_id unless max_fyear.blank?
     end
     # 表示行数　設定
@@ -287,4 +285,13 @@ pp current_fyear,next_fyear
     users = System::User.get_user_select(params[:g_id])
     render text: view_context.options_for_select(users), layout: false
   end
+
+
+private
+
+  def manager_params
+    params.require(:item).permit(:controler, :memo_str, :fyear_id, :group_id,
+      :user_id, :send_state)
+  end
+
 end

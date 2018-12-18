@@ -46,7 +46,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::EditTab.new(params[:item])
+    @item = Gw::EditTab.new(edit_tab_params)
     _create @item
   end
 
@@ -56,7 +56,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::EditTab.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = edit_tab_params
     _update @item
   end
 
@@ -77,7 +77,7 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     @items = Gw::EditTab.where(parent_id: @parent.id).order(:sort_no)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
@@ -89,25 +89,6 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     end
   end
 
-
-  def updown
-    item = Gw::EditTab.find(params[:id])
-
-    item_rep =
-      case params[:order]
-      when 'up'
-        Gw::EditTab.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first
-      when 'down'
-        Gw::EditTab.where(parent_id: @parent.id).where("sort_no > #{item.sort_no}").order(sort_no: :asc).first
-      end
-    return http_error(404) unless item_rep
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-    redirect_to url_for(action: :index)
-  end
-
   def list
     @items = Gw::EditTab.where(level_no: 2).order(state: :desc, sort_no: :asc)
   end
@@ -116,5 +97,15 @@ class Gw::Admin::EditTabsController < Gw::Controller::Admin::Base
     group = System::Group.find(params[:group_id])
     options = group.self_and_enabled_descendants.map{|g| [g.name, g.id]}
     render text: view_context.options_for_select(options)
+  end
+
+private
+
+  def edit_tab_params
+    params.require(:item).permit(:parent_id, :level_no, :sort_no, :published, :state, :name,
+      :class_sso, :other_controller_use, :tab_keys, :other_controller_url,
+      :link_url, :class_external, :field_account, :field_pass, :icon_path,
+      :is_public, :display_auth,
+      :selected_public_group_ids => [])
   end
 end

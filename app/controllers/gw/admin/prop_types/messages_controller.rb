@@ -30,7 +30,7 @@ class Gw::Admin::PropTypes::MessagesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PropTypesMessage.new(params[:item])
+    @item = Gw::PropTypesMessage.new(type_messages)
     @item.type_id = @parent.id
     _create @item
   end
@@ -43,7 +43,7 @@ class Gw::Admin::PropTypes::MessagesController < Gw::Controller::Admin::Base
   def update
     @item = Gw::PropTypesMessage.find(params[:id])
     @item.type_id = @parent.id
-    @item.attributes = params[:item]
+    @item.attributes = type_messages
     _update @item
   end
 
@@ -51,4 +51,11 @@ class Gw::Admin::PropTypes::MessagesController < Gw::Controller::Admin::Base
     @item = Gw::PropTypesMessage.find(params[:id])
     _destroy @item, :notice => "削除処理は完了しました。"
   end
+
+private
+
+  def type_messages
+    params.require(:item).permit(:state, :sort_no, :body)
+  end
+
 end

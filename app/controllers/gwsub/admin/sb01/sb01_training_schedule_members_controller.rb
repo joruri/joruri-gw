@@ -6,7 +6,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_schedule_members"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -16,7 +15,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     item   = Gwsub::Sb01TrainingScheduleMember.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -58,7 +57,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     init_params
     @item1 = Gwsub::Sb01Training.find(@t_id)
     @ts    = Gwsub::Sb01TrainingSchedule.find(@p_id)
-    @item  = Gwsub::Sb01TrainingScheduleMember.new(params[:item])
+    @item  = Gwsub::Sb01TrainingScheduleMember.new(member_params)
     @item.training_id = @item1.id
     @item.condition_id = @ts.condition_id
     location = "/gwsub/sb01/sb01_training_schedules/#{@p_id}?t_id=#{@item1.id}&t_menu=#{@top_menu}"
@@ -159,7 +158,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
     # 開催日id
     prop_cond = "gwsub_sb01_training_schedules.training_id=#{@t_id}"
     prop_order = "gwsub_sb01_training_schedule_conditions.from_at"
-    @p_id_top = Gwsub::Sb01TrainingSchedule.includes(:condition).where(prop_cond).references(:condition).order(prop_order).first
+    @p_id_top = Gwsub::Sb01TrainingSchedule
+      .includes(:condition)
+      .where(Gwsub::Sb01TrainingSchedule.arel_table[:training_id].eq(@t_id))
+      .references(:condition)
+      .order(prop_order).first
     @p_id = nz(params[:p_id],@p_id_top.id)
     # 経路
     @top_menu = nz(params[:t_menu],'entries')
@@ -204,5 +207,11 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleMembersController < Gw::Controller
   def user_fields
     users = System::User.get_user_select(params[:g_id])
     render text: view_context.options_for_select([['[指定なし]','']] + users), layout: false
+  end
+
+private
+  def member_params
+    params.require(:item).permit(:training_schedule_id, :training_group_id, :training_user_id, :training_user_tel,
+       :entry_group_id, :entry_user_id, :entry_user_tel)
   end
 end

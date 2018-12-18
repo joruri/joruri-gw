@@ -1,4 +1,5 @@
 module System::Controller::Scaffold
+  ALLOWED_DO_PARAMS = %w(recognize publish close duplicate duplicate_for_replace download)
 
   def edit
     show
@@ -14,8 +15,9 @@ protected
   end
 
   def _show(item)
-    return send(params[:do], item) if params[:do]
-
+    if (idx = ALLOWED_DO_PARAMS.index(params[:do]))
+      return public_send(ALLOWED_DO_PARAMS[idx], item)
+    end
     respond_to do |format|
       format.html { render }
       format.xml  { render :xml => to_xml(item) }

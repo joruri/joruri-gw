@@ -141,10 +141,7 @@ module Gw::Controller::Mobile
 
     require 'net/http'
     http = Net::HTTP.new(mobile_uri.host, mobile_uri.port, Core.proxy_uri.try(:host), Core.proxy_uri.try(:port))
-    if mobile_uri.scheme == 'https'
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
+    http.use_ssl = true if mobile_uri.scheme == 'https'
     req = Net::HTTP::Get.new(get_uri)
 
     res = http.request(req)

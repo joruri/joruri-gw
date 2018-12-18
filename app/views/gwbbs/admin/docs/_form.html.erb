@@ -5,7 +5,7 @@
     mce_base_url = '/_common/modules/gwbbs/' + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= raw(tool_tiny_mce(mce_base_url, {:leftbar_mode=>true})) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <% unless @title.one_line_use == 0 %>
 <table class="bbsComment">

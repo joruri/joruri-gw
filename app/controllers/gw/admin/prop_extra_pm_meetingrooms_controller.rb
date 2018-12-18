@@ -123,7 +123,7 @@ class Gw::Admin::PropExtraPmMeetingroomsController < Gw::Admin::PropExtraPmGenre
     return error_auth unless @is_pm_admin
 
     @item = @mdl_actual.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = pm_meetingroom_params
     @item.updated_user = Core.user.name
     @item.updated_group = "#{Core.user_group.code}#{Core.user_group.name}"
 
@@ -229,4 +229,11 @@ class Gw::Admin::PropExtraPmMeetingroomsController < Gw::Admin::PropExtraPmGenre
     else
     end
   end
+
+private
+
+  def pm_meetingroom_params
+    params.require(:item).permit(:start_at, :end_at, :title)
+  end
+
 end

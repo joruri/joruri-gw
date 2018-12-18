@@ -3,7 +3,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
 
     @role_developer = Gw::YearMarkJp.is_dev?
     @role_admin = Gw::YearMarkJp.is_admin?
@@ -15,7 +15,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:limit, :s_keyword).symbolize_keys) 
+    super.merge(params.slice(:limit, :s_keyword).symbolize_keys)
   end
 
   def index
@@ -32,7 +32,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::YearFiscalJp.new(params[:item])
+    @item = Gw::YearFiscalJp.new(fiscal_jp_params)
     _create @item
   end
 
@@ -42,7 +42,7 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::YearFiscalJp.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = fiscal_jp_params
     _update @item
   end
 
@@ -50,4 +50,11 @@ class Gw::Admin::YearFiscalJpsController < Gw::Controller::Admin::Base
     @item = Gw::YearFiscalJp.find(params[:id])
     _destroy @item
   end
+
+private
+
+  def fiscal_jp_params
+    params.require(:item).permit(:fyear)
+  end
+
 end

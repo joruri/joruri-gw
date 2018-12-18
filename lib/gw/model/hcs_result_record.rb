@@ -53,12 +53,9 @@ private
     return {} unless uri
 
     require 'net/http'
-    Net::HTTP.version_1_2
+
     http = Net::HTTP.new(uri.host, uri.port, Core.proxy_uri.try(:host), Core.proxy_uri.try(:port))
-    if uri.scheme == 'https'
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
+    http.use_ssl = true if uri.scheme == 'https'
 
     response = {}
     begin

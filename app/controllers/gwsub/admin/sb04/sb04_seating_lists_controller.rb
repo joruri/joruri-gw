@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "事務分掌表・座席表掲示板"
   end
 
@@ -12,7 +12,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb04SeatingList.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -63,7 +63,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     init_params
     @l3_current = '03'
 
-    new_item = Gwsub::Sb04SeatingList.set_f(params[:item])
+    new_item = Gwsub::Sb04SeatingList.set_f(seating_list_params)
 
     @item = Gwsub::Sb04SeatingList.new(new_item)
 
@@ -81,7 +81,7 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
     @item = Gwsub::Sb04SeatingList.where(:id => params[:id]).first
     return redirect_to http_error(404) if @item.blank?
 
-    new_item = Gwsub::Sb04SeatingList.set_f(params[:item])
+    new_item = Gwsub::Sb04SeatingList.set_f(seating_list_params)
     @item.attributes = new_item
 
     options={:location=>"/gwsub/sb04/04/sb04_seating_lists/#{@item.id}?#{@qs}"}
@@ -304,6 +304,12 @@ class Gwsub::Admin::Sb04::Sb04SeatingListsController < Gw::Controller::Admin::Ba
       end
     end
     return '0'
+  end
+
+private
+
+  def seating_list_params
+    params.require(:item).permit(:fyear_markjp, :fyear_id, :title, :bbs_url, :remarks)
   end
 
 end

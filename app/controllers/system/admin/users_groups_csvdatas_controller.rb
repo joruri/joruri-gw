@@ -4,7 +4,7 @@ class System::Admin::UsersGroupsCsvdatasController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
 
     @current_no = 1
     @role_developer  = System::User.is_dev?

@@ -34,8 +34,7 @@ class Gwsub::Sb04officialtitle < Gwsub::GwsubPref
     Gwsub.gwsub_set_editors(self)
   end
 
-  def officialtitle_data_save(params, mode, options={})
-    par_item = params[:item].dup
+  def officialtitle_data_save(par_item, mode, options={})
 
     if !par_item[:code].blank? && par_item[:code] !~ /^[0-9A-Za-z\_]+$/
       self.errors.add :code, "は、半角英数字およびアンダーバー（_）で入力してください。"

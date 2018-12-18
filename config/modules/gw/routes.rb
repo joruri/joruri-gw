@@ -334,11 +334,6 @@ Rails.application.routes.draw do
           get :show_group, :show_group_month
         end
       end
-      resources :todos do
-        member do
-          get :finish, :delete, :quote, :delete, :finish, :confirm
-        end
-      end
       resources :todo_settings do
         collection do
           get :reminder, :schedule, :admin_deletes

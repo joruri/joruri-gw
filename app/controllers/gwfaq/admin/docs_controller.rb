@@ -67,7 +67,7 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
   def update
     @item = @title.docs.find(params[:id])
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Time.now
     @item.category_use = @title.category
     @item.section_name = @item.section.code + @item.section.name if @item.section
@@ -115,6 +115,12 @@ class Gwfaq::Admin::DocsController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def doc_params
+    params.require(:item).permit(:body, :category1_id, :state,
+      :title, :wiki_body, :wiki, :section_code, :skip_updating_updated_at,
+      :selected_recognizer_uids => [])
+  end
 
   def check_title_readable
     return error_auth unless @title.is_readable?

@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb13::ExternalmediasController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     section_name_select_list
 
     @usage_sql = 'ending_at IS NULL'
@@ -111,7 +111,7 @@ class Gwsub::Admin::Sb13::ExternalmediasController < Gw::Controller::Admin::Base
     init_params
     @l3_current='02'
     @is_new = true
-    @item = Gwsub::Externalmedia.new(params[:item])
+    @item = Gwsub::Externalmedia.new(media_params)
     unless @role_admin
       @item.section_id = Core.user_group.id if @item.section_id.blank?
       @item.section_name = Core.user_group.name if @item.section_name.blank?
@@ -151,7 +151,7 @@ class Gwsub::Admin::Sb13::ExternalmediasController < Gw::Controller::Admin::Base
     @section_name = @item.section_name if @item.section_id == 0
     @user_name = ''
     @user_name = @item.user if @item.user_id.blank?
-    @item.attributes = params[:item]
+    @item.attributes = media_params
     @item.section_id = 0 if @item.section_id.blank?
     location = url_for(action: :index)
       _inherit_qs_s = @qs ? "?#{@qs}" : ''
@@ -288,6 +288,13 @@ class Gwsub::Admin::Sb13::ExternalmediasController < Gw::Controller::Admin::Base
         format.xml  { render :xml => item.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+private
+
+  def media_params
+    params.require(:item).permit(:section_id, :new_registedno, :registedno, :registed_at, :externalmediakind_id,
+      :externalmediakind_name, :user_id, :user, :categories, :ending_at, :remarks)
   end
 
 end

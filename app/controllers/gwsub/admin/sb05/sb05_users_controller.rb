@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -14,7 +14,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
     item = Gwsub::Sb05User.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @users = item.find(:all)
     _index @users
   end
@@ -40,7 +40,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
   def create
     init_params
 #    pp ['create',params]
-    @user = Gwsub::Sb05User.new(params[:user])
+    @user = Gwsub::Sb05User.new(user_params)
     case @n_from
     when 'r'
       # 依頼登録からのルートは、依頼登録に戻す
@@ -67,7 +67,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
     init_params
 #    pp ['update',params]
     @user = Gwsub::Sb05User.new.find(params[:id])
-    @user.attributes = params[:user]
+    @user.attributes = user_params
     location = "#{@index_uri}#{@user.id}"
     # 更新できたら、requestの連絡先情報も更新する。
 
@@ -75,8 +75,7 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
       :success_redirect_uri=>location,
       :after_process=>Proc.new{
 #        cond="sb05_users_id=#{params[:id]}"
-        cond="sb05_users_id=#{params[:id]} and org_code='#{@user.org_code}' and org_name='#{@user.org_name}'"
-        requests = Gwsub::Sb05Request.where(cond)
+        requests = Gwsub::Sb05Request.where(sb05_users_id: params[:id], org_code: @user.org_code, org_name: @user.org_name)
         requests.each do |x|
           x.telephone = params[:user]['telephone']
           x.save
@@ -200,4 +199,12 @@ class Gwsub::Admin::Sb05::Sb05UsersController < Gw::Controller::Admin::Base
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'org_code ASC , org_name ASC , user_name ASC , created_at ASC ')
   end
+
+private
+
+  def user_params
+    params.require(:user).permit(:user_id, :user_code, :user_name, :org_id, :org_code, :org_name,
+      :notes_imported , :telephone)
+  end
+
 end

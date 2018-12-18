@@ -24,13 +24,13 @@ class Gw::Admin::MeetingMonitorManagersController < Gw::Controller::Admin::Base
 
   def new
     @item = @model.new(
-      state: 'enabled', 
+      state: 'enabled',
       manager_group_id: Core.user_group.id
      )
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(manager_params)
     _create @item
   end
 
@@ -40,7 +40,7 @@ class Gw::Admin::MeetingMonitorManagersController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = manager_params
     _update @item
   end
 
@@ -65,4 +65,10 @@ class Gw::Admin::MeetingMonitorManagersController < Gw::Controller::Admin::Base
     user = System::User.find_by(id: params[:g_id]) if params[:g_id].present?
     render text: user.try(:email), layout: false
   end
+
+private
+  def manager_params
+    params.require(:item).permit(:state, :manager_group_id, :manager_user_id, :manager_user_addr)
+  end
+
 end

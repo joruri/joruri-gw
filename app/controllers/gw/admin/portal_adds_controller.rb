@@ -34,7 +34,7 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PortalAdd.new(params[:item])
+    @item = Gw::PortalAdd.new(ad_params)
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _create @item, notice: '広告画像の登録に成功しました。'
@@ -42,7 +42,7 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PortalAdd.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = ad_params
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _update @item, notice: '広告画像の更新に成功しました。'
@@ -61,19 +61,12 @@ class Gw::Admin::PortalAddsController < Gw::Controller::Admin::Base
     redirect_to url_for(action: :index), notice: "指定の広告を削除しました。"
   end
 
-  def updown
-    item = Gw::PortalAdd.find(params[:id])
-    item_rep = case params[:order]
-      when 'up'
-        Gw::PortalAdd.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
-      when 'down'
-        Gw::PortalAdd.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
-      end
+private
 
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
+  def ad_params
+    params.require(:item).permit(:state, :published, :sort_no, :title,
+      :body, :file, :is_large,  :publish_start_at, :publish_end_at, :place,
+      :class_sso, :url, :field_account, :field_pass)
   end
+
 end

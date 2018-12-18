@@ -60,7 +60,7 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
     system_admin_flags
     #return error_auth unless @is_sysadm
 
-    @item = Questionnaire::TemplateBase.new(params[:item])
+    @item = Questionnaire::TemplateBase.new(base_params)
 
     @item.able_date = Time.now.strftime("%Y-%m-%d")
     @item.section_code = Core.user_group.code
@@ -116,7 +116,7 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
 
     @before_state = @item.state
 
-    @item.attributes = params[:item]
+    @item.attributes = base_params
 
     @item.state = 'closed' if @before_state == 'closed'
     @item._commission_state = @before_state
@@ -177,7 +177,7 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
   end
 
   def open
-  	system_admin_flags
+    system_admin_flags
     @item = Questionnaire::TemplateBase.where(:id => params[:id]).first
     return http_error(404) unless @item
     _item_edit_flg
@@ -202,4 +202,11 @@ class Questionnaire::Admin::TemplatesController < Gw::Controller::Admin::Base
     flash[:notice] = '公開取り消し処理が完了しました。'
     return redirect_to location
   end
+
+private
+
+  def base_params
+    params.require(:item).permit(:manage_title, :title, :admin_setting, :state)
+  end
+
 end

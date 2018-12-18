@@ -27,13 +27,13 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PortalAddPattern.new(params[:item])
+    @item = Gw::PortalAddPattern.new(pattern_params)
     @adds = Gw::PortalAdd.order(:sort_no)
 
     @item.sort_no = 0
     @item.group_patterns.each do |pattern|
       pattern.attributes = {
-        state: @item.state, title: @item.title, group_id: @item.group_id, 
+        state: @item.state, title: @item.title, group_id: @item.group_id,
         pattern: @item.pattern, place: @item.place, skip_validate_size: true
       }
     end
@@ -55,10 +55,10 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
     @item = Gw::PortalAddPattern.find(params[:id])
     @adds = Gw::PortalAdd.order(:sort_no)
 
-    @item.attributes = params[:item]
+    @item.attributes = pattern_params
     @item.group_patterns.each do |pattern|
       pattern.attributes = {
-        state: @item.state, title: @item.title, group_id: @item.group_id, 
+        state: @item.state, title: @item.title, group_id: @item.group_id,
         pattern: @item.pattern, place: @item.place, skip_validate_size: true
       }
     end
@@ -95,10 +95,10 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
     item_rep, items_rep = nil
     case params[:order]
     when 'up'
-      item_rep = Gw::PortalAddPattern.where("group_id < #{item.group_id}").order(group_id: :desc).group(:group_id).first!
+      item_rep = Gw::PortalAddPattern.where(Gw::PortalAddPattern.arel_table[:group_id].lt(item.group_id)).order(group_id: :desc).group(:group_id).first!
       items_rep = Gw::PortalAddPattern.where(group_id: item_rep.group_id).order(group_id: :desc)
     else
-      item_rep = Gw::PortalAddPattern.where("group_id > #{item.group_id}").order(group_id: :asc).group(:group_id).first!
+      item_rep = Gw::PortalAddPattern.where(Gw::PortalAddPattern.arel_table[:group_id].gt(item.group_id)).order(group_id: :asc).group(:group_id).first!
       items_rep = Gw::PortalAddPattern.where(group_id: item_rep.group_id).order(group_id: :asc)
     end
 
@@ -109,4 +109,14 @@ class Gw::Admin::PortalAddPatternsController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
   end
+
+
+private
+
+  def pattern_params
+    params.require(:item).permit(:state, :title, :group_id, :place, :pattern).tap do |whitelisted|
+      whitelisted[:group_patterns_attributes] = params[:item][:group_patterns_attributes].permit! if params[:item][:group_patterns_attributes]
+    end
+  end
+
 end

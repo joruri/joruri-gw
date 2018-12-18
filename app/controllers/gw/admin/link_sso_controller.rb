@@ -74,30 +74,23 @@ class Gw::Admin::LinkSsoController < Gw::Controller::Admin::Base
     @uri = request.mobile? ? @product.sso_uri_mobile : @product.sso_uri
     raise 'リダイレクト先の設定がありません。' unless @uri
 
-    Net::HTTP.version_1_2
-    http = Net::HTTP.new(@uri.host, @uri.port, Core.proxy_uri.try(:host), Core.proxy_uri.try(:port))
-    if @uri.scheme == 'https'
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-
-    @token = nil
+    require 'net/http'
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    http.use_ssl = true if @uri.scheme == 'https'
+    request_query = {account: Core.user.code, password: Core.user.password}
+    request_query[:mobile_password] = Core.user.mobile_password if request.mobile?
     http.start do |agent|
-      parameters = "account=#{Core.user.code}&password=#{CGI.escape(Core.user.password.to_s)}"
-      parameters << "&mobile_password=#{CGI.escape(Core.user.mobile_password.to_s)}" if request.mobile?
-      response = agent.post(@uri.path, parameters)
+      response = agent.post(@uri.path, request_query.to_query)
       @token = response.body =~ /^OK/i ? response.body.gsub(/^OK /i, '') : nil
     end
-
-    unless @token
-      @uri.path = '/'
-      return redirect_to @uri.to_s
-    end
+    return redirect_to @uri.to_s unless @token
 
     if request.get?
-      query = "account=#{Core.user.code}&token=#{@token}"
-      query << "&path=#{CGI.escape(params[:path])}" if params[:path]
-      @uri.query = query
+      @uri.query = Hash.new.tap { |h|
+        h[:account] = Core.user.code
+        h[:token] = @token
+        h[:path] = params[:path] if params[:path].present?
+      }.to_query
       return redirect_to @uri.to_s
     end
   end

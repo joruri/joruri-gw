@@ -32,8 +32,14 @@ class Gw::Admin::AdminModesController  < Gw::Controller::Admin::Base
       else
         Gw::Property::PortalDisasterBbs.first_or_new
       end
-    @item.attributes = params[:item]
+    @item.attributes = mode_params
 
     _update @item, :location => gw_admin_modes_path
   end
+
+private
+  def mode_params
+    params.require(:item).permit(:options)
+  end
+
 end

@@ -50,7 +50,7 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
       return redirect_to edit_enquete_answer_path(@title,item) if item.state == 'public'
       @title.answers.where(state: nil, user_code: Core.user.code).destroy_all
     end
-    
+
     @item = Enquete::Answer.new({
       :title_id => @title.id,
       :enquete_division => @title.enquete_division,
@@ -59,14 +59,14 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Enquete::Answer.new(params[:item])
+    @item = Enquete::Answer.new(answer_params)
 
     @item.title_id = @title.id
     @item.user_code = Core.user.code
     @item.enquete_division = @title.enquete_division
 
     @item._field_lists = @field_lists
-    @item._item_params = params[:item]
+    @item._item_params = answer_params
 
     apart_groups
 
@@ -95,10 +95,10 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
     return http_error(404) unless @item
     user_check
 
-    @item.attributes = params[:item]
+    @item.attributes = answer_params
 
     @item._field_lists = @field_lists
-    @item._item_params = params[:item]
+    @item._item_params = answer_params
 
     apart_groups
 
@@ -224,6 +224,12 @@ class Enquete::Admin::Menus::AnswersController < Gw::Controller::Admin::Base
       #params[:item]の内容が無い場合,モデル内で全フィールドを初期化するので何かセットしておく
       @item._item_params = "group" if @item._item_params.blank? unless is_all_blank
     end
+  end
+
+private
+
+  def answer_params
+    params.require(:item).permit!
   end
 
 end

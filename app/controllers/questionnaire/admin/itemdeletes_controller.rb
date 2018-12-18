@@ -25,18 +25,24 @@ class Questionnaire::Admin::ItemdeletesController < Gw::Controller::Admin::Base
     return if @item.blank?
 
     @item.admin_code = Core.user.code
-    @item.attributes = params[:item]
+    @item.attributes = delete_params
 
     _update @item, :success_redirect_uri=>'/gw/config_settings?c1=1&c2=7'
   end
-  
+
 protected
-  
+
   def check_gw_system_admin
     @is_gw_admin = Gw.is_admin_admin?
     @is_sysadm = true if @is_gw_admin == true
     @is_sysadm = Core.user.has_role?('enquete/admin') unless @is_sysadm
     @is_bbsadm = true if @is_sysadm
+  end
+
+private
+
+  def delete_params
+    params.require(:item).permit(:limit_date)
   end
 
 end

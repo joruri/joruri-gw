@@ -24,7 +24,7 @@
   </tr>
   <tr>
     <th>表示名</th>
-    <td><%=raw @item.name %></td>
+    <td><%=sanitize @item.name %></td>
   </tr>
   <tr>
     <th>並び順</th>
@@ -101,7 +101,7 @@
   <% if @item.is_public == 1 %>
     <tr>
       <th>公開所属</th>
-      <td><%=raw @item.public_group_names.join('<br />') %></td>
+      <td><%=sanitize @item.public_group_names.join('<br />') %></td>
     </tr>
   <% elsif @item.is_public == 2 %>
     <tr>

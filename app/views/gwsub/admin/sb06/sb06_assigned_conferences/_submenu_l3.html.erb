@@ -122,7 +122,7 @@ if l2_menus_1
     <%= link_to display_name.html_safe , url_for("/gwsub/sb06/sb06_assigned_conferences"+param ) -%>
   <% end %>
   <%= link_to help_name.html_safe , url_for(help_path2+help_param2) if main_admin==true %>
-  <%= link_csv.html_safe  if main_admin==true %>
-  <%= link_sb00.html_safe if assined_manager==true %>
+  <%= sanitize link_csv.html_safe  if main_admin==true %>
+  <%= sanitize link_sb00.html_safe if assined_manager==true %>
 <% end %>
 </div>

@@ -267,7 +267,7 @@ class Gwbbs::Doc < Gwboard::CommonDb
 
   def duplicate
     new_doc = self.class.new
-    new_doc.attributes = self.attributes.except(:id)
+    new_doc.attributes = self.attributes.except("id")
     new_doc.unid = nil
     new_doc.created_at = nil
     new_doc.updated_at = nil
@@ -298,7 +298,7 @@ class Gwbbs::Doc < Gwboard::CommonDb
 
     files.each do |file|
       new_file = file.class.new
-      new_file.attributes = file.attributes.except(:id)
+      new_file.attributes = file.attributes.except("id")
       new_file.file = Sys::Lib::File::NoUploadedFile.new(file.f_name, filename: file.filename, mime_type: file.content_type)
       new_file.parent_id = new_doc.id
       new_file.db_file_id = -1

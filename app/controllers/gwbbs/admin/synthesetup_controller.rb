@@ -22,7 +22,7 @@ class Gwbbs::Admin::SynthesetupController < Gw::Controller::Admin::Base
     @item = Gwboard::Synthesetup.where(content_id: 0).first_or_create(
       gwbbs_check: false, gwfaq_check: false, gwqa_check: false, doclib_check: false, digitallib_check: false
     )
-    @item.attributes = params[:item]
+    @item.attributes = synthese_params
     _update @item
   end
 
@@ -32,7 +32,17 @@ class Gwbbs::Admin::SynthesetupController < Gw::Controller::Admin::Base
 
   def update
     @item = Gwboard::Synthesetup.where(content_id: 2).first_or_create(limit_date: 'yesterday')
-    @item.attributes = params[:item]
+    @item.attributes = limit_date_params
     _update @item
   end
+
+private
+  def synthese_params
+    params.require(:item).permit(:gwbbs_check, :gwfaq_check, :gwqa_check, :doclib_check, :digitallib_check)
+  end
+
+  def limit_date_params
+    params.require(:item).permit(:limit_date)
+  end
+
 end

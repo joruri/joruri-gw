@@ -10,7 +10,12 @@ class Gw::Controller::Admin::Base < Sys::Controller::Admin::Base
     if items.any? {|item| request.fullpath =~ Regexp.new(Regexp.escape(item.path)) }
       return true
     else
-      redirect_to items[0].path
+      begin
+        refer_url = URI.parse(items[0].path).path
+      rescue URI::InvalidURIError
+        refer_url = "/"
+      end
+      redirect_to refer_url
     end
   end
 end

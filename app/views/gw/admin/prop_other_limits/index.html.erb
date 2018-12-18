@@ -23,15 +23,15 @@
     <% @items.each do |item| %>
       <%
       count = current_count_group_props_each(item.gid, @prop_types)
-      g_count = System::Group.where("id=#{item.gid}").count
+      g_count = System::Group.where(id: item.gid).count
       detail=0
       if g_count> 0
         g_name = item.group.name
       else
         detail=1
-        g_h_count = System::GroupHistory.where("id=#{item.gid}").count
+        g_h_count = System::GroupHistory.where(id: item.gid).count
         if g_h_count >  0
-          group_h = System::GroupHistory.where(:id => item.gid).first
+          group_h = System::GroupHistory.where(id: item.gid).first
           if group_h.blank?
             g_name = %Q(<span style="color:red;">削除済　[id=#{item.gid}]</span>)
           else
@@ -44,7 +44,7 @@
       %>
       <tr class="<%= cycle '' , 'cycle' %>">
         <td><%= link_to_show item.id if detail==0 %></td>
-        <td><%= raw(g_name) %></td>
+        <td><%= sanitize g_name %></td>
         <td><%= item.limit %></td>
         <td><%= count[@prop_types.size] %></td>
         <% @prop_types.each_with_index do |type, i| %>

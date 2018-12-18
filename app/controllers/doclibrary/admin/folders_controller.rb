@@ -45,7 +45,7 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @title.folders.build(params[:item])
+    @item = @title.folders.build(folder_params)
     @item.parent_id = @parent.id
     @item.level_no = @parent.level_no + 1
     @item.children_size  = 0
@@ -64,7 +64,7 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   def update
     @item = @title.folders.find(params[:id])
 
-    @item.attributes = params[:item]
+    @item.attributes = folder_params
 
     str_params = @title.docs_path
     str_params += "&cat=#{@item.parent_id}"
@@ -96,5 +96,9 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   def check_title_writable
     return error_auth unless @title.is_writable?
+  end
+private
+  def folder_params
+    params.require(:item).permit(:use_state, :sort_no, :name)
   end
 end

@@ -11,7 +11,7 @@
   extra_style = "display: none;" if @item.form_name != "form002"
   extra_style = "" if params[:item][:form_id].to_i == 2 if params[:item]
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>false}) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <table class="show bbsText">
   <tr>
@@ -29,7 +29,7 @@
     <th>概要説明</th>
   </tr>
   <tr>
-    <td class="mceEditor"><%= f.text_area :caption, :class => 'mceEditor', :style => 'width:100%; height:350px;' %></td>
+    <td class="mceEditor"><%= f.text_area :caption, :class => 'mceEditor body ckeditor', :style => 'width:100%; height:350px;' %></td>
   </tr>
 </table>
 

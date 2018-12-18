@@ -92,7 +92,8 @@ class Gw::Admin::ScheduleEventMastersController < Gw::Controller::Admin::Base
   private
 
   def put_params(_params, action)
-    _params = _params[:item]
+    _params = _params.require(:item).permit(:management_gid, :management_uid,
+      :range_class_id, :division_parent_gid, :division_gid, :edit_auth)
 
     if _params[:range_class_id] == "1"
       _params[:division_gid] = nil
@@ -105,4 +106,5 @@ class Gw::Admin::ScheduleEventMastersController < Gw::Controller::Admin::Base
       :state => 'enabled'
     )
   end
+
 end

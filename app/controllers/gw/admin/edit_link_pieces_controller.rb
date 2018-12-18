@@ -47,7 +47,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::EditLinkPiece.new(params[:item])
+    @item = Gw::EditLinkPiece.new(edit_link_piece_params)
     _create @item
   end
 
@@ -57,7 +57,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::EditLinkPiece.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = edit_link_piece_params
     _update @item
   end
 
@@ -79,7 +79,7 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
     @items = Gw::EditLinkPiece.where(parent_id: @parent.id, uid: nil).order(sort_no: :asc)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
@@ -89,23 +89,6 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
       flash.now[:notice] = '並び順の更新に失敗しました。'
       render :index
     end
-  end
-
-  def updown
-    item = Gw::EditLinkPiece.find(params[:id])
-
-    item_rep = case params[:order]
-      when 'up'
-        Gw::EditLinkPiece.where(parent_id: @parent.id).where("sort_no < #{item.sort_no}").order(sort_no: :desc).first
-      when 'down'
-        Gw::EditLinkPiece.where(parent_id: @parent.id).where("sort_no > #{item.sort_no}").order(sort_no: :asc).first
-      end
-    return http_error(404) unless item_rep
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-    redirect_to url_for(action: :index)
   end
 
   def swap
@@ -121,4 +104,15 @@ class Gw::Admin::EditLinkPiecesController < Gw::Controller::Admin::Base
   def list
     @items = Gw::EditLinkPiece.where(level_no: 2, uid: nil).order(state: :desc, sort_no: :asc)
   end
+
+private
+
+  def edit_link_piece_params
+    params.require(:item).permit(:published, :state, :name, :tab_keys,
+      :mode, :block_icon_id, :block_css_id, :display_auth,
+      :class_sso, :link_url, :class_external,
+      :field_account, :field_pass, :icon_path,
+      :class_created, :parent_id, :level_no, :sort_no)
+  end
+
 end

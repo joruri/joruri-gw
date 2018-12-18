@@ -164,7 +164,7 @@ class Gwsub::Sb05Request < Gwsub::GwsubPref
         base_date = Gwsub::Sb05Request.get_base_date(date,2)
         d_cond = "media_code='2' and desired_at = '#{base_date.strftime('%Y-%m-%d 00:00:00')}'"
         d_order = "desired_at ASC"
-        d_date = Gwsub::Sb05DesiredDate.where(d_cond).order(d_order).first
+        d_date = Gwsub::Sb05DesiredDate.where(media_code: '2', desired_at: base_date.strftime('%Y-%m-%d 00:00:00')).order(d_order).first
         if d_date.blank?
           check_at =  nil
         else
@@ -181,7 +181,7 @@ class Gwsub::Sb05Request < Gwsub::GwsubPref
       # メルマガ　掲載希望日から編集期限を取得
       d_cond = "media_code='4' and desired_at = '#{date.strftime('%Y-%m-%d 00:00:00')}'"
       d_order = "desired_at ASC"
-      d_date = Gwsub::Sb05DesiredDate.where(d_cond).order(d_order).first
+      d_date = Gwsub::Sb05DesiredDate.where(media_code: '4', desired_at: date.strftime('%Y-%m-%d 00:00:00')).order(d_order).first
       if d_date.blank?
         check_at =  nil
       else

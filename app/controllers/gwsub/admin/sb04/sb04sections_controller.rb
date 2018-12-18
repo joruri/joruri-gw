@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録 所属一覧"
   end
 
@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb04section.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -76,7 +76,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
   def create
     init_params
     @l3_current = '03'
-    @item = Gwsub::Sb04section.new(params[:item])
+    @item = Gwsub::Sb04section.new(section_params)
     location  = "/gwsub/sb04/04/sb04sections?#{@qs}"
 
     if @item.section_data_save(params, :create)
@@ -102,7 +102,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
     init_params
     @item = Gwsub::Sb04section.where(:id => params[:id]).first
     return http_error(404) if @item.blank?
-    @item.attributes = params[:item]
+    @item.attributes = section_params
     location  = "/gwsub/sb04/04/sb04sections/#{@item.id}?#{@qs}"
 
     if @item.section_data_save(params, :update)
@@ -266,7 +266,7 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb04CheckSection.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
   end
 
@@ -336,6 +336,12 @@ class Gwsub::Admin::Sb04::Sb04sectionsController < Gw::Controller::Admin::Base
 #    end
     @param = nil
     return @param
+  end
+
+private
+
+  def section_params
+    params.require(:item).permit(:fyear_id, :code, :name, :ldap_code, :remarks, :bbs_url)
   end
 
 end

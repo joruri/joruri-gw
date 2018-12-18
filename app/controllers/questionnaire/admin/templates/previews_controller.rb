@@ -40,7 +40,7 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
   end
 
   def create
-    @item = Questionnaire::TemplatePreview.new(params[:item])
+    @item = Questionnaire::TemplatePreview.new(answer_params)
     @item.parent_id = @title.id
 
     @item.state = 'public'
@@ -76,8 +76,7 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
   def update
     @item = Questionnaire::TemplatePreview.where(:id => params[:id]).first
     return http_error(404) unless @item
-    @item.attributes = params[:item]
-
+    @item.attributes = answer_params
     @item.state = 'public'
 
     @item.createdate = Time.now.strftime("%Y-%m-%d %H:%M")
@@ -157,5 +156,11 @@ class Questionnaire::Admin::Templates::PreviewsController < Gw::Controller::Admi
       @item._item_params = "group" if @item._item_params.blank? unless is_all_blank
     end
   end
+private
+
+  def answer_params
+    params.require(:item).permit!
+  end
+
 
 end

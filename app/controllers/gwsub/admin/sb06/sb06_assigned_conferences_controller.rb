@@ -16,7 +16,6 @@
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "担当者名等管理"
   end
@@ -51,7 +50,7 @@
     item.and 'sql'," (user_id <> -1 OR official_title_name IS NOT NULL)"
     #item.and 'sql'," user_id <> -1"
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -1130,7 +1129,7 @@ pp items
           return
         end
       else
-        item.order params[:id], @sort_keys
+        item.order @sort_keys, 'id ASC'
         select = "group_name_display,conf_item_title,official_title_name,user_name,conf_at,conf_mark,conf_no"
         # 出力データ抽出
         item = item.find(:all,:select=>select)
@@ -1427,7 +1426,7 @@ pp items
     users_collection(Core.user_group.id)
     init_params
     @item = Gwsub::Sb06AssignedConference.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = docno_params
     member = Gwsub::Sb06AssignedConferenceMember.new
     member.conference_id  = @item.id
     member.order  @sort_keys
@@ -1470,4 +1469,11 @@ pp items
     groups = Gwsub::Sb00ConferenceSectionManagerName.get_g_names(params[:t_id].to_i)
     render text: view_context.options_for_select(groups), layout: false
   end
+
+private
+
+  def docno_params
+    params.require(:item).permit(:conf_mark, :conf_no)
+  end
+
 end

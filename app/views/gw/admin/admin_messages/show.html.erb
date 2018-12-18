@@ -24,7 +24,7 @@
   </tr>
   <tr>
     <th>メッセージ</th>
-    <td><%=raw @item.body %></td>
+    <td><%=sanitize @item.body %></td>
   </tr>
   <tr>
     <th>更新日</th>

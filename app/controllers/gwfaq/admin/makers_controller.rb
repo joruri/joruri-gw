@@ -72,7 +72,7 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwfaq::Control.new(params[:item])
+    @item = Gwfaq::Control.new(maker_params)
     return error_auth unless @item.is_admin?
 
     @item.left_index_use = '1'
@@ -97,7 +97,7 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
     @item = Gwfaq::Control.find(params[:id])
     return error_auth unless @item.is_admin?
 
-    @item.attributes = params[:item]
+    @item.attributes = maker_params
 
     groups = JSON.parse(@item.readers_json)
     if groups.length == 0
@@ -112,5 +112,25 @@ class Gwfaq::Admin::MakersController < Gw::Controller::Admin::Base
     return error_auth unless @item.is_admin?
 
     _destroy @item, :success_redirect_uri => "/gwfaq/controls"
+  end
+
+private
+  def maker_params
+    params.require(:item).permit(:state, :create_section, :recognize , :title,
+      :default_limit , :category1_name, :category, :notification,
+      :upload_graphic_file_size_capacity, :upload_graphic_file_size_capacity_unit,
+      :upload_document_file_size_capacity, :upload_document_file_size_capacity_unit,
+      :upload_graphic_file_size_max, :upload_document_file_size_max,
+      :sort_no, :view_hide, :caption, :left_index_pattern,
+      :categoey_view , :group_view, :monthly_view, :monthly_view_line,
+      :admingrps_json, :adms_json,
+      :editors_json,  :sueditors_json,
+      :readers_json, :sureaders_json,
+      :dbname, :other_system_link, :left_index_use,
+      :upload_graphic_file_size_currently, :upload_document_file_size_currently,
+      :banner, :left_banner, :help_display, :help_url, :help_admin_url,
+      :admingrps => [:gid], :adms => [:gid],
+      :editors => [:gid], :sueditors => [:gid],
+      :readers => [:gid], :sureaders => [:gid])
   end
 end

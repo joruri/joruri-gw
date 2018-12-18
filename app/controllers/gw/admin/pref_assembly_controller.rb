@@ -5,7 +5,6 @@ class Gw::Admin::PrefAssemblyController < Gw::Controller::Admin::Base
   def pre_dispatch
     Page.title = "議会議員在庁表示"
     @public_uri = '/gw/pref_assembly'
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

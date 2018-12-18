@@ -4,8 +4,9 @@
   icon_clses = reminders.map{|x| [x.name, x.css_name]}
   reminders.each do |reminder|
     begin
-      remind += eval("Gw::Model::#{reminder.name.capitalize}.remind.collect{|x| x[:c]='#{reminder.name}'; x}")
+      remind += Gw::Model::Reminder.model_class(reminder.name).remind.collect{|x| x[:c]=reminder.name; x}
     rescue => e
+      dump $@
       dump e
     end
   end

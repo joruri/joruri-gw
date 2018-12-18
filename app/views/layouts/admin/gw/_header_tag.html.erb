@@ -23,3 +23,4 @@ css_ret=''
 @css.each{|x|css_ret+=stylesheet_link_tag(x, :media=>:all)+"\n"};
 %>
 <%=raw(css_ret)%>
+<%= javascript_include_tag "/javascripts/joruri/cms.js" %>

@@ -6,7 +6,6 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   before_action :adjust_params_for_mobile, only: [:create, :update], if: -> { request.mobile? }
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     firefox = firefox_browser(request.headers['HTTP_USER_AGENT'])
     ie = file_name_encode?(request.headers['HTTP_USER_AGENT'])
@@ -50,7 +49,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::Memo.new(params[:item])
+    @item = Gw::Memo.new(memo_params)
     @item.uid = Core.user.id
     @item.renew_attach_files = true
     _create @item, success_redirect_uri: {action: :index, s_send_cls: 2}, notice: '連絡メモの登録処理が完了しました。' do
@@ -68,7 +67,7 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::Memo.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = memo_params
     @item.renew_attach_files = true
     _update @item, notice: '連絡メモの編集処理が完了しました。' do
       @item.send_mail_after_addition(@item.memo_users.map(&:uid))
@@ -116,7 +115,6 @@ class Gw::Admin::MemosController < Gw::Controller::Admin::Base
   end
 
 private
-
   def adjust_params_for_mobile
     item = params[:item]
     return unless item
@@ -128,4 +126,10 @@ private
     item.delete "ed_at(4i)"
     item.delete "ed_at(5i)"
   end
+
+  def memo_params
+    params.require(:item).permit(:tmp_id, :ed_at, :fr_group, :fr_user,
+      :title, :body, :selected_receiver_uids => [])
+  end
+
 end

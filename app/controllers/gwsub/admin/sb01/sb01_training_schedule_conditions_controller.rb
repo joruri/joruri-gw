@@ -7,7 +7,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_schedule_conditions"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -16,7 +15,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
     item = Gwsub::Sb01TrainingScheduleCondition.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -48,7 +47,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
 
   def create
     init_params
-    new_item  = Gwsub::Sb01TrainingScheduleCondition.set_f(params[:item])
+    new_item  = Gwsub::Sb01TrainingScheduleCondition.set_f(condition_params)
     @item     = Gwsub::Sb01TrainingScheduleCondition.new(new_item)
     @item1    = Gwsub::Sb01Training.find(params[:item]['training_id'])
     after_process = Proc.new{
@@ -71,7 +70,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
   def update
     init_params
     @item = Gwsub::Sb01TrainingScheduleCondition.find(params[:id])
-    new_item = Gwsub::Sb01TrainingScheduleCondition.set_f(params[:item])
+    new_item = Gwsub::Sb01TrainingScheduleCondition.set_f(condition_params)
     @item.attributes = new_item
     @item1 = Gwsub::Sb01Training.find(@item.training_id)
     after_process = Proc.new{
@@ -343,4 +342,13 @@ class Gwsub::Admin::Sb01::Sb01TrainingScheduleConditionsController < Gw::Control
       @bbs.save
     end
   end
+
+private
+
+  def condition_params
+    params.require(:item).permit(:training_id, :title, :state, :member_id, :group_id,
+      :repeat_flg, :from_at, :to_at, :from_start, :from_start_min, :from_end, :from_end_min,
+      :repeat_class_id,  :prop_name, :members_max, :repeat_weekday => [] )
+  end
+
 end

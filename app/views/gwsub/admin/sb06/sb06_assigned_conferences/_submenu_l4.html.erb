@@ -75,7 +75,7 @@ if l2_menus_1
     <!-- <p><%#= display_title %></p> -->
     <%= link_to t01.html_safe , l01 %>
     <%= link_to t02.html_safe , l02 unless no_register%>
-    <%= help_path.html_safe -%>
+    <%= sanitize help_path.html_safe -%>
   <%end%>
 <%end%>
 </div>

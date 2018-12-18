@@ -60,7 +60,7 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Doclibrary::Control.new(params[:item])
+    @item = Doclibrary::Control.new(cabinet_params)
     return error_auth unless @item.is_admin?
 
     @item.left_index_use = '1'
@@ -90,7 +90,7 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
     @item = Doclibrary::Control.find(params[:id])
     return error_auth unless @item.is_admin?
 
-    @item.attributes = params[:item]
+    @item.attributes = cabinet_params
 
     _update @item
   end
@@ -101,4 +101,25 @@ class Doclibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
 
     _destroy @item
   end
+private
+
+  def cabinet_params
+    params.require(:item).permit(:state, :create_section, :recognize , :title,
+      :default_limit , :importance, :default_folder, :category1_name, :category, :notification,
+      :upload_graphic_file_size_capacity, :upload_graphic_file_size_capacity_unit,
+      :upload_document_file_size_capacity, :upload_document_file_size_capacity_unit,
+      :upload_graphic_file_size_max, :upload_document_file_size_max,
+      :sort_no, :view_hide, :caption,
+      :admingrps_json, :adms_json,
+      :editors_json,  :sueditors_json,
+      :readers_json, :sureaders_json,
+      :dbname, :other_system_link, :left_index_use,
+      :upload_graphic_file_size_currently, :upload_document_file_size_currently,
+      :banner, :left_banner, :left_index_bg_color, :help_display, :help_url,
+      :help_admin_url, :form_name, :special_link,
+      :admingrps => [:gid], :adms => [:gid],
+      :editors => [:gid], :sueditors => [:gid],
+      :readers => [:gid], :sureaders => [:gid])
+  end
+
 end

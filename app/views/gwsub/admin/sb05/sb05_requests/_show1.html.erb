@@ -44,8 +44,7 @@ editable_url  = "#{@index_uri}#{@req1.id}/edit?l2_c=#{@l2_current}&sb05_users_id
 deletable_url = "#{@index_uri}#{@req1.id}?l2_c=#{@l2_current}&sb05_users_id=#{@req1.sb05_users_id}"
 
 # ヘルプ取得
-n_cond = "media_code=#{@req1.media_code} and categories_code=#{@req1.categories_code}"
-notice = Gwsub::Sb05Notice.where(n_cond).first
+notice = Gwsub::Sb05Notice.where(media_code: @req1.media_code,categories_code: @req1.categories_code ).first
 # 添付ファイル取得
 if @req1.media_code==4 && @req1.categories_code == 2
   if @req1.mm_image_state == '2'

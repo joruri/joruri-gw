@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsFinishedController < Gw::Controller::Admin
 
   def pre_dispatch
 #    pp ['initialize',params]
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -16,7 +16,7 @@ class Gwsub::Admin::Sb05::Sb05RequestsFinishedController < Gw::Controller::Admin
     item.and 'sql'," start_at is not null"
     item.and 'sql'," base_at = '#{Gw.date_str(@base_at)} 00:00:00'" unless @base_at.to_s=='0'
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @requests = item.find(:all)
     _index @requests
   end
@@ -97,19 +97,22 @@ class Gwsub::Admin::Sb05::Sb05RequestsFinishedController < Gw::Controller::Admin
   def finished
     init_params
     req1 = Gwsub::Sb05Request.find(params[:id])
+    return http_error(404) if req1.blank?
     req1.r_state='5'
     req1.save(:validate => false)
-    show_url = "#{@index_uri}#{req1.id}?sb05_users_id=#{req1.sb05_users_id}"
+    show_url = gwsub_sb05_requests_finished_path(req, sb05_users_id: req1.sb05_users_id)
     flash[:notice] = flash[:notice] || "処理済にしました。"
+
     redirect_to show_url
     return
   end
   def finished_off
     init_params
     req1 = Gwsub::Sb05Request.find(params[:id])
+    return http_error(404) if req1.blank?
     req1.r_state='4'
     req1.save(:validate => false)
-    show_url = "#{@index_uri}#{req1.id}?sb05_users_id=#{req1.sb05_users_id}"
+    show_url = gwsub_sb05_requests_finished_path(req, sb05_users_id: req1.sb05_users_id)
     flash[:notice] = flash[:notice] || "未処理に戻しました。"
     redirect_to show_url
     return

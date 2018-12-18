@@ -47,7 +47,7 @@ m04 = "/gwsub/sb06/sb0606menu"
 <div class="menu">
 <!-- <p>担当者名等管理</p> -->
 <%= link_to m_060201_label.html_safe, url_for(m01) -%>
-<%= help_path1.html_safe -%>
-<%= help_path2.html_safe if @u_role==true -%>
+<%= sanitize help_path1.html_safe -%>
+<%= sanitize help_path2.html_safe if @u_role==true -%>
 <%= link_to m_060204_label.html_safe, url_for(m04) if @u_role==true -%>
 </div>

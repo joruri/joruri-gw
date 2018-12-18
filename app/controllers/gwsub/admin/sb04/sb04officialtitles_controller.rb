@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録 職名一覧"
   end
 
@@ -13,7 +13,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     item = Gwsub::Sb04officialtitle.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -33,9 +33,9 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
   def create
     init_params
     @l3_current = '03'
-    @item = Gwsub::Sb04officialtitle.new(params[:item])
+    @item = Gwsub::Sb04officialtitle.new(official_title_params)
     location = "/gwsub/sb04/04/sb04officialtitles?#{@qs}"
-    if @item.officialtitle_data_save(params, :create)
+    if @item.officialtitle_data_save(official_title_params, :create)
       flash_notice '更新', true
       redirect_to location
     else
@@ -57,10 +57,10 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     init_params
     @item = Gwsub::Sb04officialtitle.new.find(params[:id])
     return http_error(404) if @item.blank?
-    @item.attributes = params[:item]
+    @item.attributes = official_title_params
     location = "/gwsub/sb04/04/sb04officialtitles/#{@item.id}?#{@qs}"
 
-    if @item.officialtitle_data_save(params, :update)
+    if @item.officialtitle_data_save(official_title_params, :update)
       _update @item, :location => location
     else
       respond_to do |format|
@@ -208,7 +208,7 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
     item = Gwsub::Sb04CheckOfficialtitle.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     @l3_current = '08'
   end
@@ -234,6 +234,12 @@ class Gwsub::Admin::Sb04::Sb04officialtitlesController < Gw::Controller::Admin::
 #    end
     @param = nil
     return @param
+  end
+
+private
+
+  def official_title_params
+    params.require(:item).permit(:fyear_id, :code, :name, :remarks)
   end
 
 end

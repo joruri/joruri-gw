@@ -10,7 +10,7 @@ sys:
   # PCサイト/携帯サイト強制表示
   force_site: ''
   # ファイル名変換UserAgent
-  file_encode_prefix: 'MSIE,Trident'
+  file_encode_prefix: 'MSIE,Trident,Edge'
   # 初期パスワードでのログイン禁止
   refuse_initial_password: off
   # ドラッグアンドドロップによるファイルアップロード

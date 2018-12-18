@@ -17,7 +17,7 @@
       if wiki_state == true
         attach_onclick = "wikiInsert('<UN>>" + '\n' + "<a href=" + item.file_uri(params[:system]) + " class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>" + '\n' + "<<UN>'); return false;"
       else
-        attach_onclick = "mceInsertContent('<a href=" + item.file_uri(@title.system_name) + " class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>'); return false;"
+        attach_onclick = "ckeInsertContent('<a href=" + item.file_uri(@title.system_name) + " class=\"" + item.icon_type + "\">" + %Q[#{item.filename} (#{item.eng_unit})] + "</a>'); return false;"
       end
     %>
     <%=link_to '添付', '#', :id => "link_attach#{item.id}", :onclick => attach_onclick %>
@@ -32,14 +32,14 @@
       <% if wiki_state == true %>
         <a href="#" id="link_image_regulate" onclick="wikiInsert('<UN>>\n<%= img_tag -%>\n<<UN>'); return false;">貼付</a>
       <% else %>
-        <a href="#" id="link_image_regulate" onclick="mceInsertContent('<%= img_tag -%>'); return false;">貼付</a>
+        <a href="#" id="link_image_regulate" onclick="ckeInsertContent('<%= img_tag -%>'); return false;">貼付</a>
       <% end %>
     <% else %>
       <% img_tag = %Q(<img src="#{item.file_uri(@title.system_name)}" alt="#{item.filename}" />) %>
       <% if wiki_state == true %>
         <a href="#" id="link_image_regulate" onclick="wikiInsert('<%= "[[#{item.filename}|#{item.file_uri(params[:system])}]]" -%>'); return false;">貼付</a>
       <% else %>
-        <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%="#{item.file_uri(params[:system])}"%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+        <a href="#" id="link_image" onclick="ckeInsertContent('<img src=\'<%="#{item.file_uri(params[:system])}"%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
       <% end %>
     <% end %>
   <% end %>

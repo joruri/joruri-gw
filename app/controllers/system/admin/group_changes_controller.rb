@@ -16,7 +16,7 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   end
 
   def get_start_at
-    fyears = System::GroupChangeDate.order("start_at DESC").first
+    fyears = System::GroupChangeDate.order(start_at: :desc).first
     if fyears.blank?
       return nil
     end
@@ -30,13 +30,12 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
 
   def index
 
-    item = Gwboard::RenewalGroup.new
+    item = Gwboard::RenewalGroup
     show_start_at = @start_at
     if !show_start_at.blank?
-      item.and :start_date, show_start_at
+      item = item.where(start_date: show_start_at)
     end
-    item.order :incoming_group_code
-    @items = item.find(:all)
+    @items = item.order(:incoming_group_code)
   end
 
   def show
@@ -50,7 +49,7 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwboard::RenewalGroup.new(params[:item])
+    @item = Gwboard::RenewalGroup.new(group_change_params)
     @item.start_date = @start_at if @item.start_date.blank?
     _create @item
   end
@@ -61,7 +60,7 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gwboard::RenewalGroup.where(:id => params[:id]).first
-    @item.attributes = params[:item]
+    @item.attributes = group_change_params
     if @item.save
       flash[:notice]="組織変更データを編集しました"
     else
@@ -145,6 +144,12 @@ class System::Admin::GroupChangesController < Gw::Controller::Admin::Base
     end
     flash[:notice]=msg
     return redirect_to url_for({:action=>:index})
+  end
+
+private
+
+  def group_change_params
+    params.require(:item).permit(:start_date, :incoming_group_code, :incoming_group_name, :present_group_id)
   end
 
 end

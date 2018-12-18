@@ -6,7 +6,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
 
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "所属名長管理"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to @index_uri if params[:reset]
   end
 
   def index
@@ -66,7 +66,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     return error_auth unless @u_role==true
     @l1_current='02'
 
-    @item = Gwsub::Sb00ConferenceSectionManagerName.new(params[:item])
+    @item = Gwsub::Sb00ConferenceSectionManagerName.new(section_manager_params)
     location = @index_uri+"?#{@qs}"
     options = {:success_redirect_uri=>location}
     _create(@item,options)
@@ -85,7 +85,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     @item = Gwsub::Sb00ConferenceSectionManagerName.find(params[:id])
     return http_error(404) if @item.state=='deleted'
 
-    @item.attributes = params[:item]
+    @item.attributes = section_manager_params
     location = @index_uri+"?#{@qs}"
     options = {:success_redirect_uri=>location}
     _update(@item,options)
@@ -252,9 +252,11 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
 
     @item.attributes = params[:item]
 
-    f_cond = "state!='deleted'"
-    f_cond << " and fyear_id=#{@item.extras[:fyear_id]}" if @item.extras[:fyear_id] && @item.extras[:fyear_id].to_i != 0
-    csv = Gwsub::Sb00ConferenceSectionManagerName.where(f_cond).order(markjp: :desc, g_sort_no: :asc, g_code: :asc).to_csv
+    items = Gwsub::Sb00ConferenceSectionManagerName
+      .where(Gwsub::Sb00ConferenceSectionManagerName.arel_table[:state].not_eq('deleted'))
+    items = items.where(fyear_id: @item.extras[:fyear_id]) if @item.extras[:fyear_id] && @item.extras[:fyear_id].to_i != 0
+    items = items.order(markjp: :desc, g_sort_no: :asc, g_code: :asc)
+    csv = items.to_csv
 
     filename = "所属長名管理_sb00_#{@item.encoding}_#{Time.now.strftime('%Y%m%d_%H%M')}.csv"
     send_data @item.encode(csv), filename: filename
@@ -278,4 +280,11 @@ class Gwsub::Admin::Sb00::Sb00ConferenceSectionManagerNamesController < Gw::Cont
     flash[:notice] = '登録処理が完了しました。'
     redirect_to @index_uri
   end
+
+private
+
+  def section_manager_params
+    params.require(:item).permit(:state, :gid, :manager_name)
+  end
+
 end

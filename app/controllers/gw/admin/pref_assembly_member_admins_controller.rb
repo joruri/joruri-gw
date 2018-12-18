@@ -7,7 +7,6 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     @role_admin     = Gw::PrefAssemblyMember.is_admin?
     @u_role = @role_developer || @role_admin
     return error_auth unless @u_role
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     Page.title = "議員在庁表示管理"
     @css = %w(/_common/themes/gw/css/admin.css)
@@ -42,7 +41,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
   end
 
   def create
-    @item = Gw::PrefAssemblyMember.new(params[:item])
+    @item = Gw::PrefAssemblyMember.new(member_params)
     _create @item
   end
 
@@ -52,7 +51,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
   def update
     @item = Gw::PrefAssemblyMember.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = member_params
     _update @item
   end
 
@@ -68,16 +67,16 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
   def csvput
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if params[:item].nil?
+    if params[:item].present?
+      @item.attributes = item_params
 
-    @item.attributes = params[:item]
-
-    csv = Gw::PrefAssemblyMember.order(:g_order, :u_order).to_csv(headers: ['会派表示順','会派','議員表示順','姓','名','在席情報']) do |item|
-      data = [item.g_order, item.g_name, item.u_order, item.u_lname, item.u_name]
-      data << (item.state == "on" ? "在席" : "不在")
-      data
+      csv = Gw::PrefAssemblyMember.order(:g_order, :u_order).to_csv(headers: ['会派表示順','会派','議員表示順','姓','名','在席情報']) do |item|
+        data = [item.g_order, item.g_name, item.u_order, item.u_lname, item.u_name]
+        data << (item.state == "on" ? "在席" : "不在")
+        data
+      end
+      return send_data @item.encode(csv), type: 'text/csv', filename: "giin_zaicho_#{@item.encoding}.csv"
     end
-    send_data @item.encode(csv), type: 'text/csv', filename: "giin_zaicho_#{@item.encoding}.csv"
   end
 
   def csvup
@@ -132,9 +131,9 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     item_rep =
       case params[:order]
       when 'up'
-        Gw::PrefAssemblyMember.where(g_order: item.g_order).where("u_order < #{item.u_order}").order(u_order: :desc).first!
+        Gw::PrefAssemblyMember.where(g_order: item.g_order).where(Gw::PrefAssemblyMember.arel_table[:u_order].lt(item.u_order)).order(u_order: :desc).first!
       when 'down'
-        Gw::PrefAssemblyMember.where(g_order: item.g_order).where("u_order > #{item.u_order}").order(u_order: :asc).first!
+        Gw::PrefAssemblyMember.where(g_order: item.g_order).where(Gw::PrefAssemblyMember.arel_table[:u_order].gt(item.u_order)).order(u_order: :asc).first!
       end
 
     item.u_order, item_rep.u_order = item_rep.u_order, item.u_order
@@ -150,9 +149,9 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     item_rep =
       case params[:order]
       when 'up'
-        Gw::PrefAssemblyMember.where("g_order < #{item.g_order}").order(g_order: :desc).group(:g_order).first!
+        Gw::PrefAssemblyMember.where(Gw::PrefAssemblyMember.arel_table[:g_order].lt(item.g_order)).order(g_order: :desc).group(:g_order).first!
       else
-        Gw::PrefAssemblyMember.where("g_order > #{item.g_order}").order(g_order: :asc).group(:g_order).first!
+        Gw::PrefAssemblyMember.where(Gw::PrefAssemblyMember.arel_table[:g_order].gt(item.g_order)).order(g_order: :asc).group(:g_order).first!
       end
 
     item.group_members.each {|m| m.g_order = item_rep.g_order }
@@ -162,4 +161,17 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
 
     redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
   end
+
+private
+
+  def member_params
+    params.require(:item).permit(:state, :g_order, :g_name, :u_order,
+      :u_lname, :u_name)
+  end
+
+  def item_params
+    params.require(:item).permit!
+  end
+
+
 end

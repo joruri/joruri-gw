@@ -155,4 +155,11 @@ class Gwbbs::Admin::ThemeSettingsController < Gw::Controller::Admin::Base
     item.page params[:page], params[:limit]
     @themes = item.find(:all)
   end
+
+private
+
+  def theme_params
+    params.require(:item).permit(:board_id)
+  end
+
 end

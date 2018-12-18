@@ -3,7 +3,7 @@ class Gw::Admin::ScheduleUsersController < Gw::Controller::Admin::Base
   layout "admin/template/schedule"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    #
   end
 
   def index

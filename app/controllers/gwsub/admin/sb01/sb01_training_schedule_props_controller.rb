@@ -6,7 +6,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulePropsController < Gw::Controller::
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_training_schedule_props"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -16,7 +15,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingSchedulePropsController < Gw::Controller::
     item.search params
 #    item.creator
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end

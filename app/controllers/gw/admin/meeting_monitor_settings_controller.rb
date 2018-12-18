@@ -31,7 +31,7 @@ class Gw::Admin::MeetingMonitorSettingsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(setting_params)
     @item.created_user  = Core.user.name
     @item.created_group = Core.user_group.name
     @item.updated_user  = Core.user.name
@@ -46,7 +46,7 @@ class Gw::Admin::MeetingMonitorSettingsController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = setting_params
     @item.updated_user  = Core.user.name
     @item.updated_group = Core.user_group.name
 
@@ -73,4 +73,12 @@ class Gw::Admin::MeetingMonitorSettingsController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "指定の対象の監視を#{@item.state == 'on' ? '開始' : '終了'}しました。"
   end
+
+private
+
+  def setting_params
+    params.require(:item).permit(:state, :conditions, :weekday_notice, :holiday_notice, :monitor_type,
+      :name, :ip_address, :mail_from, :mail_title, :mail_body, :notice_body)
+  end
+
 end

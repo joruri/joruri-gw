@@ -9,7 +9,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
 
   def pre_dispatch
     @css = ["/_common/themes/gw/css/circular.css"]
-		Page.title = 'テンプレート管理（設問登録）'
+    Page.title = 'テンプレート管理（設問登録）'
     @system_path = "/#{self.system_name}"
 
     @title = Questionnaire::TemplateBase.where(:id => params[:parent_id]).first
@@ -65,7 +65,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
     _item_edit_flg
     return error_auth unless @item_edit_flg
 
-    @item = Questionnaire::TemplateFormField.new(params[:item])
+    @item = Questionnaire::TemplateFormField.new(form_field_params)
     if params[:n_sort_no].blank?
       @item.sort_no = params[:g_sort_no]
     else
@@ -105,7 +105,7 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
 
     @item = Questionnaire::TemplateFormField.where(:id => params[:id]).first
     return http_error(404) unless @item
-    @item.attributes = params[:item]
+    @item.attributes = form_field_params
     if params[:n_sort_no].blank?
       @item.sort_no = params[:g_sort_no]
     else
@@ -181,4 +181,13 @@ class Questionnaire::Admin::Templates::FormFieldsController < Gw::Controller::Ad
       @item_edit_flg = true
     end
   end
+private
+
+  def form_field_params
+    params.require(:item).permit(:state, :title, :question_type, :group_name, :group_code, :group_repeat, :field_cols, :field_rows,
+      :required_entry, :post_permit, :post_permit_value).tap do |whitelisted|
+      whitelisted[:_options] = params[:item][:_options].permit! if params[:item][:_options]
+    end
+  end
+
 end
