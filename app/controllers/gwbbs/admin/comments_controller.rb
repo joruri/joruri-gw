@@ -58,7 +58,7 @@ class Gwbbs::Admin::CommentsController < Gw::Controller::Admin::Base
 
 private
   def comment_params
-    params.require(:cooment).permit(:body)
+    params.require(:comment).permit(:body)
   end
 
 end
