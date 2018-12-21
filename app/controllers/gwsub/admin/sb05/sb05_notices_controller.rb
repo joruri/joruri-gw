@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb05::Sb05NoticesController < Gw::Controller::Admin::Base
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -41,7 +41,7 @@ class Gwsub::Admin::Sb05::Sb05NoticesController < Gw::Controller::Admin::Base
     init_params
     return error_auth unless @u_role==true
 
-    @item = Gwsub::Sb05Notice.new(params[:item])
+    @item = Gwsub::Sb05Notice.new(notice_params)
     location = @index_uri
     options = {
       :success_redirect_uri=>location
@@ -60,7 +60,7 @@ class Gwsub::Admin::Sb05::Sb05NoticesController < Gw::Controller::Admin::Base
     return error_auth unless @u_role==true
 
     @item = Gwsub::Sb05Notice.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = notice_params
     location = @index_uri
     options = {
       :success_redirect_uri=>location,
@@ -151,6 +151,12 @@ class Gwsub::Admin::Sb05::Sb05NoticesController < Gw::Controller::Admin::Base
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'media_code ASC , categories_code ASC')
+  end
+
+private
+
+  def notice_params
+    params.require(:item).permit(:media_id, :sample, :form_templates, :admin_remarks)
   end
 
 end

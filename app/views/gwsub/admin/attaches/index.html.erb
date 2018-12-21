@@ -94,6 +94,23 @@
   function mceInsertContent(value) {
     parent.tinyMCE.execInstanceCommand('<%= _form_id %>', 'mceInsertContent', true, value);
   }
+  function ckeInsertContent(value) {
+    if (parent.CKEDITOR) {
+      if (parent.CKEDITOR.currentInstance) {
+        parent.CKEDITOR.currentInstance.insertHtml(value);
+      } else {
+        for (var i in parent.CKEDITOR.instances) {
+          var instance = parent.CKEDITOR.instances[i];
+          if (instance.container.isVisible()) {
+            instance.insertHtml(value);
+            break;
+          }
+        }
+      }
+    } else {
+      parent.setText(parent.document.getElementById('item_body'), value);
+    }
+  }
 
   function selectAction() {
     var filesForm = document.filesForm;

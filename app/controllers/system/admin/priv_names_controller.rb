@@ -25,7 +25,7 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::PrivName.new(params[:item])
+    @item = System::PrivName.new(priv_params)
 
     _create @item, :success_redirect_uri => "/system/priv_names?#{@qs}"
   end
@@ -36,7 +36,7 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
 
   def update
     @item = System::PrivName.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = priv_params
 
     _update @item,:success_redirect_uri => "/system/priv_names/#{@item.id}?#{@qs}"
   end
@@ -48,6 +48,10 @@ class System::Admin::PrivNamesController < Gw::Controller::Admin::Base
   end
 
 private
+
+  def priv_params
+    params.require(:item).permit(:state, :display_name, :priv_name, :sort_no)
+  end
 
   def search_condition
     params[:role_id] = nz(params[:role_id], @role_id)

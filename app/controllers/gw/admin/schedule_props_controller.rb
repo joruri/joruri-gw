@@ -4,7 +4,7 @@ class Gw::Admin::SchedulePropsController < Gw::Controller::Admin::Base
 
   def pre_dispatch
     return if params[:action] == 'getajax'
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
 
     Page.title = "施設予約スケジュール"
 

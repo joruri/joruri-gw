@@ -22,7 +22,7 @@ class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
   def update_notifying
     setting = Gwworkflow::Setting.where(:unid => Core.user.id).first
     setting = Gwworkflow::Setting.new unless setting
-    setting.notifying = (params[:notify] == '1') 
+    setting.notifying = (params[:notify] == '1')
     setting.unid = Core.user.id
 
     if setting.invalid?
@@ -31,13 +31,11 @@ class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
       _update(setting, :success_redirect_uri => {:action => :notifying})
     end
   end
-  
+
   def custom_routes
-    @items = Gwworkflow::CustomRoute.where(:owner_uid => Core.user.id).sort{|a,b|
-      b.sort_no <=> a.sort_no
-    }
+    @items = Gwworkflow::CustomRoute.where(:owner_uid => Core.user.id).order(:sort_no)
   end
-  
+
   def custom_routes_sort
     (params[:item]||[]).map{|k,v| [k.match(/[[0-9]+]/)[0] , v] }.map{|k,v| [k.to_i, v.to_i]
     }.select{|k,v| k}.map{|k,v|
@@ -46,14 +44,14 @@ class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
     }.each{|cr| raise "W" unless cr.save }
     redirect_to :action => :custom_routes
   end
-  
+
   def custom_routes_new
     @item = Gwworkflow::CustomRoute.new
     @item.state = 'enabled'
     @item.sort_no = '10'
     @item.owner_uid = Core.user.id
   end
-  
+
   def custom_routes_create
     @item = Gwworkflow::CustomRoute.new
     @item.state = params[:item][:state]
@@ -73,7 +71,7 @@ class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
       _create(@item, :success_redirect_uri => {:action => :custom_routes})
     end
   end
-  
+
   def custom_routes_edit
     @item = Gwworkflow::CustomRoute.find(params[:id])
     return error_auth unless @item.owner_uid == Core.user.id
@@ -100,7 +98,7 @@ class Gwworkflow::SettingsController < Gw::Controller::Admin::Base
       _update(@item, :success_redirect_uri => {:action => :custom_routes})
     end
   end
-  
+
   def custom_routes_destroy
     @item = Gwworkflow::CustomRoute.find(params[:id])
     return error_auth unless @item.owner_uid == Core.user.id

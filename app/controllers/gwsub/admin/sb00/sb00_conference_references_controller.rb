@@ -8,7 +8,6 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
 
     index_path = @index_uri
     return redirect_to(index_path) if params[:reset]
-#    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -16,7 +15,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
     item = Gwsub::Sb00ConferenceReference.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
 
     @items = item.find(:all)
     _index @items
@@ -116,7 +115,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
     unless params[:l4_c]
       @l4_current ='02'
     end
-    @item = Gwsub::Sb00ConferenceReference.new(params[:item])
+    @item = Gwsub::Sb00ConferenceReference.new(reference_params)
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -141,7 +140,7 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
   def update
     init_params
     @item = Gwsub::Sb00ConferenceReference.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = reference_params
     comm_params = "?h1_menu=#{@render_menu1}&h2_menu=#{@render_menu2}&h3_menu=#{@render_menu3}&ctrl=#{@ctrl}&l1_c=#{@l1_current}"
     comm_params << "&u_role=#{@u_role}"
     comm_params << "&ctrl=#{@ctrl}"
@@ -263,6 +262,12 @@ class Gwsub::Admin::Sb00::Sb00ConferenceReferencesController < Gw::Controller::A
   end
   def setting_sort_keys
       @sort_keys = nz(params[:sort_keys], 'fyear_markjp DESC, kind_code ASC')
+  end
+
+private
+
+  def reference_params
+    params.require(:item).permit(:kind_code, :kind_name, :fyear_id, :title, :group_id)
   end
 
 end

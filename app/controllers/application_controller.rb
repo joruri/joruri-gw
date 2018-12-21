@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
 
   def send_data(data, options = {})
     if options.include?(:filename) && self.class.helpers.file_name_encode?(request.headers['HTTP_USER_AGENT'])
-      options[:filename] = options[:filename].tosjis
+      options[:filename] = ERB::Util.url_encode(options[:filename])
     end
     super(data, options)
   end

@@ -5,7 +5,7 @@
     mce_base_url = cms_tmp_files_path(@item.tmp_id) + "/"
   end
 %>
-<%= tool_tiny_mce mce_base_url, {:view_mode=>true} %>
+<%= init_ckeditor baseHref: mce_base_url, readOnly: true %>
 
 <h5>
   <%= @item.control.title unless @item.control.blank? %>
@@ -27,7 +27,7 @@
 <table class="show">
   <tr>
     <th>回答</th></tr><tr>
-    <td class="mceEditor"><%= text_area_tag 'viewBody', @item.body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= text_area_tag 'viewBody', @item.body, :class => 'mceEditor body ckeditor', :style => 'width:100%' %></td>
   </tr>
 </table>
 <table class="show">

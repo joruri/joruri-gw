@@ -68,7 +68,7 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
   def create
     return error_auth unless is_creator
 
-    @item = Questionnaire::FormField.new(params[:item])
+    @item = Questionnaire::FormField.new(form_field_params)
     if params[:n_sort_no].blank?
       @item.sort_no = params[:g_sort_no]
     else
@@ -98,7 +98,7 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
 
     @item = Questionnaire::FormField.where(:id => params[:id]).first
     return http_error(404) unless @item
-    @item.attributes = params[:item]
+    @item.attributes = form_field_params
     if params[:n_sort_no].blank?
       @item.sort_no = params[:g_sort_no]
     else
@@ -158,6 +158,15 @@ class Questionnaire::Admin::Menus::FormFieldsController < Gw::Controller::Admin:
       end
     else
       ''
+    end
+  end
+
+private
+
+  def form_field_params
+    params.require(:item).permit(:state, :title, :question_type, :group_name, :group_code, :group_repeat, :field_cols, :field_rows,
+      :required_entry, :post_permit, :post_permit_value).tap do |whitelisted|
+      whitelisted[:_options] = params[:item][:_options].permit! if params[:item][:_options]
     end
   end
 

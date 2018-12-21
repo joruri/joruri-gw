@@ -31,7 +31,7 @@
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr>
     <th>説明</th></tr><tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor ckeditor body', :style => 'width:100%' %></td>
   </tr>
 </table>
 <%= render '/doclibrary/admin/docs/form_wiki', f: f, title: "説明" %>

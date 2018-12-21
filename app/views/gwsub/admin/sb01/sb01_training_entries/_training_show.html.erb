@@ -16,7 +16,7 @@
     <td>
       <table style="width:100%">
         <tr><td><a href="#" onclick="chageDisp(this,'annai_text');return false;">案内を確認する▼</a></td></tr>
-        <tr><td id="annai_text" style="display: none; border-color: #ffffff;"><%=raw(@item.body)%></td></tr>
+        <tr><td id="annai_text" style="display: none; border-color: #ffffff;"><%=sanitize(@item.body)%></td></tr>
       </table>
     </td>
   </tr>

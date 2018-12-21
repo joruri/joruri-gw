@@ -5,7 +5,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
   def pre_dispatch
 #    pp ['initialize',params]
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -21,7 +21,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
 #    end
 #    item.search params
 #    item.page   params[:page], params[:limit]
-#    item.order  params[:id], @sort_keys
+#    item.order @sort_keys, 'id ASC'
     order = @sort_keys
     if @role_developer==true
       @items = Gwsub::Sb05MediaType.order(order)
@@ -54,7 +54,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
     return error_auth unless @u_role==true
 
     Gwsub::Sb05MediaType.before_validates_setting(params)
-    @item = Gwsub::Sb05MediaType.new(params[:item])
+    @item = Gwsub::Sb05MediaType.new(media_type_params)
     location = @index_uri
     _create(@item,:success_redirect_uri=>location)
   end
@@ -72,7 +72,7 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
 
     Gwsub::Sb05MediaType.before_validates_setting(params)
     @item = Gwsub::Sb05MediaType.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = media_type_params
     location = @index_uri
     _update(@item,:success_redirect_uri=>location)
   end
@@ -189,6 +189,13 @@ class Gwsub::Admin::Sb05::Sb05MediaTypesController < Gw::Controller::Admin::Base
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'media_code ASC , categories_code ASC ,state ASC')
+  end
+
+private
+
+  def media_type_params
+    params.require(:item).permit(:media_code, :media_name, :categories_code, :state,
+      :categories_name, :max_size)
   end
 
 end

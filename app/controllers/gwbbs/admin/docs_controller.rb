@@ -88,7 +88,7 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
   def update
     @item = @title.docs.find(params[:id])
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Time.now unless @item.skip_updating_updated_at == '1'
 
     unless @item.expiry_date.blank?
@@ -190,6 +190,17 @@ class Gwbbs::Admin::DocsController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def doc_params
+    params.require(:item).permit(:able_date, :body, :category1_id, :category4_id,
+      :expiry_date, :importance, :one_line_note, :state,
+      :title, :wiki_body, :wiki, :section_code, :skip_updating_updated_at,
+      :inpfld_001,:inpfld_002,:inpfld_003,:inpfld_004,:inpfld_005,:inpfld_006,:inpfld_007,
+      :inpfld_008,:inpfld_009,:inpfld_010,:inpfld_011,:inpfld_012,:inpfld_013,:inpfld_014,
+      :inpfld_015,:inpfld_016,:inpfld_017,:inpfld_018,:inpfld_019,:inpfld_020,:inpfld_021,
+      :inpfld_022,:inpfld_023,:inpfld_024,:inpfld_025,
+      :selected_recognizer_uids => [])
+  end
 
   def check_title_readable
     return error_auth unless @title.is_readable?

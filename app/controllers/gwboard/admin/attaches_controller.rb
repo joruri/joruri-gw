@@ -55,7 +55,7 @@ class Gwboard::Admin::AttachesController < Gw::Controller::Admin::Base
     case params[:system].to_s
     when 'doclibrary'
       if @title.form_name == 'form002'
-        parent  = Doclibrary::Doc.where("id=#{params[:parent_id]}").first
+        parent  = Doclibrary::Doc.where(id: params[:parent_id]).first
         parent_show_path  = "/doclibrary/docs/#{parent.id}?system=#{params[:system]}&title_id=#{params[:title_id]}#{ret}"
       else
         parent_show_path  = "/doclibrary/docs/#{@file.parent_id}?system=#{params[:system]}&title_id=#{params[:title_id]}#{ret}"

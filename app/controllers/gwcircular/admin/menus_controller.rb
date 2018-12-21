@@ -81,7 +81,7 @@ class Gwcircular::Admin::MenusController < Gw::Controller::Admin::Base
     @item = @title.docs.find(params[:id])
     return error_auth unless @item.is_editable?
 
-    @item.attributes = params[:item]
+    @item.attributes = circular_params
     @item.latest_updated_at = Time.now
     @item.set_creater_editor
 
@@ -129,6 +129,13 @@ class Gwcircular::Admin::MenusController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def circular_params
+    params.require(:item).permit(:title, :wiki, :body, :wiki_body, :state,
+      :expiry_date, :confirmation, :reader_groups_json, :readers_json,
+      :reader_groups => [:gid, :uid => []],
+      :readers => [:gid, :uid => []])
+  end
 
   def check_title_readable
     return error_auth unless @title.is_readable?

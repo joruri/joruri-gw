@@ -3,8 +3,8 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
-    
+    return redirect_to(url_for(action: :index)) if params[:reset]
+
     @role_developer = Gw::YearMarkJp.is_dev?
     @role_admin = Gw::YearMarkJp.is_admin?
     @u_role = @role_developer || @role_admin
@@ -14,7 +14,7 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:limit, :s_keyword).symbolize_keys) 
+    super.merge(params.slice(:limit, :s_keyword).symbolize_keys)
   end
 
   def index
@@ -33,7 +33,7 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::YearMarkJp.new(params[:item])
+    @item = Gw::YearMarkJp.new(mark_jp_params)
     _create @item
   end
 
@@ -43,12 +43,18 @@ class Gw::Admin::YearMarkJpsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::YearMarkJp.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = mark_jp_params
     _update @item
   end
 
   def destroy
     @item = Gw::YearMarkJp.find(params[:id])
     _destroy @item
+  end
+
+private
+
+  def mark_jp_params
+    params.require(:item).permit(:name, :mark, :start_at)
   end
 end

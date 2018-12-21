@@ -37,7 +37,7 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::RoleNamePriv.new(params[:item])
+    @item = System::RoleNamePriv.new(role_name_priv_params)
 
     _create @item, :success_redirect_uri => "/system/role_name_privs#{@params_set}", :notice => '機能権限設定の登録に成功しました。'
   end
@@ -48,7 +48,7 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::RoleNamePriv.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = role_name_priv_params
 
     _update @item, :success_redirect_uri => "/system/role_name_privs/#{@item.id}#{@params_set}",
       :notice => "機能権限設定の更新に成功しました。"
@@ -76,4 +76,11 @@ class System::Admin::RoleNamePrivsController < Gw::Controller::Admin::Base
     end
     _show @items
   end
+
+private
+
+  def role_name_priv_params
+    params.require(:item).permit(:role_id, :priv_id)
+  end
+
 end

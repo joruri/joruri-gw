@@ -18,6 +18,6 @@ class Gwboard::Property::PortalBbsLink < Gw::UserProperty
   end
 
   def self.bbs_links(type_name = "bbs")
-    self.where(type_name: type_name).all.map(&:options_value).map(&:to_i)
+    self.where(type_name: type_name).map(&:options_value).map(&:to_i)
   end
 end

@@ -6,7 +6,7 @@
     mce_base_url = _path + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode=>true}) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <%= form_for :item, :url => "#{Core.current_node.public_uri}#{params[:p_id]}/update?title_id=#{params[:title_id]}&p_id=#{params[:p_id]}", :html => {:method => :post} do |f| %>
   <%= f.error_messages %>

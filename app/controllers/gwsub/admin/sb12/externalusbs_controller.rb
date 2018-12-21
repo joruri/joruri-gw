@@ -3,7 +3,7 @@ class Gwsub::Admin::Sb12::ExternalusbsController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     section_name_select_list
 
     @usage_sql = 'ending_at IS NULL'
@@ -109,7 +109,7 @@ class Gwsub::Admin::Sb12::ExternalusbsController < Gw::Controller::Admin::Base
     init_params
     return error_auth unless @u_role
     @l3_current='02'
-    @item = Gwsub::Externalusb.new(params[:item])
+    @item = Gwsub::Externalusb.new(usb_params)
     @item._is_new = true
     location = url_for(action: :index)
     _inherit_qs_s = @qs ? "?#{@qs}" : ''
@@ -142,7 +142,7 @@ class Gwsub::Admin::Sb12::ExternalusbsController < Gw::Controller::Admin::Base
     @section_name = @item.section_name if @item.section_id == 0
     @user_name = ''
     @user_name = @item.user if @item.user_id.blank?
-    @item.attributes = params[:item]
+    @item.attributes = usb_params
     @item.section_id = 0 if @item.section_id.blank?
     location = url_for(action: :index)
     _inherit_qs_s = @qs ? "?#{@qs}" : ''
@@ -266,4 +266,13 @@ class Gwsub::Admin::Sb12::ExternalusbsController < Gw::Controller::Admin::Base
     flash[:notice] = '登録処理が完了しました。'
     redirect_to url_for(action: :index)
   end
+
+private
+
+  def usb_params
+    params.require(:item).permit(:sendstate, :section_id, :new_registedno, :registedno, :externalmediakind_id,
+      :registed_at, :equipmentname, :capacity, :capacityunit_id,
+      :user_id, :user, :categories, :ending_at, :remarks)
+  end
+
 end

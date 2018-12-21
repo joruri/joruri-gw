@@ -52,7 +52,7 @@ class System::Admin::GroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::Group.new(params[:item])
+    @item = System::Group.new(group_params)
     @item.parent_id     = @parent.id
     @item.level_no      = @parent.level_no.to_i + 1
     @item.version_id    = @parent.version_id.to_i
@@ -63,7 +63,7 @@ class System::Admin::GroupsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::Group.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = group_params
     _update @item
   end
 
@@ -97,6 +97,13 @@ class System::Admin::GroupsController < Gw::Controller::Admin::Base
     Page.title = "ユーザー・グループ 全一覧画面"
 
     @groups = System::Group.get_level2_groups
+  end
+
+private
+
+  def group_params
+    params.require(:item).permit(:parent_id, :level_no, :ldap_version, :ldap, :version_id,
+      :state, :code, :name, :name_en, :email, :sort_no, :start_at, :end_at)
   end
 
 end

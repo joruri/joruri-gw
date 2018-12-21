@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録 職員一覧"
   end
 
@@ -13,7 +13,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb04stafflist.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     if @role_sb04_dev
       gids = Gwsub::Sb04stafflistviewMaster.get_division_sb04_gids # ログインユーザーの主管課範囲のコード
       condition = Condition.new()
@@ -66,7 +66,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
   end
   def create
     init_params
-    @item = Gwsub::Sb04stafflist.new(params[:item])
+    @item = Gwsub::Sb04stafflist.new(staff_params)
     location = "/gwsub/sb04/04/sb04stafflists?#{@qs}"
 
     if @item.stafflist_data_save(params, :create)
@@ -96,7 +96,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
     @item = Gwsub::Sb04stafflist.where(:id => params[:id]).first
     return http_error(404) if @item.blank?
 
-    @item.attributes = params[:item]
+    @item.attributes = staff_params
     location = "/gwsub/sb04/04/sb04stafflists/#{@item.id}?#{@qs}"
 
     if @item.stafflist_data_save(params, :update)
@@ -360,7 +360,7 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
     item.search params
 
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     @l3_current = '08'
   end
@@ -419,6 +419,13 @@ class Gwsub::Admin::Sb04::Sb04stafflistsController < Gw::Controller::Admin::Base
 #    end
     @param = nil
     return @param
+  end
+
+private
+  def staff_params
+    params.require(:item).permit(:fyear_id, :staff_no, :name, :name_print, :kana, :multi_section_flg, :section_id, :assignedjobs_id, :official_title_id,
+      :extension, :assignedjobs_tel, :assignedjobs_address, :divide_duties_order, :divide_duties,
+      :remarks, :personal_state, :display_state)
   end
 
 end

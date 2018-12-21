@@ -136,6 +136,11 @@ namespace :joruri do
       puts "done"
     end
 
+    desc 'Ver2->Ver3へのmigrateを実行します。'
+    task :modify_system_database, [:mode] => :environment do |task, args|
+      ActiveRecord::Migrator.up('db/migrate_update')
+    end
+
     desc 'メインデータベースにボード系テーブルを作成します'
     task :create_board_table, [:mode] => :environment do |task, args|
       # テーブル作成
@@ -224,7 +229,7 @@ namespace :joruri do
         controls.each do |control|
           select_models.each do |model, _|
             id = conn.execute("select max(id) from #{control.dbname}.#{model.table_name}").to_a.flatten.first.to_i rescue nil
-            start_id = id+1 if id && id+1 > start_id 
+            start_id = id+1 if id && id+1 > start_id
           end
         end
 
@@ -245,7 +250,7 @@ namespace :joruri do
             renew_column_insert_sql = renew_columns.join(', ')
             renew_column_select_sql = renew_columns.map{|c| "case when #{c} = null then null when #{c} <= 0 then #{c} else #{c} + #{start_id} end" }.join(', ')
             conn.execute <<-SQL
-              insert into #{main_dbname}.#{model.table_name} (#{renew_column_insert_sql}, #{copy_column_sql}, serial_no, migrated) 
+              insert into #{main_dbname}.#{model.table_name} (#{renew_column_insert_sql}, #{copy_column_sql}, serial_no, migrated)
                 select #{renew_column_select_sql}, #{copy_column_sql}, id, 1 from #{control.dbname}.#{model.table_name};
             SQL
           end
@@ -413,7 +418,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwcircular::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwsub::Sb01Training => [:body]
@@ -430,7 +435,7 @@ namespace :joruri do
           # attaches
           doc_model.where("lower(#{column}) regexp 'attaches/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             file_models.each do |file_model|
               system_name = get_system_name(file_model)
               new_body.gsub!(/attaches\/#{system_name}\/(\d+)\/(\d+)\/(\d+)\/(\d+)\//) do |link|
@@ -443,14 +448,14 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
-  
+
           # receipts
           doc_model.where("lower(#{column}) regexp '/gwboard/receipts/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             file_models.each do |file_model|
               system_name = get_system_name(file_model)
               new_body.gsub!(/\/gwboard\/receipts\/(\d+)\/download_object?system=#{system_name}&title_id=(\d+)/) do |link|
@@ -463,14 +468,14 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
-  
+
           # modules
           doc_model.where("lower(#{column}) regexp '/_common/modules/(gwbbs|gwfaq|gwqa|doclibrary|digitallibrary)/'").find_each do |record|
             new_body = record.read_attribute(column).dup
-  
+
             image_models.each do |image_model|
               system_name = get_system_name(image_model)
               new_body.gsub!(/\/_common\/modules\/#{system_name}\/(\d+)\/(\d+)\/(\d+)\/(\d+)\//) do |link|
@@ -483,7 +488,7 @@ namespace :joruri do
                 end
               end
             end
-  
+
             record.update_columns(column => new_body) if new_body != record.read_attribute(column)
           end
         end
@@ -500,7 +505,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwcircular::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwsub::Sb01Training => [:body],
@@ -526,7 +531,7 @@ namespace :joruri do
         Gwfaq::Doc => [:body],
         Gwqa::Doc => [:body],
         Doclibrary::Doc => [:body],
-        Digitallibrary::Doc => [:body], 
+        Digitallibrary::Doc => [:body],
         Gwmonitor::Control => [:caption],
         Gwcircular::Doc => [:body],
         Gw::Memo => [:body],

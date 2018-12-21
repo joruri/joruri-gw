@@ -98,7 +98,7 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
 
     @item = @title.docs.find(params[:id])
 
-    @item.attributes = params[:item]
+    @item.attributes = doc_params
     @item.latest_updated_at = Core.now
     @item.doc_type = doc_type
     @item.parent_id = parent_id
@@ -152,6 +152,12 @@ class Gwqa::Admin::DocsController < Gw::Controller::Admin::Base
   end
 
   private
+
+  def doc_params
+    params.require(:item).permit(:doc_type, :content_state, :body, :category1_id, :state,
+      :title, :wiki_body, :wiki, :section_code, :skip_updating_updated_at,
+      :selected_recognizer_uids => [])
+  end
 
   def check_title_readable
     return error_auth unless @title.is_readable?

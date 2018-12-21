@@ -32,10 +32,10 @@ class Gwmonitor::Control < Gw::Database
   end
 
   scope :without_preparation, -> { where.not(state: 'preparation') }
-  scope :with_admin_role, ->(user = Core.user) { 
+  scope :with_admin_role, ->(user = Core.user) {
     where([
-      arel_table[:admin_setting].eq(0).and( arel_table[:creater_id].eq(user.code) ), 
-      arel_table[:admin_setting].eq(1).and( arel_table[:section_code].eq(user.groups.first.try(:code)) ), 
+      arel_table[:admin_setting].eq(0).and( arel_table[:creater_id].eq(user.code) ),
+      arel_table[:admin_setting].eq(1).and( arel_table[:section_code].eq(user.groups.first.try(:code)) ),
     ].reduce(:or))
   }
 
@@ -245,7 +245,7 @@ class Gwmonitor::Control < Gw::Database
 
   def duplicate
     new_title = self.class.new
-    new_title.attributes = self.attributes.except(:id)
+    new_title.attributes = self.attributes.except("id")
     new_title.unid = nil
     new_title.content_id = nil
     new_title.state = 'preparation'
@@ -446,7 +446,7 @@ class Gwmonitor::Control < Gw::Database
       else 'preparation'
       end
 
-    doc = docs.where(send_division: 2, user_code: user.code).first || 
+    doc = docs.where(send_division: 2, user_code: user.code).first ||
           docs.build(send_division: 2, user_code: user.code, email: user.email, email_send: false, title: '', body: '')
     if doc.new_record?
       doc.state = s_state
@@ -570,7 +570,7 @@ class Gwmonitor::Control < Gw::Database
     item.docs.where(state: 'draft', email_send: false).all.each do |doc|
       next if doc.email.blank?
 
-      Gwmonitor::Mailer.request_mail(from: from_user.email, to: test.options_value.presence || doc.email, 
+      Gwmonitor::Mailer.request_mail(from: from_user.email, to: test.options_value.presence || doc.email,
         subject: "照会・回答システム：回答依頼メール", doc: doc, from_user: from_user).deliver
       doc.update_columns(email_send: true)
 

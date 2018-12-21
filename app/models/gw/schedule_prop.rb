@@ -171,6 +171,17 @@ class Gw::ScheduleProp < Gw::Database
     end
   end
 
+  def self.genre_to_mdl(val)
+    case val
+    when 'meetingroom'
+      Gw::PropMeetingroom
+    when 'rentcar'
+      Gw::PropRentcar
+    else
+      Gw::PropOther
+    end
+  end
+
   def self.prop_conv(conv, val)
     ret = case conv
     when :genre_to_mdl

@@ -54,9 +54,15 @@ class Gwsub::Admin::Sb04::Sb04LimitSettingsController < Gw::Controller::Admin::B
     @item = Gwsub::Sb04LimitSetting.where(:id => params[:id]).first
     return http_error(404) if @item.blank?
 
-    @item.attributes = params[:item]
+    @item.attributes = limit_params
     options={:location=>"/gwsub/sb04/09/sb04_limit_settings/#{@item.id}"}
     _update(@item,options)
+  end
+
+private
+
+  def limit_params
+    params.require(:item).permit(:type_name, :limit)
   end
 
 end

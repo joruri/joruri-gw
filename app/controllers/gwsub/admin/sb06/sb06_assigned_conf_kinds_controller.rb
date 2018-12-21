@@ -3,8 +3,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfKindsController < Gw::Controller::Admi
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-#pp request.env['HTTP_USER_AGENT']
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "30申請書種別"
     init_params
@@ -18,7 +17,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfKindsController < Gw::Controller::Admi
     item = Gwsub::Sb06AssignedConfKind.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:sort_keys], @sort_keys
+    item.order  @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -43,7 +42,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfKindsController < Gw::Controller::Admi
     return error_auth unless @u_role==true
 
     @l3_current='02'
-    @item = Gwsub::Sb06AssignedConfKind.new(params[:item])
+    @item = Gwsub::Sb06AssignedConfKind.new(kind_params)
     location = "#{url_for({:action => :index})}?#{@qs}"
     _create(@item,:success_redirect_uri=>location)
   end
@@ -64,7 +63,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfKindsController < Gw::Controller::Admi
     @item = Gwsub::Sb06AssignedConfKind.where(:id => params[:id]).first
     return http_error(404) if @item.blank?
 
-    @item.attributes = params[:item]
+    @item.attributes = kind_params
     location = "#{url_for({:action => :index})}?#{@qs}"
     _update(@item,:success_redirect_uri=>location)
   end
@@ -163,10 +162,17 @@ pp @s_keyword
 
     qsa = ['limit', 's_keyword' ,'fyear_id','cat_id']
     @qs = qsa.delete_if{|x| nz(params[x],'')==''}.collect{|x| %Q(#{x}=#{params[x]})}.join('&')
-pp @qs
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'fyear_markjp desc , conf_kind_sort_no ASC')
+  end
+
+private
+
+  def kind_params
+    params.require(:item).permit(:fyear_id, :conf_cat_id, :conf_kind_code, :conf_kind_name, :conf_menu_name,
+      :conf_kind_sort_no, :conf_to_name, :conf_title, :conf_body,
+      :conf_form_no, :conf_max_count, :select_list)
   end
 
 end

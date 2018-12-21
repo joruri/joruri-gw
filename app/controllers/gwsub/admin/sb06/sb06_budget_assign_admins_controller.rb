@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignAdminsController < Gw::Controller::Adm
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "予算担当管理者登録"
   end
@@ -21,7 +21,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignAdminsController < Gw::Controller::Adm
     item.search params
 #    item.creator
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
 #pp params,@items
     _index @items
@@ -46,7 +46,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignAdminsController < Gw::Controller::Adm
   def create
     init_params
     @l3_current ='02'
-    @item = Gwsub::Sb06BudgetAssignAdmin.new(params[:item])
+    @item = Gwsub::Sb06BudgetAssignAdmin.new(budget_admin_params)
     @item.multi_group_id = @item.group_id
     location = url_for({:action => :index})
     options = {
@@ -62,7 +62,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignAdminsController < Gw::Controller::Adm
   def update
     init_params
     @item = Gwsub::Sb06BudgetAssignAdmin.find(params[:id])
-    @item.attributes      = params[:item]
+    @item.attributes = budget_admin_params
     location = url_for({:action => :show, :id => params[:id]})
     options = {
       :success_redirect_uri=>location,
@@ -131,4 +131,11 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignAdminsController < Gw::Controller::Adm
     users = System::User.get_user_select(params[:g_id])
     render text: view_context.options_for_select(users), layout: false
   end
+
+private
+
+  def budget_admin_params
+    params.require(:item).permit(:budget_role_id, :group_id, :user_id)
+  end
+
 end

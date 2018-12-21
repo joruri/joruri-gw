@@ -20,7 +20,7 @@ class Gwsub::Externalusb < Gwsub::GwsubPref
   validates :remarks, length: {maximum: 50, too_long: 'は、50文字以内で入力してください。'}, allow_nil: true
 
   validates :capacity, format: {with: /\A[0-9]{1,4}\z/, message: "は、半角数字4桁以内で入力してください。"}, if: lambda {|x| x.capacity.present?}
-  validates :capacity, format: {with: /\A[^0]+/, message: "は、前0なしで入力してください。"}, if: lambda {|x| x.capacity.present?}
+  validates :capacity, format: {with: /\A[^0]+[0-9]+\z/, message: "は、前0なしで入力してください。"}, if: lambda {|x| x.capacity.present?}
 
   validates :registedno, length: {maximum: 20, too_long: 'は、20文字以内で入力してください。'}, if: lambda {|x| x.registedno.present?}
   validates :registedno, format: {with: /\A[0-9a-zA-Z-]+\z/, message: "は、半角英数字で入力してください。"}, if: lambda {|x| x.registedno.present?}

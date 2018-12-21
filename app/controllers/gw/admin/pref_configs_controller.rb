@@ -1,11 +1,10 @@
 class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
   include System::Controller::Scaffold
-	layout "admin/template/pref"
+  layout "admin/template/pref"
 
   def pre_dispatch
     init_params
     return error_auth unless @u_role
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
 
     @css = %w(/_common/themes/gw/css/admin.css)
   end
@@ -43,7 +42,7 @@ class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PrefConfig.new(params[:item])
+    @item = Gw::PrefConfig.new(config_params)
 
     _create @item, :success_redirect_uri => @return_uri
   end
@@ -54,7 +53,7 @@ class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PrefConfig.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = config_params
 
     _update @item, :success_redirect_uri => @return_uri
   end
@@ -77,4 +76,10 @@ class Gw::Admin::PrefConfigsController < Gw::Controller::Admin::Base
     end
     redirect_to @return_uri
   end
+
+private
+  def config_params
+    params.require(:item).permit(:options)
+  end
+
 end

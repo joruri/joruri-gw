@@ -16,11 +16,9 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   end
 
   def index
-    item = System::UsersGroup.new
-    item.group_id = @parent.id
-    item.page  params[:page], params[:limit]
-    item.order params[:sort], "user_code ASC"
-    @items = item.find(:all)
+    @items = System::UsersGroup.where(group_id: @parent.id)
+      .paginate(page: params[:page],per_page: params[:per_page])
+      .order(user_code: :asc)
 
     _index @items
   end
@@ -39,7 +37,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::UsersGroup.new(params[:item])
+    @item = System::UsersGroup.new(user_group_params)
     _create @item
   end
 
@@ -49,7 +47,7 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
 
   def update
     @item = System::UsersGroup.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = user_group_params
     _update @item
   end
 
@@ -70,4 +68,11 @@ class System::Admin::UsersGroupsController < Gw::Controller::Admin::Base
 
     @groups = System::Group.get_level2_groups
   end
+
+private
+
+  def user_group_params
+    params.require(:item).permit(:user_id, :group_id, :job_order, :start_at, :end_at)
+  end
+
 end

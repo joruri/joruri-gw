@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "40予算担当編集期限"
   end
@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
     item.search params
 #    item.creator
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
 #pp params,@items
     _index @items
@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   def create
     init_params
     @l3_current ='02'
-    new_item = Gwsub::Sb06BudgetEditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb06BudgetEditableDate.set_f(editable_date_params)
     @item = Gwsub::Sb06BudgetEditableDate.new(new_item)
     location = url_for({:action => :index})
     options = {
@@ -49,7 +49,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   def update
     init_params
     @item = Gwsub::Sb06BudgetEditableDate.find(params[:id])
-    new_item = Gwsub::Sb06BudgetEditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb06BudgetEditableDate.set_f(editable_date_params)
     @item.attributes = new_item
     location = url_for({:action => :show, :id => params[:id]})
     options = {
@@ -101,6 +101,12 @@ class Gwsub::Admin::Sb06::Sb06BudgetEditableDatesController  < Gw::Controller::A
   end
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'start_at DESC')
+  end
+
+private
+
+  def editable_date_params
+    params.require(:item).permit(:start_at, :end_at, :recognize_at)
   end
 
 end

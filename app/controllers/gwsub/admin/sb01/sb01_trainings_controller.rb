@@ -7,7 +7,6 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
   def pre_dispatch
     Page.title = "研修申込・受付"
     @public_uri = "/gwsub/sb01/sb01_trainings"
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index
@@ -15,7 +14,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     item = Gwsub::Sb01Training.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -27,7 +26,7 @@ class Gwsub::Admin::Sb01::Sb01TrainingsController < Gw::Controller::Admin::Base
     item.search params
     item.page   params[:page], params[:limit]
     @sort_keys = nz(params[:sort_keys], 'categories ASC , fyear_markjp DESC , gwsub_sb01_training_schedules.from_start ASC' )
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     joins = 'INNER JOIN gwsub_sb01_training_schedules ON gwsub_sb01_trainings.id = gwsub_sb01_training_scheduls.training_id'
     cond = 'gwsub_sb01_trainings.state = 2'
     @items = item.find(:all,

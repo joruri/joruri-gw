@@ -3,7 +3,6 @@ class Gw::Admin::RemindersController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
     return error_auth unless Gw::Reminder.is_admin?
 
     Page.title = "リマインダー表示設定"

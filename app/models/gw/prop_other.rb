@@ -112,25 +112,25 @@ class Gw::PropOther < Gw::PropBase
     corrected_group_names(read_prop_other_roles)
   end
 
-  def save_with_rels(params, mode, options={})
+  def save_with_rels(par_items, mode, options={})
 
-    admin_groups = ::JSON.parse(params[:item][:admin_json])
-    edit_groups = ::JSON.parse(params[:item][:editors_json])
-    read_groups = ::JSON.parse(params[:item][:readers_json])
+    admin_groups = ::JSON.parse(par_items[:admin_json])
+    edit_groups = ::JSON.parse(par_items[:editors_json])
+    read_groups = ::JSON.parse(par_items[:readers_json])
 
-    gid = nz(params[:item]['sub']['gid'])
-    uid = nz(params[:item]['sub']['uid'])
+    gid = nz(par_items['sub']['gid'])
+    uid = nz(par_items['sub']['uid'])
     ad_gnames = []
     now = Time.now
 
-    if params[:item][:sort_no].blank?
-      params[:item][:sort_no] = 0
-    elsif /^[0-9]+$/ =~ params[:item][:sort_no] && params[:item][:sort_no].to_i >= 0 && params[:item][:sort_no].to_i <= 99999999999
+    if par_items[:sort_no].blank?
+      par_items[:sort_no] = 0
+    elsif /^[0-9]+$/ =~ par_items[:sort_no] && par_items[:sort_no].to_i >= 0 && par_items[:sort_no].to_i <= 99999999999
     else
       self.errors.add :sort_no, "は不正な値です。11桁の整数で登録してください。"
     end
 
-    if params[:item][:name].blank?
+    if par_items[:name].blank?
       self.errors.add :name, "を登録してください。"
     end
 
@@ -165,13 +165,13 @@ class Gw::PropOther < Gw::PropBase
       self.errors.add :"施設管理所属", "は、設定された上限を超えて登録しようとしています。上限を変更するか、別の所属から施設管理権限を外してください。重複している所属は、#{Gw.join([ad_gnames], '、')}です。"
     end
 
-    self.reserved_state = params[:item][:reserved_state]
-    self.sort_no = params[:item][:sort_no]
-    self.name    = params[:item][:name]
-    self.type_id   = params[:item][:type_id]
-    self.comment   = params[:item][:comment]
-    self.extra_flag   = params[:item][:extra_flag]
-    self.extra_data   = params[:item][:extra_data]
+    self.reserved_state = par_items[:reserved_state]
+    self.sort_no = par_items[:sort_no]
+    self.name    = par_items[:name]
+    self.type_id   = par_items[:type_id]
+    self.comment   = par_items[:comment]
+    self.extra_flag   = par_items[:extra_flag]
+    self.extra_data   = par_items[:extra_data]
 
     if mode == :create
       self.creator_uid = uid

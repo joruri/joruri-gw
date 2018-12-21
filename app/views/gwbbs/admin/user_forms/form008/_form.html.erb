@@ -15,7 +15,7 @@
     <th>【概要】<%= required('※') %></th>
   </tr>
   <tr>
-    <td class="mceEditor" colspan="2"><%= f.text_area :body, :class => 'mceEditor', :rows => 20, :cols=>40, :style => 'height:500px; width:100%' %></td>
+    <td class="mceEditor" colspan="2"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :rows => 20, :cols=>40, :style => 'height:500px; width:100%' %></td>
   </tr>
 </table>
 <%= render '/gwbbs/admin/docs/form_wiki', f: f, title: "【概要】" %>

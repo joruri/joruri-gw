@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "予算担当登録"
   end
@@ -53,7 +53,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
   def create
     init_params
     @l2_current = '02'
-    @item = Gwsub::Sb06BudgetAssign.new(params[:item])
+    @item = Gwsub::Sb06BudgetAssign.new(budget_assign_params)
     location = url_for({:action => :index})
     options = {
       :success_redirect_uri=>location,
@@ -68,7 +68,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
   def update
     init_params
     @item = Gwsub::Sb06BudgetAssign.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = budget_assign_params
     location = url_for({:action => :show , :id => params[:id]})
     options = {
       :success_redirect_uri=>location,
@@ -171,7 +171,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     params.delete('group_parent_id') if params[:group_parent_id]
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
   end
   def index_main
@@ -180,7 +180,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     item.search params
     item.and 'sql',"group_parent_id=#{Core.user_group.parent_id}"
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all )
 #pp main_cond,@items
   end
@@ -190,8 +190,14 @@ class Gwsub::Admin::Sb06::Sb06BudgetAssignsController < Gw::Controller::Admin::B
     params[:group_id] = Core.user_group.id
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
+  end
+
+private
+
+  def budget_assign_params
+    params.require(:item).permit(:main_state, :admin_state, :group_id, :user_id, :budget_role_id, :multi_group_id, :multi_sequence)
   end
 
 end

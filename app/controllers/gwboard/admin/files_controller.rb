@@ -19,9 +19,9 @@ class Gwboard::Admin::FilesController < Gw::Controller::Admin::Base
     @sub_title = '所属用背景画像' if @share_mode == '0'
     @sub_title = '所属用アイコン' if @share_mode == '1'
     @sub_title = '背景画像' if @share_mode == '2'
-    @sub_title = 'アイコン' if @share_mode == '3'    
+    @sub_title = 'アイコン' if @share_mode == '3'
   end
-  
+
   def decision_auth
     return error_auth if !Gwbbs::Control.is_sysadm? && @share_mode != "1"
     return http_error(404) if @share_mode == '0'
@@ -65,7 +65,7 @@ class Gwboard::Admin::FilesController < Gw::Controller::Admin::Base
     set_params
     decision_auth
     item = Gwboard::Image
-    @item = item.new(params[:item])
+    @item = item.new(file_params)
     @item.state = 'public'
     @item.range_of_use = 0
     @item.section_code = Core.user_group.code unless Gwbbs::Control.is_sysadm?
@@ -83,7 +83,7 @@ class Gwboard::Admin::FilesController < Gw::Controller::Admin::Base
     decision_auth
     item = Gwboard::Image
     @item = item.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = file_params
     @item.state = 'public'
     @item.range_of_use = 0
 
@@ -102,6 +102,12 @@ class Gwboard::Admin::FilesController < Gw::Controller::Admin::Base
     item = Gwboard::Image
     @item = item.new.find(params[:id])
     _destroy @item, :success_redirect_uri => gwboard_files_path() + "?st=#{@share_mode}"
+  end
+
+private
+
+  def file_params
+    params.require(:item).permit(:section_code, :share, :_upload, :memo)
   end
 
 end

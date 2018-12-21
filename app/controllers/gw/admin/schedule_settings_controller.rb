@@ -346,7 +346,11 @@ class Gw::Admin::ScheduleSettingsController  < Gw::Controller::Admin::Base
     end
 
     @item.save
-
-    redirect_to params[:url].to_s
+    begin
+      refer_url = URI.parse(params[:url].to_s).path
+    rescue URI::InvalidURIError
+      refer_url = "/"
+    end
+    redirect_to refer_url
   end
 end

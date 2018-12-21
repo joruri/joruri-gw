@@ -25,7 +25,7 @@ class Gw::Admin::SectionAdminMasterFuncNamesController < Gw::Controller::Admin::
   end
 
   def create
-    @item = Gw::SectionAdminMasterFuncName.new(params[:item])
+    @item = Gw::SectionAdminMasterFuncName.new(func_name_params)
 
     _create @item
   end
@@ -36,7 +36,7 @@ class Gw::Admin::SectionAdminMasterFuncNamesController < Gw::Controller::Admin::
 
   def update
     @item = Gw::SectionAdminMasterFuncName.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = func_name_params
 
     _update @item
   end
@@ -53,4 +53,11 @@ class Gw::Admin::SectionAdminMasterFuncNamesController < Gw::Controller::Admin::
 
     redirect_to url_for(:action => :index)
   end
+
+private
+
+  def func_name_params
+    params.require(:item).permit(:sort_no, :state, :func_name, :name)
+  end
+
 end

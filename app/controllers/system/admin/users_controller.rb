@@ -3,7 +3,7 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   layout "admin/template/admin"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
 
     @current_no = 1
     @role_developer  = System::User.is_dev?
@@ -28,7 +28,6 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
     item.and :ldap, params[:ldap] if params[:ldap] && params[:ldap] != 'all'
     item.and :state, params[:state] if params[:state] && params[:state] != 'all'
     item.page params[:page], nz(params[:limit], 30)
-    item.order params[:sort], :code
     @items = item.find(:all)
 
     _index @items
@@ -48,7 +47,7 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = System::User.new(params[:item])
+    @item = System::User.new(user_params)
     @item.id = params[:item]['id']
 
     options={
@@ -80,7 +79,7 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
 
   def update
     @item = System::User.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = user_params
 
     _update @item, :success_redirect_uri => system_user_path(@item.id)
   end
@@ -99,6 +98,11 @@ class System::Admin::UsersController < Gw::Controller::Admin::Base
   end
 
 private
+
+  def user_params
+    params.require(:item).permit(:code, :state, :ldap, :name, :name_en, :password,
+      :email, :official_position, :assigned_job)
+  end
 
   def search_condition
     params[:limit] = nz(params[:limit], @limit)

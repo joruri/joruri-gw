@@ -45,7 +45,7 @@ class Gwbbs::Admin::CategoriesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @title.categories.build(params[:item])
+    @item = @title.categories.build(category_params)
     @item.state = 'public'
     @item.title_id = @title.id
     @item.parent_id = @parent.id
@@ -55,7 +55,7 @@ class Gwbbs::Admin::CategoriesController < Gw::Controller::Admin::Base
 
   def update
     @item = @title.categories.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = category_params
     @item.state = 'public'
     _update @item, :success_redirect_uri => gwbbs_categories_path(title_id: params[:title_id], parent_id: params[:parent_id])
   end
@@ -68,4 +68,10 @@ class Gwbbs::Admin::CategoriesController < Gw::Controller::Admin::Base
     end
     _destroy @item, :success_redirect_uri => gwbbs_categories_path(title_id: params[:title_id], parent_id: params[:parent_id])
   end
+
+private
+  def category_params
+    params.require(:item).permit(:sort_no, :name)
+  end
+
 end

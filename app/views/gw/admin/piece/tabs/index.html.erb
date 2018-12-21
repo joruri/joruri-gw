@@ -17,18 +17,3 @@ concat raw link_to('', uri, :class => 'end')
 %>
 </div>
 
-<% if controller.parent_controller && controller.parent_controller.controller_name == "portal" %>
-<%
-if Gw::Property::ScheduleSetting.where(uid: Core.user.id).first_or_new.display_portal_schedule?
-  cls = "on"
-  link_str = "スケジュールを非表示"
-else
-  cls = "off"
-  link_str = "スケジュールを表示"
-end
--%>
-<div class="btSchedule">
-  <%= link_to link_str, portal_display_gw_schedule_settings_path(url: session[:request_fullpath]), class: cls %>
-</div>
-</div>
-<% end %>

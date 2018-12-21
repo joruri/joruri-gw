@@ -29,7 +29,7 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
     @mail_user = Sys::User.where(account: Core.user.code).order(:account).first rescue nil
     if @mail_user.blank?
     else
-      @mail_user.mobile_access = params[:user]['mobile_access'].to_i
+      @mail_user.mobile_access = access_params['mobile_access'].to_i
       @mail_user.save(:validate => false)
     end
 
@@ -49,7 +49,7 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
     @user = System::User.where(:code => Core.user.code).first
     return http_error(404) if @user.blank?
 
-    @user.mobile_password = params[:user]['mobile_password'].to_s
+    @user.mobile_password = password_params['mobile_password'].to_s
     ret = @user.mobile_pass_check
 
     if ret == true
@@ -58,7 +58,7 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
       @mail_user = Sys::User.where(account: Core.user.code).order(:account).first rescue nil
       if @mail_user.blank?
       else
-        @mail_user.mobile_password = params[:user]['mobile_password'].to_s
+        @mail_user.mobile_password = password_params['mobile_password'].to_s
         @mail_user.save(:validate => false)
       end
 
@@ -86,6 +86,16 @@ class Gw::Admin::MobileSettingsController < Gw::Controller::Admin::Base
 
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'id')
+  end
+
+private
+
+  def access_params
+    params.require(:user).permit(:mobile_access)
+  end
+
+  def password_params
+    params.require(:user).permit(:mobile_password)
   end
 
 end

@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "10予算担当処理権限"
   end
@@ -19,7 +19,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
     item = Gwsub::Sb06BudgetRole.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -48,7 +48,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
       redirect_to location
     end
     @l3_current = '02'
-    @item = Gwsub::Sb06BudgetRole.new(params[:item])
+    @item = Gwsub::Sb06BudgetRole.new(role_params)
     location = url_for({:action => :index})
     _create(@item,:success_redirect_uri=>location)
   end
@@ -70,7 +70,7 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
     end
     @l3_current = '01'
     @item = Gwsub::Sb06BudgetRole.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = role_params
     location = url_for({:action => :index})
     _update(@item,:success_redirect_uri=>location)
   end
@@ -162,5 +162,11 @@ class Gwsub::Admin::Sb06::Sb06BudgetRolesController < Gw::Controller::Admin::Bas
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'code ASC')
   end
+private
+
+  def role_params
+    params.require(:item).permit(:code, :name)
+  end
+
 
 end

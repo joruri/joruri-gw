@@ -20,7 +20,7 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:cls).symbolize_keys) 
+    super.merge(params.slice(:cls).symbolize_keys)
   end
 
   def index
@@ -64,7 +64,7 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
   def create
     @item = @model.new()
 
-    if @item.save_with_rels params, :create
+    if @item.save_with_rels prop_params, :create
       flash_notice '一般設備の登録', true
       redirect_to url_for(action: :index)
     else
@@ -85,7 +85,7 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    if @item.save_with_rels params, :update
+    if @item.save_with_rels prop_params, :update
       flash_notice '一般設備の編集', true
       redirect_to url_for(action: :index)
     else
@@ -105,12 +105,12 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
 
   def upload
     @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
+    @image_item = @item.images.build
   end
 
   def image_create
     @item = @model.find(params[:id])
-    @image_item = @item.images.build(params[:item])
+    @image_item = @item.images.build(image_params)
 
     if @image_item.save
       redirect_to url_for(action: :upload), notice: "#{@model.model_name.human}画像の追加に成功しました。"
@@ -134,5 +134,15 @@ class Gw::Admin::PropOthersController < Gw::Controller::Admin::Base
 
   def check_auth
     return error_auth unless @is_admin
+  end
+
+  def prop_params
+    params.require(:item).permit(:reserved_state, :sort_no, :name,
+      :type_id, :comment, :admin_json, :editors_json, :readers_json,
+      :sub => [:extra_flag, :gid, :uid])
+  end
+
+  def image_params
+    params.require(:item).permit(:file, :note)
   end
 end

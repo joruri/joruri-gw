@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -19,7 +19,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb05DesiredDate.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -41,7 +41,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     init_params
     return error_auth unless @u_role==true
 
-    @item = Gwsub::Sb05DesiredDate.new(params[:item])
+    @item = Gwsub::Sb05DesiredDate.new(desired_date_params)
     location = @index_uri
     _create(@item,:success_redirect_uri=>location)
   end
@@ -58,7 +58,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
     return error_auth unless @u_role==true
 
     @item = Gwsub::Sb05DesiredDate.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = desired_date_params
     location = @index_uri
     _update(@item,:success_redirect_uri=>location)
   end
@@ -85,9 +85,8 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
 
     par_item = params[:item]
     m_cd = par_item[:m_cd]
-    m_cond="media_code='#{m_cd}'"
     m_order = "media_code,categories_code"
-    media = Gwsub::Sb05MediaType.where(m_cond).order(m_order).first
+    media = Gwsub::Sb05MediaType.where(media_code: m_cd).order(m_order).first
     return if media.blank?
 
     if par_item[:chks1].blank? ||
@@ -237,6 +236,12 @@ class Gwsub::Admin::Sb05::Sb05DesiredDatesController < Gw::Controller::Admin::Ba
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'media_code , desired_at DESC')
+  end
+
+private
+
+  def desired_date_params
+    params.require(:item).permit(:media_id, :media_code, :weekday, :monthly, :media_code, :desired_at, :edit_limit_at)
   end
 
 end

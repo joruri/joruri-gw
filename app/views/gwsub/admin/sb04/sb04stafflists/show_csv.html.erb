@@ -21,7 +21,7 @@
   <table class="show">
     <tbody>
       <tr><th>年度</th><td><%= @item.fyear_markjp -%></td></tr>
-      <tr><th>所属コード</th><td><%= raw(section_code) -%></td></tr>
+      <tr><th>所属コード</th><td><%= sanitize section_code -%></td></tr>
       <tr><th>所属名</th><td><%= @item.section_name -%></td></tr>
       <tr><th>職員番号</th><td><%= @item.staff_no -%></td></tr>
       <tr><th>氏名（変換前）</th><td><%= @item.name_print -%></td></tr>

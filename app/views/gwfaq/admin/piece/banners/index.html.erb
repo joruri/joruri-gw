@@ -1,5 +1,5 @@
 <% if params[:piece_param].blank? %>
-  <div class="contentBanner"><%=raw @title.banner %></div>
+  <div class="contentBanner"><%=sanitize @title.banner %></div>
 <% else %>
   <div class="pieceBanner">
     <h3><%= @title.title %></h3>

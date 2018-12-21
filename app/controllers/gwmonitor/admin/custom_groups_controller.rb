@@ -40,7 +40,7 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwmonitor::CustomGroup.new(params[:item])
+    @item = Gwmonitor::CustomGroup.new(custom_group_params)
     @item.owner_uid = Core.user.id
     _create(@item, :success_redirect_uri=>@home_path)
   end
@@ -49,7 +49,7 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
     @item = Gwmonitor::CustomGroup.find(params[:id])
     return http_error(404) unless @item
     return error_auth  unless @item.owner_uid == Core.user.id
-    @item.attributes = params[:item]
+    @item.attributes = custom_group_params
     @item.owner_uid = Core.user.id
     _update(@item, :success_redirect_uri=>@home_path)
   end
@@ -67,7 +67,7 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
     item.order 'sort_no, id'
     item.page params[:page], params[:limit]
     @items = item.find(:all)
-    
+
     @item = Gwmonitor::CustomGroup.new
     unless params[:item].blank?
       params[:item].each do |key,value|
@@ -81,7 +81,7 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
         end
       end
     end
-    
+
     if @item.errors.count == 0
       @items.each{|item| item.save}
       flash_notice 'カスタムグループの並び順更新', true
@@ -92,6 +92,13 @@ class Gwmonitor::Admin::CustomGroupsController < Gw::Controller::Admin::Base
         format.xml  { render :xml => @item.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+private
+
+  def custom_group_params
+    params.require(:item).permit(:state, :sort_no, :name,
+      :reader_groups_json, :reader_groups => [:gid])
   end
 
 end

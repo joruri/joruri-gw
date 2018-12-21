@@ -28,7 +28,7 @@
       <td><span class="<%= 'required' if item.state != 'enabled' %>"><%= item.state_label %></span></td>
       <td><%= item.level_no_label %></td>
       <td><%= item.sort_no %></td>
-      <td><span style="margin-left:0em;"><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=raw item.name %></span></span></td>
+      <td><span style="margin-left:0em;"><span class="<%= 'required' if item.state != 'enabled' || item.published != 'opened' %>"><%=sanitize item.name %></span></span></td>
       <td></td>
       <td></td>
     </tr>
@@ -39,7 +39,7 @@
         <td><span class="<%= 'required' if blk.state != 'enabled' %>"><%= blk.state_label %></span></td>
         <td><%= blk.level_no_label %></td>
         <td><%= blk.sort_no %></td>
-        <td><span style="margin-left:2em;"><span class="<%= 'required' if blk.state != 'enabled' || blk.published != 'opened' %>"><%=raw blk.name %></span></span></td>
+        <td><span style="margin-left:2em;"><span class="<%= 'required' if blk.state != 'enabled' || blk.published != 'opened' %>"><%=sanitize blk.name %></span></span></td>
         <td><%= blk.class_external_label %></td>
         <td><%= blk.class_sso_label %></td>
         <td><%= blk.mode_label %></td>
@@ -51,7 +51,7 @@
           <td><span class="<%= 'required' if lnk.state != 'enabled' %>"><%= lnk.state_label %></span></td>
           <td><%= lnk.level_no_label %></td>
           <td><%= lnk.sort_no %></td>
-          <td><span style="margin-left:4em;"><span class="<%= 'required' if lnk.state != 'enabled' || lnk.published != 'opened' %>"><%=raw lnk.name %></span></span></td>
+          <td><span style="margin-left:4em;"><span class="<%= 'required' if lnk.state != 'enabled' || lnk.published != 'opened' %>"><%=sanitize lnk.name %></span></span></td>
           <td><%= lnk.class_external_label %></td>
           <td><%= lnk.class_sso_label %></td>
           <td><%= lnk.mode_label %></td>

@@ -70,7 +70,7 @@
   <% @item.memo_users.each do |mu| %>
     <tr>
       <th><%= mu.class_id_label %></th>
-      <td><%=raw mu.display_name_with_mobile_class %></td>
+      <td><%=sanitize mu.display_name_with_mobile_class %></td>
     </tr>
   <% end %>
 </table>

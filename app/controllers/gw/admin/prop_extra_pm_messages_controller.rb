@@ -11,7 +11,7 @@ class Gw::Admin::PropExtraPmMessagesController < Gw::Controller::Admin::Base
   end
 
   def url_options
-    super.merge(params.slice(:s_prop_class_id).symbolize_keys) 
+    super.merge(params.slice(:s_prop_class_id).symbolize_keys)
   end
 
   def index
@@ -34,7 +34,7 @@ class Gw::Admin::PropExtraPmMessagesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PropExtraPmMessage.new(params[:item])
+    @item = Gw::PropExtraPmMessage.new(message_params)
     _create @item, notice: "メッセージの作成に成功しました。"
   end
 
@@ -44,7 +44,7 @@ class Gw::Admin::PropExtraPmMessagesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::PropExtraPmMessage.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = message_params
     _update @item, notice: "メッセージの更新に成功しました。"
   end
 
@@ -52,4 +52,11 @@ class Gw::Admin::PropExtraPmMessagesController < Gw::Controller::Admin::Base
     @item = Gw::PropExtraPmMessage.find(params[:id])
     _destroy @item
   end
+
+private
+
+  def message_params
+    params.require(:item).permit(:prop_class_id, :state, :sort_no, :body)
+  end
+
 end

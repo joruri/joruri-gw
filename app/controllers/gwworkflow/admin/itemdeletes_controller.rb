@@ -35,7 +35,7 @@ class Gwworkflow::Admin::ItemdeletesController < Gw::Controller::Admin::Base
     item.and :content_id, 0
     @item = item.find(:first)
     return if @item.blank?
-    @item.attributes = params[:item]
+    @item.attributes = delete_params
     location = '/gw/config_settings?c1=1&c2=7'
     _update(@item, :success_redirect_uri=>location)
   end
@@ -45,6 +45,11 @@ protected
   def check_gw_system_admin
     @is_sysadm = Core.user.has_role?('_admin/admin')
     @is_bbsadm = true if @is_sysadm
+  end
+
+private
+  def delete_params
+    params.require(:item).permit(:limit_date)
   end
 
 end

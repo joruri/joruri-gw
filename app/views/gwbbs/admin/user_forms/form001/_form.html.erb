@@ -13,7 +13,7 @@
     <th>本文</th>
   </tr>
   <tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :style => 'width:100%' %></td>
   </tr>
 </table>
 <%= render '/gwbbs/admin/docs/form_wiki', f: f, title: "本文" %>

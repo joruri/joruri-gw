@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedOfficialTitlesController < Gw::Controller:
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "担当者名等管理　職名管理"
   end
@@ -15,7 +15,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedOfficialTitlesController < Gw::Controller:
     item = Gwsub::Sb06AssignedOfficialTitle.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -32,7 +32,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedOfficialTitlesController < Gw::Controller:
   def create
     init_params
     @l3_current='02'
-    @item = Gwsub::Sb06AssignedOfficialTitle.new(params[:item])
+    @item = Gwsub::Sb06AssignedOfficialTitle.new(official_title_params)
     location = url_for({:action => :index})
     _create(@item,:success_redirect_uri=>location)
   end
@@ -44,7 +44,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedOfficialTitlesController < Gw::Controller:
   def update
     init_params
     @item = Gwsub::Sb06AssignedOfficialTitle.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = official_title_params
     location = url_for({:action => :index})
     _update(@item,:success_redirect_uri=>location)
   end
@@ -118,6 +118,12 @@ class Gwsub::Admin::Sb06::Sb06AssignedOfficialTitlesController < Gw::Controller:
   end
   def setting_sortkeys
     @sort_keys = nz(params[:sort_keys], 'official_title_code ASC')
+  end
+
+private
+
+  def official_title_params
+    params.require(:item).permit(:official_title_code, :official_title_name, :official_title_sort_no)
   end
 
 end

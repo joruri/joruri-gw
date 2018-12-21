@@ -77,7 +77,7 @@ class Gwcircular::Admin::BasicsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gwcircular::Control.new(params[:item])
+    @item = Gwcircular::Control.new(basic_params)
     @item.upload_graphic_file_size_currently = 0
     @item.upload_document_file_size_currently = 0
     @item.categoey_view_line = 0
@@ -106,7 +106,7 @@ class Gwcircular::Admin::BasicsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gwcircular::Control.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = basic_params
     @item.categoey_view_line = 0
 
     groups = JSON.parse(@item.readers_json)
@@ -125,4 +125,21 @@ class Gwcircular::Admin::BasicsController < Gw::Controller::Admin::Base
     @item = Gwcircular::Control.find(params[:id])
     _destroy @item
   end
+
+private
+
+  def basic_params
+    params.require(:item).permit(:state, :create_section, :recognize , :title,
+      :default_published, :commission_limit, :limit_date,
+      :upload_graphic_file_size_capacity, :upload_graphic_file_size_capacity_unit,
+      :upload_document_file_size_capacity, :upload_document_file_size_capacity_unit,
+      :upload_graphic_file_size_max, :upload_document_file_size_max,
+      :admingrps_json, :adms_json,
+      :editors_json,  :sueditors_json,
+      :readers_json, :sureaders_json,
+      :admingrps => [:gid], :adms => [:gid],
+      :editors => [:gid], :sueditors => [:gid],
+      :readers => [:gid], :sureaders => [:gid])
+  end
+
 end

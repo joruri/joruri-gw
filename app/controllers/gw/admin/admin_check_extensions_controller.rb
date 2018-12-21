@@ -23,7 +23,7 @@ class Gw::Admin::AdminCheckExtensionsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::AdminCheckExtension.new(params[:item])
+    @item = Gw::AdminCheckExtension.new(admin_check_params)
     _create @item
   end
 
@@ -33,7 +33,7 @@ class Gw::Admin::AdminCheckExtensionsController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::AdminCheckExtension.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = admin_check_params
     _update @item
   end
 
@@ -47,4 +47,11 @@ class Gw::Admin::AdminCheckExtensionsController < Gw::Controller::Admin::Base
 
     redirect_to url_for(action: :index), notice: "削除処理が完了しました。"
   end
+
+private
+
+  def admin_check_params
+    params.require(:item).permit(:state, :extension, :remark, :sort_no)
+  end
+
 end

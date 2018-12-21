@@ -1,4 +1,4 @@
-## Joruri Gw 3.2.1 インストールマニュアル                   2018.04.26
+## Joruri Gw 3.2.2 インストールマニュアル                   2018.12.21
 
 **********************************************************************
  1 想定環境
@@ -8,7 +8,7 @@
 OS           : CentOS 7.2 x86_64, CentOS 6.8 x86_64
 Webサーバー  : Apache 2.4, Apache 2.2
 DBシステム   : MySQL 5.6
-Ruby         : 2.3
+Ruby         : 2.3.7
 Rails        : 4.2
 キャッシュ : memcached 1.4.20
 
@@ -54,7 +54,7 @@ Joruri Gw の実行に必要なパッケージをインストールします。
 
 MySQLをインストールします。
 
-  # yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+  # yum -y install http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
   # yum -y install mysql-community-server mysql-devel
 
 Joruri Gwソースコードを設置します。
@@ -219,8 +219,9 @@ Phusion Passengerの動作環境を設定します。
 
 Joruri Gw に必要なライブラリをインストールします。
 
-  # cd /var/share/jorurigw
-  # bundle install --path vendor/bundle --without development test
+  # su - joruri
+  $ cd /var/share/jorurigw
+  $ bundle install --path vendor/bundle --without development test
 
   ネットワーク経由でファイルのダウンロードとインストールが行われます。
   正しく完了すれば次のようなメッセージが表示されます。
@@ -316,6 +317,7 @@ delayed_job を起動します。
 
 Apacheに設定を追加します。
 
+  $ su -
   # vi /etc/httpd/conf.d/vhosts.conf
   ※ 下記設定は誰でもアクセスできるようにしています。IP制限等を掛ける場合は適宜設定してください。
   -----------------------------------------------------------------------

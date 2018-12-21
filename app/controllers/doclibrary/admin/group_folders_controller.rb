@@ -32,7 +32,7 @@ class Doclibrary::Admin::GroupFoldersController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @title.group_folders.build(params[:item])
+    @item = @title.group_folders.build(folder_params)
     @item.parent_id = @parent.id
     @item.level_no = @parent.level_no + 1
     @item.state = @parent.try(:state) || 'public'
@@ -47,7 +47,7 @@ class Doclibrary::Admin::GroupFoldersController < Gw::Controller::Admin::Base
 
   def update
     @item = @title.group_folders.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = folder_params
 
     _update @item, :success_redirect_uri => url_for(:action => :index, :title_id => @title.id)
   end
@@ -65,5 +65,12 @@ class Doclibrary::Admin::GroupFoldersController < Gw::Controller::Admin::Base
     else
       redirect_to doclibrary_cabinets_path
     end
+  end
+private
+  def folder_params
+    params.require(:item).permit(:state, :sort_no, :name,
+      :reader_groups_json, :readers_json,
+      :reader_groups => [:uid],
+      :readers => [:uid] )
   end
 end

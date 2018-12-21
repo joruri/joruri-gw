@@ -3,7 +3,6 @@ class Gw::Admin::TabMainController < Gw::Controller::Admin::Base
   layout "admin/template/gw_tab_main"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def init_params

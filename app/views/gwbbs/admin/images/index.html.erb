@@ -17,6 +17,25 @@
     parent.tinyMCE.execInstanceCommand('<%= _form_id %>','mceInsertContent',true, value);
   }
 
+  function ckeInsertContent(value) {
+    if (parent.CKEDITOR) {
+      if (parent.CKEDITOR.currentInstance) {
+        parent.CKEDITOR.currentInstance.insertHtml(value);
+      } else {
+        for (var i in parent.CKEDITOR.instances) {
+          var instance = parent.CKEDITOR.instances[i];
+          if (instance.container.isVisible()) {
+            instance.insertHtml(value);
+            break;
+          }
+        }
+      }
+    } else {
+      parent.setText(parent.document.getElementById('item_body'), value);
+    }
+  }
+
+
   function selectAction() {
     var filesForm = document.filesForm;
     var selectFile;
@@ -49,7 +68,7 @@
       <%= '<br />（' + item.width.to_s + ' x ' + item.height.to_s + '）' %></td>
     <td style="text-align: center;">
       <% if item.image? %>
-        <a href="#" id="link_image" onclick="mceInsertContent('<img src=\'<%=_path + item.image_file_path%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
+        <a href="#" id="link_image" onclick="ckeInsertContent('<img src=\'<%=_path + item.image_file_path%>\' alt=\'<%= item.filename %>\'>'); return false;">貼付</a>
       <% end %>
     </td>
     <td style="text-align: center;">

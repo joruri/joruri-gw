@@ -32,7 +32,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(background_params)
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _create @item, notice: '背景画像の登録に成功しました。'
@@ -44,7 +44,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = background_params
     @item.accept_only_image_file = true
     @item.accept_file_extensions = @item.class::ACCEPT_FILE_EXTENSIONS
     _update @item, notice: '背景画像の更新に成功しました。'
@@ -66,7 +66,7 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
     @items = @model.order(sort_no: :asc)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
@@ -77,21 +77,10 @@ class Gw::Admin::MeetingGuideBackgroundsController < Gw::Controller::Admin::Base
       render :index
     end
   end
-  def updown
-    item = @model.find(params[:id])
 
-    item_rep =
-      case params[:order]
-      when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
-      when 'down'
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
-      end
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
+private
+  def background_params
+    params.require(:item).permit(:sort_no, :state, :published, :file, :background_color, :area, :caption)
   end
+
 end

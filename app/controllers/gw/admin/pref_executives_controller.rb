@@ -5,7 +5,6 @@ class Gw::Admin::PrefExecutivesController < Gw::Controller::Admin::Base
   def pre_dispatch
     Page.title = "全庁幹部在庁表示"
     @public_uri = '/gw/pref_executives'
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
   end
 
   def index

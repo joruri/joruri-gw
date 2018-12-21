@@ -22,7 +22,7 @@ class Gwbbs::Admin::CommentsController < Gw::Controller::Admin::Base
 
   def create
     @item = @title.docs.find(params[:p_id])
-    @comment = @item.comments.build(params[:comment])
+    @comment = @item.comments.build(comment_params)
     @comment.title_id = params[:title_id]
     @comment.parent_id = params[:p_id]
     @comment.latest_updated_at = Core.now
@@ -41,7 +41,7 @@ class Gwbbs::Admin::CommentsController < Gw::Controller::Admin::Base
 
   def update
     @comment = Gwbbs::Comment.find(params[:id])
-    @comment.attributes = params[:comment]
+    @comment.attributes = comment_params
     @comment.title_id = params[:title_id]
     @comment.parent_id = params[:p_id]
     @comment.latest_updated_at = Core.now
@@ -55,4 +55,10 @@ class Gwbbs::Admin::CommentsController < Gw::Controller::Admin::Base
     @comment = Gwbbs::Comment.find(params[:id])
     _destroy @comment, success_redirect_uri: "/gwbbs/docs/#{@comment.parent_id}?title_id=#{@comment.title_id}#{gwbbs_params_set}", notice: 'コメントを削除しました。'
   end
+
+private
+  def comment_params
+    params.require(:comment).permit(:body)
+  end
+
 end

@@ -1,6 +1,6 @@
 class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreCommonController
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @extra_genre = :pm
   end
 
@@ -207,7 +207,7 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
     return error_auth unless @is_pm_admin
 
     @item = @mdl_actual.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = pm_rentcar_params
     @item.updated_user = Core.user.name
     @item.updated_group = "#{Core.user_group.code}#{Core.user_group.name}"
 
@@ -266,7 +266,7 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
           summary.each{|ym, summary_detail|
             summary_detail.each{|gid, hx|
               if options[:mode] == :summarize
-                Gw::PropExtraPmRentcarSummary.destroy_all "summaries_at='#{Gw.date_str(ym)}' and group_id=#{gid}"
+                Gw::PropExtraPmRentcarSummary.where(summaries_at: Gw.date_str(ym), group_id: gid).destroy_all
                 summary_tbl = Gw::PropExtraPmRentcarSummary.new({
                   :summaries_at => ym,
                   :group_id => gid,
@@ -283,8 +283,9 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
                 summary_tbl.bill_state = '1'
                 driver_g = System::GroupHistory.where(:id => gid).first
 
-                modified_at_cond = %Q(`modified_at` > '#{st_at.strftime('%Y-%m-%d 0:0:0')}' and `modified_at` < '#{ed_at.strftime('%Y-%m-%d 23:59:59')}')
-                modified_at_items = Gw::PropExtraPmRenewalGroup.where(modified_at_cond)
+                modified_at_items = Gw::PropExtraPmRenewalGroup
+                  .where(Gw::PropExtraPmRenewalGroup.arel_table[:modified_at].gt(st_at.strftime('%Y-%m-%d 0:0:0')))
+                  .where(Gw::PropExtraPmRenewalGroup.arel_table[:modified_at].lt(ed_at.strftime('%Y-%m-%d 23:59:59')))
 
                 if modified_at_items.blank?
                   driver_grp_s = "#{driver_g.code}#{driver_g.name}"
@@ -335,4 +336,13 @@ class Gw::Admin::PropExtraPmRentcarsController < Gw::Admin::PropExtraPmGenreComm
     else
     end
   end
+
+private
+
+  def pm_rentcar_params
+    params.require(:item).permit(:start_meter, :end_meter, :start_at, :end_at,
+      :driver_user_id, :driver_group_id, :user_uname, :user_gname,
+      :toll_fee, :refuel_amount, :to_go, :title)
+  end
+
 end

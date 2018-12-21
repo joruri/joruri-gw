@@ -5,7 +5,7 @@
     mce_base_url = '/_common/modules/gwqa/' + sprintf("%06d", @item.title_id) + '/' + @item.name + "/" unless @item.name.blank?
   end
 %>
-<%= tool_tiny_mce(mce_base_url, {:leftbar_mode => true}) %>
+<%= init_ckeditor baseHref: mce_base_url %>
 
 <%= required_head %>
 <table class="show docManage">
@@ -43,7 +43,7 @@
     <th>記事入力方式</th></tr><tr>
     <td>
       <%= f.radio_buttons :wiki, Gwqa::Doc.wiki_options, {}, {onclick: 'change_body_table();'} %>
-      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=raw Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
+      <span style="<%= 'display: none;' unless @item.wiki_enabled? -%>" class="help" id="wiki_help"><%=sanitize Digitallibrary::Property::HelpLink.first.try(:wiki_help_link) -%></span>
     </td>
   </tr>
 </table>
@@ -51,7 +51,7 @@
 <table class="show" id="nomal_body_table" style="<%= 'display: none;' if @item.wiki_enabled? -%>">
   <tr>
     <th>質問本文</th></tr><tr>
-    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor', :style => 'width:100%' %></td>
+    <td class="mceEditor"><%= f.text_area :body, :class => 'mceEditor body ckeditor', :style => 'width:100%' %></td>
   </tr>
 </table>
 

@@ -150,7 +150,7 @@ class Gw::Admin::PropExtraGroupRentcarMastersController < Gw::Controller::Admin:
   end
 
   def put_params(_params, action)
-    _params = _params[:item]
+    _params = _params.require(:item).permit(:management_gid, :management_uid, :range_class_id, :division_parent_gid, :division_gid)
     u = Core.user
     g = u.groups[0]
     management_g = Gw::Model::Schedule.get_group({:gid => _params[:management_gid]})

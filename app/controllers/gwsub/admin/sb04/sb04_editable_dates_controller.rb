@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録 期限設定"
   end
 
@@ -13,7 +13,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
     item = Gwsub::Sb04EditableDate.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -33,7 +33,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
     init_params
 
     @l3_current = '03'
-    new_item = Gwsub::Sb04EditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb04EditableDate.set_f(editable_date_params)
     @item = Gwsub::Sb04EditableDate.new(new_item)
     options = { :location=>"/gwsub/sb04/04/sb04_editable_dates?#{@qs}" }
     _create(@item,options)
@@ -50,7 +50,7 @@ class Gwsub::Admin::Sb04::Sb04EditableDatesController < Gw::Controller::Admin::B
     @item = Gwsub::Sb04EditableDate.find(params[:id])
     return http_error(404) if @item.blank?
 
-    new_item = Gwsub::Sb04EditableDate.set_f(params[:item])
+    new_item = Gwsub::Sb04EditableDate.set_f(editable_date_params)
     @item.attributes = new_item
 
     options = { :location=>"/gwsub/sb04/04/sb04_editable_dates/#{@item.id}?#{@qs}" }
@@ -107,5 +107,11 @@ pp params
   end
   def sortkeys_setting
     @sort_keys = nz(params[:sort_keys], 'fyear_markjp DESC')
+  end
+
+private
+
+  def editable_date_params
+    params.require(:item).permit(:fyear_id, :start_at, :end_at, :headline_at)
   end
 end

@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDateConditionsController < Gw::Controller::
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "広報依頼"
   end
@@ -39,7 +39,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDateConditionsController < Gw::Controller::
     return error_auth unless @u_role==true
 
     @l2_current ='01'
-    @item = Gwsub::Sb05DesiredDateCondition.new(params[:item])
+    @item = Gwsub::Sb05DesiredDateCondition.new(desired_date_condition_params)
     location = @index_uri
     _create(@item,:success_redirect_uri=>location)
   end
@@ -55,7 +55,7 @@ class Gwsub::Admin::Sb05::Sb05DesiredDateConditionsController < Gw::Controller::
     return error_auth unless @u_role==true
 
     @item = Gwsub::Sb05DesiredDateCondition.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = desired_date_condition_params
     location = @index_uri
     _update(@item,:success_redirect_uri=>location)
   end
@@ -159,4 +159,12 @@ class Gwsub::Admin::Sb05::Sb05DesiredDateConditionsController < Gw::Controller::
       @count_dates[1] = @count_dates[1] + 1
     end
   end
+
+private
+
+  def desired_date_condition_params
+    params.require(:item).permit(:media_id, :w1, :w2, :w3, :w4, :w5, :d0, :d1, :d2, :d3, :d4, :d5, :d6,
+      :st_at, :ed_at)
+  end
+
 end

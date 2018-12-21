@@ -25,7 +25,7 @@ class Gw::Admin::AdminMessagesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::AdminMessage.new(params[:item])
+    @item = Gw::AdminMessage.new(admin_message_params)
     _create @item
   end
 
@@ -35,7 +35,7 @@ class Gw::Admin::AdminMessagesController < Gw::Controller::Admin::Base
 
   def update
     @item = Gw::AdminMessage.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = admin_message_params
     _update @item
   end
 
@@ -43,4 +43,10 @@ class Gw::Admin::AdminMessagesController < Gw::Controller::Admin::Base
     @item = Gw::AdminMessage.find(params[:id])
     _destroy @item
   end
+
+private
+  def admin_message_params
+    params.require(:item).permit(:mode, :state, :sort_no, :body)
+  end
+
 end

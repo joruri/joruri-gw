@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
 
   def pre_dispatch
 
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @index_uri = "#{url_for({:action=>:index})}/"
     Page.title = "20申請書管理所属"
     init_params
@@ -17,7 +17,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
     item = Gwsub::Sb06AssignedConfGroup.new
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     _index @items
   end
@@ -34,7 +34,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
   def create
 
     @l3_current='02'
-    @item = Gwsub::Sb06AssignedConfGroup.new(params[:item])
+    @item = Gwsub::Sb06AssignedConfGroup.new(group_params)
     location = url_for({:action => :index})
     _create(@item,:success_redirect_uri=>location)
   end
@@ -47,7 +47,7 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
   def update
 
     @item = Gwsub::Sb06AssignedConfGroup.new.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = group_params
     location = url_for({:action => :index})
     _update(@item,:success_redirect_uri=>location)
   end
@@ -115,9 +115,8 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
       @fy_id  = nz(params[:fy_id],current_fyear.id)
     end
     # 所属設定
-    c_group_conditions  = "categories_id=#{@cat_id}"
     c_group_order = "cat_sort_no , fyear_markjp DESC"
-    c_group = Gwsub::Sb06AssignedConfGroup.order(c_group_order).where(c_group_conditions).first
+    c_group = Gwsub::Sb06AssignedConfGroup.order(c_group_order).where(categories_id: @cat_id).first
     if c_group.blank?
       @c_group_id  = nz(params[:c_group_id],0)
     else
@@ -147,6 +146,12 @@ class Gwsub::Admin::Sb06::Sb06AssignedConfGroupsController < Gw::Controller::Adm
   def setting_sortkeys
 #    @sort_keys = nz(params[:sort_keys], 'fyear_id DESC , group_code ASC')
     @sort_keys = nz(params[:sort_keys], 'cat_sort_no , fyear_markjp DESC ')
+  end
+
+private
+
+  def group_params
+    params.require(:item).permit(:categories_id, :fyear_id, :group_id)
   end
 
 end

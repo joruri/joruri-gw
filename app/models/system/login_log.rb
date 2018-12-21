@@ -5,7 +5,8 @@ class System::LoginLog < ActiveRecord::Base
   belongs_to :user, :foreign_key => :user_id, :class_name => 'System::User'
 
   def self.put_log(user)
-    login = self.new(:user_id => user.id)
+    login = self.new
+    login.user_id = user.id
     if login.save(:validate => false)
       delete_past(user)
     end

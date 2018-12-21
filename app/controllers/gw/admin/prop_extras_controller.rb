@@ -4,8 +4,6 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
   layout "admin/template/schedule"
 
   def pre_dispatch
-    #リセットボタンを押すと、エラーが発生するため変更
-    #return redirect_to(request.env['PATH_INFO']) if params[:reset]
     return redirect_to "/gw/prop_extras?s_genre=#{params[:s_genre]}&cls=#{params[:cls]}&order=#{params[:order]}" if params[:reset]
   end
 
@@ -25,6 +23,14 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
     return error_auth if prop_classes[@cls].blank? && @genre != "other"
 
     @genre_name_s = Gw.join([@genre_prefix, @genre], '_').pluralize # prop_meetingrooms
+    @genre_name_s = case @genre
+    when 'meetingrooms'
+      'prop_meetingrooms'
+    when 'rentcars'
+      'prop_rentcars'
+    else
+      'prop_others'
+    end
     @erb_base = "/#{@module}/public/#{Gw.join([@genre_prefix, 'extra'], '_').pluralize}" # /gw/public/prop_extras
     @item_name = a_genres.assoc(@genre)[1] # 会議室
     @extra_name_s = "#{@item_name}管理(#{prop_classes[@cls]})" # 会議室管理(管財)
@@ -417,6 +423,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
     init_params
 
     item = Gw::ScheduleProp.find(params[:id])
+    return http_error(404) if item.blank?
     actual = nil
 
     if item.prop_stat == 2
@@ -427,7 +434,7 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
       if item.meetingroom_related? && item.someone_renting_currently?
         flash[:notice] = '貸出に失敗しました。該当設備は貸出中です。'
         location = "/gw/prop_extras#{@prop_params}"
-        location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
+        location =  show_one_gw_schedule_path(params[:sid]) if params[:ref] == 'show_one'
         return redirect_to location
       end
 
@@ -460,8 +467,16 @@ class Gw::Admin::PropExtrasController < Gw::Controller::Admin::Base
     end
 
     location = "/gw/prop_extras#{@prop_params}"
-    location = "/gw/prop_extra_pm_#{item.genre_name}s/#{actual.id}" if actual
-    location = "/gw/schedules/#{params[:sid]}/show_one" if params[:ref] == 'show_one'
+    if actual
+      location = case item.genre_name
+      when 'meetingroom'
+        gw_prop_extra_pm_meetingroom_path(actual)
+      else
+        gw_prop_extra_pm_rentcar_path(actual)
+      end
+    end
+
+    location = show_one_gw_schedule_path(params[:sid]) if params[:ref] == 'show_one'
     return redirect_to location
   end
 

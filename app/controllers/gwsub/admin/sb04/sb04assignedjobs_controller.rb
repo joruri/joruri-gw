@@ -4,7 +4,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
   layout "admin/template/portal_1column"
 
   def pre_dispatch
-    return redirect_to(request.env['PATH_INFO']) if params[:reset]
+    return redirect_to(url_for(action: :index)) if params[:reset]
     @page_title = "電子職員録 担当一覧"
   end
 
@@ -13,7 +13,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb04assignedjob.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     if @role_sb04_dev
       gids = Gwsub::Sb04stafflistviewMaster.get_division_sb04_gids # ログインユーザーの主管課範囲のid
       condition = Condition.new()
@@ -53,7 +53,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
   def create
     init_params
     @l3_current = '03'
-    @item = Gwsub::Sb04assignedjob.new(params[:item])
+    @item = Gwsub::Sb04assignedjob.new(assigned_job_params)
     location = "/gwsub/sb04/04/sb04assignedjobs?#{@qs}"
     if @item.assignedjob_data_save(params, :create)
       flash_notice '登録', true
@@ -80,7 +80,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
     @item = Gwsub::Sb04assignedjob.new.find(params[:id])
     return http_error(404) if @item.blank?
 
-    @item.attributes = params[:item]
+    @item.attributes = assigned_job_params
     location = "/gwsub/sb04/04/sb04assignedjobs/#{@item.id}?#{@qs}"
     if @item.assignedjob_data_save(params, :update)
       flash_notice '更新', true
@@ -262,7 +262,7 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
     item = Gwsub::Sb04CheckAssignedjob.new #.readable
     item.search params
     item.page   params[:page], params[:limit]
-    item.order  params[:id], @sort_keys
+    item.order @sort_keys, 'id ASC'
     @items = item.find(:all)
     @l3_current = '08'
   end
@@ -313,6 +313,12 @@ class Gwsub::Admin::Sb04::Sb04assignedjobsController < Gw::Controller::Admin::Ba
 #    end
     @params = nil
     return @params
+  end
+
+private
+
+  def assigned_job_params
+    params.require(:item).permit(:fyear_id, :section_id, :code, :name, :tel, :address, :remarks)
   end
 
 end

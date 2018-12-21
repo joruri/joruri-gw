@@ -32,7 +32,7 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = @model.new(params[:item])
+    @item = @model.new(notice_params)
     _create @item, notice: 'お知らせの登録に成功しました。'
   end
 
@@ -42,7 +42,7 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
 
   def update
     @item = @model.find(params[:id])
-    @item.attributes = params[:item]
+    @item.attributes = notice_params
     _update @item, notice: 'お知らせの更新に成功しました。'
   end
 
@@ -63,7 +63,7 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
     @items = @model.order(sort_no: :asc)
     params[:items].each do |id, param|
       item = @items.detect{|i| i.id == id.to_i}
-      item.attributes = param if item
+      item.attributes = param.permit(:sort_no) if item
     end
 
     if @items.map(&:valid?).all?
@@ -74,21 +74,9 @@ class Gw::Admin::MeetingGuideNoticesController < Gw::Controller::Admin::Base
       render :index
     end
   end
-  def updown
-    item = @model.find(params[:id])
-
-    item_rep =
-      case params[:order]
-      when 'up'
-        @model.where("sort_no < #{item.sort_no}").order(sort_no: :desc).first!
-      else
-        @model.where("sort_no > #{item.sort_no}").order(sort_no: :asc).first!
-      end
-
-    item.sort_no, item_rep.sort_no = item_rep.sort_no, item.sort_no
-    item.save(validate: false)
-    item_rep.save(validate: false)
-
-    redirect_to url_for(action: :index), notice: "並び順の変更に成功しました。"
+private
+  def notice_params
+    params.require(:item).permit(:sort_no, :state, :published, :title)
   end
+
 end
