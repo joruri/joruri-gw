@@ -1,5 +1,5 @@
 3.2.2
-  * CKEditorへの変更
+  * WYSIWYGエディタをCKEditorへ変更
   * セキュリティ対策
 
 3.2.1
