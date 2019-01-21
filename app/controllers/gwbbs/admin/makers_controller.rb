@@ -215,7 +215,7 @@ private
       :upload_graphic_file_size_max, :upload_document_file_size_max,
       :sort_no, :view_hide, :caption, :left_index_pattern,
       :categoey_view , :group_view, :monthly_view, :monthly_view_line,
-      :preview_mode, :banner_position, :font_color,       :css,
+      :preview_mode, :banner_position, :font_color, :css, :use_read_flag,
       :admingrps_json, :adms_json,
       :editors_json,  :sueditors_json,
       :readers_json, :sureaders_json,
