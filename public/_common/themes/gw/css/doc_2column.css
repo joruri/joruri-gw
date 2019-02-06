@@ -5,7 +5,7 @@
 
 /* カラム設定
 ---------------------------------------------*/
-#content { 
+#content {
   overflow: visible;
   float: right;
   width: 100%;
@@ -17,7 +17,7 @@
   width: 99.85%;
   border-right: none;
 }
-body:not(:target) #content .pieceBody { 
+body:not(:target) #content .pieceBody {
   width: auto;
 }
 html:not([lang*=""]) #content .pieceBody {
@@ -40,7 +40,7 @@ html:not(:only-child:only-child) #content .pieceBody {
   width: 81.7%;
   margin-left: 0px;
 }
-body:not(:target) #content .outer { 
+body:not(:target) #content .outer {
   width: auto;
 }
 html:not([lang*=""]) #content .outer {
@@ -122,8 +122,7 @@ html:not(:only-child:only-child) #content .outer {
 #contentBody .sideMenu {
   float: left;
   width: 18%;
-  margin: 0 0 -32768px;
-  padding-bottom: 32768px;
+  padding-bottom: 100%;
   padding-top: 5px;
   border-right: 1px solid #CCCCCC;
   border-top: 1px solid #CCCCCC;
@@ -253,7 +252,7 @@ table.bbsComment td {
 table.bbsImage {
   border-top: none;
 }
-table#image_form { 
+table#image_form {
   margin-top: -2px;
   margin-bottom: 0;
   border-top: 1px solid #CCCCCC;
@@ -264,7 +263,7 @@ table#image_form {
 table.bbsFile {
   margin-top: 20px;
 }
-table#attach_form { 
+table#attach_form {
   margin-top: 0;
   margin-bottom: 0;
   border-top: 1px solid #CCCCCC;
@@ -295,7 +294,7 @@ table.gwboardAttachlist td.attachIcon a.iconFile {
 table.gwboardAttachlist .remark {
   width: 35px;
 }
-form table.gwboardAttachlist .remark { 
+form table.gwboardAttachlist .remark {
   width: 220px;
 }
 
