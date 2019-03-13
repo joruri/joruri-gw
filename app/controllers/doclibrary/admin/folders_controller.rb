@@ -63,9 +63,7 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
 
   def update
     @item = @title.folders.find(params[:id])
-
     @item.attributes = folder_params
-
     str_params = @title.docs_path
     str_params += "&cat=#{@item.parent_id}"
     str_params += "&state=CATEGORY"
@@ -99,6 +97,9 @@ class Doclibrary::Admin::FoldersController < Gw::Controller::Admin::Base
   end
 private
   def folder_params
-    params.require(:item).permit(:use_state, :sort_no, :name)
+    params.require(:item).permit(:state, :use_state, :sort_no, :name,
+      :parent_id, :reader_groups_json, :readers_json,
+      :reader_groups => [:gid, :uid => []],
+      :readers => [:gid, :uid => []])
   end
 end
