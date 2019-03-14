@@ -94,8 +94,7 @@ module Gwboard::Model::File::Base
     if self.content_id == 2
       "/_admin/gwboard/receipts/#{self.id}/download_object?system=#{system_name}&title_id=#{self.title_id}"
     else
-      uri = "#{file_base_path}/#{sprintf('%06d', self.title_id)}/#{parent_id_dir}/#{self_id_dir}/#{URI.encode(self.filename)}"
-      self.content_id == 3 && !is_image ? "/_admin#{uri}" : uri
+      "#{file_base_path}/#{sprintf('%06d', self.title_id)}/#{parent_id_dir}/#{self_id_dir}/#{URI.encode(self.filename)}"
     end
   end
 
