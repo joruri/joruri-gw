@@ -116,26 +116,38 @@
   <div class="link_to_hss"><%= link_to '福利厚生ポータルへ', @link_to_hcs_url %></div>
   <% end %>
   <div class="link_to_clip">
-    <a href="javascript:void(0)" onclick="copy_clip(); return false;">お知らせリンク作成</a>
+    <a href="javascript:void(0)" onclick="display_clip(); return false;">お知らせリンク作成</a>
   </div>
   <% if @item.files.present? %>
   <div class="link_export_file">
     <%= link_to "添付ファイル一括ダウンロード(ファイル数：#{@item.files.length})", "#{@item.file_exports_path}#{gwbbs_params_set}" -%>
   </div>
   <% end %>
+  <div id="copy_document" style="display: none;">
+    <div style="display: block;">
+      <%= text_area_tag 'copy_clip', "機能名：掲示板\n件名：#{@item.title}\nURL：#{request.url}" %>
+    </div>
+    <a href="javascript:void(0)" onclick="copy_clip(); return false;">コピー</a>
+  </div>
 </div>
-
 <script type="text/javascript">
 //<![CDATA[
+var display_clip = function(){
+  var current_style = document.getElementById("copy_document").style.display;
+  if ( current_style == 'none' ){
+    document.getElementById("copy_document").style.display="block";
+  } else {
+    document.getElementById("copy_document").style.display="none";
+  }
+}
+
 var copy_clip = function() {
-  var ua = "";
-  ua = navigator.userAgent.toLowerCase();
-  url = "機能名：掲示板\n件名：<%= @item.title -%>\nURL：<%= request.url -%>";
-  if(ua.indexOf("msie") != -1) {
-    clipboardData.setData('Text', url);
+  var copyTarget = document.getElementById("copy_clip");
+  copyTarget.select();
+  if( document.execCommand("Copy")) {
     alert("記事の情報をクリップボードにコピーしました。");
   } else {
-    alert(url);
+    alert("クリップボードへのコピーに失敗しました。");
   }
 }
 //]]>
