@@ -99,7 +99,7 @@ class Gw::Admin::PrefExecutiveAdminsController < Gw::Controller::Admin::Base
 
   def csvup
     @item = System::Model::FileConf.new(encoding: 'sjis')
-    return if item_params.nil?
+    return if params[:item].blank?
 
     @item.attributes = item_params
     return unless @item.valid_file?
