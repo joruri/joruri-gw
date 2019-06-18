@@ -83,7 +83,7 @@ class Gw::Admin::PrefAssemblyMemberAdminsController < Gw::Controller::Admin::Bas
     @item = System::Model::FileConf.new(encoding: 'sjis')
     return if params[:item].nil?
 
-    @item.attributes = params[:item]
+    @item.attributes = item_params
     return unless @item.valid_file?
 
     Gw::PrefAssemblyMember.transaction do

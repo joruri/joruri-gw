@@ -1,8 +1,1 @@
-<%
-  if Date.today.month >= 1 && Date.today.month <= 3
-    fyear = Gw::YearFiscalJp.get_next_year_record(Time.now)
-  else
-    fyear = Gw::YearFiscalJp.get_record(Time.now)
-  end
-%>
-<%= '(' + fyear.namejp.to_s + '年' + Time.now.strftime('%m月%d日 %H:%M 現在') + ')' if fyear.present?  %>
+<%= Gwsub.fyear_to_namejp2(Date.today) %> 現在

@@ -25,7 +25,7 @@ class System::CustomGroup < ActiveRecord::Base
 
   scope :with_owner_or_admin_role, ->(user = Core.user) {
     eager_load(:custom_group_role).where([
-      arel_table[:owner_uid].eq(user.id), 
+      arel_table[:owner_uid].eq(user.id),
       System::CustomGroupRole.with_user_or_group(user, 'admin').where_values.reduce(:and)
     ].reduce(:or))
   }
@@ -47,6 +47,7 @@ class System::CustomGroup < ActiveRecord::Base
       .joins(:custom_group_role)
       .where(state: 'enabled')
       .merge(System::CustomGroupRole.with_user_or_group(Core.user, options[:priv] == :edit ? 'edit' : 'read'))
+      .order(:sort_no)
 
     if options[:is_default] == 1
       items = items.where(is_default: 1, name: Core.user_group.name)
