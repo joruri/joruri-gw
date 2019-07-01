@@ -24,7 +24,6 @@ class Gwboard::Admin::SynthesesController < Gw::Controller::Admin::Base
       else
         Date.yesterday
       end
-    dump @date
     Page.title = "掲示板新着総合案内"
     @css = ["/_common/themes/gw/css/gwbbs_standard.css"]
 
