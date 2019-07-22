@@ -110,11 +110,9 @@ Gwsub::Sb04section.where(fyear_id: fyed_id_today.id, code: ['001002','001003']).
     next if system_user.blank?
     assignedjob = Gwsub::Sb04assignedjob.where(fyear_id: fyed_id_today.id,
       section_code: g.code, code: u[:assignedjobs_code]).first
-    dump assignedjob.inspect
     next if assignedjob.blank?
     official_title = Gwsub::Sb04officialtitle.where(fyear_id: fyed_id_today.id,
       code: u[:official_title_code]).first
-    dump official_title.inspect
     next if official_title.blank?
     Gwsub::Sb04stafflist.create({
       fyear_id: fyed_id_today.id,

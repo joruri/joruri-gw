@@ -370,7 +370,6 @@ class Gw::ScheduleProp < Gw::Database
       " or ('#{st_at}' <= gw_schedule_props.st_at and gw_schedule_props.st_at < '#{ed_at}') )"
 
     rent_item = Gw::Schedule.joins(prop_join).where.not(id: schedule.id).where("prop_type='#{prop_type}' and prop_id='#{prop_id}'" + cond_results_shar)
-    dump rent_item.to_sql
     rent_item_flg = false if rent_item.present?
 
 
@@ -380,7 +379,6 @@ class Gw::ScheduleProp < Gw::Database
         rent_item_flg = false if ritem.is_actual?
       }
     end
-    dump rent_item_flg
     return rent_item_flg
   end
 
