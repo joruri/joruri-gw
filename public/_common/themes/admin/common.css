@@ -100,14 +100,6 @@ form.search td.submitters input {
 /* avoid output navigation on printing
 ----------------------------------------------- */
 @media print {
-  #header, #headerBody, #banner, #bannerBody, #navigationContainer, #navi,
-  #naviBody, #menu, #menuContainer, #links, #linksContainer,
-  #footer, #footerContainer, #footerBody,
-  .menu, .showMenu, .noprint {
-    display: none;
-    margin: 0;
-    padding: 0;
-  }
   #content, #contentContainer {
     margin: 0;
   }
