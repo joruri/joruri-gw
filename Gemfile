@@ -7,7 +7,7 @@ gem 'rails', '4.2.10'
 gem 'activerecord-session_store', '1.1.1'
 gem 'activerecord-deprecated_finders', '1.0.4'
 
-gem 'mysql2', '~> 0.3.20'
+gem 'mysql2', '~> 0.4.0'
 gem 'execjs','1.4.0'
 gem 'therubyracer','0.10.2'
 
