@@ -16,10 +16,12 @@ html body {
 
 
 #header, #banner, #navi, #navi2 ,#contentHeader, .pieceHeader, .pieceBanner, #contentBody .pieceBody .sideMenu, .right .tabBox, .btReturn,
-.navi, .btBox, div.docListFunctions, div.right div.editingBox, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
+.navi, .btBox, .docListFunctions, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
 #contentBody .titleLine, .pieceBodyHeader .tabBox, form table.batchProcess,
-#footer, #footerContainer, #footerBody, #popup_select_group_2,
-  form.search {
+#footer, #footerContainer, #footerBody, #popup_select_group_2, form.search,
+.pieceBody .pieceBodyBody .editingBox, .right .editingBox,
+#contentBody .piece .pieceBody .menu,
+#content #contentContainer #contentBody .bbsDocList .tabBox {
   display: none;
 }
 *html #contentContainer #contentBody .pieceBody .sideMenu,
@@ -35,16 +37,22 @@ html body {
 #content #contentBody .gwqaDocList .pieceBody,
 #content #contentBody .gwfaqDocList .pieceBody,
 #content #contentBody .gwqaDocList .pieceBody,
-#content #contentBody .doclibraryDocList .pieceBody {
+#content #contentBody .gwsub .pieceBody,
+#content #contentBody .doclibraryDocList .pieceBody,
+#content #contentContainer #contentBody .bbsDocList{
   border: none;
 }
+
 #content #contentBody .pieceBody {
   overflow: visible;
 }
 #content #contentBody .piece,
 #content #contentBody .memo,
 #content #contentBody .todo,
-#content #contentBody .notification {
+#content #contentBody .notification,
+#content #contentBody .doclibraryDocList,
+#content #contentBody .circular,
+#content #contentContainer #contentBody .DLDocList {
   background-image: none;
 }
 *html .outer .docsInnerBox .bbsCreatorInf {
@@ -138,6 +146,7 @@ html:not([lang*=""]) #content .gwqaDocList .outer {
   width: 135%;
   zoom: 150%;
 }
+#contentBody .DLDocList .pieceBody .pieceBodyHeader .search,
 div.search, .pagination, form.changelimit {
   display: none;
 }
@@ -213,8 +222,8 @@ html body#page-tabMain-3 div.piece div.pieceHeader {
 div#content div#contentContainer div#contentBody div.piece.reminder {
   background-image: url(/_common/themes/gw/files/title/title_remainder.gif);
 }
-div#content div#contentContainer div#contentBody div.piece.syntheses,
-div#content div#contentContainer div#contentBody div.piece.bbs {
+html body#page-gw-portal div#content div#contentContainer div#contentBody div.piece.syntheses,
+html body#page-gw-portal div#content div#contentContainer div#contentBody div.piece.bbs {
   background-image: url(/_common/themes/gw/files/title/title_board_new.gif);
 }
 
