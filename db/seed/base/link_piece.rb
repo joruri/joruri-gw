@@ -55,7 +55,7 @@ create_link_piece(4,prop.id,"会議室予約",20,0,nil,nil,nil,nil,nil,"/gw/sche
 create_link_piece(4,prop.id,"一般備品",30,0,nil,nil,nil,nil,nil,"/gw/schedule_props/show_week?s_genre=other&cls=other&type_id=300",nil,1,1,nil,nil)
 
 link = create_link_piece(3,left_piece.id,"リンク",100,0,1,nil,nil,7,9,nil,nil,1,1,nil,nil)
-create_link_piece(4,link.id,"Joruri公式サイト",10,0,nil,nil,nil,nil,nil,"http://joruri.org/",nil,2,1,nil,nil)
+create_link_piece(4,link.id,"Joruri公式サイト",10,0,nil,nil,nil,nil,nil,"https://joruri.org/",nil,2,1,nil,nil)
 
 portal = create_link_piece(3,head_piece.id,"ポータル",10,0,1,nil,nil,nil,nil,"/",nil,1,1,nil,nil)
 create_link_piece(4,portal.id,"ポータル",10,0,1,nil,nil,nil,nil,"/","/_common/themes/gw/files/menu/ic_home.gif",1,1,nil,nil)
