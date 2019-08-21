@@ -18,7 +18,9 @@ class System::Admin::Api::MeetingGuidesController < ActionController::Base
   def backgrounds
     # 会議開催案内 背景画像
     dump ['api_schedule_back_login_common',Time.now.strftime('%Y-%m-%d %H:%M:%S'),request.parameters['url']]
-    xml = Gw::Tool::Schedule.backgrounds_xml_output(request.env['HTTP_HOST'])
+    uri = Util::Config.load(:core, :uri)
+    uri = uri.gsub(/\/$/, '') if uri.present? && uri.end_with?("/")
+    xml = Gw::Tool::Schedule.backgrounds_xml_output(uri)
     dump ['api_schedule_back_login_common_ret',Time.now.strftime('%Y-%m-%d %H:%M:%S'),xml]
     return render :xml => xml
   end

@@ -65,7 +65,7 @@ class Gw::Tool::Schedule
     return xml
   end
 
-  def self.backgrounds_xml_output(host)
+  def self.backgrounds_xml_output(uri)
     item = Gw::MeetingGuideBackground.new
     cond  = "state != 'deleted' and published = 'opened'"
     order = "sort_no"
@@ -76,16 +76,16 @@ class Gw::Tool::Schedule
 
     if items.length > 0
       xml = xm.xml_data {
-        items.each do |item|
-          url = 'http://' + host + item.file_path.to_s
+        items.each do |img|
+          url = "#{uri}#{img.file_path}"
           xm.entry do
-            xm.id(item.id.to_s)
+            xm.id(img.id.to_s)
             xm.path(url)
-            xm.name(item.file_name)
-            xm.label(item.caption)
-            xm.style(item.background_color)
-            xm.area(item.area)
-            xm.sort_no(item.sort_no.to_s)
+            xm.name(img.file_name)
+            xm.label(img.caption)
+            xm.style(img.background_color)
+            xm.area(img.area)
+            xm.sort_no(img.sort_no.to_s)
           end
         end
       }
