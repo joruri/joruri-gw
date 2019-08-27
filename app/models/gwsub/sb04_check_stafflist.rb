@@ -316,7 +316,6 @@ class Gwsub::Sb04CheckStafflist < Gwsub::GwsubPref
     check_1_count = Gwsub::Sb04CheckOfficialtitle.all.count
     if check_1_count > 0
       check_1 = Gwsub::Sb04CheckOfficialtitle.check_fyear_id(fyear_id)
-      dump check_1
       if check_1 != true
         msg << '職名' + _msg
       end

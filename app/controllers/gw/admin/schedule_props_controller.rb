@@ -229,12 +229,13 @@ class Gw::Admin::SchedulePropsController < Gw::Controller::Admin::Base
       @prop_read_ids = @prop_ids
     else
       if @genre == 'other'
+        gids = [0] + Core.user_group.self_and_ancestors.map(&:id)
         @reservable_prop_ids = @props.with_reservable.map(&:id)
         @prop_edit_ids = Gw::PropOtherRole.select(:id, :prop_id)
-          .where(prop_id: @reservable_prop_ids, gid: Core.user_group.self_and_ancestors.map(&:id), auth: 'edit')
+          .where(prop_id: @reservable_prop_ids, gid: gids, auth: 'edit')
           .map(&:prop_id)
         @prop_read_ids = Gw::PropOtherRole.select(:id, :prop_id)
-          .where(prop_id: @prop_ids, gid: Core.user_group.self_and_ancestors.map(&:id), auth: 'read')
+          .where(prop_id: @prop_ids, gid: gids, auth: 'read')
           .map(&:prop_id)
       else
         @prop_edit_ids = @props.select(&:reservable?).map(&:id)

@@ -63,7 +63,6 @@ class Digitallibrary::Admin::CabinetsController < Gw::Controller::Admin::Base
   end
 
   def create
-    dump params[:item].each{|k, v| dump k}
     @item = Digitallibrary::Control.new(cabinet_params)
     return error_auth unless @item.is_admin?
 

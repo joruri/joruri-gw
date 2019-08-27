@@ -1,4 +1,4 @@
-## Joruri Gw 3.2.3 インストールマニュアル                   2019.03.14
+## Joruri Gw 3.2.5 インストールマニュアル                   2019.08.27
 
 **********************************************************************
  1 想定環境
@@ -252,7 +252,7 @@ LDAP接続情報
   $ vi config/ldap.yml
 
   ※LDAPに関する設定は、ダウンロードページより補足資料をご参照下さい。
-    http://joruri.org/download/jorurigw/  【LDAP関連補足資料】LDAP_LDIF.zip
+    https://joruri.org/download/jorurigw/  【LDAP関連補足資料】LDAP_LDIF.zip
 
 SMTP接続情報
 

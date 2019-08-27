@@ -12,9 +12,16 @@ html body {
 *:first-child+html body{
   zoom: 0.75;
 }
+
+
+
 #header, #banner, #navi, #navi2 ,#contentHeader, .pieceHeader, .pieceBanner, #contentBody .pieceBody .sideMenu, .right .tabBox, .btReturn,
-.navi, .btBox, .editingBox, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
-#contentBody .titleLine, .pieceBodyHeader .tabBox, form table.batchProcess {
+.navi, .btBox, .docListFunctions, .helpBox, #contentBody .pieceBody .sideMenu, #contentBody .pieceBody .sideMenu h3, .docsPageMove,
+#contentBody .titleLine, .pieceBodyHeader .tabBox, form table.batchProcess,
+#footer, #footerContainer, #footerBody, #popup_select_group_2, form.search,
+.pieceBody .pieceBodyBody .editingBox, .right .editingBox,
+#contentBody .piece .pieceBody .menu,
+#content #contentContainer #contentBody .bbsDocList .tabBox {
   display: none;
 }
 *html #contentContainer #contentBody .pieceBody .sideMenu,
@@ -24,22 +31,28 @@ html body {
 #wrapper #content, #content,
 #content #contentBody .piece .pieceBody,
 #main #content #contentBody .bbs .pieceBody,
-#content #contentBody .bbsDocList .pieceBody, 
+#content #contentBody .bbsDocList .pieceBody,
 #content .DLDocList .pieceBody,
 #contentContainer #contentBody .sideMenu,
 #content #contentBody .gwqaDocList .pieceBody,
 #content #contentBody .gwfaqDocList .pieceBody,
 #content #contentBody .gwqaDocList .pieceBody,
-#content #contentBody .doclibraryDocList .pieceBody {
+#content #contentBody .gwsub .pieceBody,
+#content #contentBody .doclibraryDocList .pieceBody,
+#content #contentContainer #contentBody .bbsDocList{
   border: none;
 }
+
 #content #contentBody .pieceBody {
   overflow: visible;
 }
 #content #contentBody .piece,
 #content #contentBody .memo,
 #content #contentBody .todo,
-#content #contentBody .notification {
+#content #contentBody .notification,
+#content #contentBody .doclibraryDocList,
+#content #contentBody .circular,
+#content #contentContainer #contentBody .DLDocList {
   background-image: none;
 }
 *html .outer .docsInnerBox .bbsCreatorInf {
@@ -71,7 +84,7 @@ html body {
   width: 50%;
 }
 #contentBody .DLDocList .inner .docCreator th,
-#contentBody .DLDocList .inner .docCreator td, 
+#contentBody .DLDocList .inner .docCreator td,
 #contentBody .DLDocList .inner .docImportance th,
 #contentBody .DLDocList .inner .docImportance td {
   font-size: 75%;
@@ -133,6 +146,7 @@ html:not([lang*=""]) #content .gwqaDocList .outer {
   width: 135%;
   zoom: 150%;
 }
+#contentBody .DLDocList .pieceBody .pieceBodyHeader .search,
 div.search, .pagination, form.changelimit {
   display: none;
 }
@@ -189,3 +203,33 @@ div.search, .pagination, form.changelimit {
   margin-bottom: 150px;
 }
 
+/* portal, tab
+----------------------------------------------------------------*/
+html body#page-gw-portal div#container div#navi,
+html body#page-gw-portal div#container div#navi div#naviBody,
+html body#page-gw-portal div#container div#navi div#navi2,
+html body#page-gw-portal div.piece div.pieceHeader,
+html body#page-tabMain-80 div#container div#navi,
+html body#page-tabMain-80 div#container div#navi div#naviBody,
+html body#page-tabMain-80 div#container div#navi div#navi2,
+html body#page-tabMain-80 div.piece div.pieceHeader,html body#page-tabMain-3 div#container div#navi,
+html body#page-tabMain-3 div#container div#navi div#naviBody,
+html body#page-tabMain-3 div#container div#navi div#navi2,
+html body#page-tabMain-3 div.piece div.pieceHeader {
+  display: block;
+}
+
+div#content div#contentContainer div#contentBody div.piece.reminder {
+  background-image: url(/_common/themes/gw/files/title/title_remainder.gif);
+}
+html body#page-gw-portal div#content div#contentContainer div#contentBody div.piece.syntheses,
+html body#page-gw-portal div#content div#contentContainer div#contentBody div.piece.bbs {
+  background-image: url(/_common/themes/gw/files/title/title_board_new.gif);
+}
+
+html body#page-gw-portal div#container div#navi div#main div#wrapper div#content div#contentContainer div#contentBody div.bbs div.pieceBody{
+  padding: 5px 5px 20px 5px;
+  border-left: 1px solid #1E3B8C;
+  border-right: 1px solid #1E3B8C;
+  border-bottom: 1px solid #1E3B8C;
+}

@@ -1258,15 +1258,6 @@ span.explanation {
 /* 印刷設定
 -----------------------------------------------------*/
 @media print {
-  #header, #headerBody, #banner, #bannerBody, #navi,
-  #naviBody, #menu, #menuContainer, #links, #linksContainer,
-  #footer, #footerContainer, #footerBody, #popup_select_group_2,
-  form.search,
-  .menu, .showMenu, .noprint {
-    display: none;
-    margin: 0;
-    padding: 0;
-  }
   #page-index #menu,
   #page-index #menu #menuContainer {
     display: block;
