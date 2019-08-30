@@ -1,10 +1,3 @@
-<%= hidden_field_tag :parent, @parent.id %>
-<%= f.hidden_field :parent_id,    :value => @parent.id %>
-<%= f.hidden_field :level_no,     :value => @parent.level_no.to_i + 1 %>
-<%= f.hidden_field :ldap_version, :value => @item.ldap_version %>
-<%= f.hidden_field :ldap,         :value => @item.ldap %>
-<%= f.hidden_field :version_id,   :value  => @item.version_id %>
-
 <%= Gw.required_head %>
 <table class="show">
   <tr>
