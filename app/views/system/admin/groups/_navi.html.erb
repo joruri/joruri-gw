@@ -11,7 +11,8 @@ end
   <%= link_to "全一覧", list_link -%>
 </span>
 <% tree = @parent.parent_tree; tree.each_with_index do |c, k| %>
-<%= link_to "(#{c.code})#{c.name}", url_for(:action => :index, :parent => c) -%>
+<%= link_to "(#{c.code})#{c.name}", url_for(action: :index, parent: c) -%>
+  <%- if c.root? -%><%= link_to '[編集]', edit_system_group_path(parent: 0, id: c.id), class: 'editRoot' %></span><%- end -%>
 <%= '>' if tree.size != k + 1 -%>
 <% end %>
 </div>
