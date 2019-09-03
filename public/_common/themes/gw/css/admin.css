@@ -79,6 +79,11 @@ table.index td.update {
   _margin-left: 0px;
 }
 
+a.editRoot  {
+  vertical-align: super;
+  font-size:smaller;
+}
+
 /* sucheduler humanIcon
 --------------------------------------------------------*/
 table#schedule_users_table td select {

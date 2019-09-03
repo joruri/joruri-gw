@@ -2,7 +2,13 @@
 <table class="show">
   <tr>
     <th>状態<%= Gw.required %></th>
-    <td><%= f.radio_buttons :state, @item.class.state_options %></td>
+    <td>
+      <%- if @item.root? -%>
+      <%= System::UsersGroup.state_show(@item.state) %>
+      <%- else -%>
+      <%= f.radio_buttons :state, @item.class.state_options %>
+      <%- end -%>
+    </td>
   </tr>
   <tr>
     <th>グループID<%= Gw.required %></th>
