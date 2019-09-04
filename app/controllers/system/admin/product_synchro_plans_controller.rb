@@ -55,7 +55,7 @@ class System::Admin::ProductSynchroPlansController < Gw::Controller::Admin::Base
 
 private
   def product_synchro
-    params.require(:item).permit(:start_at, :product_ids => [])
+    params.require(:item).permit(:start_at, :state, :product_ids => [])
   end
 
 end
