@@ -30,14 +30,14 @@ class Gw::Admin::PropTypes::UsersController < Gw::Controller::Admin::Base
   end
 
   def create
-    exist_check = System::User.where(:code => params[:user_code])
-    return redirect_to url_for(action: :index), notice: '指定のユーザーは登録できません。' if exist_check.exists?
+    exist_check = System::User.where(:code => prop_users_params[:user_code])
+    return redirect_to url_for(action: :index), notice: '指定のユーザーは登録できません。' if exist_check.present?
 
     @prop_type_user = System::User.new(
       :state => "enabled",
-      :name => params[:user_name],
-      :name_en => params[:user_code],
-      :code => params[:user_code],
+      :name => prop_users_params[:user_name],
+      :name_en => prop_users_params[:user_code],
+      :code => prop_users_params[:user_code],
       :ldap => 0
     )
     if @prop_type_user.save(validate: false)
@@ -57,7 +57,7 @@ class Gw::Admin::PropTypes::UsersController < Gw::Controller::Admin::Base
   def update
     @item = Gw::PropTypesUser.find(params[:id])
     @item.type_id = @parent.id
-    @item.attributes = params[:item]
+    @item.attributes = prop_users_params
     _update @item
   end
 
@@ -67,4 +67,11 @@ class Gw::Admin::PropTypes::UsersController < Gw::Controller::Admin::Base
     @prop_user.destroy unless @prop_user.blank?
     _destroy @item, :notice => "削除処理は完了しました。"
   end
+
+private
+
+  def prop_users_params
+    params.permit(:user_name, :user_code)
+  end
+
 end
