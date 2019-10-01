@@ -29,7 +29,7 @@ class Gw::Admin::PropTypesController < Gw::Controller::Admin::Base
   end
 
   def create
-    @item = Gw::PropType.new(params[:item])
+    @item = Gw::PropType.new(type_params)
     @item.state = "public"
     _create @item
   end
@@ -42,7 +42,7 @@ class Gw::Admin::PropTypesController < Gw::Controller::Admin::Base
   def update
     @item = Gw::PropType.find(params[:id])
     return http_error(404) if @item.state == "delete"
-    @item.attributes = params[:item]
+    @item.attributes = type_params
 
     _update @item
   end
