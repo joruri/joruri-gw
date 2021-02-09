@@ -28,7 +28,7 @@ class System::Admin::ProductSynchrosController < Gw::Controller::Admin::Base
   end
 
   def synchronize
-    @item = System::ProductSynchro.new(params[:item])
+    @item = System::ProductSynchro.new(synchro_params)
     @item = @item.execute
 
     flash[:notice] = 'プロダクト同期処理を開始しました。'
@@ -43,4 +43,10 @@ class System::Admin::ProductSynchrosController < Gw::Controller::Admin::Base
     flash[:notice] = '削除処理が完了しました。'
     redirect_to :action => :index
   end
+
+private
+  def synchro_params
+    params.require(:item).permit(:product_ids => [])
+  end
+
 end
