@@ -102,8 +102,7 @@ class System::Admin::GroupsController < Gw::Controller::Admin::Base
 private
 
   def group_params
-    params.require(:item).permit(:parent_id, :level_no, :ldap_version, :ldap, :version_id,
-      :state, :code, :name, :name_en, :email, :sort_no, :start_at, :end_at)
+    params.require(:item).permit(:state, :code, :name, :name_en, :email, :sort_no, :start_at, :end_at)
   end
 
 end

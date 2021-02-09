@@ -1,15 +1,14 @@
-<%= hidden_field_tag :parent, @parent.id %>
-<%= f.hidden_field :parent_id,    :value => @parent.id %>
-<%= f.hidden_field :level_no,     :value => @parent.level_no.to_i + 1 %>
-<%= f.hidden_field :ldap_version, :value => @item.ldap_version %>
-<%= f.hidden_field :ldap,         :value => @item.ldap %>
-<%= f.hidden_field :version_id,   :value  => @item.version_id %>
-
 <%= Gw.required_head %>
 <table class="show">
   <tr>
     <th>状態<%= Gw.required %></th>
-    <td><%= f.radio_buttons :state, @item.class.state_options %></td>
+    <td>
+      <%- if @item.root? -%>
+      <%= System::UsersGroup.state_show(@item.state) %>
+      <%- else -%>
+      <%= f.radio_buttons :state, @item.class.state_options %>
+      <%- end -%>
+    </td>
   </tr>
   <tr>
     <th>グループID<%= Gw.required %></th>
