@@ -69,7 +69,7 @@ private
   end
 
   def reminder_params
-    params.require(:item).permit(:read_memos_display, :unread_memos_display)
+    params.require(:item).permit(:memos => [:read_memos_display, :unread_memos_display])
   end
 
   def admin_deletes_params
