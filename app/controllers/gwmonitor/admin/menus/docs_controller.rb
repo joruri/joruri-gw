@@ -107,7 +107,7 @@ class Gwmonitor::Admin::Menus::DocsController < Gw::Controller::Admin::Base
 private
 
   def doc_params
-    params.require(:item).permit(:title, :body, :answer=>[], :remark=>[])
+    params.require(:item).permit(:title, :body, :state, :answer=>[], :remark=>[])
   end
 
 end
