@@ -33,7 +33,8 @@ remind.sort{|a, b| b[:date_d] <=> a[:date_d]}.each do |x|
   c_s = %Q( class="#{c_s}") if !c_s.blank?
   icon_cls  = icon_clses.assoc(x[:c])
   icon_cls1 = icon_cls.blank? ? nil:icon_cls[1]
-  concat raw %Q(<tr#{c_s}><td class="date_ste">#{x[:date_str]}</td><td class="cls #{icon_cls1}"><span>#{x[:cls]}　：　</span></td><td class="title">#{x[:title]}</td></tr>)
+  title = sanitize(x[:title], tags: %w(table tr td a), attributes: %w(id class style href))
+  concat raw %Q(<tr#{c_s}><td class="date_ste">#{x[:date_str]}</td><td class="cls #{icon_cls1}"><span>#{x[:cls]}　：　</span></td><td class="title">#{title}</td></tr>)
 end
 %>
 <% end %>
